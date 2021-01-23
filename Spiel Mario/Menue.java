@@ -13,6 +13,7 @@ public class Menue extends JFrame{
     private String Spielkarte = "Keine Spielkarte gewählt!";  // Name der Spielkarte
     private String SF[]=Hauptfigur.gibSpielfiguren(); // holen des Arrays mit den verfügbaren Spielfiguren
     private String SK[]=Hauptmap.gibSpielkarten();    // holen des Arrays mit den verfügbaren Spielkarten
+
  
   public Menue(){ // Konstruktor von Menue
      super("Hauptmenü");
@@ -35,7 +36,7 @@ public class Menue extends JFrame{
            //Knopfgenerator kn5 = new Knopfgenerator("Jump","unten","Jump");
            //Knopfgenerator kn6 = new Knopfgenerator("Stop","unten","Stop");
            
-           if(!Arrays.asList(SF).contains(Spielfigur)||!Arrays.asList(SK).contains(Spielkarte)){defaultSettings(); aendereSettings();} // prüfen ob Spiekarte oder Spielfigur einen gültigen Wert aufweisen.
+           if(!Arrays.asList(SF).contains(Spielfigur) || !Arrays.asList(SK).contains(Spielkarte)){defaultSettings(); aendereSettings();} // prüfen ob Spiekarte oder Spielfigur einen gültigen Wert aufweisen.
       
            JButton SettingsKnopf = new JButton("Settings"); // erstellen des "Settings" Knopfs im Zeichenfenster
            ZEICHENFENSTER.gibFenster().steuerungOst.add(SettingsKnopf);
@@ -71,7 +72,9 @@ public class Menue extends JFrame{
            
            Figur.erstelleKnopf("linksLaufen");      // erstellen des "Springen" Knopfes im Objekt Figur    (siehe Klasse Hauptfigur, Methode: erstelleKnopf)
            Figur.erstelleKnopf("linksLaufenStop");  // erstellen des "SpringenStop" im Objekt Figur        (siehe Klasse Hauptfigur, Methode: erstelleKnopf) 
-              
+           
+           ZEICHENFENSTER.gibFenster().setzeSichtbar(true); // Damit erst beim Starten des Spiels, das Zeichenfenster sichtbar wird
+           
            setVisible(false);
             } //Startknopf im Hauptmenü            
         });
@@ -125,7 +128,7 @@ public class Menue extends JFrame{
     }
     
     private void defaultSettings(){ // Setzt die Standart Wert für Spielkarte oder Spielfigur.
-       if(!Arrays.asList(SK).contains(Spielkarte)){Spielkarte=SK[0];} //Setzt Standartwert für Spielkarte, wenn Spielkarte keinen gültigen Wert besitzt
+       if(!Arrays.asList(SK).contains(Spielkarte)){Spielkarte=SK[2];} //Setzt Standartwert für Spielkarte, wenn Spielkarte keinen gültigen Wert besitzt
        if(!Arrays.asList(SF).contains(Spielfigur)){Spielfigur=SF[0];}  //Setzt Standartwert für Spielfigur, wenn Spielfigur keinen gültigen Wert besitzt
      }
     

@@ -20,6 +20,7 @@ public class KREIS {
 
     public KREIS() {
         this(30, 60, 20, "blau", false);
+        ZEICHENFENSTER.gibFenster().setzeSichtbar(true);
     }
     
     public KREIS(int posx, int posy, int r,  String color, boolean filled) // Methode um einen Kreis mit den jeweiligen Werten zu zeichen

@@ -32,7 +32,7 @@ class DemoThread extends Thread
     {
         for(int i = 0; i < 1000; i++) {
         try {
-          sleep(50);
+          sleep(5);
         }
         catch(InterruptedException e) {
         }

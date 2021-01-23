@@ -27,6 +27,7 @@ public class DREIECK {
 
     public DREIECK(){
         this(0, 100, 50,"rot", false);
+        ZEICHENFENSTER.gibFenster().setzeSichtbar(true);
     }
     
     public DREIECK(int posx, int posy , int height, String color){ //Konstruktor für Standart-Dreieck. x- und y-Koordinaten von Standart-Ecke ausgehend. 
@@ -69,7 +70,7 @@ public class DREIECK {
         positionY[2] = posy;              //Position der 3.Ecke auf y-Achse (rechte Ecke) 
        } else {
            Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Konstruktor\nKlasse: DREIECK \n ungültige Eingabe der Ausgangsecke \n Eingabe:  "+Ecke);
-           gibAusgangsecken();
+           zeigeAusgangsecken();
         }}}
         zeichnen();           // zeichen des Dreiecks
     }
@@ -113,7 +114,7 @@ public class DREIECK {
         aenderePosition(posx-breite/2,posy-hoehe,posx-breite,posy,posx,posy);    
         }else{ 
             Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Klasse: DREIECK\nMethode: aenderePosition \n ungültige Eingabe der Ausgangsecke \n Eingabe:  "+Ecke);
-            gibAusgangsecken();
+            zeigeAusgangsecken();
             System.exit(0);
         }}}
     }
@@ -135,7 +136,7 @@ public class DREIECK {
         positionY[0] = positionY[1]+hoehe;  //Position der 1.Ecke auf y-Achse (obere Ecke)
         }else{ 
             Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Klasse: DREIECK\nMethode: aendereHoehe \n ungültige Eingabe der Ausgangsecke \n Eingabe:  "+Ecke);
-            gibAusgangsecken();
+            zeigeAusgangsecken();
             System.exit(0);
        }}}
         zeichnen();
@@ -162,7 +163,7 @@ public class DREIECK {
 
        } else {
            Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Klasse: DREIECK\nMethode: aendereBreite \n ungültige Eingabe der Ausgangsecke \n Eingabe:  "+Ecke);
-           gibAusgangsecken();
+           zeigeAusgangsecken();
            System.exit(0);
         }}}        
         zeichnen();
@@ -232,11 +233,11 @@ public class DREIECK {
         zeichnen();
     }
     
-    public void gibAusgangsecken(){  // Methode zur Ausgabe der aktuellen Ausgangsecken
-        Dialogfenster.gibInformation("Ausgangsecken DREIECK","Mögliche Ausgangsecken:  "+Ausgangsecke[0]+", "+Ausgangsecke[1]+", "+Ausgangsecke[2]);
+    public void zeigeAusgangsecken(){  // Methode zur Ausgabe der aktuellen Ausgangsecken
+        Dialogfenster.gibArrayaus("Ausgangsecken DREIECK","Mögliche Ausgangsecken:\n",Ausgangsecke,"Information", 5);
     }
     
-    public void gibStandartEcke(){
+    public void zeigeStandartEcke(){
         Dialogfenster.gibInformation("Standart-Ecke DREIECK","Standart-Ecke:  "+StandartEcke);
     }
     

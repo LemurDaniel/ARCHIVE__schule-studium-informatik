@@ -10,11 +10,96 @@ import javax.swing.JOptionPane;
 public class Dialogfenster
 {   
    public void BeispielNachricht(){
-       String Titel="Beispiel-Nachricht";  // Titel des Dialogfensters
-       String Dialog="Dies ist eine Beispiel Nachricht"; // im Fenster angezeigter Text 
-       String arr[]={"Knopf0","Knopf1"}; // Namen und Anzahl der Knöpfe
-       String Vorauswahl=arr[1]; // Vorgewählter Knopf bei Aufruf des Dialogfensters
-       gibNachrichtmitKnopf(Titel,Dialog,arr,Vorauswahl);
+       String Titel = "Beispiel-Nachricht";  // Titel des Dialogfensters
+       String Dialog = "Dies ist eine Beispiel Nachricht"; // im Fenster angezeigter Text 
+       String array[] = {"Knopf0","Knopf1"}; // Namen und Anzahl der Knöpfe
+       String Vorauswahl = array[1]; // Vorgewählter Knopf bei Aufruf des Dialogfensters
+       
+       gibNachrichtmitKnopf(Titel,Dialog,array,Vorauswahl);
+   }
+   
+   public void BeispielArrayausgabe(){
+       String Titel = "Beispiel-Nachricht";  // Titel des Dialogfensters
+       String Dialog = "Ungültige Eingabe: \nMögliche Eingaben: \n"; // im Fenster angezeigter Text 
+       String array[] = {"Eingabe1","Eingabe2","Eingabe3","Eingabe4","Eingabe5","Eingabe6"}; // Auszugebender Array
+       String Nachrichtentyp = "Fehlermeldung"; // Der Nachrichtentyp
+       int Zeilenumbruch = 3; //Zeilenumbruch nach 3 bei angezigten Elementen
+       
+       gibArrayaus(Titel,Dialog,array,Nachrichtentyp,Zeilenumbruch);
+    }
+   
+   public static void gibArrayaus(String Titel, String Dialog, String[] array, String Nachrichtentyp, int Zeilenumbruch){ //Arraausgabe in einem Dialogfenster von einem Array aus Strings   
+       int zahl=0; //zählt für Zeilenumbruch mit
+       
+       for(int i=0;i<array.length;i++){
+           if(zahl==Zeilenumbruch){
+               Dialog += "\n" + array[i] + "; "; //Zeilenumbruch nach gewünschter Zahl an Elementen
+               zahl=0;
+            }else{
+                Dialog += array[i] + "; "; //addieren aller Elemente des arrays zu einem String mit Komma Leerzeichen dazwischen
+                zahl++;
+            }
+        } 
+           
+       switch(Nachrichtentyp){
+           
+           case "Frage":
+                gibFrage(Titel, Dialog);
+                break;  
+                
+           case "Information":           
+                gibInformation(Titel, Dialog);
+                break;
+                
+           case "Fehlermeldung":
+                gibFehlermeldung(Titel, Dialog);
+                break;
+                
+           case "Warnung":
+                gibWarnung(Titel, Dialog);
+                break;
+                
+           case "Nachricht":
+                gibNachricht(Titel, Dialog);
+                break;           
+       }
+   }
+   
+   public static void gibArrayaus(String Titel, String Dialog, int[] array, String Nachrichtentyp, int Zeilenumbruch){  //Arraausgabe in einem Dialogfenster von einem Array aus Integers    
+       int zahl=0; //zählt für Zeilenumbruch mit
+       
+       for(int i=0;i<array.length;i++){
+           if(zahl==Zeilenumbruch){
+               Dialog += "\n" + array[i] + "; "; //Zeilenumbruch nach gewünschter Zahl an Elementen
+               zahl=0;
+            }else{
+                Dialog += array[i] + "; "; //addieren aller Elemente des arrays zu einem String mit Komma Leerzeichen dazwischen
+                zahl++;
+            }
+        } 
+           
+       switch(Nachrichtentyp){
+           
+           case "Frage":
+                gibFrage(Titel, Dialog);
+                break;  
+                
+           case "Information":           
+                gibInformation(Titel, Dialog);
+                break;
+                
+           case "Fehlermeldung":
+                gibFehlermeldung(Titel, Dialog);
+                break;
+                
+           case "Warnung":
+                gibWarnung(Titel, Dialog);
+                break;
+                
+           case "Nachricht":
+                gibNachricht(Titel, Dialog);
+                break;           
+       }
    }
    
    public static String stelleFragemitListe(String Titel, String Dialog, String[] array, String Vorauswahl){ //Methode zum stellen einer Frage mit Antworten als Liste

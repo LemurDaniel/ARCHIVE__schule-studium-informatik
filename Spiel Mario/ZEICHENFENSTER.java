@@ -17,7 +17,7 @@ import java.util.*;
 
 public class ZEICHENFENSTER
 {
-    private JFrame frame;
+    public JFrame frame;
     private static CanvasPane canvas;
     public JPanel steuerungOst,steuerungSued;
     private Graphics2D graphic;
@@ -72,6 +72,7 @@ public class ZEICHENFENSTER
         backgroundColor = hintergrundFarbe;
         frame.pack();
         frame.setLocationRelativeTo(null);
+        frame.setVisible(false);
         zeige();
     }
 
@@ -99,7 +100,10 @@ public class ZEICHENFENSTER
             graphic.fillRect(0, 0, size.width, size.height);
             graphic.setColor(Color.black);
         }
-        frame.setVisible(true);
+    }
+    
+    public void setzeSichtbar(boolean visible){
+        frame.setVisible(visible);
     }
 
     /**

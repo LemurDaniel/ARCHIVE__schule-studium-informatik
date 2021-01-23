@@ -81,6 +81,8 @@ public class Test
                      System.out.print(", ");
                     }
                 });
+                
+      ZEICHENFENSTER.gibFenster().setzeSichtbar(true);
     }
     
     private  int AbfrageFenster(){

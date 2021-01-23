@@ -7,31 +7,32 @@
 
 public class RECHTECK {
 
-	private int positionX;
+    private int positionX;
 
-	private int positionY;
+    private int positionY;
 
-	private int breite;
-	
-	private int hoehe;
-	
-	private boolean fuellung;
-	
-	private String fuellfarbe;
+    private int breite;
+    
+    private int hoehe;
+    
+    private boolean fuellung;
+    
+    private String fuellfarbe;
  
     public RECHTECK() {
         this(60, 50, 60, 30, "rot", false);
+        ZEICHENFENSTER.gibFenster().setzeSichtbar(true);
     }
     
     public RECHTECK(int posx, int posy, int width, int height, String color, boolean filled) // Methode um ein Rechteck mit den jeweiligen Werten zu zeichen
     {
         positionX = posx;    // position auf x-Achse
-		positionY = posy;    // position auf y-Achse
-		breite = width;      // Breite des Rechtecks
-		hoehe = height;      // hoehe des Rechtecks
-		fuellfarbe = color;  // Farbe mit der das Recheckt gefüllt wird
-		fuellung = filled;   // true/false Wert ob das Rechteck gefuellt wird oder nicht
-		zeichnen();          // zeichnen des Rechtecks
+        positionY = posy;    // position auf y-Achse
+        breite = width;      // Breite des Rechtecks
+        hoehe = height;      // hoehe des Rechtecks
+        fuellfarbe = color;  // Farbe mit der das Recheckt gefüllt wird
+        fuellung = filled;   // true/false Wert ob das Rechteck gefuellt wird oder nicht
+        zeichnen();          // zeichnen des Rechtecks
     }
     
     public void aendereFarbe(String newcolor){ // aendern der Füllfarbe
@@ -95,7 +96,7 @@ public class RECHTECK {
         Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Ungültige Richtungsangabe bei Bewegung auf der y-Achse \nKlasse: RECHTECK\nMethode: bewegey");   // Fehlermeldung bei ungültiger Eingabe der "direction" 
         System.exit(0);
         } 
-		zeichnen();
+        zeichnen();
     }
     
     public void zeichnen(){ // Methode zum zeichnen des Rechtecks
@@ -112,5 +113,17 @@ public class RECHTECK {
        }else{
        ZEICHENFENSTER.gibFenster().loescheRechteck(positionX, positionY, breite+1, hoehe+1);  // Mit breite+1 und hohe+1 da das Rechteck sonst nicht komplett gelöscht wird
        }                                                                                        
+    }
+    
+    public int gibbreite(){
+        return breite;
+    }
+    
+    public int gibPositionX(){
+        return positionX;
+    }
+    
+    public int gibPositionY(){
+        return positionY;
     }
 }
