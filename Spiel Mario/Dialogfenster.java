@@ -30,8 +30,8 @@ public class Dialogfenster
    
    public static void gibArrayaus(String Titel, String Dialog, String[] array, String Nachrichtentyp, int Zeilenumbruch){ //Arraausgabe in einem Dialogfenster von einem Array aus Strings   
        int zahl=0; //zählt für Zeilenumbruch mit
-       
-       for(int i=0;i<array.length;i++){
+      if ((Dialog==null)==false) {Dialog += "\n";}   
+      for(int i=0;i<array.length;i++){
            if(zahl==Zeilenumbruch){
                Dialog += "\n" + array[i] + "; "; //Zeilenumbruch nach gewünschter Zahl an Elementen
                zahl=1;
@@ -40,7 +40,7 @@ public class Dialogfenster
                 zahl++;
             }
         } 
-           
+        
        switch(Nachrichtentyp){
            
            case "Frage":
@@ -67,7 +67,7 @@ public class Dialogfenster
    
    public static void gibArrayaus(String Titel, String Dialog, int[] array, String Nachrichtentyp, int Zeilenumbruch){  //Arraausgabe in einem Dialogfenster von einem Array aus Integers    
        int zahl=0; //zählt für Zeilenumbruch mit
-       
+       if ((Dialog==null)==false) {Dialog += "\n";}       
        for(int i=0;i<array.length;i++){
            if(zahl==Zeilenumbruch){
                Dialog += "\n" + array[i] + "; "; //Zeilenumbruch nach gewünschter Zahl an Elementen

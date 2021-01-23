@@ -23,6 +23,7 @@ public class Figur
         erstelleKnopf("rechtsLaufenStop");
         erstelleKnopf("Springen");
         erstelleKnopf("SpringenStop");
+        ZEICHENFENSTER.gibFenster().setzeSichtbar(true);
     }
     
     public Figur(int x, int y, String Spielfigur)

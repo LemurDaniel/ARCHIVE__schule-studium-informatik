@@ -8,7 +8,7 @@ import javax.swing.*;
 class Tasten extends JFrame implements ActionListener, KeyListener
 {
 	private boolean oben = false, links = false, rechts = false, unten = false;
-	
+
 	Tasten()
 	{
         this.addKeyListener(this);
