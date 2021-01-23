@@ -5,7 +5,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
+import fxControls.CustomTextField;
+import fxControls.StringTextField;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -25,10 +28,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.FlowPane;
 import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.Nutzer.Rechte;
@@ -58,7 +64,7 @@ public class DetailCtrl {
         accordion.setExpandedPane(tp_allg);
         tab_pane.getSelectionModel().select(tab_allg);
         tab_pane.requestFocus();
-        aktualisiereRechte();
+        aktualisiereNutzer();
         
 		if(this.film!=null && this.film.equals(film))
 			return;
@@ -81,8 +87,7 @@ public class DetailCtrl {
         tf_dauer.setText(film.getDauerStringProperty().get());
         tf_jahr.setText(film.getErscheinungsjahr()+""); 
         
-        if(this.film!=null)
-        	this.film.getGenres().forEach(g->checked_genre.get(g).set(false));
+        if(this.film!=null)	this.film.getGenres().forEach(g->checked_genre.get(g).set(false));
         film.getGenres().forEach(g->checked_genre.get(g).set(true));
         table_genre.getSelectionModel().clearSelection();
         
@@ -101,10 +106,12 @@ public class DetailCtrl {
         this.film = film;
 	}
 
-	private void aktualisiereRechte() {
+	public void aktualisiereNutzer() {
 		nid = Nutzer.getNutzer().getId();
 		rechte = Nutzer.getNutzer().getRechte();
+		int temp = cb_r.getSelectionModel().getSelectedIndex();
     	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
+    	cb_r.getSelectionModel().select(temp);
     	tp_rezd.setDisable( !rechte.isReviewRead() );
 //    });
 	}
@@ -192,7 +199,8 @@ public class DetailCtrl {
     private ToggleButton tbtn_r;
 
     @FXML
-    private TextField tf_rtitel;
+    private FlowPane fp_rezTitel;
+    private StringTextField tf_rtitel;
     
     @FXML
     private Slider s_bwt;
@@ -281,9 +289,9 @@ public class DetailCtrl {
         cb_r.getItems().add("Nutzer - "+Nutzer.getNutzer().getName());
         cb_r.getSelectionModel().selectedIndexProperty().addListener((ob, ov, nv)->displayRezension()); 
         
-
-        ta_rtext.setWrapText(true);       
-        ta_rtext.setPromptText("Rezension hier einfügen");
+        
+        tf_rtitel = new StringTextField(Rezensionenverwaltung.getMaxTitel());
+        fp_rezTitel.getChildren().add(tf_rtitel);
         tf_rtitel.setPromptText("Titel hier einfügen");
         s_bwt.setMax(10);
         s_bwt.setMin(0);
@@ -295,20 +303,20 @@ public class DetailCtrl {
         
         lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()+"");
   
+        ta_rtext.setWrapText(true);       
+        ta_rtext.setPromptText("Rezension hier einfügen");
         tbtn_r.setOnAction(ev->{
         	if(!tbtn_r.isSelected()) setDisplay(); // Bei wechsel von write auf read reset display
         	setEdit(tbtn_r.isSelected());
         });
   
-        tf_rtitel.addEventFilter(KeyEvent.KEY_TYPED, ev->{
-        	if(!tf_rtitel.isEditable()) return;
-        	if(tf_rtitel.getLength() >= Rezensionenverwaltung.getMaxTitel()) ev.consume();
-        });
-        ta_rtext.addEventFilter(KeyEvent.KEY_TYPED, ev->{
-        	if(!ta_rtext.isEditable()) return;
-        	if(ta_rtext.getLength() >= Rezensionenverwaltung.getMaxInhalt()) ev.consume();
-        	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-ta_rtext.getLength()+"");
-        });
+
+        ta_rtext.setTextFormatter(new TextFormatter<>( (UnaryOperator<Change>) change->{
+        	change = CustomTextField.getMaxLenFilter(Rezensionenverwaltung.getMaxInhalt()).apply(change);
+        	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-change.getControlNewText().length()+"");
+        	return change;
+        }));
+
         
         t_ersteller.setCellValueFactory(data->data.getValue().getVerfasser());
         t_bwt.setCellValueFactory(data->data.getValue().getBewertung());
@@ -380,7 +388,7 @@ public class DetailCtrl {
     private void setDisplay() {
     	if(displayed == null) displayRezension();
     	ta_rtext.setText(displayed.getInhalt().get());
-    	tf_rtitel.setText(displayed.getTitel().get());
+    	tf_rtitel.setDefVal(displayed.getTitel().get());
     	s_bwt.setValue(displayed.getBewertung().get());
     	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-ta_rtext.getLength()+"");
     }

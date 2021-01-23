@@ -126,11 +126,7 @@
                   </HBox>
                   <HBox prefHeight="48.0" prefWidth="558.0">
                      <children>
-                        <FlowPane prefHeight="112.0" prefWidth="306.0" rowValignment="TOP" styleClass="FlowPaneLeft">
-                           <children>
-                              <TextField fx:id="tf_rtitel" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="329.0" styleClass="rez_el" />
-                           </children>
-                        </FlowPane>
+                        <FlowPane fx:id="fp_rezTitel" prefHeight="112.0" prefWidth="306.0" rowValignment="TOP" styleClass="FlowPaneLeft" />
                         <FlowPane prefHeight="62.0" prefWidth="303.0" styleClass="FlowPaneRight">
                            <children>
                               <Slider fx:id="s_bwt" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minHeight="-Infinity" minWidth="-Infinity" minorTickCount="0" prefHeight="31.0" prefWidth="217.0" showTickLabels="true" showTickMarks="true" styleClass="rez_el" />

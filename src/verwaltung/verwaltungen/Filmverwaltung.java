@@ -38,8 +38,9 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			if(lastId!=idNow) {
 				if(geladeneFilme.containsKey(idNow))	
 					current = geladeneFilme.get(idNow);
-				else
+				else {
 					current = new Film(idNow, rs.getInt("ersteller"), rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
+				}
 				addObj(current);
 				lastId = idNow;
 			}
@@ -237,9 +238,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		super.removeObj(f);
 		int i = referenziert.get(f)-1;
 		if(i==0) {
-//			geladeneFilme.remove(f.getId());
-//			referenziert.remove(f);
-			referenziert.put(f, i);
+			geladeneFilme.remove(f.getId());
+			referenziert.remove(f);
 		}else
 			referenziert.put(f, i);
 	}
@@ -250,8 +250,28 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		});
 	}
 	
-	public static void refresh() {
-		fvws.forEach(fvw->fvw.clear());
+	public static void refreshAll(Connection connect) throws SQLException {
+		Map<Filmverwaltung, List<Film>> fvwListen = new HashMap<>();
+		for(Filmverwaltung fvw: fvws) {
+			fvwListen.put(fvw, fvw.getList());
+			fvw.clear();
+		}
+
+		for(Filmverwaltung fvw:fvws) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Select * from Film where id in ( ");
+			
+			List<Film> fliste = fvwListen.get(fvw);
+			for(int i=0; i<fliste.size(); i++) 
+				sb.append( fliste.get(i).getId() +(i==fliste.size()-1? ") ":", ") );
+			try (Connection con = connect!=null? connect:getCon()){
+				try(Statement st = con.createStatement()){
+					try(ResultSet rs = st.executeQuery(sb.toString())){
+						fvw.generateFilm(rs);
+					}
+				}
+			}
+		}
 	}	
 	
 	public static int getMaxTitel() {

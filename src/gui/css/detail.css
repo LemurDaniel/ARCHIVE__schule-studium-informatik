@@ -57,6 +57,11 @@ ScrollPane {
 	-fx-hbar-policy: never ;
 	-fx-vbar-policy: as-needed ;
 }
+
+FlowPane > StringTextField {
+	-fx-pref-height: 31;
+	-fx-pref-width: 320;	
+}
 	
 .FlowPaneRight {
 	-fx-alignment: center-right ;

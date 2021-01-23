@@ -37,6 +37,9 @@ public class Liste extends Entitaet{
 	public void removeFilm(Film film) {
 		filme.removeObj(film);
 	}
+	public void clear() {
+		filme.clear();
+	}
 	
 	public ObservableList<Film> getObList() {
 		return filme.getObList();

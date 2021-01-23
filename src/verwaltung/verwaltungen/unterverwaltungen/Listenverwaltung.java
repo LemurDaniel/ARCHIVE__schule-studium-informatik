@@ -33,22 +33,28 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 					while(rs.next())	addObj(new Liste(rs.getInt(1), rs.getString(2)));
 				}
 			}
+			fuelleListen(connect);
+		}
 			
-			
-			sql = "Select * from film "
+	}
+		
+		public void fuelleListen(Connection connect) throws SQLException {
+			try(Connection con = connect!=null? connect:getCon()){
+				String	sql = "Select * from film "
 					+ "join film_genre on film_genre.fid=film.id "
 					+ "join liste_film on liste_film.fid=film.id "
 					+ "where lid=?";
-			for(Liste li:getList()) {
-				try(PreparedStatement ps = con.prepareStatement(sql)){
-					ps.setInt(1, li.getId());
-					try(ResultSet rs = ps.executeQuery()){
-						li.addFilme(rs);
+				for(Liste li:getList()) {
+					try(PreparedStatement ps = con.prepareStatement(sql)){
+						ps.setInt(1, li.getId());
+						try(ResultSet rs = ps.executeQuery()){
+							li.clear();
+							li.addFilme(rs);
+						}
 					}
 				}
 			}
 		}
-	}
 	
 	public void filmeZuListenHinzufuegen(Map<Liste, List<Film>> li_filme, Connection con)  throws SQLException {
 		for(Liste li: li_filme.keySet())

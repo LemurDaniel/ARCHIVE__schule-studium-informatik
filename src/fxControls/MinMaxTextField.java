@@ -79,7 +79,7 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	}	
 	@Override
 	public void setDefVal(T defVal) {
-		this.defVal = pruefeMinMax(getMin(), getMax(), defVal);
+		this.defVal = defVal!=null ? pruefeMinMax(getMin(), getMax(), defVal) : defVal;
 		value = this.defVal;
 		setTextToVal();
 	}

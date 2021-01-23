@@ -2,11 +2,12 @@ package fxControls;
 
 import java.util.function.UnaryOperator;
 
+
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 
-abstract class CustomTextField<T> extends TextField{
+public abstract class CustomTextField<T> extends TextField{
 	
 	protected T defVal;
 	protected boolean formatText;
@@ -31,6 +32,16 @@ abstract class CustomTextField<T> extends TextField{
 			change.setText( change.getText().substring(0, z) );
 		}
 		return change;	
+	}
+	
+	public static UnaryOperator<Change> getMaxLenFilter(int len) {
+		return (UnaryOperator<Change>) change->{
+			if(change.getControlNewText().length()>len) {
+				int z = len - (change.getControlNewText().length() - change.getText().length());
+				change.setText( change.getText().substring(0, z) );
+			}
+			return change;
+		};
 	}
 	
 	abstract public void setDefVal(T defVal);	
