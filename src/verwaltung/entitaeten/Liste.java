@@ -36,7 +36,7 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		this.id = id;
 		this.name = new ReadOnlyStringWrapper(name);
 		filme = new Filmverwaltung();
-		groeﬂe = new ReadOnlyStringWrapper();
+		groeﬂe = new ReadOnlyStringWrapper("0");
 	}
 	
 	public int getId() {

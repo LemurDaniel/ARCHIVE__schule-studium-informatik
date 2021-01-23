@@ -137,6 +137,7 @@ public class ListensichtCtrl {
     		th = null;
     		return;
     	}
+    	if(!lvw.hatAuftraege())	return;
     	th = new Thread(lvw);
     	th.start();
 

@@ -16,10 +16,15 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import verwaltung.Nutzer;
 
 public class AnmeldeseiteCtrl {
-
+	
+	@FXML
+	private VBox vb;
+	
     @FXML
     private ComboBox<String> cbox;  
     
@@ -77,29 +82,32 @@ public class AnmeldeseiteCtrl {
         cbox.getItems().add("Registrieren");
         cbox.getItems().add("Daniel");
         cbox.getItems().add("Unlimited");
-
+        
         cbox.getSelectionModel().selectedIndexProperty().addListener( (ob, oldV, newV) -> {      	
         	if(newV.intValue()==0) {
         		tf_name.setText("Gast");
         		tf_name.setEditable(false);
-        		tf_pwd.setVisible(false);
-                tf_pwd2.setVisible(false);
+        		vb.getChildren().remove(tf_pwd);
+        		vb.getChildren().remove(tf_pwd2);
                 btn.setText("anmelden");
+                FensterManager.getAnmelden().setHeight(200);
         	}else
         	if(newV.intValue()==1) {
-        		if(oldV.intValue()==0)tf_name.setText(null);
+        		if(oldV.intValue()==0)tf_name.setText("");
         		tf_name.setEditable(true);
-        		tf_pwd.setVisible(true);
-                tf_pwd2.setVisible(false);
+        		if(!vb.getChildren().contains(tf_pwd)) vb.getChildren().add(2, tf_pwd);
+        		vb.getChildren().remove(tf_pwd2);
                 btn.setText("anmelden");
+                FensterManager.getAnmelden().setHeight(240);
         	}
         	else
         	if(newV.intValue()==2) {
-        		if(oldV.intValue()==0)tf_name.setText(null);
+        		if(oldV.intValue()==0)tf_name.setText("");
         		tf_name.setEditable(true);
-        		tf_pwd.setVisible(true);
-                tf_pwd2.setVisible(true);
+        		if(!vb.getChildren().contains(tf_pwd)) 	vb.getChildren().add(2, tf_pwd);
+        		if(!vb.getChildren().contains(tf_pwd2)) vb.getChildren().add(3, tf_pwd2);
                 btn.setText("Registrieren");
+                FensterManager.getAnmelden().setHeight(280);
         	}
         });        
         cbox.getSelectionModel().select(0);
@@ -110,6 +118,7 @@ public class AnmeldeseiteCtrl {
 
     }
 
+
 	private void trozdemAnmelden() {
 		//Abfrage wenn Typ = Already Logged in	
 		Alert b = new Alert(AlertType.CONFIRMATION);
@@ -119,7 +128,7 @@ public class AnmeldeseiteCtrl {
 		b.setOnCloseRequest(evb->{
 			if(b.getResult().getButtonData().equals(ButtonData.OK_DONE)) {
 				try {
-					Nutzer.getNutzer().vonAnderenInstanzenAbmelden("Daniel", "123456");
+					Nutzer.getNutzer().vonAnderenInstanzenAbmelden(tf_name.getText().trim(), tf_pwd.getText());
 					if(Nutzer.getNutzer().isAngemeldet())	FensterManager.setPrimaryStage(FensterManager.getHauptSeite());
 				} 
 				catch (SQLException e1) {}

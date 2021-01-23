@@ -84,8 +84,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		if(!hatAuftraege())		return;
 		
 		err.clear();
-		
-		FensterManager.logErreignis("\nDer Speichervorgang wurde gestartet");
+	
 		con.setAutoCommit(false);
 		try {
 			stapelAbarbeiten(add, 		this::onAdd, 	this::onAddSucess, con);
@@ -94,7 +93,6 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		}catch(SQLException e) {
 			FensterManager.logErreignis(e);
 		}
-		FensterManager.logErreignis("Der Speichervorgang wurde beendet");
 	}
 		
 	private void stapelAbarbeiten(Stack<T> stack, methode<T> m, methode2<T> m2, Connection con) throws SQLException, InterruptedException{
@@ -151,12 +149,14 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 	
 	@Override
 	public void run() {
+		FensterManager.logErreignis("\nDer Speichervorgang wurde gestartet");
 		try (Connection con = DB_Manager.getCon()){
 			save(con);	
 		} catch (SQLException e) {
 		}catch(InterruptedException e) {
 			FensterManager.logErreignis("\nDer Speichervorgang wurder abgebrochen", Color.RED);
 		}
+		FensterManager.logErreignis("\nDer Speichervorgang wurde beendet");
 	}
 	
 }

@@ -25,13 +25,13 @@ import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 public class DB_Manager {
 	
 //	private static String url = "jdbc:sqlserver://testserverdaniel.database.windows.net:1433;database=FilmDB;user=daniel@testserverdaniel;password={`nfTV|H_y7~PUNh\\\"'*\\\\}\\\\tbyqObcN|8Y]O$lq3Q`Vvt7U5uSNG]_j>vo@RQ<g)\\\"?};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
-//	private static String url = "jdbc:sqlserver://testserverdaniel.database.windows.net:1433;databaseName=FilmDB";
-//	private static String user = "daniel";
-//	private static String password = "`nfTV|H_y7~PUNh\"'*\\}\\tbyqObcN|8Y]O$lq3Q`Vvt7U5uSNG]_j>vo@RQ<g)\"?";
+	private static String url = "jdbc:sqlserver://testserverdaniel.database.windows.net:1433;databaseName=FilmDB";
+	private static String user = "daniel";
+	private static String password = "`nfTV|H_y7~PUNh\"'*\\}\\tbyqObcN|8Y]O$lq3Q`Vvt7U5uSNG]_j>vo@RQ<g)\"?";
 	
-	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=FilmDB";
-	private static String user = "DanielTest";
-	private static String password = "Test";
+//	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=FilmDB";
+//	private static String user = "DanielTest";
+//	private static String password = "Test";
 	
 	public static Map<String, Integer> maxSize = new TreeMap<>();
 	

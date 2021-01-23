@@ -41,13 +41,13 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	}
 		
 	private void fuelleListen(Connection con) throws SQLException {
-		FensterManager.logErreignis("\nEs werden "+getObList().size()+" Listen geladen", Color.GREEN);
+		if(getObList().size()==0)	return;
 		
 		String	sql = "Select * from film "
 				+ "join genre_film on genre_film.fid=film.id "
 				+ "join liste_film on liste_film.fid=film.id "
 				+ "where lid=? order by film.id ";
-		
+//		
 		for(Liste li:getList()) {
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setInt(1, li.getId());
@@ -57,6 +57,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 			}
 			FensterManager.logErreignis("Liste '"+li.getName()+"' erfolgreich geladen", Color.GREEN);
 		}
+		FensterManager.logErreignis("Es wurden insgesamt "+getObList().size()+ (getObList().size()==1?" Liste":" Listen")+" geladen", Color.GREEN);
 	}
 	
 	
@@ -110,12 +111,12 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	}
 	@Override
 	protected void onUpdateSucess(Liste li, Connection con) throws SQLException, InterruptedException{
-		if(li.hasBackup())	FensterManager.logErreignis(String.format("\nDer name der Liste '%s' wurde erfolgreich geändert", li.getName()));
+		if(li.hasBackup())	FensterManager.logErreignis(String.format("Der name der Liste '%s' wurde erfolgreich geändert", li.getName()));
 		super.onUpdateSucess(li, con);
 		if(!li.hatAuftraege())	return;
 		FensterManager.logErreignis(String.format("\nDer Inhalt der Liste '%s' wird aktualisiert", li.getName()));
 		li.save(con);
-		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%s' wurde beendet\n", li.getName()));
+		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%s' wurde beendet", li.getName()));
 	}
 	@Override
 	protected void onDeleteSucess(Liste li, Connection con) throws SQLException, InterruptedException{

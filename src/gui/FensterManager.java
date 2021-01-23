@@ -170,7 +170,7 @@ public class FensterManager {
 		if(listensicht==null) {
 			listensicht = new Stage();
 			listensicht.setResizable(false);
-			listensicht.setTitle("Filmdatenbank - Filter");
+			listensicht.setTitle("Filmdatenbank - Listensicht");
 			FXMLLoader loader = getLoader("fxml/Listensicht.fxml");
 			listensichtCtrl = loader.getController();
 			listensicht.setScene(new Scene(loader.getRoot()));
@@ -185,6 +185,10 @@ public class FensterManager {
 		primaryStage = stage;
 		primaryStage.requestFocus();
 		primaryStage.show();
+		primaryStage.focusedProperty().addListener((ob,ov,nv)->{
+			if(nv && dialog!=null)	dialog.close();
+		});
+		
 		
 		primaryStage.setOnCloseRequest(ev->{
 			ev.consume();
@@ -212,6 +216,9 @@ public class FensterManager {
 		secondary = stage;
 		secondary.requestFocus();
 		secondary.show();
+		secondary.focusedProperty().addListener((ob,ov,nv)->{
+			if(nv && dialog!=null)	dialog.close();
+		});
 	}
 	
 	public static void setDialog(Stage stage) {
@@ -237,10 +244,7 @@ public class FensterManager {
 		if(secondary!=null)			secondary.close();
 		if(dialog!=null)			dialog.close();
 		if(credits!=null)			credits.close();
-		if(statusmeldung!=null)		{
-			statusTA.getChildren().clear();
-			statusmeldung.close();
-		}
+		if(statusmeldung!=null)		statusTA.getChildren().clear();
 	}
 	
 	
