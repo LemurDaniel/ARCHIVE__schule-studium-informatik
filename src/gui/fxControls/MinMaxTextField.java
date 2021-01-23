@@ -1,5 +1,6 @@
 package gui.fxControls;
 
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -12,7 +13,7 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	private Supplier<T> minSupplier, maxSupplier;
 	
 	private String tail;	
-	protected Function<T, String> textFunction;
+	private Function<T, String> textFunction;
 	
 	protected MinMaxTextField(T min, T max, int length) {
 		this(min, max, "", length);
@@ -52,11 +53,11 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	public void setTextFunction(Function<T, String> function) {
 		textFunction = function;
 	}
-	
+
 	
 	private void setTextToValue() {		
 		if(value==null) {
-			setText(null);
+			setText("");
 			return;
 		}
 		boolean temp = formatText;
@@ -70,12 +71,17 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	}	
 	
 	@Override
-	protected void pruefe() {	
+	protected void pruefe() {
+		T newV;
 		try {
-			value = parseText(getText());	
-			if(value!=null)	value = pruefeMinMax(getMin(), getMax(), value);
+			newV = parseText(getText());	
+			if(newV!=null)	newV = pruefeMinMax(getMin(), getMax(), newV);
 		}catch(NumberFormatException nfe) {
-			value = getDefaultValue();
+			newV = getDefaultValue();
+		}
+		if(!value.equals(newV)) {
+			value = newV;
+			if(valueChanged!=null) valueChanged.accept(this, value);
 		}
 		setTextToValue();
 	}	

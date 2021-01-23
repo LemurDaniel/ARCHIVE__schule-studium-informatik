@@ -1,5 +1,6 @@
 package gui.fxControls;
 
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -12,16 +13,15 @@ import javafx.scene.control.TextFormatter.Change;
 public abstract class CustomTextField<T> extends TextField{
 	
 	private T defaultValue;
-	private Supplier<T> defaultSupplier;
+	private int maxlen;
 	
 	protected boolean formatText;
-	private int maxlen;
+	protected BiConsumer<CustomTextField<T>, T> valueChanged;
 	
 	public CustomTextField(int maxlen) {
 		this.maxlen = maxlen;
 		defaultValue = null;
-		defaultSupplier = null;
-		
+	
 		setTextFormatter(new TextFormatter<>(this::filter));
 		
 		focusedProperty().addListener((ob,ov,focus)->{
@@ -38,19 +38,17 @@ public abstract class CustomTextField<T> extends TextField{
 	}
 	
 	
-	public void setDefaultSupplier(Supplier<T> defaultSupplier) {
-		this.defaultSupplier = defaultSupplier;
-		setText(null);
-		pruefe();
-	}
 	public void setDefaultValue(T defaultValue) {
 		this.defaultValue = defaultValue;
 		setText(null);
 		pruefe();
 	};	
 	protected T getDefaultValue() {
-		if(defaultSupplier!=null)	return defaultSupplier.get();
 		return defaultValue;
+	}
+		
+	public void setValueChanged(BiConsumer<CustomTextField<T>, T> valueChanged) {
+		this.valueChanged = valueChanged;
 	}
 	
 	
@@ -58,11 +56,7 @@ public abstract class CustomTextField<T> extends TextField{
 	
 	
 	
-	
-	
-	
-	
-	
+
 	public static UnaryOperator<Change> getMaxLenFilter(int len) {
 		return (UnaryOperator<Change>) change->{
 			if(change.getControlNewText().length()>len) {

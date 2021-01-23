@@ -207,8 +207,8 @@ public class AddFilmCtrl {
         hb_titel.getChildren().add(tf_titel);
         
         tf_dauer = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer());
-        tf_jahr = new IntegerMinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
-        tf_dauer.setTextFunction( (val)-> val+" Minuten"+ (val<61? "":" ( "+Film.getGenaueZeit(val)+" )")  );
+        tf_jahr = new IntegerMinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr());
+        tf_dauer.setTextFunction( (val)->film.getDauerStringProperty().get() );
         hb_dauer.getChildren().add(tf_dauer);
         hb_jahr.getChildren().add(tf_jahr);
              
@@ -227,7 +227,7 @@ public class AddFilmCtrl {
         		ta_genre.setText(nv.getText());			
         		tf_genre2.setText(nv.getGenre());
         	}
-        	else			ta_genre.setText(null);
+        	else	ta_genre.setText(null);
         });
         
         Filmverwaltung.getGenres().forEach(genre->checked_genre.put(genre, new SimpleBooleanProperty(false)));
@@ -261,9 +261,9 @@ public class AddFilmCtrl {
         t_weiteres.setOnEditCommit(this::onEditCommit);
         t_rolle.setOnEditCommit(this::onEditCommit);      
         
-        tf_dauer.textProperty().addListener((ob,ov,nv)->aktualisiereFilm(tf_dauer));
-        tf_jahr.textProperty().addListener((ob,ov,nv)->aktualisiereFilm(tf_jahr));
-        tf_titel.textProperty().addListener((ob,ov,nv)->aktualisiereFilm(tf_titel));    
+        tf_dauer.setValueChanged(this::aktualisiereFilm);
+        tf_jahr.setValueChanged(this::aktualisiereFilm);
+        tf_titel.setValueChanged(this::aktualisiereFilm);   
         
         table.setOnDragDetected(this::onDragDetected);
         muell.setOnDragOver(this::onDragOver);
@@ -338,16 +338,16 @@ public class AddFilmCtrl {
     	}
     }
     
-    private void aktualisiereFilm(TextField tf) {
-    	if(blocked)	return;
+    private void aktualisiereFilm(TextField tf, Object value) {
+    	if(blocked || value == null)	return;
 
     	backupfilm();   	
-		if(tf==tf_titel && tf_titel.getText()!=null)		film.setTitel( tf_titel.getText() );
-		else if(tf==tf_jahr && tf_jahr.getValue()!=null)	film.setErscheinungsjahr(tf_jahr.getValue());
-		else if(tf==tf_dauer && tf_dauer.getValue()!=null)	{
-			film.setDauer( tf_dauer.getValue() );
-			if(film.getDauer()<45)	checked_genre.get(Genre.getKurzfilm()).set(true);
-			else					checked_genre.get(Genre.getKurzfilm()).set(false);
+		if(tf==tf_titel)		film.setTitel( value.toString() );
+		else if(tf==tf_jahr)	film.setErscheinungsjahr((int)value);
+		else if(tf==tf_dauer)	{
+			film.setDauer( (int)value );
+			if(film.getDauer()<=Filmverwaltung.getMaxShort())	checked_genre.get(Genre.getKurzfilm()).set(true);
+			else												checked_genre.get(Genre.getKurzfilm()).set(false);
 		}
     }
     
