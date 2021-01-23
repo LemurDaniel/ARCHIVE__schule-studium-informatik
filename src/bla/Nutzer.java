@@ -7,9 +7,6 @@ import java.sql.SQLException;
 
 import exceptions.LogInException;
 import exceptions.RegisterException;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import test.Sprache;
 
 public class Nutzer extends DB_Manager {
 	
@@ -25,7 +22,7 @@ public class Nutzer extends DB_Manager {
 	private Nutzer(ResultSet rs) throws SQLException{
 		this.id = rs.getInt("id");
 		this.name = rs.getString("name");
-		rechte = new Rechte(rs.getBoolean("read"), rs.getBoolean("add"), rs.getBoolean("change"), rs.getBoolean("masterChange"), rs.getBoolean("multiAccount"));
+		rechte = new Rechte(rs.getString("berechtigung"), rs.getBoolean("read"), rs.getBoolean("add"), rs.getBoolean("update"), rs.getBoolean("updateAll"), rs.getBoolean("multiLogin"), rs.getBoolean("reviewRead"), rs.getBoolean("reviewWrite"), rs.getBoolean("reviewWriteAll"));
 	}
 
 	public static void anmeldenGast() throws Exception {
@@ -38,12 +35,12 @@ public class Nutzer extends DB_Manager {
 			if(!rs.next()) throw new LogInException(LogInException.NO_USER);
 			rs.close();
 			
-			PreparedStatement ps = con.prepareStatement("Select nutzer.id, name, rechte.berechtigung, [read], [add], change, masterChange, multiAccount from Nutzer inner join rechte on nutzer.rechte=rechte.id where name=? and passwort=?");
+			PreparedStatement ps = con.prepareStatement("Select nutzer.id, name, rechte.* from Nutzer inner join rechte on nutzer.rechte=rechte.id where name=? and passwort=?");
 			ps.setString(1, name);
 			ps.setString(2, passwort);
 			rs = ps.executeQuery();
 			if(!rs.next()) throw new LogInException(LogInException.WRONG_PASSWORD);		
-			if(!rs.getBoolean("multiAccount")) {
+			if(!rs.getBoolean("multiLogin")) {
 				con.createStatement().executeUpdate("Delete from instanzen_nutzer where nid="+rs.getInt(1));
 				//throw new LogInException(LogInException.ALREADY_LOGGED_IN);
 			}
@@ -108,35 +105,60 @@ public class Nutzer extends DB_Manager {
 		private String berechtigung;
 		private boolean read;
 		private boolean add;
-		private boolean change;
-		private boolean masterChange;
-		private boolean multiAccount;
+		private boolean update;
+		private boolean updateAll;
+		private boolean multiLogin;
+		private boolean reviewRead;
+		private boolean reviewWrite;
+		private boolean reviewWriteAll;
 		
-		private Rechte(boolean read, boolean add, boolean change, boolean masterChange, boolean multiAccount) {
+		private Rechte(String berechtigung, boolean read, boolean add, boolean update, boolean updateAll, boolean multiLogin, boolean reviewRead, boolean reviewWrite, boolean reviewWriteAll) {
+			this.berechtigung = berechtigung;
 			this.read = read;
 			this.add = add;
-			this.change = change;
-			this.masterChange = masterChange;
-			this.multiAccount = multiAccount;
+			this.update = update;
+			this.updateAll = updateAll;
+			this.multiLogin = multiLogin;
+			this.reviewRead = reviewRead;
+			this.reviewWrite = reviewWrite;
+			this.reviewWriteAll = reviewWriteAll;
 		}
 
 		public String getBerechtigung() {
 			return berechtigung;
 		}
+
 		public boolean isRead() {
 			return read;
 		}
+
 		public boolean isAdd() {
 			return add;
 		}
-		public boolean isChange() {
-			return change;
+
+		public boolean isUpdate() {
+			return update;
 		}
-		public boolean isMasterChange() {
-			return masterChange;
-		}	
-		public boolean isMultiAccount() {
-			return multiAccount;
-		}	
+
+		public boolean isUpdateAll() {
+			return updateAll;
+		}
+
+		public boolean isMultiLogin() {
+			return multiLogin;
+		}
+
+		public boolean isReviewRead() {
+			return reviewRead;
+		}
+
+		public boolean isReviewWrite() {
+			return reviewWrite;
+		}
+
+		public boolean isReviewWriteAll() {
+			return reviewWriteAll;
+		}
+
 	}
 }

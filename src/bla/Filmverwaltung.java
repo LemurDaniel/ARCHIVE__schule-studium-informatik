@@ -2,7 +2,6 @@ package bla;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class Filmverwaltung extends Verwaltung<Film>{
 	

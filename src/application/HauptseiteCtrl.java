@@ -1,6 +1,5 @@
 package application;
 
-import java.awt.Window;
 import java.io.IOException;
 
 /**
@@ -8,16 +7,11 @@ import java.io.IOException;
  */
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
-
-import com.sun.glass.events.WindowEvent;
 
 import bla.Film;
 import bla.Filmverwaltung;
-import bla.Nutzer;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -39,8 +33,6 @@ public class HauptseiteCtrl {
     
     private Stage hauptseite;
     private Stage anmeldeseite;
-    private Stage detail;
-    private DetailCtrl detailCtrl;
     public void setStage(Stage hauptseite) {
     	this.hauptseite = hauptseite;
     }

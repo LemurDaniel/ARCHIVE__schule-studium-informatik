@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class DB_Manager {
 	
-	static {
+   static {
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		} catch (ClassNotFoundException e) {
@@ -60,10 +60,11 @@ public class DB_Manager {
 	}
 
 	
-	public static Connection getCon() throws Exception {
+	protected static Connection getCon() throws Exception {
 		try(Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=TEST", "Daniel_Test", "Test");) {	
+			
 			if(Nutzer.getNutzer()!=null) {
-				if(!Nutzer.getNutzer().getRechte().isMultiAccount()) {
+				if(!Nutzer.getNutzer().getRechte().isMultiLogin()) {
 					ResultSet rs = con.createStatement().executeQuery("Select iid from instanzen_nutzer where nid="+Nutzer.getNutzer().getId());
 					rs.next();
 					if(rs.getInt(1)!=ApplikationsId) {

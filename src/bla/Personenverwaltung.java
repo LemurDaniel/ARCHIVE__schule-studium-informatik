@@ -2,42 +2,42 @@ package bla;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
-public class Personenverwaltung extends Verwaltung<Person>{
+public class Personenverwaltung extends Unterverwaltung<Person>{
 
-	private static Personenverwaltung instance;
-	private static ObservableList<String> rollen;
-	public static ObservableList<String> getRollen() {
+	private static Map<Integer, String> rollen;
+	public static ObservableMap<Integer, String> getRollen() {
 		if(rollen == null) {
-			rollen = FXCollections.observableArrayList();
+			rollen = new HashMap<>();
 			try(Connection con = getCon();){
-				ResultSet rs = con.createStatement().executeQuery("Select rolle from rollen");
-				while(rs.next()) rollen.add(rs.getString(1));
+				ResultSet rs = con.createStatement().executeQuery("Select id, rolle from rollen");
+				while(rs.next()) rollen.put(rs.getInt(1), rs.getString(2));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
-		return FXCollections.unmodifiableObservableList(rollen);
+		return FXCollections.observableMap(rollen);
 	}
 	
-	private int filmId;
-	public Personenverwaltung() {}
 	
-	public void setFilmId(int filmId) {
-		this.filmId = filmId;
+	
+	public Personenverwaltung(Film film) {
+		super(film);
 	}
 	
+	@Override
 	public void load() throws Exception {
-		list.clear();
+		super.load();
 		try(Connection con = getCon()){
 			ResultSet rs = con.createStatement().executeQuery("Select pid, vorname, name, rolle from personen "
 															+"inner join filme_personen_rollen on pid = personen.id "
 															+"inner join rollen on rid = rollen.id "
-															+"where fid="+filmId);
+															+"where fid="+film.getId());
 			while(rs.next())list.add(new Person(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4)));
 		}
 	}

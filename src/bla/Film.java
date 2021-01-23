@@ -9,8 +9,6 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 public class Film {
 	
@@ -18,6 +16,9 @@ public class Film {
 	private ReadOnlyStringWrapper titel, genre;
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
 	private ReadOnlyFloatWrapper bewertung;
+	
+	private Personenverwaltung pvw;
+	private Rezensionenverwaltung rvw;
 	
 	public Film(int id, String titel, String genre, int dauer, int erscheinungsjahr, float bewertung) {
 		this.id = id;
@@ -49,5 +50,21 @@ public class Film {
 	}
 	public ReadOnlyFloatProperty getBewertung() {
 		return bewertung.getReadOnlyProperty();
+	}
+	
+	public Rezensionenverwaltung getRvw() {
+		if(rvw == null)
+			rvw = new Rezensionenverwaltung(this);
+		return rvw;
+	}
+	public Personenverwaltung getPvw() {
+		if(pvw == null)
+			pvw = new Personenverwaltung(this);
+		return pvw;
+	}
+	
+	
+	public void setBewertung(float bewertung) {
+		this.bewertung.set(bewertung);
 	}
 }
