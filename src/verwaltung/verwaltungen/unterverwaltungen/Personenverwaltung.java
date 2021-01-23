@@ -28,7 +28,9 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	
 	public static ObservableList<Rolle> getRollen() {
-		return FXCollections.observableArrayList(rolleMap.values());
+		ObservableList<Rolle> r = FXCollections.observableArrayList(rolleMap.values());
+		r.sort((o1, o2)->o1.getRolle().compareTo(o2.getRolle()));
+		return r;
 	}
 	
 	
@@ -44,14 +46,14 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	@Override
 	public void lade(Connection con) throws SQLException {
 		super.lade(con);
-		String sql = "Select pid, vorname, name, rid from person "
+		String sql = "Select pid, vorname, name, weiteres, rid from person "
 					+"inner join film_person_rolle on pid = person.id "
 					+"where fid="+film.getId()+" order by pid";
 		
 		try(Statement st = con.createStatement();
 				ResultSet rs = st.executeQuery(sql)){
 
-			while(rs.next()) addObj( new Person(rs.getInt(1), rs.getString(2), rs.getString(3), rolleMap.get(rs.getInt(4))) );
+			while(rs.next()) addObj( new Person(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rolleMap.get(rs.getInt(5))) );
 
 			getList().forEach(p->System.out.println(p+ "  "+p.getId()));
 		}
@@ -86,10 +88,11 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		}
 		
 		
-		try(PreparedStatement ps = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)")){
+		try(PreparedStatement ps = con.prepareStatement("insert into film_person_rolle(fid, pid, rid, weiteres) values(?, ?, ?, ?)")){
 			ps.setInt(1, film.getId());
 			ps.setInt(2, id);
 			ps.setInt(3, per.getRolle().getId());
+			ps.setObject(4, per.getWeiteres());
 			ps.executeUpdate();
 		}catch(SQLException e) {
 			if(!e.getSQLState().equals("23000")) throw e;
@@ -109,10 +112,11 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			return;
 		}
 		
-		try(PreparedStatement ps = con.prepareStatement("Update film_person_rolle set rid=? where fid=? and pid=? ")){
+		try(PreparedStatement ps = con.prepareStatement("Update film_person_rolle set rid=?, weiteres=? where fid=? and pid=? ")){
 			ps.setInt(1, per.getRolle().getId());
-			ps.setInt(2, film.getId());
-			ps.setInt(3, per.getId());
+			ps.setObject(2, per.getWeiteres());
+			ps.setInt(3, film.getId());
+			ps.setInt(4, per.getId());
 			ps.executeUpdate();
 		}catch(SQLException e) {
 			if(!e.getSQLState().equals("23000")) throw e;
@@ -169,7 +173,10 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	public static int getMaxVorname() {
 		return DB_Manager.get("PerVornameMax");
 	}
-
+	public static int getMaxWeiteres() {
+		return DB_Manager.get("WeiteresMax");
+	}
+		
 	public static int getMinName() {
 		return DB_Manager.get("PerNameMin");
 	}

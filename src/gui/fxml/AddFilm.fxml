@@ -88,15 +88,10 @@
                <children>
                   <TableView fx:id="table" prefHeight="386.0" prefWidth="558.0">
                      <columns>
-                        <TableColumn fx:id="t_confirm" prefWidth="61.0" text="Bestätige">
-                           <columns>
-                              <TableColumn fx:id="t_confirm1" prefWidth="45.0" text="Upd" />
-                              <TableColumn fx:id="t_confirm2" prefWidth="43.0" text="Del" />
-                           </columns>
-                        </TableColumn>
                         <TableColumn fx:id="t_vorname" prefWidth="123.0" text="Vorname" />
                         <TableColumn fx:id="t_name" prefWidth="149.0" text="Name" />
-                        <TableColumn fx:id="t_rolle" prefWidth="201.0" text="Rolle" />
+                        <TableColumn fx:id="t_rolle" prefWidth="129.0" text="Rolle" />
+                        <TableColumn fx:id="t_weiteres" prefWidth="141.0" text="Weiteres" />
                      </columns>
                   </TableView>
                   <ImageView fx:id="muell" fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">

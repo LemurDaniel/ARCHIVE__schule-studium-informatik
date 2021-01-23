@@ -130,6 +130,9 @@ public class DB_Manager {
 				else if(tab.equals("liste")) {
 					if(col.equals("name"))			maxSize.put("ListeNameMax", size);
 				}
+				else if(tab.equals("film_person_rolle")) {
+					if(col.equals("weiteres"))		maxSize.put("WeiteresMax", size);
+				}
 			}
 		}
 		

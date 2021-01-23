@@ -14,6 +14,8 @@ import java.util.List;
 import gui.FensterManager;
 import javafx.application.Application;
 import javafx.application.HostServices;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;

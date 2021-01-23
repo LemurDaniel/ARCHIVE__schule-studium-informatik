@@ -159,15 +159,6 @@ public class AddFilmCtrl {
 	    private TableView<Person> table;
 
 	    @FXML
-	    private TableColumn<Person, Boolean> t_confirm;
-
-	    @FXML
-	    private TableColumn<Person, Boolean> t_confirm1;
-
-	    @FXML
-	    private TableColumn<Person, Boolean> t_confirm2;
-
-	    @FXML
 	    private TableColumn<Person, String> t_vorname;
 
 	    @FXML
@@ -175,6 +166,9 @@ public class AddFilmCtrl {
 
 	    @FXML
 	    private TableColumn<Person, Rolle> t_rolle;
+	    
+	    @FXML
+	    private TableColumn<Person, String> t_weiteres;
 	    
 	    @FXML
 	    private ImageView muell;
@@ -244,15 +238,18 @@ public class AddFilmCtrl {
         t_name.setCellValueFactory(		data->data.getValue().getNameProperty()				);
         t_vorname.setCellValueFactory(	data->data.getValue().getVornameProperty()			);
         t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()	);
+        t_weiteres.setCellValueFactory( data->data.getValue().getWeiteresProperty()			);
         
         t_name.setCellFactory(TextFieldTableCell.forTableColumn());
         t_vorname.setCellFactory(TextFieldTableCell.forTableColumn());
+        t_weiteres.setCellFactory(TextFieldTableCell.forTableColumn());
         t_rolle.setCellFactory(ComboBoxTableCell.forTableColumn(Personenverwaltung.getRollen()));
         
         
         /**Changes**/
         t_vorname.setOnEditCommit(this::onEditCommit);
         t_name.setOnEditCommit(this::onEditCommit);
+        t_weiteres.setOnEditCommit(this::onEditCommit);
         t_rolle.setOnEditCommit(this::onEditCommit);      
         
         tf_dauer.textProperty().addListener(this::changeListener);
@@ -330,17 +327,12 @@ public class AddFilmCtrl {
     }
     
     private void onEditCommit( CellEditEvent<Person, ?> data ) {
-    	Person per = data.getRowValue();
-//       	if(data.getTableColumn()==t_rolle){
-//       		if(pmr.getPerson().existiert((Rolle) data.getNewValue())) {
-//       			data.consume();
-//       			data.getTableView().refresh();
-//       			return;
-//       		}
-//       		pmr.setRolle((Rolle) data.getNewValue());
-//       	}
-//       	
+    	Person per = data.getRowValue();	
     	
+     	if(film.getId()!=-1 && added==false)	{
+     		stpv.updateEntitaet(film);
+     		added = true;
+     	}
     	if(per.getId()!=-1 && !per.hasBackup() ){
     	   	per.backup();
         	pvw.updateEntitaet(per);
@@ -353,22 +345,20 @@ public class AddFilmCtrl {
     	
     	int maxlen = 0;
     	if(data.getTableColumn()==t_vorname) 		maxlen = Personenverwaltung.getMaxVorname();
+    	if(data.getTableColumn()==t_weiteres) 		maxlen = Personenverwaltung.getMaxWeiteres();
     	else if(data.getTableColumn()==t_name) 		maxlen = Personenverwaltung.getMaxName();
 
     	String val = data.getNewValue().toString();
     	if(val.length()>maxlen) 					val = val.substring(0, maxlen);
     	
      	if(data.getTableColumn()==t_vorname) 		per.setVorname(val);
+     	if(data.getTableColumn()==t_weiteres) 		per.setWeiteres(val);
     	else if(data.getTableColumn()==t_name)		per.setName(val);
      		
-     	if(film.getId()!=-1 && added==false)	{
-     		stpv.updateEntitaet(film);
-     		added = true;
-     	}
     }
 
     private void addPerson() {
-    	Person per = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0) );
+    	Person per = new Person(-1, "Neue Person", "Neue Person", null, Personenverwaltung.getRollen().get(0));
     	pvw.addEntitaet(per);
     	if(film.getId()!=-1 && added==false)	{
      		stpv.updateEntitaet(film);

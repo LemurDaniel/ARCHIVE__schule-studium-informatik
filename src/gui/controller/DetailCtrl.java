@@ -169,7 +169,11 @@ public class DetailCtrl {
     private TableColumn<Person, String> t_name;  
 
     @FXML
-    private TableColumn<Person, Rolle> t_rolle;  
+    private TableColumn<Person, String> t_rolle;  
+    
+    @FXML
+    private TableColumn<Person, String> t_weiteres;
+
     
     /** Rezension **/
     @FXML
@@ -306,7 +310,8 @@ public class DetailCtrl {
         /** Mitwirkende  Tabelle **/       
         t_name.setCellValueFactory(		data->data.getValue().getNameProperty()				);
         t_vorname.setCellValueFactory(	data->data.getValue().getVornameProperty()			);
-        t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()	);     
+        t_rolle.setCellValueFactory(	data->new SimpleStringProperty( data.getValue().getRolle().getRolle() ));     
+        t_weiteres.setCellValueFactory(	data->data.getValue().getWeiteresProperty()			);     
         
         /** Reze Detail **/
         cb_r.setItems(FXCollections.observableArrayList());

@@ -34,6 +34,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -238,6 +239,7 @@ public class FensterManager {
 	
 	
 	public static void logErreignis(Exception e) {
+		e.printStackTrace();
 		logErreignis(e.getMessage(), Color.RED);
 	}
 	public static void logErreignis(String text) {

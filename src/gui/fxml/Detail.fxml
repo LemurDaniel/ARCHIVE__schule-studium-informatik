@@ -99,9 +99,10 @@
          <content>
             <TableView fx:id="table" prefHeight="245.0" prefWidth="618.0">
                <columns>
-                  <TableColumn fx:id="t_vorname" prefWidth="198.0" text="Vorname" />
-                  <TableColumn fx:id="t_name" prefWidth="200.0" text="Name" />
-                  <TableColumn fx:id="t_rolle" prefWidth="200.0" text="Rolle" />
+                  <TableColumn fx:id="t_vorname" prefWidth="112.0" text="Vorname" />
+                  <TableColumn fx:id="t_name" prefWidth="151.0" text="Name" />
+                  <TableColumn fx:id="t_rolle" prefWidth="164.0" text="Rolle" />
+                  <TableColumn fx:id="t_weiteres" prefWidth="171.0" text="weiteres" />
                </columns>
             </TableView>
          </content>

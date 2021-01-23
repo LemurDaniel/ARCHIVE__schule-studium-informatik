@@ -18,19 +18,19 @@ public class Person implements Backup, EingabePruefung, Id{
 	private int tempid;
 	
 	private int id;
-	private ReadOnlyStringWrapper vorname;
-	private ReadOnlyStringWrapper name;
+	private ReadOnlyStringWrapper vorname, name, weiteres;
 	private Rolle rolle;
 	private boolean nameChanged;
 	
-	public Person(int id, String vorname, String name){
-		this(id, vorname, name, null);
-	}
+//	public Person(int id, String vorname, String name,  String weiteres){
+//		this(id, vorname, name, null);
+//	}
 	
-	public Person(int id, String vorname, String name, Rolle rolle){
+	public Person(int id, String vorname, String name, String weiteres, Rolle rolle){
 		this.id = id;
 		this.vorname = new ReadOnlyStringWrapper(vorname);
 		this.name = new ReadOnlyStringWrapper(name);
+		this.weiteres = new ReadOnlyStringWrapper(weiteres);
 		this.rolle = rolle;
 		nameChanged = false;
 	}
@@ -44,6 +44,9 @@ public class Person implements Backup, EingabePruefung, Id{
 	public String getName() {
 		return name.get();
 	}
+	public String getWeiteres() {
+		return weiteres.get();
+	}
 	public Rolle getRolle() {
 		return rolle;
 	}
@@ -53,6 +56,9 @@ public class Person implements Backup, EingabePruefung, Id{
 	}
 	public ReadOnlyStringProperty getNameProperty() {
 		return name.getReadOnlyProperty();
+	}
+	public ReadOnlyStringProperty getWeiteresProperty() {
+		return weiteres.getReadOnlyProperty();
 	}
 	
 	public boolean isNameChanged() {
@@ -71,6 +77,10 @@ public class Person implements Backup, EingabePruefung, Id{
 	public void setName(String name) {
 		this.name.set(name);
 		nameChanged = true;
+	}
+	public void setWeiteres(String weiteres) {
+		if(weiteres.length()==0) weiteres = null;
+		this.weiteres.set(weiteres);
 	}
 	public void setRolle(Rolle rolle) {
 		this.rolle = rolle;
@@ -94,9 +104,7 @@ public class Person implements Backup, EingabePruefung, Id{
 	@Override
 	public void backup() {
 		if(backup!=null)	return;
-		
-		backup = new Person(getId(), vorname.get(), name.get());
-		backup.rolle = rolle;
+		backup = new Person(getId(), vorname.get(), name.get(), weiteres.get(), rolle);
 	}
 	@Override
 	public void backupReset() {
@@ -105,6 +113,7 @@ public class Person implements Backup, EingabePruefung, Id{
 		id = backup.id;
 		vorname.set(backup.getVorname());
 		name.set(backup.getName());
+		weiteres.set(backup.weiteres.get());
 		rolle = backup.rolle;
 		
 		backup = null;
