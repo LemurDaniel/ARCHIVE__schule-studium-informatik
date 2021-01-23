@@ -2,7 +2,7 @@ import javax.swing.Timer;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.*;
+import java.util.Arrays;
 
 public class Hauptfigur
 {
@@ -19,7 +19,8 @@ public class Hauptfigur
     
     private String Bewegungsrichtungen[]={"rechtsLaufen","rechtsLaufenStop","linksLaufen"  ,"linksLaufenStop"  ,"Springen","SpringenStop"}; // Mögliche Knöpfe
     private String Knopfnamen[]         ={"Laufen"     ,"LaufenStop"      ,"zurueckLaufen","zurueckLaufenStop","Springen","SpringenStop"}; // Namen der Knöpfe unter jeweilgen Knopf gelistet
-     
+    private static String SF[] = {"Mario", "Mario-2", "Mario-3", "Luigi", "Luigi-2", "Luigi-3", "Wario", "Wario-2", "Waluigi", "Waluigi-2", "Mariotest", "Luigitest", "Wariotest", "Waluigitest"}; //Array mit allen im Spiel zu verfügung stehenden Spielfiguren
+                                   // Hinzufügen von Spielfiguren und zuweisen Namen alleinig in dieser Klasse
     private Timer Lauftimer;
     private Timer Springhochtimer;
     private Timer Springruntertimer;
@@ -58,32 +59,41 @@ public class Hauptfigur
                        springrunter(1,2);  //Zugreifen auf die Methode springrunter
                                 }
            });
-       
-      blauesHintergrundBild = new Bild("pic/blauesHintergrundBild.png",0,-95); 
-      
-      posx = x;
-      posy = y;
-      Boden=posy;
-      
-      switch(Spielfigur){
-      case "Mario":     Figur = new Bild("pic/Mario.png"   ,posx,posy);break;
-      case "Mario-2":   Figur = new Bild("pic/Mario2.png"  ,posx,posy);break;
-      case "Mario-3":   Figur = new Bild("pic/Mario3.png"  ,posx,posy);break; 
-      case "Mariotest":   Figur = new Bild("pic/Mariotest.png"  ,posx,posy);break;
-      case "Luigi":     Figur = new Bild("pic/Luigi.png"   ,posx,posy);break;
-      case "Luigi-2":   Figur = new Bild("pic/Luigi2.png"  ,posx,posy);break;
-      case "Luigi-3":   Figur = new Bild("pic/Luigi3.png"  ,posx,posy);break;
-      case "Wario":     Figur = new Bild("pic/Wario.png"   ,posx,posy);break;
-      case "Wario-2":   Figur = new Bild("pic/Wario2.png"  ,posx,posy);break;
-      case "Waluigi":   Figur = new Bild("pic/Waluigi.png" ,posx,posy);break;
-      case "Waluigi-2": Figur = new Bild("pic/Waluigi2.png",posx,posy);break;
-      
-      default: System.out.println("--------------------------------------------------------------------------");
-               System.out.println("Ungültiger Eingabewert//Klasse: Hauptmap Konstruktor: public Hauptfigur(int x, int y, String Spielfigur)");
+             
+      if(Arrays.asList(SF).contains(Spielfigur)==false){ //prüfen auf gültige Werte mit Fehlerausgabe
+               System.out.println("--------------------------------------------------------------------------");
+               System.out.println("Ungültiger Eingabewert//Klasse: Hauptmap Konstruktor: public Hauptfigur()");
                System.out.print("Eingabwert:  ");
                System.out.println(Spielfigur);
+               gibEingabewerteaus(SF);
                System.out.println("--------------------------------------------------------------------------");
-      }
+               System.exit(0);
+              }
+                   
+      posx = x;
+      posy = y;
+      Boden=posy; 
+      blauesHintergrundBild = new Bild("pic/blauesHintergrundBild.png",0,-95); 
+              
+      if(SF[0] ==Spielfigur){Figur = new Bild("pic/Mario.png"      ,posx,posy);} 
+      if(SF[1] ==Spielfigur){Figur = new Bild("pic/Mario2.png"     ,posx,posy);} 
+      if(SF[2] ==Spielfigur){Figur = new Bild("pic/Mario3.png"     ,posx,posy);} 
+      
+      if(SF[3] ==Spielfigur){Figur = new Bild("pic/Luigi.png"      ,posx,posy);} 
+      if(SF[4] ==Spielfigur){Figur = new Bild("pic/Luigi2.png"     ,posx,posy);} 
+      if(SF[5] ==Spielfigur){Figur = new Bild("pic/Luigi3.png"     ,posx,posy);}
+      
+      if(SF[6] ==Spielfigur){Figur = new Bild("pic/Wario.png"      ,posx,posy);} 
+      if(SF[7] ==Spielfigur){Figur = new Bild("pic/Wario2.png"     ,posx,posy);} 
+      
+      if(SF[8]==Spielfigur){Figur = new Bild("pic/Waluigi.png"    ,posx,posy);}      
+      if(SF[9]==Spielfigur){Figur = new Bild("pic/Waluigi2.png"   ,posx,posy);}
+      
+      if(SF[10]==Spielfigur){Figur = new Bild("pic/Mariotest.png"  ,posx,posy);}
+      if(SF[11]==Spielfigur){Figur = new Bild("pic/Luigitest.png"  ,posx,posy);} 
+      if(SF[12]==Spielfigur){Figur = new Bild("pic/Wariotest.png"  ,posx,posy);} 
+      if(SF[13]==Spielfigur){Figur = new Bild("pic/Waluigitest.png",posx,posy);} 
+  
     }
              
     public void zeichnen(){ // Methode zum zeichnen der objekte
@@ -147,10 +157,14 @@ public class Hauptfigur
         zeichnen();
    }   
    
-   private void gibBewegungsrichungsEingabewerteaus(){
+    public static String[] gibSpielfiguren(){ // Methode zum Aussgeben des Arrays mit den Spielfigure
+        return SF;
+    }
+    
+    private void gibEingabewerteaus(String [] array){
        System.out.print("Mögliche EingabeWerte:  ");
-       for(int i=0;i<Bewegungsrichtungen.length;i++){
-           System.out.print(Bewegungsrichtungen[i]);
+       for(int i=0;i<array.length;i++){
+           System.out.print(array[i]);
            System.out.print(",  ");
        } 
        System.out.println(" ");
@@ -158,12 +172,12 @@ public class Hauptfigur
     
     public void erstelleKnopf(String Knopf){  // Methode zum erstellen von ausgewählten Knöpfen im Zeichenfenster
         
-        if(Knopf!=Bewegungsrichtungen[0]&&Knopf!=Bewegungsrichtungen[1]&&Knopf!=Bewegungsrichtungen[2]&&Knopf!=Bewegungsrichtungen[3]&&Knopf!=Bewegungsrichtungen[4]&&Knopf!=Bewegungsrichtungen[5]){ //prüfen auf ungültige Werte
+        if(Arrays.asList(Bewegungsrichtungen).contains(Knopf)==false){ //prüfen auf ungültige Werte
             System.out.println("--------------------------------------------------------------------------");
             System.out.println("Ungültiger Eingabewert//Klasse: Hauptfigur, Methode: erstelleKnopf//");
             System.out.print("Eingabewert:  ");
             System.out.println(Knopf);
-            gibBewegungsrichungsEingabewerteaus();
+            gibEingabewerteaus(Bewegungsrichtungen);
             System.out.println("--------------------------------------------------------------------------");    
         }
         

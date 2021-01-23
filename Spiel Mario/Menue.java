@@ -11,7 +11,10 @@ public class Menue extends JFrame{
     
     private String Spielfigur;  // Name der Spielfigur
     private String Spielkarte;  // Name der Spielkarte
-                       
+    private String SF[]=Hauptfigur.gibSpielfiguren(); // holen des Arrays mit den verfügbaren Spielfiguren
+    private String SK[]=Hauptmap.gibSpielkarten();    // holen des Arrays mit den verfügbaren Spielkarten
+
+ 
   public Menue(){ // Konstruktor von Menue
       
      super("Hauptmenü");
@@ -37,7 +40,8 @@ public class Menue extends JFrame{
            //Knopfgenerator kn6 = new Knopfgenerator("Stop","unten","Stop");
            
            if(Spielkarte==null || Spielfigur==null){aendereSettings();} // prüfen ob Spiekarte oder Spielfigur einen gültigen Wert aufweisen. Falls kein gültiger Wert: Abfragen des Spielers nach gültigen Werten mit der Methode aendereSettings()
-           if(Spielkarte==null || Spielfigur==null){defaultSettings();} // prüfen ob Spiekarte oder Spielfigur einen gültigen Wert aufweisen. Falls kein gültiger Wert: einstellen der Standart-Einstellungen mit der Methode defaultSettings()                                                         
+           if(Spielkarte==null || Spielfigur==null){defaultSettings();} // prüfen ob Spiekarte oder Spielfigur einen gültigen Wert aufweisen. Falls kein gültiger Wert: einstellen der Standart-Einstellungen mit der Methode defaultSettings() 
+           zeigeSettings();
       
            JButton SettingsKnopf = new JButton("Settings"); // erstellen des "Settings" Knopfs im Zeichenfenster
            ZEICHENFENSTER.gibFenster().steuerungOst.add(SettingsKnopf);
@@ -108,38 +112,27 @@ public class Menue extends JFrame{
         return JOptionPane.showOptionDialog(null, "Mit welcher Spielfigur möchten sie spielen?", "Spielfigurwahl",  // Erstellen einer Dialogbox (Titel: "Spielfigurwahl", Dialog: "Mit welcher Spielfigur möchten sie spielen?")
                JOptionPane.DEFAULT_OPTION,             // Einstellungen: Standart
                JOptionPane.QUESTION_MESSAGE, null,     // Nachrichtentyp: Frage
-               new String[]{"Mario", "Mario-2", "Mario-3", "Luigi", "Luigi-2", "Luigi-3", "Wario", "Wario-2", "Waluigi", "Waluigi-2", "Mariotest"}, "A");  // AuswahlKnöpfe: "Mario", "Luigi"
+               SF, "A");  // AuswahlKnöpfe: Alle Strings in dem Array SF
     }
     
    private int waehleSpielkarte(){ // Methode zum Abfragen des Spieler nach der zu wählenden Spielkarte
         return  JOptionPane.showOptionDialog(null, "Auf welcher Karte möchten sie spielen?", "Spielkartenwahl",  // Erstellen einer Dialogbox (Titel: "Spielkartenwahl", Dialog: "Auf welcher Karte möchten sie spielen?")
                 JOptionPane.DEFAULT_OPTION,          // Einstellungen: Standart
                 JOptionPane.QUESTION_MESSAGE, null,  // Nachrichtentyp: Frage
-                new String[]{"Karte-1", "Karte-2"}, "A");       // AuswahlKnöpfe: "Karte-1"
+                SK, "A");       // AuswahlKnöpfe: Alle Strings in dem Array SK
    }
 
   private void aendereSettings(){ // Methode zum aendern der Einstellungen (Spielfigur und Spielkarte)
       int Figur=waehleSpielfigur(); // ausführen der Methode waehleSpielfigur und dem zurückgegebenen Wert dem integer Figur zuweisen
-      if(Figur==0){Spielfigur="Mario";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==1){Spielfigur="Mario-2";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==2){Spielfigur="Mario-3";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==3){Spielfigur="Luigi";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==4){Spielfigur="Luigi-2";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==5){Spielfigur="Luigi-3";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==6){Spielfigur="Wario";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==7){Spielfigur="Wario-2";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==8){Spielfigur="Waluigi";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      if(Figur==9){Spielfigur="Waluigi-2";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
-      
-      if(Figur==10){Spielfigur="Mariotest";}  // zuweisen eines Strings an Spielfigur, je nachdem welcher Wert der int Figur hat
+      for(int i=0;i<SF.length;i++){if(Figur==i){Spielfigur=SF[i];} //zuweisen der Spielfigur
+      }
       
       int Karte=waehleSpielkarte(); // ausführen der Methode waehleSpielkarte und dem zurückgegebenen Wert dem integer Karte zuweisen
-      if(Karte==0){Spielkarte="Karte-1";}  // zuweisen eines Strings an Spielkarte, je nachdem welcher Wert der int Karte hat
-      if(Karte==1){Spielkarte="Karte-2";}  // zuweisen eines Strings an Spielkarte, je nachdem welcher Wert der int Karte hat
-
-    }
+      for(int i=0;i<SK.length;i++){if(Karte==i){Spielkarte=SK[i];} //zuweisen der SpieKarte
+      }
+   }
     
-   private void defaultSettings(){ // Setzt die Standart Wert für Spielkarte oder Spielfigur.
+    private void defaultSettings(){ // Setzt die Standart Wert für Spielkarte oder Spielfigur.
        if(Spielkarte==null){Spielkarte="Karte-1";} //Setzt Standartwert für Spielkarte, wenn Spielkarte keinen Wert besitzt
        if(Spielfigur==null){Spielfigur="Mario";}  //Setzt Standartwert für Spielfigur, wenn Spielfigur keinen Wert besitzt
     }
@@ -158,6 +151,7 @@ public class Menue extends JFrame{
                                                                                                                    //Falls  ein gültiger Wert zugewiesen: Ausgabetext = String Spielfigur
       System.out.println("-----------------------");                    
    }
+   
 }
 
         

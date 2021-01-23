@@ -2,6 +2,7 @@ import javax.swing.Timer;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
 
 public class Hauptmap{
     
@@ -24,6 +25,8 @@ public class Hauptmap{
    private String Bewegungsrichtungen[]={"Start","Stop"};  // Mögliche Knöpfe
    private String Knopfnamen[]         ={"Start","Stop" }; // Namen der Knöpfe unter jeweilgen Knopf gelistet
    
+   private static String SK[] = {"Karte-1", "Karte-2"}; // array mit allen im Spiel zu Verfügung stehenden Spielkarten
+                                 // Hinzufügen von Spielkartem und zuweisen Namen alleinig in dieser Klasse
    private int Kartenende = 0; // Standart-Kartenende = 0
    
    private Timer Bewegungstimer;
@@ -45,10 +48,20 @@ public class Hauptmap{
                          bewege(1,4);  // Zugreifen auf die Methode bewege
                      }
             });
-        
-        switch(Karte){
+       if(Arrays.asList(SK).contains(Karte)==false){ // prüfen auf gültige Werte mit Fehlerausgabe
+                  
+                 System.out.println("--------------------------------------------------------------------------");
+                 System.out.println("Ungültiger Eingabewert//Klasse: Hauptmap Konstruktor: public Hauptmap(int x, int y, int t, String Karte)");
+                 System.out.print("Eingabwert:  ");
+                 System.out.println(Karte);
+                 gibEingabewerteaus(SK);
+                 System.out.println("--------------------------------------------------------------------------");
+                 System.exit(0);
+                     
+        }
             
-        case "Karte-1":    
+        
+        if(Karte==SK[0]){    
             Kartenende = 1300;    // Festlegen des des Kartenendes
         Boden[0]= new RECHTECK(x,y,2*x,x-t,"braun", true);// 1 Erdblock 
         Boden[0]= new RECHTECK(x-x,y,60*x,x-t,"braun", true);// 1 Erdblock 
@@ -80,9 +93,9 @@ public class Hauptmap{
         Mast = new RECHTECK(1540,80,10,240,"weiss", true);
         Fahne = new RECHTECK(1490,80,60,40,"weiss", true);
         Muster = new KREIS(1515,100,15,"blau", true);
-        break;
-        
-        case "Karte-2":
+       }
+       
+       if(Karte==SK[1]){
             Kartenende = 1100;    // Festlegen des des Kartenendes
         Boden[0]= new RECHTECK(x,y,2*x,x-t,"rot", true);// 1 Erdblock 
         Boden[0]= new RECHTECK(x-x,y,60*x,x-t,"rot", true);// 1 Erdblock 
@@ -114,15 +127,7 @@ public class Hauptmap{
         Mast = new RECHTECK(1540,80,10,240,"weiss", true);
         Fahne = new RECHTECK(1490,80,60,40,"weiss", true);
         Muster = new KREIS(1515,100,15,"blau", true);  
-        break;
-        
-        default: System.out.println("--------------------------------------------------------------------------");
-                 System.out.println("Ungültiger Eingabewert//Klasse: Hauptmap Konstruktor: public Hauptmap(int x, int y, int t, String Karte)");
-                 System.out.print("Eingabewrt:  ");
-                 System.out.println(Karte);
-                 System.out.println("--------------------------------------------------------------------------");
-        }
-        
+       }   
     }
       
     public int gibKartenende(){
@@ -175,23 +180,27 @@ public class Hauptmap{
         Muster.bewegex(newposx,"links");
     }
     
-    private void gibBewegungsrichungsEingabewerteaus(){
+    private void gibEingabewerteaus(String [] array){
        System.out.print("Mögliche EingabeWerte:  ");
-       for(int i=0;i<Bewegungsrichtungen.length;i++){
-           System.out.print(Bewegungsrichtungen[i]);
+       for(int i=0;i<array.length;i++){
+           System.out.print(array[i]);
            System.out.print(",  ");
        } 
        System.out.println(" ");
     }
     
+    public static String[] gibSpielkarten(){  // Methode zum Aussgeben des Arrays mit den Spielkarten
+        return SK;
+    }
+    
     public void erstelleKnopf(String Knopf){  // Methode zum erstellen von ausgewählten Knöpfen im Zeichenfenster
         
-        if(Knopf!=Bewegungsrichtungen[0]&&Knopf!=Bewegungsrichtungen[1]){ //prüfen auf ungültige Werte
+        if(Arrays.asList(Bewegungsrichtungen).contains(Knopf)==false){ //prüfen auf ungültige Werte
             System.out.println("--------------------------------------------------------------------------");
             System.out.println("Ungültiger Eingabewert//Klasse: Hauptfigur, Methode: erstelleKnopf()//");
             System.out.print("Eingabewert:  ");
             System.out.println(Knopf);
-            gibBewegungsrichungsEingabewerteaus();
+            gibEingabewerteaus(Bewegungsrichtungen);
             System.out.println("--------------------------------------------------------------------------");
         }
 
