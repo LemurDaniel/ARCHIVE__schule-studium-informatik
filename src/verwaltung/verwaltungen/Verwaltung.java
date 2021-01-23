@@ -80,17 +80,27 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 	public void save(Connection con) throws SQLException {
 		try {
 			for(T ent: add)	{
-				add(ent, con);
-	//			add.remove(ent);
+				try {
+					add(ent, con);
+				}catch(SQLException e) {
+					System.out.println(e.getMessage());
+				}
 			}
 			for(T ent: update) {
-				update(ent, con);
-//				update.remove(ent);
-				ent.deleteBackup();
+				try {
+					update(ent, con);
+					ent.deleteBackup();
+				}catch(SQLException e) {
+					ent.reset();
+					System.out.println(e.getMessage());
+				}
 			}
 			for(T ent: delete) {
-				delete(ent, con);		
-//				delete.remove(ent);
+				try {
+					delete(ent, con);
+				}catch(SQLException e) {
+					System.out.println(e.getMessage());
+				}
 			}
 		}finally {
 			reset();
