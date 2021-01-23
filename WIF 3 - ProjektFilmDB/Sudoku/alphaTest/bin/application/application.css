@@ -1,0 +1,39 @@
+
+TextField {
+	-fx-font-size: 40px;
+	-fx-font-weight: bolder;
+	-fx-alignment: center;
+	
+	-fx-pref-width: 75;
+	-fx-pref-height: 75;
+	-fx-max-height: 75;
+	-fx-max-width: 75;
+	-fx-min-height: 75;
+	-fx-min-width: 75;
+}
+
+#btnOverlay {
+	-fx-opacity: 0.5;
+	-fx-pref-width: 75;
+	-fx-pref-height: 75;
+	-fx-max-height: 75;
+	-fx-max-width: 75;
+	-fx-min-height: 75;
+	-fx-min-width: 75;
+}
+
+Button {
+	-fx-pref-width: 25;
+	-fx-pref-height: 25;
+	-fx-max-height: 25;
+	-fx-max-width: 25;
+	-fx-min-height: 25;
+	-fx-min-width: 25;
+}
+
+.grid3x3 {
+	-fx-padding: 5;
+}
+
+
+

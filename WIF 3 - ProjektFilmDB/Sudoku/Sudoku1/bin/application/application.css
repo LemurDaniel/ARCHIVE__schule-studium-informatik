@@ -1,0 +1,51 @@
+
+SudokuTextField {
+	-fx-font-size: 40px;
+	-fx-font-weight: bolder;
+	-fx-alignment: center;
+	
+	-fx-pref-width: 75;
+	-fx-pref-height: 75;
+	-fx-max-height: 75;
+	-fx-max-width: 75;
+	-fx-min-height: 75;
+	-fx-min-width: 75;
+}
+
+#btnOverlay {
+	
+	-fx-pref-width: 75;
+	-fx-pref-height: 75;
+	-fx-max-height: 75;
+	-fx-max-width: 75;
+	-fx-min-height: 75;
+	-fx-min-width: 75;
+}
+
+.miniButton {
+	-fx-pref-width: 25;
+	-fx-pref-height: 25;
+	-fx-max-height: 25;
+	-fx-max-width: 25;
+	-fx-min-height: 25;
+	-fx-min-width: 25;
+}
+
+
+.grid3x3 {
+	-fx-padding: 5;
+}
+
+ButtonBar {
+	-fx-alignment: center;
+	-fx-font-size: 16px;
+	-fx-font-weight: bolder;
+
+}
+
+Button {
+	-fx-pref-width: 150;
+	-fx-pref-height: 31;
+}
+
+
