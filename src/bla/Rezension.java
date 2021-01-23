@@ -38,4 +38,7 @@ public class Rezension {
 	public int getVerfasserId() {
 		return verfasserId;
 	}
+	public int getId() {
+		return id;
+	}
 }

@@ -48,7 +48,7 @@
                   <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
                      <children>
                         <Label text="Erscheinungsjahr" />
-                        <TextField fx:id="tf_jahr" prefWidth="176.0" styleClass="hbox_allg" />
+                        <TextField fx:id="tf_jahr" prefWidth="176.0" />
                      </children>
                   </HBox>
                </children>
@@ -116,7 +116,7 @@
                   </AnchorPane>
                   <AnchorPane prefHeight="41.0" prefWidth="269.0">
                      <children>
-                        <Button fx:id="btn_r" layoutY="5.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="156.0" styleClass="rez_el" text="Button" />
+                        <Button fx:id="btn_r" layoutY="5.0" mnemonicParsing="false" onAction="#add_rez" prefHeight="31.0" prefWidth="156.0" styleClass="rez_el" text="Button" />
                      </children>
                   </AnchorPane>
                </children>

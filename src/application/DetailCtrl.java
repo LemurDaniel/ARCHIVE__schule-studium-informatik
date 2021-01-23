@@ -1,15 +1,11 @@
 package application;
 
-import java.awt.event.ActionEvent;
+
+import java.io.IOException;
 
 /**
  * Sample Skeleton for 'Detail.fxml' Controller Class
  */
-
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import javax.swing.event.DocumentEvent.EventType;
 
 import bla.Film;
 import bla.Nutzer;
@@ -18,8 +14,13 @@ import bla.Personenverwaltung;
 import bla.Rezension;
 import bla.Rezensionenverwaltung;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
@@ -31,29 +32,31 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
 
 public class DetailCtrl {
 
+	private static Stage detail;
 	private Film film;
-	private Rezension eigeneR;
+	private int nid = Nutzer.getNutzer().getId();
 	private Personenverwaltung pvv = new Personenverwaltung();
 	private Rezensionenverwaltung rvv = new Rezensionenverwaltung();
+	
 	public void setFilm(Film film) throws Exception {
+		if(this.film!=null && this.film.getId()==film.getId())	return;
+		
 		this.film = film;
 		pvv.setFilmId(film.getId());
 		rvv.setFilmId(film.getId());
 		pvv.load();
 		rvv.load();
-		if(!rvv.rezensionExists(Nutzer.getNutzer().getId())) {
-			btn_r.setText("Erstelle Rezension");
-			eigeneR = null;
-		}else{
-			btn_r.setText("Update Rezension");
-			eigeneR = rvv.getRezension(Nutzer.getNutzer().getId()).get();
-		};
-		if(rvv.getList().isEmpty()) {
-			cb_r.setDisable(true);
-		}
+		if(rvv.getRezension(nid)==null)	btn_r.setText("Erstelle Rezension");
+		else	btn_r.setText("Update Rezension");
+		
+    	displayRezension(rvv.getRezension(nid));
+        cb_r.getSelectionModel().select(0);
+        cb_r.setDisable(true);
+		
         tf_titel.setText(film.getTitel().get());
         tf_genre.setText(film.getGenre().get());
         tf_bewertung.setText(film.getBewertung().get()+"");
@@ -132,7 +135,28 @@ public class DetailCtrl {
 
     @FXML // fx:id="btn_r"
     private Button btn_r; // Value injected by 
-
+    
+    @FXML
+    void add_rez(ActionEvent event) {
+          Alert a = new Alert(AlertType.INFORMATION);
+          if(rvv.exists(nid)) {
+        	  a.setTitle("Rezension - Update");
+        	  a.setContentText("Rezension erfolgreich upgedatet");
+          }else {
+        	  a.setTitle("Rezension - Erstellen");
+        	  a.setContentText("Rezension erfolgreich Erstellt");
+          }
+          
+          try {
+          	rvv.addRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), nid);
+          	btn_r.setText("Update Rezension");
+          }catch(Exception e) {
+        	  a = new Alert(AlertType.ERROR);
+        	  a.setContentText(e.getMessage());
+          }
+          a.show();
+    }
+    
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert accordion != null : "fx:id=\"accordion\" was not injected: check your FXML file 'Detail.fxml'.";
@@ -163,15 +187,14 @@ public class DetailCtrl {
         
         /** Reze Detail **/
         cb_r.setItems(FXCollections.observableArrayList());
-        cb_r.getItems().add("Eigene");
-        cb_r.getItems().add("Markierte");
-        cb_r.getSelectionModel().select(0);
+        cb_r.getItems().add(Nutzer.getNutzer().getName());
+        cb_r.getItems().add("");
         cb_r.getSelectionModel().selectedIndexProperty().addListener((ob, ov, nv)->{
         	System.out.println(ov+"   "+nv);
         	if(nv.intValue()==0) {
         		btn_r.setVisible(true);
         		tbtn_r.setVisible(true);
-        		displayRezension(eigeneR);
+        		displayRezension(rvv.getRezension(nid));
         	} else {
         		btn_r.setVisible(false);
         		tbtn_r.setVisible(false);
@@ -194,6 +217,7 @@ public class DetailCtrl {
         tbtn_r.setOnAction(ev->{
         	ta_rtext.setEditable(tbtn_r.isSelected());
         	tf_rtitel.setEditable(tbtn_r.isSelected());
+        	displayRezension(rvv.getRezension(nid));
         	btn_r.setDisable(!tbtn_r.isSelected());
         	s_bwt.setDisable(!tbtn_r.isSelected());
         	tbtn_r.setText(tbtn_r.isSelected()? "Editieren":"Lesen");
@@ -213,7 +237,17 @@ public class DetailCtrl {
         t_bwt.setCellValueFactory(data->data.getValue().getBewertung());
         t_titel.setCellValueFactory(data->data.getValue().getTitel());      
         
-        table1.getSelectionModel().selectedItemProperty().addListener((ob, ov, nv)->{
+        table1.getSelectionModel().selectedItemProperty().addListener((ob, ov, nv)->{      	
+        	// Wenn ausgewählter Rez == Nutzerrez
+        	Rezension r = rvv.getRezension(nid);
+        	if(r==null || nv.getId()!=r.getId()) {
+            	cb_r.getItems().remove(1);  
+        		cb_r.getItems().add(nv.getVerfasser().get());
+        		cb_r.getSelectionModel().select(0);
+        		cb_r.setDisable(false);
+        	}else 
+        		cb_r.setDisable(true);
+        	
         	if(cb_r.getSelectionModel().getSelectedIndex()==1) {
         		displayRezension(table1.getSelectionModel().getSelectedItem());
         	}

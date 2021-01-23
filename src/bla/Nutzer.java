@@ -96,6 +96,9 @@ public class Nutzer extends DB_Manager {
 	public int getId() {
 		return id;
 	}
+	public String getName() {
+		return name;
+	}
 	public Rechte getRechte() {
 		return rechte;
 	}

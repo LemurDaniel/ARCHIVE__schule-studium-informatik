@@ -102,35 +102,20 @@ public class HauptseiteCtrl {
 
     @FXML
     void detail(ActionEvent event) {
-    	Film f = table.getSelectionModel().getSelectedItem();
-    	if(f==null) {
-    		Alert a = new Alert(AlertType.ERROR);
-    		a.setTitle("Detailansicht - Fehler");
-    		a.setContentText("Es wurde kein Film ausgewählt");
-    		a.show();
-    		return;
-    	}
-
-    	if(detail==null) {
-    		FXMLLoader loader = new FXMLLoader(getClass().getResource("Detail.fxml"));	
-    		try {
-				loader.load();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-    		detailCtrl = loader.getController();
-    	    detail = new Stage();
-    	    detail.setScene(new Scene(loader.getRoot()));
-    	    detail.setResizable(false);
-    	    detail.setTitle("Filmdatenbank - Detailansicht");	
-    	}
+    	Film film = table.getSelectionModel().getSelectedItem();
+ 
     	try {
-			detailCtrl.setFilm(table.getSelectionModel().getSelectedItem());
+    		if(film == null) 
+    			throw new Exception("Es wurde kein Film ausgewählt");
+			FensterManager.getInstance().showDetail(film);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			Alert a = new Alert(AlertType.ERROR);
+			a.setTitle("Detailansicht - Fehler");
+			a.setContentText(e.getMessage());
+			a.show();
 			e.printStackTrace();
+    		return;
 		}
-		detail.show();
     }
 
     @FXML

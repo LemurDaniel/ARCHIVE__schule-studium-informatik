@@ -28,7 +28,7 @@ public class DB_Manager {
 	
 	public static void InstanzAnmelden() {
 		try(Connection con = getCon();){
-			PreparedStatement ps = con.prepareStatement("insert into instanz(angemeldet) values(?); select SCOPE_IDENTITY();");
+			PreparedStatement ps = con.prepareStatement("insert into instanzen(angemeldet, online) values(?, 1); select SCOPE_IDENTITY();");
 			ps.setString(1, LocalDateTime.now().toString());
 			ResultSet rs = ps.executeQuery();
 			rs.next();
@@ -49,7 +49,7 @@ public class DB_Manager {
 			}
 
 		try(Connection con = getCon();){
-			PreparedStatement ps = con.prepareStatement("Update instanz set abgemeldet=? where id=?;");
+			PreparedStatement ps = con.prepareStatement("Update instanzen set abgemeldet=?, online=0 where id=?;");
 			ps.setString(1, LocalDateTime.now().toString());
 			ps.setInt(2, ApplikationsId);
 			ps.execute();
@@ -61,20 +61,20 @@ public class DB_Manager {
 
 	
 	public static Connection getCon() throws Exception {
-		try(Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=FilmDB", "DanielTest", "Test")) {	
+		try(Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=TEST", "Daniel_Test", "Test");) {	
 			if(Nutzer.getNutzer()!=null) {
 				if(!Nutzer.getNutzer().getRechte().isMultiAccount()) {
 					ResultSet rs = con.createStatement().executeQuery("Select iid from instanzen_nutzer where nid="+Nutzer.getNutzer().getId());
 					rs.next();
 					if(rs.getInt(1)!=ApplikationsId) {
 						Nutzer.getNutzer().abmelden();
-						throw new Exception("Sie wurden von einer anderen Applikation ausgelogt");
+						throw new Exception("Sie wurden von einer anderen Applikation ausgeloggt");
 					}
 				}
 			}
 
 			System.out.println(++connectionsCreated);
-			return DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=FilmDB", "DanielTest", "Test");
+			return DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=TEST", "Daniel_Test", "Test");
 		} catch (SQLException e) {
 			throw e;
 		}
