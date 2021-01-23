@@ -153,8 +153,10 @@ public class DB_Manager {
 		
 		maxSize.put("PasswortMax", 20);
 		maxSize.put("PasswortMin", 6);
-		maxSize.put("FilmDauer", 999);
-		maxSize.put("MinJahr", 1878);
+		//Experimental Movies: Logistics 51420 Minuten (857h / 35d, 17h)
+		//Cinematic Movies: Resan 873 Minuten (14h, 33min)
+		maxSize.put("FilmDauer", 999);	
+		maxSize.put("MinJahr", 1878);	//The Horse In Motion
 		maxSize.put("MaxJahr", LocalDate.now().getYear());
 		maxSize.put("Genre", 5);
 		

@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
-import at.favre.lib.crypto.bcrypt.LongPasswordStrategies;
 import exceptions.LogInException;
 import exceptions.RegisterException;
 import javafx.beans.property.ReadOnlyBooleanProperty;

@@ -33,7 +33,8 @@ public class Film extends Entitaet {
 		this.titel = new ReadOnlyStringWrapper(titel);
 		//this.genre = genre;
 		this.dauer = new ReadOnlyIntegerWrapper(dauer);
-		this.dauer_string = new ReadOnlyStringWrapper(dauer+" Minuten");
+		this.dauer_string = new ReadOnlyStringWrapper();
+		this.setDauer(dauer);
 		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);
 		this.bewertung = new ReadOnlyFloatWrapper(bewertung);
 		genre_string = new ReadOnlyStringWrapper("");
@@ -71,7 +72,7 @@ public class Film extends Entitaet {
 	public ReadOnlyFloatProperty getBewertungProperty() {
 		return bewertung.getReadOnlyProperty();
 	}
-	public ReadOnlyStringProperty getDauerProperty() {
+	public ReadOnlyStringProperty getDauerStringProperty() {
 		return dauer_string.getReadOnlyProperty();
 	}
 	public ReadOnlyStringProperty getGenreStringProperty() {
@@ -97,12 +98,11 @@ public class Film extends Entitaet {
 	}
 	public void setDauer(int dauer) {
 		this.dauer.set(dauer);
-		this.dauer_string.set(dauer+" Minuten");
+		this.dauer_string.set(dauer+" Minuten "+getGenaueZeit(dauer));
 	}
 	public void setErscheinungsjahr(int jahr) {
 		this.erscheinungsjahr.set(jahr);
 	}
-	
 	
 	public void addGenre(Genre genre) {
 		genres.add(genre);
@@ -119,5 +119,15 @@ public class Film extends Entitaet {
 			return;
 		genres.clear();
 		genre_string.set("");
+	}
+	
+	
+	public static String getGenaueZeit(int min) {
+		int d = min/60/24;
+		int h =  min/60%24;
+		min = min%60;
+		String zeit = "";
+		if(d>0 || h>0)	zeit = "("+ (d>0? " "+d+"d ":" ")+h+"h "+min+"min )";
+		return zeit;
 	}
 }

@@ -76,7 +76,7 @@ public class HauptseiteCtrl {
         t_Titel.setCellValueFactory(	data->data.getValue().getTitelProperty());
         t_genre.setCellValueFactory(	data->data.getValue().getGenreStringProperty());
         t_bewertung.setCellValueFactory(data->data.getValue().getBewertungProperty());
-        t_dauer.setCellValueFactory(	data->data.getValue().getDauerProperty());
+        t_dauer.setCellValueFactory(	data->data.getValue().getDauerStringProperty());
         t_jahr.setCellValueFactory(		data->data.getValue().getErscheinungsjahrProperty());
         
 

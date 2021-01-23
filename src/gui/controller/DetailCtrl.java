@@ -78,7 +78,7 @@ public class DetailCtrl {
         tf_titel.setText(film.getTitel());
         tf_genre.setText(film.getGenreStringProperty().get());
         tf_bewertung.setText(film.getBewertung()+"");
-        tf_dauer.setText(film.getDauer()+" Minuten");
+        tf_dauer.setText(film.getDauerStringProperty().get());
         tf_jahr.setText(film.getErscheinungsjahr()+""); 
         
         if(this.film!=null)
@@ -246,8 +246,7 @@ public class DetailCtrl {
         	if(!rechte.isReviewRead() && nv==false) tp_rezd.setDisable(true);
         });
 
-        /** Allg **/
-        
+        /** Allg **/    
         tf_titel.setEditable(false);
         tf_bewertung.setEditable(false);
         tf_dauer.setEditable(false);

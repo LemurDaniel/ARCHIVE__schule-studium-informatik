@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import com.google.common.collect.BiMap;
@@ -21,7 +22,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -236,13 +236,16 @@ public class AddFilmCtrl {
         		tf_titel.setText(film.getTitel());
         });
         
-        tf_dauer = new MinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
+        tf_dauer = new MinMaxTextField(0, Filmverwaltung.getMaxDauer());
         tf_jahr = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
         tf_dauer.setPromptText("Laufzeit");
+        tf_dauer.setSchwanzF( (Supplier<String>) ()->{
+        	return " Minuten "+Film.getGenaueZeit(tf_dauer.getValue());
+        });
         tf_jahr.setPromptText("Erscheinungsjahr");
         hb_dauer.getChildren().add(tf_dauer);
         hb_jahr.getChildren().add(tf_jahr);
-
+        
         
         tf_bewertung.setDisable(true);
         tf_genre.setEditable(false);
@@ -360,7 +363,7 @@ public class AddFilmCtrl {
     		return;
     	
     	try(Connection con = DB_Manager.getCon()) {
-    		//Wenn Fildaten geändert
+    		//Wenn Filmdaten geändert
     		if(changes[0]) {
             	checkEingaben();
     			//Wenn kein Film vorhanden
@@ -396,6 +399,15 @@ public class AddFilmCtrl {
     }
     
     private void detail() {
+    	if( film == null) {
+    		Alert a = new Alert(AlertType.ERROR);
+    		a.setTitle("Detailansicht öffnen");
+    		a.setHeaderText("Dieser Film existiert nich niht in der Datenbank");
+    		a.setContentText("Bitte Speichern sie vorher den Film ab");
+    		a.show();
+    		return;
+    	}
+    	
     	if( changes[0]==true || changes[1]==true ) {
     		Alert a = new Alert(AlertType.CONFIRMATION);
     		a.setTitle("Detailansicht öffnen");

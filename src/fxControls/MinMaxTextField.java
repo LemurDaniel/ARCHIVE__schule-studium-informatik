@@ -1,5 +1,6 @@
 package fxControls;
 
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import javafx.scene.control.TextField;
@@ -10,14 +11,22 @@ public class MinMaxTextField extends TextField{
 	private int min, max;
 	private MinMaxTextField mintf, maxtf;
 	private Integer value, defVal;
+	
+	private boolean schwanzAdded;
 	private String schwanz;
+	private Supplier<String> setSchwanzF;
 	private boolean formatText;
+	
+	public MinMaxTextField(int min, int max) {
+		this(min, max, "");
+	}
 	
 	public MinMaxTextField(int min, int max, String schwanz) {
 		super();
 		this.min = min;
 		this.max = max;
 		this.schwanz = schwanz;
+		schwanzAdded = false;
 		value = null;
 		defVal = null;
 		
@@ -26,7 +35,7 @@ public class MinMaxTextField extends TextField{
 			if(focus==false)
 				pruefe();
 			else if(getText()!=null)
-				setText( getText().replaceFirst(schwanz, ""));		
+				trimSchwanz();		
 		});
 		
 		setTextFormatter(new TextFormatter<>( (UnaryOperator<TextFormatter.Change>) change->{
@@ -53,17 +62,42 @@ public class MinMaxTextField extends TextField{
 		this.defVal = defVal;
 		pruefe();
 	}
+	public void setSchwanzF(Supplier<String> f) {
+		this.setSchwanzF = f;
+	}
+	
+	private void trimSchwanz() {
+		if(!schwanzAdded)	return;
+		setText( getText().substring(0, getLength()-schwanz.length()));
+		schwanzAdded = false;
+	}
+	private void setTextToVal() {		
+		if(value==null) {
+			setText(null);
+			return;
+		}
+		boolean temp = formatText;
+		formatText = false;
+		
+		if(setSchwanzF!=null)	schwanz=setSchwanzF.get();
+		setText(value+schwanz);
+		schwanzAdded = true;
+		selectPositionCaret(getLength());
+		
+		formatText = temp;
+	}
 	
 	
 	private void pruefe() {
-
+		
+		trimSchwanz();
 		if(getText()==null || getText().length()==0) {
 			value = defVal;
-			if(value!=null) setText(defVal+schwanz);
+			setTextToVal();
 			return;
 		}
 			
-		value = Integer.parseInt( getText().replaceAll(schwanz, "") );
+		value = Integer.parseInt( getText() );
 		int min = this.min;
 		int max = this.max;
 		
@@ -78,7 +112,7 @@ public class MinMaxTextField extends TextField{
 		else if(value < min)
 			value = min;
 		
-		setText(value+schwanz);
+		setTextToVal();
 	}
 	
 	public Integer getValue() {
