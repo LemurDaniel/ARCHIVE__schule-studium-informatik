@@ -222,6 +222,7 @@ public class AddFilmCtrl {
 
     private void resetFilm() {
 		fvw.reset();
+		fvw.getObList().forEach(f->f.getPvw().reset());
 		if(film.getId()==-1) {
 			film = new Film(-1, 0, "", 0, 0, 0);
 			pvw = film.getPvw();

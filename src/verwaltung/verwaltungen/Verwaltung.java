@@ -24,8 +24,10 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 
 	/** VAR */
 	private Stack<T> delete, add, update;
-//	private List<T> deleteErr, addErr, updateErr;
-//	protected List<T>	sucess;
+	private List<T> deleteErr, addErr, updateErr;
+	
+	private List<Exception>	fehlerlog;
+	
 	private List<T> list; 
 	
 	private ObservableList<T> observablelist;
@@ -39,6 +41,11 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 		delete = new Stack<>();
 		add = new Stack<>();
 		update = new  Stack<>();
+		
+		deleteErr	= new ArrayList<>();
+		addErr		= new ArrayList<>();
+		updateErr	= new ArrayList<>();
+		fehlerlog   = new ArrayList<>();
 	}
 	
 	public ObservableList<T> getObList(){
@@ -65,6 +72,9 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 	}
 	public List<T> getList() {
 		return new ArrayList<>(list);
+	}
+	public List<Exception> getFehlerlog(){
+		return fehlerlog;
 	}
 	
 	
@@ -104,6 +114,8 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 	public void save(Connection con) throws SQLException {
 		if(!hatAuftraege())		return;
 		
+		fehlerlog.clear();
+		
 		try {
 			con.setAutoCommit(false);
 			while(!add.empty()) onAdd(add.pop(), con);
@@ -118,7 +130,13 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 				onDelete(ent, con);
 			}
 		}finally {
-			reset();
+			deleteErr.forEach(delete::push);
+			updateErr.forEach(update::push);
+			addErr.forEach(add::push);
+			
+			deleteErr.clear();
+			updateErr.clear();
+			addErr.clear();
 		}
 	}
 	
@@ -129,11 +147,13 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 			con.commit();
 			addObj(ent);
 		}catch (SQLException e1) {
-			System.out.println(e1.getMessage());
 			con.rollback();
+			addErr.add(ent);
+			fehlerlog.add(e1);
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
+			addErr.add(ent);
+			fehlerlog.add(e);
 		}
 	}
 	protected void onUpdate(T ent, Connection con) throws SQLException  {
@@ -143,13 +163,12 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 			con.commit();
 			ent.deleteBackup();
 		}catch (SQLException e1) {
-			System.out.println(e1.getMessage());
-			ent.reset();
 			con.rollback();
+			updateErr.add(ent);
+			fehlerlog.add(e1);
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
-			ent.reset();
-			e.printStackTrace();
+			updateErr.add(ent);
+			fehlerlog.add(e);
 		}
 	}
 	protected void onDelete(T ent, Connection con) throws SQLException  {
@@ -157,11 +176,12 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 			delete(ent, con);
 			con.commit();
 		}catch (SQLException e1) {
-			System.out.println(e1.getMessage());
 			con.rollback();
+			deleteErr.add(ent);
+			fehlerlog.add(e1);
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
-
+			deleteErr.add(ent);
+			fehlerlog.add(e);
 		}
 	}
 	
@@ -175,18 +195,7 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 		update.clear();
 		
 		observablelist.clear();
-		list.forEach(observablelist::add);
-		
-		System.out.println("ffffffffffff");
-		for(T t: observablelist) {
-			System.out.println(t);
-		}
-		System.out.println("ffffffffffff");
-		for(T t: list) {
-			System.out.println(t);					
-			
-		}
-		
+		list.forEach(observablelist::add);	
 	}
 	
 	protected abstract void add(T ent, Connection con)					throws SQLException;

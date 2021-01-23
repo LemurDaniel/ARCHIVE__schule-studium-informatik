@@ -28,7 +28,7 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		try(Statement st = con.createStatement();
 				ResultSet rs = st.executeQuery(sql);){
 			while(rs.next())
-				addObj(new Rezension(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6)));	
+				addObj(new Rezension(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6), film));	
 		}
 	}
 
@@ -63,7 +63,6 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 			}
 		}
 		updateFilmBewertung(con);			
-		addObj(rez);
 	}
 	
 	@Override
@@ -103,10 +102,6 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		}
 	}
 	
-	public void check(String titel, String inhalt) throws Exception{
-		if(titel.length()<maxSize.get("RezTitelMin")) 	throw new Exception("Der Titel muss mindestens "+maxSize.get("RezTitelMin")+" Zeichen lang sein.");
-		if(inhalt.length()<maxSize.get("RezInhaltMin"))	throw new Exception("Der Titel muss mindestens "+maxSize.get("RezInhaltMin")+" Zeichen lang sein.");
-	}
 	
 	public static int getMaxTitel() {
 		return maxSize.get("RezTitelMax");

@@ -34,6 +34,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		fvws.add(this);
 	}
 	
+	
 	public void generiereFilme(ResultSet rs) throws SQLException {	
 		int lastId = -1, idNow;
 		Film current = null;
@@ -63,7 +64,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 	@Override
 	protected void add(Film f, Connection con) throws SQLException {
-		f.getPvw().save(con);		
 		
 		String sql = "Insert into film(titel, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?); Select SCOPE_IDENTITY()";
 		
@@ -100,7 +100,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 
 			updateGenres(con, f.getGenres(), f.getId());
 		}
-		f.getPvw().save(con);	
+	
 	}
 	
 	@Override

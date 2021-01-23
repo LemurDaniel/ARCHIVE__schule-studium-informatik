@@ -66,16 +66,15 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		}
 	}
 	@Override
-	protected void update(Liste alt, Liste neu, Connection con) throws SQLException {
+	protected void update(Liste li, Connection con) throws SQLException {
 		
 		String sql = "Update liste set name=? where lid=?";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
-			ps.setString(1, neu.getName()	);
-			ps.setInt(2, 	alt.getId()		);
+			ps.setString(1, li.getName()	);
+			ps.setInt(2, 	li.getId()		);
 			ps.executeUpdate();
 		}
-		alt.setName(neu.getName());
 	}
 	@Override
 	protected void delete(Liste ent, Connection con) throws SQLException {

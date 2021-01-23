@@ -15,13 +15,16 @@ public class Rezension extends Entitaet implements Backup, EingabePruefung{
 	private ReadOnlyStringWrapper titel, verfasser;
 	private ReadOnlyIntegerWrapper bewertung;
 	
-	public Rezension(int id, String titel, String inhalt, String verfasser, int verfasserId, int bewertung) {
+	private Film film;
+	
+	public Rezension(int id, String titel, String inhalt, String verfasser, int verfasserId, int bewertung, Film film) {
 		super(id);
 		this.verfasserId = verfasserId;
 		this.titel = new ReadOnlyStringWrapper(titel);
 		this.inhalt = inhalt;
 		this.verfasser = new ReadOnlyStringWrapper(verfasser);
 		this.bewertung = new ReadOnlyIntegerWrapper();
+		this.film = film;
 		setBewertung(bewertung);
 	}
 	
@@ -69,7 +72,7 @@ public class Rezension extends Entitaet implements Backup, EingabePruefung{
 	public void makeBackup() {
 		if(backup!=null)	return;
 		
-		backup = new Rezension(getId(), titel.get(), inhalt, verfasser.get(), verfasserId, bewertung.get());
+		backup = new Rezension(getId(), titel.get(), inhalt, verfasser.get(), verfasserId, bewertung.get(), film);
 	}
 
 	@Override
@@ -95,9 +98,12 @@ public class Rezension extends Entitaet implements Backup, EingabePruefung{
 	
 	@Override
 	public void checkEingaben() throws Exception {	
-		if(titel.length().intValue()> Rezensionenverwaltung.getMaxTitel())	throw new Exception("Titel zu lang");
-		if(titel.length().intValue()< Rezensionenverwaltung.getMinTitel())	throw new Exception("Titel zu kurz");
-		if(inhalt.length()> Rezensionenverwaltung.getMaxInhalt())			throw new Exception("inhalt zu lang");
-		if(inhalt.length()> Rezensionenverwaltung.getMinInhalt())			throw new Exception("inhalt zu zu kurz ");
+		StringBuilder sb = new StringBuilder();
+		if(titel.length().intValue()> Rezensionenverwaltung.getMaxTitel())	sb.append("\n--Titel zu lang");
+		if(titel.length().intValue()< Rezensionenverwaltung.getMinTitel())	sb.append("\n--Titel zu kurz");
+		if(inhalt.length()> Rezensionenverwaltung.getMaxInhalt())			sb.append("\n--inhalt zu lang");
+		if(inhalt.length()> Rezensionenverwaltung.getMinInhalt())			sb.append("\n--inhalt zu kurz");
+		if(sb.length()>0)
+			throw new Exception("Fehler Rezension '"+titel.get()+"' zu Film: '"+film.getTitel()+"' "+sb.toString());
 	}
 }

@@ -212,14 +212,6 @@ public class DetailCtrl {
     void add_rez(ActionEvent event) {
           Alert a = new Alert(AlertType.INFORMATION);
              
-          try {
-        	  rvw.check(tf_rtitel.getText(), ta_rtext.getText());
-          }catch(Exception e) {
-        	 Alert err = new Alert(AlertType.ERROR);
-        	 err.setContentText(e.getMessage());
-        	 err.show();
-         	 return; 
-          }
           angezeigt.makeBackup();
           angezeigt.setBewertung((int)s_bwt.getValue());
           angezeigt.setInhalt(ta_rtext.getText());
@@ -237,11 +229,13 @@ public class DetailCtrl {
           
          try(Connection con = DB_Manager.getCon()){
         	 rvw.save(con);
+        	 if(rvw.getFehlerlog().size()>0) 
+        		 throw rvw.getFehlerlog().get(0);
          }catch(Exception e) {
         	 Alert err = new Alert(AlertType.ERROR);
         	 err.setContentText(e.getMessage());
         	 err.show();
-        	 rvw.reset();
+        	 e.printStackTrace();
         	 return;
           }
 
@@ -367,7 +361,7 @@ public class DetailCtrl {
     	if(cb_r.getSelectionModel().selectedIndexProperty().intValue()==1) {
     		// Wenn keine eigen vorhanden neue erstellen
     		angezeigt = rvw.getRezensionVonNutzer(nid);
-    		if(angezeigt==null) angezeigt = new Rezension(-1, "", "", "", nid, 0);		
+    		if(angezeigt==null) angezeigt = new Rezension(-1, "", "", "", nid, 0, film);		
     	} else 
     		angezeigt = table1.getSelectionModel().getSelectedItem();
     		
