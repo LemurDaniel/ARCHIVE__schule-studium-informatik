@@ -116,11 +116,9 @@ public class Nutzer extends DB_Manager {
 				}
 			}	
 			instance.angemeldet.set(true);
-			FensterManager.logErreignis("Sie haben sich Erfolgreich mit dem Konto "+instance.getName()+" angemeldet", Color.GREEN);
-			Listenverwaltung.instance().ladeListen(con);		
-		}catch(Exception e) {
-			FensterManager.logErreignis(e);
-			throw e;
+			Listenverwaltung.instance().ladeListen(con);	
+			FensterManager.logErreignis("\nSie haben sich Erfolgreich mit dem Konto "+instance.getName()+" angemeldet", Color.GREEN);	
+			instance.getRechte().log();
 		}
 	}
 	
@@ -150,11 +148,8 @@ public class Nutzer extends DB_Manager {
 				ps.setString(3, regDat);
 				ps.executeUpdate();
 			}			
-			FensterManager.logErreignis("Das Konto "+name+" wurde erfolgreich erstellt", Color.GREEN);
+			FensterManager.logErreignis("\nDas Konto "+name+" wurde erfolgreich erstellt", Color.GREEN);
 			anmeldenKonto(name, passwort, con);
-		}catch(Exception e){
-			FensterManager.logErreignis(e);
-			throw e;
 		}
 	}
 	
@@ -177,6 +172,7 @@ public class Nutzer extends DB_Manager {
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			
+			FensterManager.logErreignis("\nSie wurden von allen bestehenden Anmeldungen abgemeldet");
 			try {
 				anmeldenKonto(name, passwort, con);
 			} catch (LogInException e) {
@@ -198,8 +194,6 @@ public class Nutzer extends DB_Manager {
 		name = null;
 		rechte.reset();
 		angemeldet.set(false);
-		Listenverwaltung.instance().clear();
-		FensterManager.reset();
 		try(Statement st = con.createStatement()){
 			st.executeUpdate(s);
 		}catch (Exception e) {}
@@ -248,6 +242,16 @@ public class Nutzer extends DB_Manager {
 		
 		private Rechte() {}
 		
+		public void log() {
+			FensterManager.logErreignis("\nRechtestatus: 	"+berechtigung	);
+			FensterManager.logErreignis("Film einsehen", 	read? Color.GREEN:Color.RED);
+			FensterManager.logErreignis("Film hinzufügen",	add? Color.GREEN:Color.RED);
+			FensterManager.logErreignis("Eigene Film modifizieren: ",		update? Color.GREEN:Color.RED);
+			FensterManager.logErreignis("Beliebige Filme modifizieren: ",	updateAll? Color.GREEN:Color.RED);
+			FensterManager.logErreignis("Rezension lesen ",		reviewRead? Color.GREEN:Color.RED);
+			FensterManager.logErreignis("Rezension verfassen ", reviewWrite? Color.GREEN:Color.RED);
+		}
+
 		private void setRechte(String berechtigung, boolean read, boolean add, boolean update, boolean updateAll, boolean multiLogin, boolean reviewRead, boolean reviewWrite, boolean reviewWriteAll) {
 			this.berechtigung = berechtigung;
 			this.read = read;

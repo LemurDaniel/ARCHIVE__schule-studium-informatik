@@ -64,10 +64,10 @@ public class AddFilmCtrl {
 	    if(film==null) film = new Film(-1, 0, null, 0, 0, 0);	    	
 	    pvw = film.getPvw();
 	    
-		if(film.getId()!=-1 && (!pvw.isLoaded() || !film.getRvw().isLoaded())) {
+		if(film.getId()!=-1 && (!pvw.isGeladen() || !film.getRvw().isGeladen())) {
 			try(Connection con = DB_Manager.getCon()){
-					pvw.loadIfnotLoaded(con);
-					film.getRvw().loadIfnotLoaded(con);			
+					pvw.lade(con);
+					film.getRvw().lade(con);			
 			}
 		}
 		
@@ -360,14 +360,11 @@ public class AddFilmCtrl {
 //		if(film.getId()!=-1)	tp_mit.setDisable(false);
 //    }
     
-    private void commitPersonen() throws SQLException {
+    private void commitPersonen() throws Exception{
     	
-    	pvw.getPersonenMitRollen().filtered(pmr->pmr.getDeleteProperty().get()==true).forEach(pmr-> pvw.removeEntitaet(pmr.getPerson()));
-    	
+    	pvw.getPersonenMitRollen().filtered(pmr->pmr.getDeleteProperty().get()==true).forEach(pmr-> pvw.removeEntitaet(pmr.getPerson()));   	
 		try(Connection con = DB_Manager.getCon()){
     		pvw.save(con);
-    		pvw.getFehlerlog().forEach(p->System.out.println(p.getMessage()));
-    		pvw.reset();
 		}
     }
     

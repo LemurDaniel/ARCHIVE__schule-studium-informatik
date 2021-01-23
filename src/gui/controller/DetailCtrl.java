@@ -74,10 +74,10 @@ public class DetailCtrl {
         
 		rvw = film.getRvw();
 		pvw = film.getPvw();
-		if(film.getId()!=-1 && (!rvw.isLoaded() || !pvw.isLoaded())) {
+		if(film.getId()!=-1 && (!rvw.isGeladen() || !pvw.isGeladen())) {
 			try(Connection con = DB_Manager.getCon()){
-				rvw.load(con);
-				pvw.load(con);
+				rvw.lade(con);
+				pvw.lade(con);
 			}
 		}
 		
@@ -223,40 +223,40 @@ public class DetailCtrl {
     @FXML
     void add_rez(ActionEvent event) {
           Alert a = new Alert(AlertType.INFORMATION);
-             
-          angezeigt.backup();
-          angezeigt.setBewertung((int)s_bwt.getValue());
-          angezeigt.setInhalt(ta_rtext.getText());
-          angezeigt.setTitel(tf_rtitel.getText());
-          System.out.println(angezeigt.getInhalt());
-          
+                  
           if(angezeigt.getId()!=-1) {
         	  a.setTitle("Rezension - Update");
         	  a.setContentText("Rezension erfolgreich upgedatet");   
+        	  angezeigt.setBewertung((int)s_bwt.getValue());
+              angezeigt.setInhalt(ta_rtext.getText());
+              angezeigt.setTitel(tf_rtitel.getText());
         	  rvw.updateEntitaet(angezeigt);
           }else {
         	  a.setTitle("Rezension - Erstellen");
         	  a.setContentText("Rezension erfolgreich Erstellt");
+              angezeigt.backup();
+              angezeigt.setBewertung((int)s_bwt.getValue());
+              angezeigt.setInhalt(ta_rtext.getText());
+              angezeigt.setTitel(tf_rtitel.getText());
         	  rvw.addEntitaet(angezeigt);
           }
           
          try(Connection con = DB_Manager.getCon()){
         	 rvw.save(con);
-        	 if(rvw.getFehlerlog().size()>0) 
-        		 throw rvw.getFehlerlog().get(0);
          }catch(Exception e) {
         	 Alert err = new Alert(AlertType.ERROR);
         	 err.setContentText(e.getMessage());
         	 err.initOwner(FensterManager.getDialog());
         	 err.initModality(Modality.APPLICATION_MODAL);
         	 err.show();
-        	 e.printStackTrace();
         	 return;
           }
 
         setEdit(false);
         tf_bewertung.setText(film.getBwtStringProperty().get());
         tp_rez.setDisable(false);
+        System.out.println(rvw.existiert(Nutzer.getNutzer().getId()));
+        setRezension();
         a.show();
     }
     

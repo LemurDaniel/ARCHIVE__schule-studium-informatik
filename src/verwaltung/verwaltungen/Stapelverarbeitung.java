@@ -17,25 +17,17 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 
 	protected Stack<T> delete, add, update, err;
 	
-	protected List<Exception>	fehlerlog;
-	protected List<String>	log;
+//	protected List<Exception>	fehlerlog;
+//	protected List<String>	log;
 	
 	public Stapelverarbeitung () {
 		delete = new Stack<>();
 		add = new Stack<>();
 		update = new  Stack<>();
 		err = new Stack<>();
-		fehlerlog   = new ArrayList<>();
-		log = new ArrayList<>();
 	}
 	
 
-	public List<Exception> getFehlerlog(){
-		return fehlerlog;
-	}
-	public List<String> getLog(){
-		return log;
-	}
 	public void clear(){
 		delete.clear();
 		add.clear();
@@ -88,13 +80,12 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 	
 	
 	
-	public void save(Connection con) throws SQLException {
+	public void save(Connection con) throws SQLException, InterruptedException {
 		if(!hatAuftraege())		return;
 		
-		fehlerlog.clear();
 		err.clear();
-		log.clear();
 		
+		FensterManager.logErreignis("\nDer Speichervorgang wurde gestartet");
 		con.setAutoCommit(false);
 		try {
 			stapelAbarbeiten(add, 		this::onAdd, 	this::onAddSucess, con);
@@ -103,16 +94,15 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		}catch(SQLException e) {
 			FensterManager.logErreignis(e);
 		}
+		FensterManager.logErreignis("Der Speichervorgang wurde beendet");
 	}
 		
-	private void stapelAbarbeiten(Stack<T> stack, methode<T> m, methode2<T> m2, Connection con) throws SQLException{
+	private void stapelAbarbeiten(Stack<T> stack, methode<T> m, methode2<T> m2, Connection con) throws SQLException, InterruptedException{
 		try {
 			while(!stack.empty()) {
-				if(Thread.interrupted()) {
-					FensterManager.logErreignis("Der Speichervorgang wurde abgeborchen", Color.RED);
-					return;
-				}
-				
+				if(Thread.interrupted()) throw new InterruptedException();
+				Thread.sleep(50);
+
 				T ent = stack.pop();
 				try {
 					m.ausfuehren(ent, con);
@@ -121,13 +111,10 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 					con.rollback();
 					err.push(ent);
 					FensterManager.logErreignis(e1);
-					fehlerlog.add(e1);
 					continue;
 				}catch(Exception e) {
-					//e.printStackTrace();
 					err.push(ent);
 					FensterManager.logErreignis(e);
-					fehlerlog.add(e);
 					continue;
 				}
 				m2.ausfuehren(ent, con);
@@ -141,9 +128,9 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 	protected abstract void onUpdate(T ent, Connection con) throws Exception;
 	protected abstract void onDelete(T ent, Connection con) throws Exception;
 	
-	protected abstract void onAddSucess(T ent, Connection con) 		throws SQLException;
-	protected abstract void onUpdateSucess(T ent, Connection con) 	throws SQLException;
-	protected abstract void onDeleteSucess(T ent, Connection con) 	throws SQLException;
+	protected abstract void onAddSucess(T ent, Connection con) 		throws SQLException, InterruptedException;
+	protected abstract void onUpdateSucess(T ent, Connection con) 	throws SQLException, InterruptedException;
+	protected abstract void onDeleteSucess(T ent, Connection con) 	throws SQLException, InterruptedException;
 	
 	
 	public void reset() {
@@ -151,22 +138,24 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		add.clear();
 		delete.clear();
 		update.clear();
+		FensterManager.logErreignis("\nAlle Änderungen wurden zurückgesetzt");
 	}
 	
 	interface methode<T> {
 		public void ausfuehren(T ent, Connection con) throws Exception;
 	}
 	interface methode2<T> {
-		public void ausfuehren(T ent, Connection con) throws SQLException;
+		public void ausfuehren(T ent, Connection con) throws SQLException, InterruptedException;
 	}
 	
 	
 	@Override
 	public void run() {
 		try (Connection con = DB_Manager.getCon()){
-			save(con);
+			save(con);	
 		} catch (SQLException e) {
-			FensterManager.logErreignis(e);
+		}catch(InterruptedException e) {
+			FensterManager.logErreignis("\nDer Speichervorgang wurder abgebrochen", Color.RED);
 		}
 	}
 	

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import gui.FensterManager;
 import javafx.beans.property.IntegerProperty;
@@ -27,13 +28,15 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	private int tempid;
 	
 	private int id;
-	private ReadOnlyStringWrapper name;
+	private ReadOnlyStringWrapper name, groeße;
 	private Filmverwaltung filme;
+
 	
 	public Liste(int id, String name) {
 		this.id = id;
 		this.name = new ReadOnlyStringWrapper(name);
 		filme = new Filmverwaltung();
+		groeße = new ReadOnlyStringWrapper();
 	}
 	
 	public int getId() {
@@ -45,8 +48,8 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	public ReadOnlyStringProperty getNameProperty() {
 		return name.getReadOnlyProperty();
 	}
-	public ReadOnlyIntegerProperty getSizeProperty() {
-		return filme.getSizeProperty();
+	public ReadOnlyStringProperty getGroeßeProperty() {
+		return groeße.getReadOnlyProperty();
 	}
 	public Filmverwaltung getFvw() {
 		return filme;
@@ -62,17 +65,31 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	
 	public void addFilme(ResultSet rs) throws SQLException {
 		filme.generiereFilme(rs);
+		aktualisiereGroeße();
 	}
 	
 	public ObservableList<Film> getObList() {
 		return filme.getObList();
 	}	
 
+	
+	
+	public void aktualisiereGroeße() {
+		String s = String.format("%-5d", filme.size());
+		if(!super.add.empty() && !super.delete.empty())	s = s+String.format(" (+%s / -%s)" , super.add.size(), super.delete.size());
+		else if(!super.delete.empty())					s = s+String.format(" (-%s)" , super.delete.size());
+		else if(!super.add.empty())						s = s+String.format(" (+%s)" , super.add.size());
+		groeße.set(s);	
+	}
+	
+	
+
+	
+	
 	@Override
 	public String toString() {
 		return name.get();
-	}
-		
+	}		
 	@Override
 	public void setTempId(int id) {
 		tempid = id;
@@ -81,6 +98,10 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	public void commitId() {
 		id = tempid;
 	}
+	
+	
+	
+	
 	
 	
 	@Override
@@ -108,12 +129,16 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	}
 		
 	
+	
+	
+	
+	
 	@Override
 	public void checkEingaben() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		if(name.get() == null)												sb.append("\n--kein name");
+		if(name.get() == null)												sb.append("\n  Die Liste besitzt keinen Name");
 		else{
-			if(name.length().intValue() < 	Listenverwaltung.getMinName())	sb.append("\n--t na");
+			if(name.length().intValue() < 	Listenverwaltung.getMinName())	sb.append("\n  Der Name der Liste ist zu kurz min."+Listenverwaltung.getMinName());
 			if(name.length().intValue() >	Listenverwaltung.getMaxName())	sb.append("\n--t maa");
 		}
 
@@ -122,25 +147,47 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	}
 
 	
+	
+	
+	
+	
+	
+	public void addEntitaeten(List<Film> filmListe) {
+		filmListe.stream().filter(film->!filme.getObList().contains(film) && super.addEntitaet(film)).forEach(film->{
+				if(film.getId()==-1) 				filme.addEntitaet(film);
+				else 								filme.getObList().add(film);
+		});
+		Listenverwaltung.instance().updateEntitaet(this);
+		aktualisiereGroeße();
+	}
+	public void removeEntitaeten(List<Film> filmListe) {
+		filmListe.stream().filter(film->filme.getObList().contains(film) && super.removeEntitaet(film)).forEach(filme.getObList()::remove);
+		Listenverwaltung.instance().updateEntitaet(this);
+		aktualisiereGroeße();
+	}
+	
+	
 	@Override
 	public boolean addEntitaet(Film film) {
-		if(filme.existiert(film) && !delete.contains(film))		return false;
+		if(filme.getObList().contains(film) && !delete.contains(film))		return false;
 		if(!super.addEntitaet(film))		return false;
 		if(film.getId()==-1) 				filme.addEntitaet(film);
 		else 								filme.getObList().add(film);
 		Listenverwaltung.instance().updateEntitaet(this);
+		aktualisiereGroeße();
 		return true;
 	}
+	
 	
 	//Neu angelegte Filme können nicht mit dragndrop entfernt werden
 	// nicht via id, diese ist immer -1 !!
 	@Override
 	public boolean removeEntitaet(Film film) {
-		if(!filme.existiert(film) && !add.contains(film))	return false;
+		if(!filme.getObList().contains(film) && !add.contains(film))	return false;
 		if(!super.removeEntitaet(film))		return false;
-		if(film.getId()==-1)	filme.removeEntitaet(film);
 		filme.getObList().remove(film);
 		Listenverwaltung.instance().updateEntitaet(this);
+		aktualisiereGroeße();
 		return true;
 	}	
 	@Override
@@ -152,9 +199,12 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	
 	
 	
+	
+	
+	
 	@Override
 	protected void onAdd(Film film, Connection con) throws Exception {
-		if(!Filmverwaltung.existiertGlobal(film))	throw new Exception("Der Film konnte nicht zur liste hinzugefügt werden");
+		if(!Filmverwaltung.existiertGlobal(film))	throw new Exception("Der Film '"+film.getTitel()+"' konnte nicht zur liste hinzugefügt werden");
 		
 		String sql = "Insert into liste_film(lid, fid) values(?, ?)";
 		
@@ -177,21 +227,20 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		
 	}
 	
+	
+	
+	
 	@Override
 	protected void onAddSucess(Film film, Connection con) {
 		filme.addObj(film);
-		int max = Filmverwaltung.getMaxTitel();
-		int max2 = Listenverwaltung.getMaxName();
-	//	super.log.add(String.format("'%-"+max+"s' wurde erfolgreich zu Liste '%-"+max2+"s' hinzugefügt", film.getTitel(), name.get()));
-		FensterManager.logErreignis(String.format("'%-"+max+"s' wurde erfolgreich zu Liste '%-"+max2+"s' hinzugefügt", film.getTitel(), name.get()));
+		aktualisiereGroeße();
+		FensterManager.logErreignis(String.format("'%s' wurde erfolgreich zu Liste '%s' hinzugefügt", film.getTitel(), name.get()));
 	}
 	@Override
 	protected void onDeleteSucess(Film film, Connection con) {
 		filme.removeObj(film);
-		int max = Filmverwaltung.getMaxTitel();
-		int max2 = Listenverwaltung.getMaxName();
-		//super.log.add(String.format("'%-"+max+"s' wurde erfolgreich aus Liste '%-"+max2+"s' gelöscht", film.getTitel(), name.get()));
-		FensterManager.logErreignis(String.format("'%-"+max+"s' wurde erfolgreich aus Liste '%-"+max2+"s' gelöscht", film.getTitel(), name.get()));
+		aktualisiereGroeße();
+		FensterManager.logErreignis(String.format("'%s' wurde erfolgreich aus Liste '%s' gelöscht", film.getTitel(), name.get()));
 	}
 	
 	
@@ -202,11 +251,9 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	
 	
 	@Override
-	public void save(Connection con) throws SQLException{
+	public void save(Connection con) throws SQLException, InterruptedException{
 		filme.save(con);
 		super.save(con);
-		filme.getLog().forEach(super.log::add);
-		filme.getFehlerlog().forEach(super.fehlerlog::add);
 	}
 	@Override
 	public void reset() {

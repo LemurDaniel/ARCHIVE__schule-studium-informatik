@@ -26,6 +26,7 @@ import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.verwaltungen.Filmverwaltung;
+import verwaltung.verwaltungen.Listenverwaltung;
 
 public class HauptseiteCtrl {
 	
@@ -162,7 +163,8 @@ public class HauptseiteCtrl {
     }
 
     private void abmelden()  {
-    	fvw.clear();
+    	Filmverwaltung.clearAll();
+    	Listenverwaltung.instance().clear();
 		FensterManager.reset();
     	Nutzer.getNutzer().abmelden();
 		FensterManager.setPrimaryStage(FensterManager.getAnmelden());
@@ -175,8 +177,6 @@ public class HauptseiteCtrl {
 				long mili = System.currentTimeMillis();
 
 				fvw.save(con);
-				fvw.getFehlerlog().forEach(fehler->System.out.println(fehler));
-				fvw.getLog().forEach(fehler->System.out.println(fehler));
 				
 				nano = System.nanoTime()-nano;
 				mili = System.currentTimeMillis()-mili;

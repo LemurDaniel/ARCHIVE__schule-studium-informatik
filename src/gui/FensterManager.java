@@ -249,16 +249,16 @@ public class FensterManager {
 		logErreignis(e.getMessage(), Color.RED);
 	}
 	public static void logErreignis(String text) {
-		logErreignis(text, Color.BLACK);
+		logErreignis(text, Color.GREEN);
 	}
 	
 	public static void logErreignis(String text, Color color) {
 		if(statusmeldung==null)	showStatusmeldung();
 			Text t = new Text(text+"\n");
 			t.setFill(color);
-			t.setFont(new Font("Courier New", 13));
 		Platform.runLater(()->{
 			statusTA.getChildren().add(t);	
+			if(statusTA.getChildren().size()>1000)	statusTA.getChildren().remove(0);
 		});	
 	}
 
@@ -280,13 +280,21 @@ public class FensterManager {
 			HBox hb = new HBox(sp);
 			HBox.setHgrow(sp, Priority.ALWAYS);
 			statusmeldung.getDialogPane().setContent(hb);
-			statusmeldung.getDialogPane().getStylesheets().add(FensterManager.class.getResource("css/credit.css").toString());
+			statusmeldung.getDialogPane().getStylesheets().add(FensterManager.class.getResource("css/status.css").toString());
 			statusmeldung.getDialogPane().setPrefHeight(300);
 			statusmeldung.getDialogPane().setPrefWidth(900);
 			statusmeldung.initModality(Modality.WINDOW_MODAL);
 		}
-		statusmeldung.close();
+		else if(statusmeldung.isShowing()) {
+			statusmeldung.close();
+			return;
+		}
+
+		statusmeldung.setX(0);
+		statusmeldung.setY(0);
 		statusmeldung.show();
+		statusmeldung.setX(0);
+		statusmeldung.setY(0);
 	}
 	
 	public static void showCredits() {

@@ -1,5 +1,8 @@
 * {
 	-fx-font-size: 15.0px;
+	-fx-font-weight: bold;
+	-fx-font-style: normal;
+	-fx-font-family: Helvetica;
 }
 
 .scroll-pane > .viewport {

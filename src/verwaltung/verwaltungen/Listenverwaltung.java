@@ -41,6 +41,8 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	}
 		
 	private void fuelleListen(Connection con) throws SQLException {
+		FensterManager.logErreignis("\nEs werden "+getObList().size()+" Listen geladen", Color.GREEN);
+		
 		String	sql = "Select * from film "
 				+ "join genre_film on genre_film.fid=film.id "
 				+ "join liste_film on liste_film.fid=film.id "
@@ -101,40 +103,38 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	
 	
 	@Override
-	protected void onAddSucess(Liste li, Connection con) throws SQLException{
+	protected void onAddSucess(Liste li, Connection con) throws SQLException, InterruptedException{
 		super.onAddSucess(li, con);
-		FensterManager.logErreignis(String.format("\nDie Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
-		li.save(con);
-		li.getFehlerlog().forEach(super.fehlerlog::add);
-		li.getLog().forEach(super.log::add);
+		FensterManager.logErreignis(String.format("Die Liste '%s' wurde erfolgreich erstellt", li.getName()));
+		if(li.hatAuftraege())	super.updateEntitaet(li);
 	}
 	@Override
-	protected void onUpdateSucess(Liste li, Connection con) throws SQLException{
-		if(li.hasBackup())	FensterManager.logErreignis(String.format("\nDie Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
+	protected void onUpdateSucess(Liste li, Connection con) throws SQLException, InterruptedException{
+		if(li.hasBackup())	FensterManager.logErreignis(String.format("\nDer name der Liste '%s' wurde erfolgreich geändert", li.getName()));
 		super.onUpdateSucess(li, con);
-		FensterManager.logErreignis(String.format("\nDer Inhalt der Liste '%-"+getMaxName()+"s' wird aktualisiert", li.getName()));
+		if(!li.hatAuftraege())	return;
+		FensterManager.logErreignis(String.format("\nDer Inhalt der Liste '%s' wird aktualisiert", li.getName()));
 		li.save(con);
-		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%-"+getMaxName()+"s' wurde beendet", li.getName()));
+		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%s' wurde beendet\n", li.getName()));
 	}
 	@Override
-	protected void onDeleteSucess(Liste li, Connection con) throws SQLException{
+	protected void onDeleteSucess(Liste li, Connection con) throws SQLException, InterruptedException{
 		super.onDeleteSucess(li, con);
 		li.clear();
-		FensterManager.logErreignis(String.format("\nDie Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
+		FensterManager.logErreignis(String.format("Die Liste '%s' wurde erfolgreich gelöscht", li.getName()));
 	}
 	
 	
 	@Override
-	public void save(Connection con) throws SQLException{
-		super.save(con);
-		super.getObList().filtered(Liste::hatAuftraege).forEach(super::updateEntitaet);
+	public void save(Connection con) throws SQLException, InterruptedException{
+		try{
+			super.save(con);
+		}catch(Exception e) {
+			super.getObList().filtered(Liste::hatAuftraege).forEach(super::updateEntitaet);
+			throw e;
+		}
 	}
 	
-	@Override
-	public void clear() {
-		list.forEach(li->li.clear());
-		super.clear();
-	}
 	
 	
 	public static int getMaxName() {

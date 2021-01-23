@@ -72,8 +72,8 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	
 	@Override
-	public void load(Connection con) throws SQLException {
-		super.load(con);
+	public void lade(Connection con) throws SQLException {
+		super.lade(con);
 		String sql = "Select pid, vorname, name, rid from person "
 					+"inner join film_person_rolle on pid = person.id "
 					+"where fid="+film.getId()+" order by pid";
@@ -197,19 +197,9 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 
 	@Override
-	protected void onAddSucess(Person per, Connection con) 	throws SQLException{
-		load(con);
-		aktualisierePmrliste();
-	}
-	@Override
-	protected void onUpdateSucess(Person per, Connection con) throws SQLException{
-		load(con);
-		aktualisierePmrliste();
-	}
-	@Override
-	protected void onDeleteSucess(Person per, Connection con) throws SQLException{
-		load(con);
-		aktualisierePmrliste();
+	public void save(Connection con) throws SQLException, InterruptedException {
+		super.save(con);
+		lade(con);
 	}
 	
 	public static int getMaxName() {

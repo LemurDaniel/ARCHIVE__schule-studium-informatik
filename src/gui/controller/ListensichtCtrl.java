@@ -42,7 +42,7 @@ public class ListensichtCtrl {
 	private final static DataFormat NICHTS = new DataFormat("nichts");
 	
 	private Listenverwaltung lvw = Listenverwaltung.instance();
-	private Thread th = new Thread(lvw);
+	private Thread th;
 	private Liste angezeigteListe;
 	
 	private boolean blocked = false;
@@ -101,7 +101,7 @@ public class ListensichtCtrl {
     private TableColumn<Liste, String> tListe_name;
 
     @FXML
-    private TableColumn<Liste, Number> tListe_size;
+    private TableColumn<Liste, String> tListe_size;
 
     @FXML
     private Button btn_rel;
@@ -132,8 +132,9 @@ public class ListensichtCtrl {
     	}
     }
     private void save() throws SQLException {
-    	if(th.isAlive())	{
+    	if(th != null && th.isAlive())	{
     		th.interrupt();
+    		th = null;
     		return;
     	}
     	th = new Thread(lvw);
@@ -191,7 +192,7 @@ public class ListensichtCtrl {
     	tListe_name.setCellValueFactory(data->data.getValue().getNameProperty());
     	tListe_name.setCellFactory(TextFieldTableCell.forTableColumn());
     	tListe_name.setOnEditCommit(this::onEditCommit);
-    	tListe_size.setCellValueFactory(data->data.getValue().getSizeProperty());
+    	tListe_size.setCellValueFactory(data->data.getValue().getGroeﬂeProperty());
     	
      	cb.getSelectionModel().selectedItemProperty().addListener((ob,ov,liste)->aktualisiereAngezeigteListe(cb.getSelectionModel()));
     	cb.setItems(lvw.getObList());
@@ -209,6 +210,10 @@ public class ListensichtCtrl {
     	muelleimer_filme.setOnDragDropped(this::onDragDroppedMuell);
     	muelleimer_listen.setOnDragOver(this::onDragOverMuell);
     	muelleimer_listen.setOnDragDropped(this::onDragDroppedMuell);
+    	
+    	tab_listen.selectedProperty().addListener((ob,ov,nv)->{
+    		if(nv=true)	lvw.getObList().forEach(li->li.aktualisiereGroeﬂe());
+    	});
     	
     }
     
@@ -244,14 +249,13 @@ public class ListensichtCtrl {
     	else if(event.getGestureSource()==table_listen && event.getTarget()==muelleimer_listen )	event.acceptTransferModes(TransferMode.MOVE);
     }   
     private void onDragDroppedMuell(DragEvent event) {
-    	if(event.getGestureTarget()==muelleimer_filme) 			table_film.getSelectionModel().getSelectedItems().forEach(angezeigteListe::removeEntitaet);
+    	if(event.getGestureTarget()==muelleimer_filme) 			angezeigteListe.removeEntitaeten(table_film.getSelectionModel().getSelectedItems());
     	else if(event.getGestureTarget()==muelleimer_listen)	table_listen.getSelectionModel().getSelectedItems().forEach(lvw::removeEntitaet);
 		event.setDropCompleted(true);
 		event.consume();	
     }
     private void zuListeHinzufuegen(DragEvent event) {
-    	Filmverwaltung.kopiereAusDragbord(event.getDragboard()).forEach(angezeigteListe::addEntitaet);
-    	lvw.updateEntitaet(angezeigteListe);
+    	angezeigteListe.addEntitaeten(Filmverwaltung.kopiereAusDragbord(event.getDragboard()));
 		event.setDropCompleted(true);
 		event.consume();
     }

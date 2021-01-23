@@ -57,11 +57,13 @@ public class AnmeldeseiteCtrl {
     		a.show();
     		if(e.isTyp(LogInException.ALREADY_LOGGED_IN))	a.setOnCloseRequest(ev->trozdemAnmelden());
     		
+    		FensterManager.logErreignis(e);
     	} catch (SQLException e) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle("Datenbank Fehler");
     		a.setContentText(e.getMessage());
     		a.show();
+    		FensterManager.logErreignis(e);
 		}
     }
 

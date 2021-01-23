@@ -245,19 +245,19 @@ public class Film implements Backup, EingabePruefung, Id{
 	@Override
 	public void checkEingaben() throws Exception {
 		StringBuilder sb = new StringBuilder();
-		if(titel.get() == null)												sb.append("\n--kein Titel");
+		if(titel.get() == null)												sb.append("\n  Der Film hat keinen Titel");
 		else{
-			if(titel.length().intValue() < 	Filmverwaltung.getMinTitel())		sb.append("\n--t Titel");
-			if(titel.length().intValue() >	Filmverwaltung.getMaxTitel())		sb.append("\n--t Titel");
+			if(titel.length().intValue() < 	Filmverwaltung.getMinTitel())		sb.append("\n  Der Titel ist zu kurz min."+Filmverwaltung.getMinTitel());
+			if(titel.length().intValue() >	Filmverwaltung.getMaxTitel())		sb.append("\n  Der Titel ist zu lang max."+Filmverwaltung.getMaxTitel());
 		}
 		if(erscheinungsjahr.intValue()<	Filmverwaltung.getMinJahr())		sb.append("\n--jahr Titel");
 		if(erscheinungsjahr.intValue()>	Filmverwaltung.getMaxJahr())		sb.append("\n--jahr Titel");
 		if(dauer<	Filmverwaltung.getMinDauer())							sb.append("\n--Dauer ");
 		if(dauer>	Filmverwaltung.getMaxDauer())  							sb.append("\n--Dauer ");
-		if(genres.size()< Filmverwaltung.getMinGenre()) 					sb.append("\n--kein Genre");
+		if(genres.size()< Filmverwaltung.getMinGenre()) 					sb.append("\n  Der Film gehört nicht zu genügend Genre min."+Filmverwaltung.getMinGenre());
 		if(genres.size()> Filmverwaltung.getMaxGenre())						sb.append("\n--Genre");
 		if(sb.length()>0)
-			throw new Exception("Fehler Film: '"+this+titel+"'"+sb.toString());
+			throw new Exception("\nFehler Film: '"+titel.get()+"'"+sb.toString());
 	}
 	
 }

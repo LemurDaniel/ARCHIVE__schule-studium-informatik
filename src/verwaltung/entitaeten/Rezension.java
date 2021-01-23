@@ -115,11 +115,11 @@ public class Rezension implements Backup, EingabePruefung, Id{
 	@Override
 	public void checkEingaben() throws Exception {	
 		StringBuilder sb = new StringBuilder();
-		if(titel.length().intValue()> Rezensionenverwaltung.getMaxTitel())	sb.append("\n--Titel zu lang");
-		if(titel.length().intValue()< Rezensionenverwaltung.getMinTitel())	sb.append("\n--Titel zu kurz");
+		if(titel.length().intValue()> Rezensionenverwaltung.getMaxTitel())	sb.append("\n  zu lang");
+		if(titel.length().intValue()< Rezensionenverwaltung.getMinTitel())	sb.append("\n  Der Rezensionstitel ist zu kurz min."+Rezensionenverwaltung.getMinTitel());
 		if(inhalt.length()> Rezensionenverwaltung.getMaxInhalt())			sb.append("\n--inhalt zu lang");
-		if(inhalt.length()< Rezensionenverwaltung.getMinInhalt())			sb.append("\n--inhalt zu kurz");
+		if(inhalt.length()< Rezensionenverwaltung.getMinInhalt())			sb.append("\n  Der Rezensionsinhalt ist zu lang min."+Rezensionenverwaltung.getMinInhalt());
 		if(sb.length()>0)
-			throw new Exception("Fehler Rezension '"+titel.get()+"' zu Film: '"+film.getTitel()+"' "+sb.toString());
+			throw new Exception("\nFehler Rezension '"+titel.get()+"' zu Film: '"+film.getTitel()+"' "+sb.toString());
 	}
 }

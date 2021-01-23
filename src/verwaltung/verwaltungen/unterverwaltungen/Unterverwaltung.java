@@ -12,34 +12,29 @@ import verwaltung.verwaltungen.Verwaltung;
 
 public abstract class Unterverwaltung<T extends Backup & EingabePruefung & Id> extends Verwaltung<T>{
 	
-	private boolean isLoaded;
+	private boolean istGeladen;
 	protected Film film;
 	
 	protected Unterverwaltung(Film film) {
 		this.film = film;	
 	}
 	
-	public void load() throws SQLException{
+	public void lade() throws SQLException{
 		try(Connection con = DB_Manager.getCon()){
-			load(con);
+			lade(con);
 		}
 	}	
-	public void loadIfnotLoaded() throws SQLException {
-		if(!isLoaded) load();
+	public void lade(Connection con) throws SQLException {
+		if(istGeladen) clear();
+		istGeladen = true;
 	}
-	public void load(Connection con) throws SQLException {
-		if(isLoaded) clear();
-		isLoaded = true;
-	}
-	public void loadIfnotLoaded(Connection con) throws SQLException {
-		if(!isLoaded) load(con);
-	}
+
 	@Override
 	public void clear() {
 		super.clear();
-		isLoaded = false;
+		istGeladen = false;
 	}
-	public boolean isLoaded() {
-		return isLoaded;
+	public boolean isGeladen() {
+		return istGeladen;
 	}
 }

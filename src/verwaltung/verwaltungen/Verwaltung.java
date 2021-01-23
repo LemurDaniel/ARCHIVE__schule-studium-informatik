@@ -10,6 +10,8 @@ import java.util.Stack;
 
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -24,25 +26,25 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 	/** VAR */
 	protected Set<T> list; 	
 	protected ObservableList<T> observablelist;
-	private ReadOnlyIntegerWrapper size;
 	
 	protected Verwaltung() {
 		list = new HashSet<>();
 		observablelist = FXCollections.observableArrayList();
-		size = new ReadOnlyIntegerWrapper(0);
-		observablelist.addListener( (ListChangeListener<T>)change-> size.set(observablelist.size() ));
 	}
 	
 	public ObservableList<T> getObList(){
 		return observablelist;
 	}
-	public ReadOnlyIntegerProperty getSizeProperty() {
-		return size.getReadOnlyProperty();
+	public int size() {
+		return list.size();
 	}
-	public boolean existiert(T entitaet) {
-		return list.contains(entitaet);
+	public List<T> getList() {
+		return new ArrayList<>(list);
 	}
 
+	
+	
+	
 	public void addObj(T obj) {
 		list.add(obj);
 		if(!observablelist.contains(obj)) 	observablelist.add(obj);
@@ -57,12 +59,7 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 		super.clear();
 	}
 		
-	public List<T> getList() {
-		return new ArrayList<>(list);
-	}
-	public List<Exception> getFehlerlog(){
-		return fehlerlog;
-	}
+	
 	
 	
 	@Override
@@ -102,17 +99,17 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 	
 	
 	@Override
-	protected void onAddSucess(T ent, Connection con) 	throws SQLException{
+	protected void onAddSucess(T ent, Connection con) 	throws SQLException, InterruptedException{
 		addObj(ent);
 		ent.commitId();
 	}
 	@Override
-	protected void onUpdateSucess(T ent, Connection con) throws SQLException{
+	protected void onUpdateSucess(T ent, Connection con) throws SQLException, InterruptedException{
 		if(!ent.hasBackup()) return;
 		ent.deleteBackup();
 	}
 	@Override
-	protected void onDeleteSucess(T ent, Connection con) throws SQLException{
+	protected void onDeleteSucess(T ent, Connection con) throws SQLException, InterruptedException{
 		removeObj(ent);
 	}
 
