@@ -1,7 +1,7 @@
-$dest = "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming"
+$dest = "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\Spiel Mario\"
 $src = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\Java10c Projekte\PROJEKT - Mario\Spiel Mario - "
 $count = 2
-$target_count = 22
+$target_count = 3
 
 cd "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming"
 
@@ -21,8 +21,6 @@ while($count -lt $target_count){
     $message = "Version "+$count
 
     git commit -m $message
-
-    Remove-Item $item -Force -Recurse
 
 $count = $count+1
 }
