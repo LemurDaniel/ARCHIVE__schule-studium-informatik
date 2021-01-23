@@ -1,7 +1,11 @@
-package bla;
+package Verwaltungen.verwaltungen;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import Verwaltungen.Verwaltung;
+import Verwaltungen.entitaeten.Film;
 
 public class Filmverwaltung extends Verwaltung<Film>{
 	
@@ -14,7 +18,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 	private Filmverwaltung() {}
 	
-	public void test() throws Exception{
+	public void test() throws SQLException{
 		try(Connection con = getCon();){
 			ResultSet rs = con.createStatement().executeQuery("Select * from filme");
 			while(rs.next()) {

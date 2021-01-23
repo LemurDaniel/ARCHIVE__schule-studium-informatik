@@ -1,10 +1,14 @@
-package bla;
+package Verwaltungen.verwaltungen;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import Verwaltungen.Unterverwaltung;
+import Verwaltungen.entitaeten.Film;
+import Verwaltungen.entitaeten.Person;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
@@ -31,7 +35,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	
 	@Override
-	public void load() throws Exception {
+	public void load() throws SQLException {
 		super.load();
 		try(Connection con = getCon()){
 			ResultSet rs = con.createStatement().executeQuery("Select pid, vorname, name, rolle from personen "

@@ -1,4 +1,4 @@
-package bla;
+package Verwaltungen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class Verwaltung <T> extends DB_Manager{
+public abstract class Verwaltung <T> extends DB_Manager{
 	
 
 	/** VAR */
@@ -14,6 +14,7 @@ public class Verwaltung <T> extends DB_Manager{
 	private ObservableList<T> liste;
 	protected List<T> list; 
 	
+	@SuppressWarnings("serial")
 	protected Verwaltung() {
 			list = new ArrayList<T>() {
 				@Override

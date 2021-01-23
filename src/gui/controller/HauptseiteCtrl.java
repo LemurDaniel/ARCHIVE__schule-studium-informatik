@@ -1,27 +1,25 @@
-package application;
-
-import java.io.IOException;
+package gui.controller;
 
 /**
  * Sample Skeleton for 'Hauptseite.fxml' Controller Class
  */
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import bla.Film;
-import bla.Filmverwaltung;
+import Verwaltungen.entitaeten.Film;
+import Verwaltungen.entitaeten.Nutzer;
+import Verwaltungen.verwaltungen.Filmverwaltung;
+import gui.FensterManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.stage.Stage;
 
 public class HauptseiteCtrl {
 
@@ -30,35 +28,6 @@ public class HauptseiteCtrl {
 
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
-    
-    private Stage hauptseite;
-    private Stage anmeldeseite;
-    public void setStage(Stage hauptseite) {
-    	this.hauptseite = hauptseite;
-    }
-    
-    private void openLogin() {
-    	if(anmeldeseite == null)anmeldeseite = new Stage();
-    	try {
-    		FXMLLoader loader = new FXMLLoader(getClass().getResource("Anmeldeseite.fxml"));
-    		loader.load();
-    		((AnmeldeseiteCtrl)loader.getController()).setController(this);
-			anmeldeseite.setScene(new Scene(loader.getRoot()));
-			anmeldeseite.setTitle("Filmdatenbank - Anmelden");
-			anmeldeseite.show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	anmeldeseite.setOnCloseRequest(ev->{
-    		hauptseite.fireEvent(ev);
-    		ev.consume();
-    	});
-    }
-    public void openHaupt() {
-    	anmeldeseite.close();
-    	anmeldeseite = null;
-    	hauptseite.show();
-    }
 
     @FXML // fx:id="table"
     private TableView<Film> table; // Value injected by FXMLLoader
@@ -105,8 +74,6 @@ public class HauptseiteCtrl {
 			a.setTitle("Detailansicht - Fehler");
 			a.setContentText(e.getMessage());
 			a.show();
-			e.printStackTrace();
-    		return;
 		}
     }
 
@@ -115,8 +82,10 @@ public class HauptseiteCtrl {
         try {
 			Filmverwaltung.instance().test();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Alert a = new Alert(AlertType.ERROR);
+			a.setTitle("Bla");
+			a.setContentText(e.getMessage());
+			a.show();
 		}
     }
 
@@ -132,9 +101,6 @@ public class HauptseiteCtrl {
         assert btn_update != null : "fx:id=\"btn_update\" was not injected: check your FXML file 'Hauptseite.fxml'.";
         assert btn_detail != null : "fx:id=\"btn_detail\" was not injected: check your FXML file 'Hauptseite.fxml'.";
         
-        openLogin();
-        
-        table.setEditable(true);
         table.setItems(Filmverwaltung.instance().getList());
         t_Titel.setCellValueFactory(data->data.getValue().getTitel());
         t_genre.setCellValueFactory(data->data.getValue().getGenre());
@@ -146,5 +112,16 @@ public class HauptseiteCtrl {
         table.getSelectionModel().selectedItemProperty().addListener((ob, oldV, newV) ->{
         	System.out.println(table.getSelectionModel().getSelectedItem());
         });
+        
+        
+        btn_add.setOnAction(ev->{
+        	try {
+				Nutzer.getNutzer().abmelden();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        });
+
     }
 }

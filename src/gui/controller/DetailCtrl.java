@@ -1,13 +1,15 @@
-package application;
+package gui.controller;
 
 
-import bla.Film;
-import bla.Nutzer;
-import bla.Nutzer.Rechte;
-import bla.Person;
-import bla.Personenverwaltung;
-import bla.Rezension;
-import bla.Rezensionenverwaltung;
+import java.sql.SQLException;
+
+import Verwaltungen.entitaeten.Film;
+import Verwaltungen.entitaeten.Nutzer;
+import Verwaltungen.entitaeten.Person;
+import Verwaltungen.entitaeten.Rezension;
+import Verwaltungen.entitaeten.Nutzer.Rechte;
+import Verwaltungen.verwaltungen.Personenverwaltung;
+import Verwaltungen.verwaltungen.Rezensionenverwaltung;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,16 +29,14 @@ import javafx.scene.control.ToggleButton;
 public class DetailCtrl {
 
 	private Film film;
-	private int nid = Nutzer.getNutzer().getId();
+	private int nid= Nutzer.getNutzer().getId();
 	private Rechte rechte = Nutzer.getNutzer().getRechte();
 	
 	private Rezension displayed;
 	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
 	
-	public void setFilm(Film film) throws Exception {
-		if(this.film!=null && this.film.getId()==film.getId())	return;
-		
+	public void setFilm(Film film) throws SQLException {
 		this.film = film;
 		pvw = film.getPvw();
 		rvw = film.getRvw();
@@ -55,10 +55,7 @@ public class DetailCtrl {
         accordion.setExpandedPane(tp_allg);
         
 		cb_r.setDisable(true);
-        if(!rechte.isReviewWrite()) 
-        	cb_r.getSelectionModel().select(0);
-        else
-        	cb_r.getSelectionModel().select(1);
+        cb_r.getSelectionModel().select(1);
 	}
 	
     @FXML // fx:id="accordion"
@@ -185,7 +182,7 @@ public class DetailCtrl {
         assert ta_rtext != null : "fx:id=\"ta_rtext\" was not injected: check your FXML file 'Detail.fxml'.";
         assert btn_r != null : "fx:id=\"btn_r\" was not injected: check your FXML file 'Detail.fxml'.";
        
-        accordion.setExpandedPane(tp_rezd);
+        accordion.setExpandedPane(tp_allg);
         /** Reze Detail **/
         cb_r.setItems(FXCollections.observableArrayList());
         cb_r.getItems().add("Rezensions-Verfasser"); // Nur ein Platzhalter
@@ -194,7 +191,7 @@ public class DetailCtrl {
         
         // Wenn nicht review Write -> keine eigene Review auswählbar
         cb_r.disabledProperty().addListener((ob, ov, nv)->{
-        	if(!rechte.isReviewWrite()  && !nv) cb_r.setDisable(true);;
+        	if(!rechte.isReviewWrite()  && !nv) cb_r.setDisable(true);
         });
         
         // Wenn nicht review Read Rez Detail disabled
@@ -203,7 +200,7 @@ public class DetailCtrl {
         });
         
         ta_rtext.setPromptText("Rezension hier einfügen");
-        tf_titel.setPromptText("Titel hier einfügen");
+        tf_rtitel.setPromptText("Titel hier einfügen");
         s_bwt.setMax(10);
         s_bwt.setMin(0);
         s_bwt.setMajorTickUnit(1);
@@ -212,7 +209,10 @@ public class DetailCtrl {
         s_bwt.setShowTickMarks(true);
         s_bwt.setSnapToTicks(true);
   
-        tbtn_r.setOnAction(ev->setEdit(tbtn_r.isSelected()));
+        tbtn_r.setOnAction(ev->{
+        	setEdit(tbtn_r.isSelected());
+        	displayRezension();
+        });
         setEdit(false);
   
         /**  **/
@@ -227,15 +227,24 @@ public class DetailCtrl {
         
         table1.getSelectionModel().selectedItemProperty().addListener((ob, ov, nv)->{      	
         	// Wenn ausgewählter Rez == Nutzerrez dann nur eine Option anzeigen
-        	if(nv!=null && nv.getId()!=rvw.getRezensionVonNutzer(nid).getId()) {
+        	System.out.println(nid);
+        	Rezension r = rvw.getRezensionVonNutzer(nid);
+        	if(nv==null || r!=null && nv.getId()==r.getId()) {
+        		cb_r.setDisable(true);
+        		cb_r.getSelectionModel().select(1);
+        	}else {
         		int i = cb_r.getSelectionModel().getSelectedIndex();
             	cb_r.getItems().set(0, nv.getVerfasser().get());
             	cb_r.getSelectionModel().select(i);
             	cb_r.setDisable(false);
-        	}else {
-        		cb_r.setDisable(true);
-        		cb_r.getSelectionModel().select(1);
         	}   		
+        });
+        
+        Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, nv)->{
+        	nid = Nutzer.getNutzer().getId();
+        	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
+        	if(!rechte.isReviewRead()) tp_rezd.setDisable(true);
+        	if(!rechte.isReviewWrite()) cb_r.getSelectionModel().select(0);
         });
     }
     

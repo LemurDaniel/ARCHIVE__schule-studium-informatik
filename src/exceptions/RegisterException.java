@@ -1,7 +1,6 @@
 package exceptions;
 
-import test.Sprache;
-
+@SuppressWarnings("serial")
 public class RegisterException extends CustomException{
 	
 	public final static int ILLEGAL_NAME = 0;
@@ -10,15 +9,8 @@ public class RegisterException extends CustomException{
 	public final static int NAME_EXISTS = 3;
 	public final static int OTHER = 4;
 	
-	String name;
-	
-	public RegisterException(int type) {
-		super();
-		this.name = name;
-		
-		switch(Sprache.lang()) {
-		case Sprache.ENGLISH: title="RegisterException"; 
-		case Sprache.GERMAN: title="Registrierungsfehler";
-		}
+
+	public RegisterException(String message, int type) {
+		super("Registrations Fehler", message, type);
 	}
 }

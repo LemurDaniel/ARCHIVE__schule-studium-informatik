@@ -1,6 +1,10 @@
-package bla;
+package Verwaltungen;
 
-public class Unterverwaltung<T> extends Verwaltung<T>{
+import java.sql.SQLException;
+
+import Verwaltungen.entitaeten.Film;
+
+public abstract class Unterverwaltung<T> extends Verwaltung<T>{
 	
 	private boolean isLoaded;
 	protected Film film;
@@ -9,10 +13,10 @@ public class Unterverwaltung<T> extends Verwaltung<T>{
 		this.film = film;	
 	}
 	
-	protected void load() throws Exception {
+	protected void load() throws SQLException {
 		isLoaded = true;
 	}
-	public void loadIfnotLoaded() throws Exception {
+	public void loadIfnotLoaded() throws SQLException {
 		if(!isLoaded) load();
 	}
 	protected void clear() {

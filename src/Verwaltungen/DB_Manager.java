@@ -1,4 +1,4 @@
-package bla;
+package Verwaltungen;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+
+import Verwaltungen.entitaeten.Nutzer;
 
 public class DB_Manager {
 	
@@ -33,7 +35,7 @@ public class DB_Manager {
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			ApplikationsId = rs.getInt(1);
-			System.out.println(ApplikationsId);
+			System.out.println("app  "+ApplikationsId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -42,7 +44,7 @@ public class DB_Manager {
 	
 	public static void InstanzAbmelden() {
 			try {
-				if(Nutzer.getNutzer()!=null) Nutzer.getNutzer().abmelden();
+				if(Nutzer.getNutzer().isAngemeldet()) Nutzer.getNutzer().abmelden();
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -60,16 +62,19 @@ public class DB_Manager {
 	}
 
 	
-	protected static Connection getCon() throws Exception {
+	protected static Connection getCon() throws SQLException {
 		try(Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=TEST", "Daniel_Test", "Test");) {	
 			
-			if(Nutzer.getNutzer()!=null) {
+			if(Nutzer.getNutzer().isAngemeldet()) {
 				if(!Nutzer.getNutzer().getRechte().isMultiLogin()) {
-					ResultSet rs = con.createStatement().executeQuery("Select iid from instanzen_nutzer where nid="+Nutzer.getNutzer().getId());
-					rs.next();
-					if(rs.getInt(1)!=ApplikationsId) {
+					PreparedStatement ps = con.prepareStatement("Select iid from instanzen_nutzer where nid=? and iid=?;");
+					ps.setInt(1, Nutzer.getNutzer().getId());
+					ps.setInt(2, ApplikationsId);
+					ResultSet rs = ps.executeQuery();
+					
+					if(!rs.next()) {
 						Nutzer.getNutzer().abmelden();
-						throw new Exception("Sie wurden von einer anderen Applikation ausgeloggt");
+						throw new SQLException("Sie wurden von einer anderen Applikation ausgeloggt");
 					}
 				}
 			}

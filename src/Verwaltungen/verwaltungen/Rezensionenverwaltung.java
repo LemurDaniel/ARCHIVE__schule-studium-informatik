@@ -1,22 +1,23 @@
-package bla;
+package Verwaltungen.verwaltungen;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
+import Verwaltungen.Unterverwaltung;
+import Verwaltungen.entitaeten.Film;
+import Verwaltungen.entitaeten.Rezension;
+
 public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
-	
-	private static String updateFilmBwt = "Update filme set bewertung = (Select AVG( CAST(bewertung AS decimal(3,1)) ) from rezensionen where filmid = ?) "
-			  							+"where filme.id = ?;";
-	
-	
+
 	public Rezensionenverwaltung(Film film) {
 		super(film);
 	}
 	
 	@Override
-	public void load() throws Exception {
+	public void load() throws SQLException {
 		super.load();
 		try(Connection con = getCon()){
 			ResultSet rs = con.createStatement().executeQuery("Select rezensionen.id, titel, inhalt, name, verfasser, bewertung from rezensionen "
@@ -41,12 +42,14 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	
 	public void addRezension(String titel, String inhalt, int bewertung, int nid) throws Exception {
 
+		check(titel, inhalt);
 		try(Connection con = getCon()) {
 			PreparedStatement ps = con.prepareStatement("Insert into rezensionen(titel, inhalt, bewertung, verfasser, filmid) values(?, ?, ?, ?, ?); "
-														+ updateFilmBwt
+														+"Update filme set bewertung = (Select AVG( CAST(bewertung AS decimal(3,1)) ) from rezensionen where filmid = ?) "
+							  							+"where filme.id = ?;"
 														+ "Select SCOPE_IDENTITY(), name, filme.bewertung from nutzer " 
 														+ "join rezensionen on verfasser = nutzer.id "
-														+ "join filme on filmid = filme.id"
+														+ "join filme on filmid = filme.id "
 														+ "where rezensionen.id = SCOPE_IDENTITY();");
 			ps.setString(1, titel);
 			ps.setString(2, inhalt);
@@ -66,9 +69,11 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	public void updateRezension(String titel, String inhalt, int bewertung, int rid) throws Exception {
 		Rezension rez = list.stream().filter(r->r.getId()==rid).findFirst().get();
 		
+		check(titel, inhalt);
 		try(Connection con = getCon()) {
 			PreparedStatement ps = con.prepareStatement("Update rezensionen set titel=?, inhalt=?, bewertung=? where id=?;"
-														+updateFilmBwt
+														+"Update filme set bewertung = (Select AVG( CAST(bewertung AS decimal(3,1)) ) from rezensionen where filmid = ?) "
+														+"where filme.id = ?; "
 														+"Select filme.bewertung from filme where filme.id=?");
 			ps.setString(1, titel);
 			ps.setString(2, inhalt);
@@ -85,6 +90,11 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 			rez.setBewertung(bewertung);
 			film.setBewertung(rs.getFloat(1));
 		}
+	}
+	
+	public void check(String titel, String inhalt) throws Exception{
+		if(titel.length()<10) throw new Exception("Der Titel muss mindestens 10 Zeichen lang sein.");
+		if(inhalt.length()<20) throw new Exception("Der Inhalt muss mindestens 20 Zeichen lang sein.");
 	}
 	
 }

@@ -1,4 +1,4 @@
-package bla;
+package Verwaltungen.entitaeten;
 
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -11,7 +11,7 @@ public class Rezension {
 	private ReadOnlyStringWrapper titel, inhalt, verfasser;
 	private ReadOnlyIntegerWrapper bewertung;
 	
-	public Rezension(int id, String titel, String inhalt, String verfasser, int verfasserId, int bewertung){
+	public Rezension(int id, String titel, String inhalt, String verfasser, int verfasserId, int bewertung) {
 		this.id = id;
 		this.verfasserId = verfasserId;
 		this.titel = new ReadOnlyStringWrapper(titel);

@@ -1,15 +1,18 @@
-package application;
+package gui.controller;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import bla.Nutzer;
+import Verwaltungen.entitaeten.Nutzer;
+import exceptions.LogInException;
 import exceptions.RegisterException;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -21,11 +24,6 @@ public class AnmeldeseiteCtrl {
 
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
-
-    private HauptseiteCtrl hauptseiteCtrl;
-    public void setController(HauptseiteCtrl hauptseiteCtrl) {
-    	this.hauptseiteCtrl = hauptseiteCtrl;
-    };
     
     @FXML // fx:id="cbox"
     private ComboBox<String> cbox; // Value injected by FXMLLoader
@@ -48,21 +46,35 @@ public class AnmeldeseiteCtrl {
     	try{
     		if(i==0) Nutzer.anmeldenGast();
     		else if(i==1) Nutzer.anmeldenKonto(tf_name.getText(), tf_pwd.getText());
-    		else if(i==2) {
-    			if(tf_pwd.getText().equals(tf_pwd2.getText())) {
-    				Nutzer.registrieren(tf_name.getText(), tf_pwd.getText());
-    			}else {
-    				throw new RegisterException(RegisterException.NON_MATCHING_PASSWORDS);
-    			}
-    		}
+    		else if(i==2) Nutzer.registrieren(tf_name.getText(), tf_pwd.getText(), tf_pwd2.getText());
     		else if(i==3) Nutzer.anmeldenKonto("Daniel", "123456");
-    		hauptseiteCtrl.openHaupt();
-    	}catch(Exception e) {
+    		else if(i==4) Nutzer.anmeldenKonto("Unlimited", "rfgh");
+    	
+    	}catch(LogInException | RegisterException e) {
+    	
     		Alert a = new Alert(AlertType.ERROR);
-    		a.setTitle("");
+    		a.setTitle(e.getTitle());
     		a.setContentText(e.getMessage());
     		a.show();
-    	}
+    		
+    		a.setOnCloseRequest(eva->{
+    			if(e.getType()==LogInException.ALREADY_LOGGED_IN && e.getClass().equals(LogInException.class)){
+    				Alert b = new Alert(AlertType.CONFIRMATION);
+    				b.setAlertType(AlertType.CONFIRMATION);
+    				b.setContentText("Möchten sie sich von den anderen Instanzen abmelden? ");
+    				b.show();
+    				b.setOnCloseRequest(evb->{
+    					if(a.getResult().getButtonData().equals(ButtonData.OK_DONE)) {
+    						try {
+    							Nutzer.getNutzer().vonAnderenInstanzenAbmelden();
+    						} catch (SQLException e1) {}
+    					}
+    				});
+    			}
+    		});
+    	} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -80,6 +92,7 @@ public class AnmeldeseiteCtrl {
         cbox.getItems().add("Nutzer");
         cbox.getItems().add("Registrieren");
         cbox.getItems().add("Daniel");
+        cbox.getItems().add("Unlimited");
 
         cbox.getSelectionModel().selectedIndexProperty().addListener( (ob, oldV, newV) -> {
         	

@@ -1,7 +1,6 @@
 package exceptions;
 
-import test.Sprache;
-
+@SuppressWarnings("serial")
 public class LogInException extends CustomException {
 	
 	public final static int NO_USER_LOGGED_IN = 0;
@@ -12,15 +11,10 @@ public class LogInException extends CustomException {
 	
 	String name;
 	
-	public LogInException(int type) {
-		super();
-		this.name = name;
-		
-		switch(Sprache.lang()) {
-		case Sprache.ENGLISH: title="LogInException"; 
-		case Sprache.GERMAN: title="AnmeldeFehler";
-		}
+	public LogInException(String message, int type) {
+		super("Login Fehler", message, type);
 	}
-	
-	
 }
+	
+	
+

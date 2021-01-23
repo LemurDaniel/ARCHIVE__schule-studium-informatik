@@ -1,8 +1,10 @@
-package bla;
+package Verwaltungen.entitaeten;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import Verwaltungen.verwaltungen.Personenverwaltung;
+import Verwaltungen.verwaltungen.Rezensionenverwaltung;
 import javafx.beans.property.ReadOnlyFloatProperty;
 import javafx.beans.property.ReadOnlyFloatWrapper;
 import javafx.beans.property.ReadOnlyIntegerProperty;
