@@ -1,4 +1,4 @@
-$count = 6
+$count = 59
 while ($count -lt 84) {
     $path = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\WIF 3 - ProjektFilmDB\Backup History\"
     $version_path = $path+$count.ToString()
