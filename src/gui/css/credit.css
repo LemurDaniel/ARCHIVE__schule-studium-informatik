@@ -1,0 +1,13 @@
+* {
+	-fx-font-size: 15.0px;
+	-fx-max-height: 1px;
+} 
+
+ImageView {
+	-fx-background-color: red;
+	-fx-width: 2;
+}
+
+Hyperlink {
+	-fx-text-decoration: none;
+}

@@ -1,19 +1,33 @@
 package gui;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import application.Main;
 import gui.controller.AddFilmCtrl;
 import gui.controller.AnmeldeseiteCtrl;
 import gui.controller.DetailCtrl;
 import gui.controller.FilterCtrl;
 import gui.controller.HauptseiteCtrl;
 import gui.controller.ListensichtCtrl;
+import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import verwaltung.DB_Manager;
@@ -51,6 +65,9 @@ public class FensterManager {
 		
 	private  static Stage filter;
 	private  static FilterCtrl filterCtrl;
+	
+	private static Alert statusmeldung, credits;
+	private static TextArea statusTA;
 	
 	
 	private static FXMLLoader getLoader(String source) {
@@ -205,4 +222,75 @@ public class FensterManager {
 		if(secondary!=null)			secondary.close();
 		if(dialog!=null)			dialog.close();
 	}
+	
+	
+	
+	
+	public static void logErreignis(String text) {
+		statusTA.appendText(text+"\n");
+	}
+
+	public static void showStatusmeldung() {
+		if(statusmeldung==null) {
+			statusmeldung = new Alert(AlertType.INFORMATION);
+			statusmeldung.setTitle("Statusmeldungen");
+			statusmeldung.setHeaderText("Aufgetretene Datenbankereignisse: ");
+			ImageView img = new ImageView(FensterManager.class.getResource("images/database.png").toString());
+			img.setFitWidth(50);
+			img.setPreserveRatio(true);
+			statusmeldung.setGraphic(img);
+			statusmeldung.setResizable(true);
+		
+			statusTA = new TextArea();
+			statusTA.setEditable(false);
+			statusTA.setWrapText(false);
+			statusTA.setFont(new Font("Courier New", 12));
+
+			HBox hb = new HBox(statusTA);
+			HBox.setHgrow(statusTA, Priority.ALWAYS);
+			statusmeldung.getDialogPane().setContent(hb);
+		}
+		statusmeldung.show();
+	}
+	
+	public static void showCredits() {
+		if(credits==null) {
+			VBox vb = new VBox();
+			vb.setStyle("-fx-font-size: 20px");
+			
+			try(BufferedReader r = new BufferedReader(new FileReader(FensterManager.class.getResource("images/credit").getFile()))){
+				r.lines().forEach(string->{
+					String[] sarr = string.split(",");
+				
+					Hyperlink hp = new Hyperlink();
+					hp.setText(sarr[1]);
+					hp.setOnAction(ev->{
+						Main.getApplication().getHostServices().showDocument("https://www.flaticon.com/authors/"+sarr[1]);
+					});
+							
+					ImageView img = new ImageView(FensterManager.class.getResource("images/"+sarr[0]+".png").toString());
+					img.setFitHeight(30);
+					img.setPreserveRatio(true);
+					img.setOnMouseClicked(ev->{
+						Main.getApplication().getHostServices().showDocument(sarr[2]);
+					});
+				
+					HBox hb = new HBox(img, new Label(" Icon made by "), hp, new Label(" from www.flaticon.com"));
+					hb.setAlignment(Pos.CENTER_LEFT);
+				
+					vb.getChildren().add(hb);
+				});
+			} catch (FileNotFoundException e) {
+			} catch (IOException e) {
+			}
+			
+			credits = new Alert(AlertType.INFORMATION);
+			credits.setTitle("Credits");
+			credits.setHeaderText(null);
+			credits.setGraphic(null);
+			credits.getDialogPane().setContent(vb);
+		}
+		credits.show();
+	}
+
 }

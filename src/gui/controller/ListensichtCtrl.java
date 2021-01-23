@@ -133,12 +133,11 @@ public class ListensichtCtrl {
     private void save() throws SQLException {
     	if(th.isAlive())	{
     		th.interrupt();
-    		btn_save.setText("Speichern");
     		return;
     	}
     	th = new Thread(lvw);
     	th.start();
-    	btn_save.setText("Stop");
+
 //		try(Connection con = DB_Manager.getCon()){
 //			System.out.println("Performance Test");
 //			long nano = System.nanoTime();
@@ -183,6 +182,7 @@ public class ListensichtCtrl {
 
 	@FXML
     void initialize() {
+		btn_save.setText("Start/Stop");
 		table_listen.setEditable(true);
     	table_listen.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     	table_listen.getSelectionModel().selectedItemProperty().addListener((ob,ov,liste)->aktualisiereAngezeigteListe(table_listen.getSelectionModel()));

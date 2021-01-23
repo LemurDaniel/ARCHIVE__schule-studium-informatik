@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import gui.FensterManager;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -179,7 +180,7 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		int max = Filmverwaltung.getMaxTitel();
 		int max2 = Listenverwaltung.getMaxName();
 	//	super.log.add(String.format("'%-"+max+"s' wurde erfolgreich zu Liste '%-"+max2+"s' hinzugefügt", film.getTitel(), name.get()));
-		System.out.println(String.format("'%-"+max+"s' wurde erfolgreich zu Liste '%-"+max2+"s' hinzugefügt", film.getTitel(), name.get()));
+		FensterManager.logErreignis(String.format("'%-"+max+"s' wurde erfolgreich zu Liste '%-"+max2+"s' hinzugefügt", film.getTitel(), name.get()));
 	}
 	@Override
 	protected void onDeleteSucess(Film film, Connection con) {
@@ -187,7 +188,7 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		int max = Filmverwaltung.getMaxTitel();
 		int max2 = Listenverwaltung.getMaxName();
 		//super.log.add(String.format("'%-"+max+"s' wurde erfolgreich aus Liste '%-"+max2+"s' gelöscht", film.getTitel(), name.get()));
-		System.out.println(String.format("'%-"+max+"s' wurde erfolgreich aus Liste '%-"+max2+"s' gelöscht", film.getTitel(), name.get()));
+		FensterManager.logErreignis(String.format("'%-"+max+"s' wurde erfolgreich aus Liste '%-"+max2+"s' gelöscht", film.getTitel(), name.get()));
 	}
 	
 	

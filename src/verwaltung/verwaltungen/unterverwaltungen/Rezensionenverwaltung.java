@@ -6,9 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import gui.FensterManager;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Rezension;
+import verwaltung.verwaltungen.Filmverwaltung;
 
 public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 
@@ -96,6 +98,20 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 				film.setBewertung(rs.getFloat(1));
 			}
 		}
+	}
+	
+	
+	@Override
+	protected void onAddSucess(Rezension rez, Connection con) 		throws SQLException{
+		int max = Filmverwaltung.getMaxTitel();
+		FensterManager.logErreignis(String.format("Die Rezension '%-"+getMaxTitel()+"s' mit %d Sternen wurde erfolgreich zum Film '%-"+max+"s' hinzugefügt", rez.getTitel(), rez.getBewertung(), film.getTitel()));
+		FensterManager.logErreignis(String.format("Die Filmbewertung wurde auf %s geändert", film.getBwtStringProperty().get()));
+	}
+	@Override
+	protected void onUpdateSucess(Rezension rez, Connection con) 	throws SQLException{
+		int max = Filmverwaltung.getMaxTitel();
+		FensterManager.logErreignis(String.format("Die Rezension '%-"+getMaxTitel()+"s' zum Film '%-"+max+"s' wurde erfolgreich auf ´%d Sterne geändert", rez.getTitel(), film.getTitel(), rez.getBewertung()));
+		FensterManager.logErreignis(String.format("Die Filmbewertung wurde auf %s geändert", film.getBwtStringProperty().get()));
 	}
 	
 	

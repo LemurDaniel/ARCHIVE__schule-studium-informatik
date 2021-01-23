@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import gui.FensterManager;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
@@ -105,7 +106,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		li.getFehlerlog().forEach(super.fehlerlog::add);
 		li.getLog().forEach(super.log::add);
 	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
-		System.out.println(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
+		FensterManager.logErreignis(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
 	}
 	@Override
 	protected void onUpdateSucess(Liste li, Connection con) throws SQLException{
@@ -114,13 +115,13 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		li.getFehlerlog().forEach(super.fehlerlog::add);
 		li.getLog().forEach(super.log::add);
 	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
-		System.out.println(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
+		FensterManager.logErreignis(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
 	}
 	@Override
 	protected void onDeleteSucess(Liste li, Connection con) throws SQLException{
 		super.onDeleteSucess(li, con);
 	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
-		System.out.println(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
+		FensterManager.logErreignis(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
 	}
 	
 	

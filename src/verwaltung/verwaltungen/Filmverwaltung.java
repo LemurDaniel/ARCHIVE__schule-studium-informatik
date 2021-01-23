@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+import gui.FensterManager;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
@@ -137,13 +137,13 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	protected void onAddSucess(Film f, Connection con) throws SQLException{
 		super.onAddSucess(f, con);
 	//	super.log.add(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich hinzugefügt", f.getTitel()));
-		System.out.println(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich hinzugefügt", f.getTitel()));
+		FensterManager.logErreignis(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich hinzugefügt", f.getTitel()));
 	}
 	@Override
 	protected void onUpdateSucess(Film f, Connection con) throws SQLException{
 		super.onUpdateSucess(f, con);
 	//	super.log.add(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich geupdatet", f.getTitel()));
-		System.out.println(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich geupdated", f.getTitel()));
+		FensterManager.logErreignis(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich geupdated", f.getTitel()));
 	}
 
 		

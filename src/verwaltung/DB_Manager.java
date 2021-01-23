@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import gui.FensterManager;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -33,6 +34,7 @@ public class DB_Manager {
 	public static Map<String, Integer> maxSize = new TreeMap<>();
 	
    static {
+	   System.out.println("DB");
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		} catch (ClassNotFoundException e) {
@@ -87,6 +89,7 @@ public class DB_Manager {
 			return con;
 		} catch (SQLException e) {
 			if(con!=null)	con.close();
+			FensterManager.logErreignis(e.getMessage());
 			throw e;
 		}
 	}
@@ -147,7 +150,9 @@ public class DB_Manager {
 		Filmverwaltung.ladeGerne(con);
 		Personenverwaltung.ladeRollen(con);
 
-		maxSize.forEach((k,v)->System.out.println(k+": "+v));
+		maxSize.forEach((k,v)->{
+			FensterManager.logErreignis(String.format("%-15s %d", k, v));
+		});
 	}
 
 	public static int get(String string) {

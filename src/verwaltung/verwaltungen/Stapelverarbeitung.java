@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import gui.FensterManager;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
@@ -94,9 +95,13 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		log.clear();
 		
 		con.setAutoCommit(false);
-		stapelAbarbeiten(add, 		this::onAdd, 	this::onAddSucess, con);
-		stapelAbarbeiten(update,	this::onUpdate, this::onUpdateSucess, con);
-		stapelAbarbeiten(delete,	this::onDelete, this::onDeleteSucess, con);
+		try {
+			stapelAbarbeiten(add, 		this::onAdd, 	this::onAddSucess, con);
+			stapelAbarbeiten(update,	this::onUpdate, this::onUpdateSucess, con);
+			stapelAbarbeiten(delete,	this::onDelete, this::onDeleteSucess, con);
+		}catch(SQLException e) {
+			FensterManager.logErreignis(e.getMessage());
+		}
 	}
 		
 	private void stapelAbarbeiten(Stack<T> stack, methode<T> m, methode2<T> m2, Connection con) throws SQLException{
@@ -110,21 +115,20 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 				}catch (SQLException e1) {
 					con.rollback();
 					err.push(ent);
+					FensterManager.logErreignis(e1.getMessage());
 					fehlerlog.add(e1);
 					continue;
 				}catch(Exception e) {
 					//e.printStackTrace();
 					err.push(ent);
+					FensterManager.logErreignis(e.getMessage());
 					fehlerlog.add(e);
 					continue;
 				}
 				m2.ausfuehren(ent, con);
 			}
 		}finally {
-			System.out.println("finally "+err.size());
 			while(!err.empty())	stack.push(err.pop());
-			System.out.println("finally "+err.size());
-			System.out.println(".....");
 		}
 	}
 	
