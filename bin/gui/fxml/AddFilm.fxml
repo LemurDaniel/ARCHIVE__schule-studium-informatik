@@ -3,10 +3,12 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.TreeTableColumn?>
@@ -72,6 +74,28 @@
                                     <TreeTableColumn fx:id="t_genre" prefWidth="530.0" sortable="false" text="Genre" />
                                  </columns>
                               </TreeTableView>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab text="2">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <HBox prefHeight="354.0" prefWidth="558.0">
+                                 <children>
+                                    <FlowPane prefHeight="200.0" prefWidth="298.0" styleClass="FlowPaneLeft">
+                                       <children>
+                                          <ListView prefHeight="285.0" prefWidth="213.0" />
+                                       </children>
+                                    </FlowPane>
+                                    <FlowPane prefHeight="200.0" prefWidth="298.0" styleClass="FlowPaneCenter">
+                                       <children>
+                                          <TextArea prefHeight="276.0" prefWidth="330.0" />
+                                       </children>
+                                    </FlowPane>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                      </content>

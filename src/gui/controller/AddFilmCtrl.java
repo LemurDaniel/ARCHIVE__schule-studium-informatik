@@ -1,5 +1,6 @@
 package gui.controller;
 
+import java.awt.Checkbox;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -8,13 +9,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.controlsfx.control.CheckComboBox;
+
 import gui.FensterManager;
 import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -29,6 +34,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -37,12 +44,15 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Nutzer;
@@ -309,8 +319,9 @@ public class AddFilmCtrl {
         tf_genre.textProperty().addListener(	(ob,ov,nv)-> changes[0]=true);
         tf_jahr.textProperty().addListener(		(ob,ov,nv)-> changes[0]=true);
         tf_titel.textProperty().addListener(	(ob,ov,nv)-> changes[0]=true);    
+        
     }
-    
+
     private void addPerson() {
     	PersonMitRolle per = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0)).getPersonenMitRolle().get(0);
     	personen.add(per);
@@ -415,7 +426,5 @@ public class AddFilmCtrl {
         	table_genre.getSelectionModel().select( list2.get(i) );
         }
     }
-    	
-    
-    
+
 }
