@@ -85,4 +85,17 @@ public class Film {
 	public void setBewertung(float bewertung) {
 		this.bewertung.set(bewertung);
 	}
+	public void setTitel(String titel) {
+		this.titel.set(titel);
+	}
+	public void setDauer(int dauer) {
+		this.dauer.set(dauer);
+		this.dauer_string.set(dauer+" Minuten");
+	}
+	public void setErscheinungsjahr(int jahr) {
+		this.erscheinungsjahr.set(jahr);
+	}
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
 }

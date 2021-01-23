@@ -7,9 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gui.FensterManager;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -60,30 +64,40 @@ public class AddFilmCtrl {
 			pvw = film.getPvw();
 			pvw.load();
 			setDisplay();
-		}else {
-			pvw = new Personenverwaltung(null);		
-			this.film = new Film(-1, Nutzer.getNutzer().getId(), "", new Genre(1, "aa"), 120, 2000, 0);
 		}
 		setTable();
 	}
 	
 	private void setTable() {
-		personen = FXCollections.observableArrayList(pvw.getPersonenMitRollen());
+		changes[1] = false;
+		
+		if(pvw!=null)
+			personen = FXCollections.observableArrayList(pvw.getPersonenMitRollen());
+		else
+			personen = FXCollections.observableArrayList();
+		
 		table.setItems(personen);
 		Map<PersonMitRolle, BooleanProperty[]> map = new HashMap<>();		
 		personen.forEach(per->{
 			map.put(per, new SimpleBooleanProperty[]{new SimpleBooleanProperty(false), new SimpleBooleanProperty(false)});
 		});
 		confirmed = FXCollections.observableMap(map);
-		changes[1] = false;
 	}
 	
 	private void setDisplay() {
-		tf_titel.setText(film.getTitel());
-		tf_dauer.setText(film.getDauer()+" Minuten");
-		tf_jahr.setText(film.getErscheinungsjahr()+"");
-		tf_genre.setText(film.getGenre().getGenre());
 		changes[0] = false;
+		
+		if(film == null) {
+			tf_titel.setText(null);
+			tf_dauer.setText(null);
+			tf_jahr.setText(null);
+			tf_genre.setText(null);
+		}else {
+			tf_titel.setText(film.getTitel());
+			tf_dauer.setText(film.getDauer()+" Minuten");
+			tf_jahr.setText(film.getErscheinungsjahr()+"");
+			tf_genre.setText(film.getGenre().getGenre());
+		}
 	}
 	
     @FXML // fx:id="accordion"
@@ -224,7 +238,7 @@ public class AddFilmCtrl {
         
         
         tf_bewertung.setDisable(true);
-        tf_genre.setDisable(true);
+        tf_genre.setEditable(false);
         
         table_genre.setShowRoot(false);
         table_genre.setRoot(new TreeItem<Genre>(new Genre(-1, "")));
@@ -285,13 +299,23 @@ public class AddFilmCtrl {
     }
     
     private void commit() {
-    	FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
-    	FilteredList<PersonMitRolle> delete = personen.filtered(per->confirmed.get(per)[1].get());
     	try {
+        	checkEingaben();
+    		//Wenn Fildaten geändert
     		if(changes[0]) {
-    			if(film.getId()==-1)	pvw.setFilm( Filmverwaltung.instance().addFilm(film) );
-    			else					Filmverwaltung.instance().updataFilm(film);
+    			int dauer = Integer.parseInt(tf_dauer.getText().replaceAll("[^0-9]", ""));
+    			int jahr = Integer.parseInt(tf_jahr.getText());
+    			Genre genre = table_genre.getSelectionModel().getSelectedItem().getValue();
+    			//Wenn kein Film vorhanden
+    			if(film==null) {
+    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), genre, dauer, jahr );
+    				pvw = new Personenverwaltung(film);
+    			}else		
+    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), genre, dauer, jahr, film);
     		}
+    		
+        	FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
+        	FilteredList<PersonMitRolle> delete = personen.filtered(per->confirmed.get(per)[1].get());
 			pvw.addOrUpdate(update.subList(0, update.size()));
 			pvw.delete(delete.subList(0, delete.size()));
 		} catch (Exception e) {
@@ -300,9 +324,18 @@ public class AddFilmCtrl {
 			a.setContentText(e.getMessage());
 			a.show();
 			e.printStackTrace();
+			return;
 		}
     	setDisplay();
     	setTable();
+    }
+    
+    private void checkEingaben() throws Exception {
+    	// TODO Auto-generated method stub
+    	if(tf_titel.getLength() < 10)	throw new Exception("Titel zu kurz");
+    	if(tf_jahr.getLength() != 4)	throw new Exception("Geben sie ein gültiges jahr ein");
+    	if(tf_dauer.getLength() == 0)   throw new Exception("dauer");
+    	if(table_genre.getSelectionModel().getSelectedItem()==null) throw new Exception("Gein Genre");
     }
     
     private void detail() {

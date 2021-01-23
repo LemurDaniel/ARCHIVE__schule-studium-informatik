@@ -12,6 +12,7 @@ import java.util.Map;
 import verwaltung.Verwaltung;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
+import verwaltung.entitaeten.Nutzer;
 
 public class Filmverwaltung extends Verwaltung<Film>{
 	
@@ -72,29 +73,40 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		}
 	}
 	
-	public Film addFilm(Film film) throws SQLException {
-		if(film == null)	
-			return null;
+	public Film addFilm(String titel, Genre genre, int dauer, int erscheinungsjahr) throws SQLException {
 		
 		try(Connection con = getCon();){
-			PreparedStatement ps = con.prepareStatement("Insert into filme(titel, genre, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?, ?)); Select SCOPE_IDENTITY()");
-			ps.setString(	1, 	film.getTitel()				);
-			ps.setInt(		2, 	film.getGenre().getId()		);
-			ps.setInt(		3, 	film.getDauer()				);
-			ps.setInt(		4,	film.getErscheinungsjahr()	);
-			ps.setFloat(	5, 	film.getBewertung()			);
-			ps.setInt(		6,  film.getErstellerId()		);
+			PreparedStatement ps = con.prepareStatement("Insert into filme(titel, genre, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?, ?); Select SCOPE_IDENTITY()");
+			ps.setString(	1, 	titel				);
+			ps.setInt(		2, 	genre.getId()		);
+			ps.setInt(		3, 	dauer				);
+			ps.setInt(		4,	erscheinungsjahr	);
+			ps.setFloat(	5, 	0					);
+			ps.setInt(		6,  Nutzer.getNutzer().getId()	);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
-			Film f = new Film(rs.getInt(1), film.getErstellerId(), film.getTitel()	, gMap.get(rs.getInt("genre")), film.getDauer(), film.getErscheinungsjahr(), film.getBewertung() );
+			Film f = new Film(rs.getInt(1), Nutzer.getNutzer().getId(), titel, genre, dauer, erscheinungsjahr, 0 );
 			list.add(f);
 			return f;
 		}
 	}
 
-	public void updataFilm(Film film) {
-		// TODO Auto-generated method stub
-		
+	public void updateFilm(String titel, Genre genre, int dauer, int erscheinungsjahr, Film film) throws SQLException {
+	
+		try(Connection con = getCon();){
+			PreparedStatement ps = con.prepareStatement("Update filme set titel=?, genre=?, dauer=?, erscheinungsjahr=? where id=?;");
+			ps.setString(	1, 	titel				);
+			ps.setInt(		2, 	genre.getId()		);
+			ps.setInt(		3, 	dauer				);
+			ps.setInt(		4,	erscheinungsjahr	);
+			ps.setInt(		5,	film.getId()		);
+			ps.executeUpdate();
+
+			film.setTitel(titel);
+			film.setGenre(genre);
+			film.setDauer(dauer);
+			film.setErscheinungsjahr(erscheinungsjahr);
+		}
 	}
 	
 	

@@ -78,8 +78,12 @@ public class FensterManager {
 	}
 	
 	public static Stage showAddFilm(Film film) throws SQLException, IOException{
-		if( !(Nutzer.getNutzer().getRechte().isUpdate() && film.getErstellerId()==Nutzer.getNutzer().getId() || Nutzer.getNutzer().getRechte().isUpdateAll())	)
-			throw new SQLException("Keine Berechtigung");
+		if(film != null) {
+			if( !(Nutzer.getNutzer().getRechte().isUpdate() && film.getErstellerId()==Nutzer.getNutzer().getId() || Nutzer.getNutzer().getRechte().isUpdateAll())	)
+				throw new SQLException("Keine Berechtigung");
+		}else if(film == null) {
+			
+		}
 		
 		if(addFilm==null) {
 			addFilm = new Stage();
