@@ -147,7 +147,7 @@ public class DB_Manager {
 		maxSize.put("GenreMax", 5);
 		maxSize.put("GenreMin", 1);
 		maxSize.put("ErgebnisseMin", 10);
-		maxSize.put("ErgebnisseMax", 1000);
+		maxSize.put("ErgebnisseMax", 1000_0);
 		
 		Filmverwaltung.ladeGerne(con);
 		Personenverwaltung.ladeRollen(con);

@@ -108,11 +108,15 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 	private void stapelAbarbeiten(Stack<T> stack, methode<T> m, methode2<T> m2, Connection con) throws SQLException{
 		try {
 			while(!stack.empty()) {
+				if(Thread.interrupted()) {
+					FensterManager.logErreignis("Der Speichervorgang wurde abgeborchen", Color.RED);
+					return;
+				}
+				
 				T ent = stack.pop();
 				try {
 					m.ausfuehren(ent, con);
 					con.commit();
-					if(Thread.interrupted())	return;
 				}catch (SQLException e1) {
 					con.rollback();
 					err.push(ent);
@@ -162,7 +166,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		try (Connection con = DB_Manager.getCon()){
 			save(con);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			FensterManager.logErreignis(e);
 		}
 	}
 	

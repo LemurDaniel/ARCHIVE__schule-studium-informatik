@@ -78,6 +78,12 @@ public class HauptseiteCtrl {
     private Button btn_liste;
     
     @FXML
+    private Button btn_status;
+
+    @FXML
+    private Button btn_credits;
+    
+    @FXML
     private ImageView muell;
 
     @FXML
@@ -92,6 +98,8 @@ public class HauptseiteCtrl {
     		else if(event.getSource()==btn_save)		speichern();
     		else if(event.getSource()==btn_reset)		fvw.reset();
     		else if(event.getSource()==btn_liste)		FensterManager.setSecondary(FensterManager.getListensicht());
+    		else if(event.getSource()==btn_status)		FensterManager.showStatusmeldung();
+    		else if(event.getSource()==btn_credits)		FensterManager.showCredits();
     	}catch(Exception e) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle(e.getClass().getSimpleName());

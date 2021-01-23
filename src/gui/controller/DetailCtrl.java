@@ -38,6 +38,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Modality;
 import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.Nutzer.Rechte;
@@ -246,6 +247,8 @@ public class DetailCtrl {
          }catch(Exception e) {
         	 Alert err = new Alert(AlertType.ERROR);
         	 err.setContentText(e.getMessage());
+        	 err.initOwner(FensterManager.getDialog());
+        	 err.initModality(Modality.APPLICATION_MODAL);
         	 err.show();
         	 e.printStackTrace();
         	 return;

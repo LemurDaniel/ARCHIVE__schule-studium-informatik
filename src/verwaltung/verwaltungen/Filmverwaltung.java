@@ -14,6 +14,7 @@ import gui.FensterManager;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
+import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
@@ -48,6 +49,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 	
 	public void generiereFilme(ResultSet rs) throws SQLException {	
+		long milli = System.currentTimeMillis();
+		
 		int lastId = -1, idNow;
 		Film current = null;
 		while(rs.next()) {
@@ -60,16 +63,12 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			}
 			current.addGenre( genreMap.get(rs.getInt("gid")) );	
 		}
+		
+		System.out.println(System.currentTimeMillis()-milli+"milli");
 	}
 	
 	public void test() throws SQLException{
-	//	filter(null, 10f, 9f, null, null, null, null, null, true, null, 10);
-		String sql = "select Top (10) * from film left join genre_film on fid = film.id order by film.id";
-		try(Connection con = DB_Manager.getCon();
-				Statement st = con.createStatement();
-					ResultSet rs = con.createStatement().executeQuery(sql)){
-				generiereFilme(rs);
-			}		
+		filter(null, 10f, 0f, null, null, null, null, null, true, null, 10);	
 	}
 	
 	@Override
@@ -230,22 +229,21 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				ps.setInt(++count, dauerMax);
 				ps.setInt(++count, jahrMin);
 				ps.setInt(++count, jahrMax);
-				for(String s:tags)
-					ps.setString(++count, "%"+s+"%");
-				System.out.println(con.getAutoCommit());
-				System.out.println(ps.getConnection());
+				for(String s:tags)	ps.setString(++count, "%"+s+"%");
 				try(ResultSet rs = ps.executeQuery()){
-					super.clear();
+					clear();
 					generiereFilme(rs);
 				}
 			}
 		}
+		if(getObList().size()>0)FensterManager.logErreignis("Es wurden "+getObList().size()+" Filmeinträge mit entsprechenden Kriterien gefunden", Color.GREEN);
+		else FensterManager.logErreignis("Es existieren keine Filmeinträge mit entsprechenden Kriterien", Color.RED);
 	}
 	
 	
 	@Override
 	public void addObj(Film f) {
-		if(super.getList().contains(f)) return;
+		if(super.list.contains(f)) return;
 		super.addObj(f);
 		if(!geladeneFilme.containsKey(f.getId())) {
 			geladeneFilme.put(f.getId(), f);
@@ -257,6 +255,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	}
 	@Override
 	public void removeObj(Film f) {
+		if(!super.list.contains(f))	return;
 		super.removeObj(f);
 		if(!referenziert.containsKey(f))	return;
 		int i = referenziert.get(f)-1;
@@ -265,12 +264,17 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			referenziert.remove(f);
 		}else
 			referenziert.put(f, i);
+		System.out.println("rrer"+i);
 	}
 	@Override
 	public void clear() {
 		getList().forEach(this::removeObj);
+		System.out.println("aa");
 //		referenziert.forEach((k,v)->System.out.println(k+"  "+v));
 //		geladeneFilme.forEach((k,v)->System.out.println(k+"  "+v));
+	}
+	public static void clearAll() {
+		
 	}
 	
 	public static void refreshAll() throws SQLException {
@@ -298,6 +302,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			}
 		}
 		//fvws.forEach(fvw->fvw.reset());
+		FensterManager.logErreignis("Es wurden "+geladeneFilme.size()+" Filme aktualisiert", Color.GREEN);
 	}	
 	
 	

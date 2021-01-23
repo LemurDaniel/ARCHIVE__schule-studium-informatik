@@ -114,10 +114,10 @@ public class Nutzer extends DB_Manager {
 					rs.next();
 					instance.setNutzer(rs);
 				}
-			}
-			Listenverwaltung.instance().ladeListen(con);			
+			}	
 			instance.angemeldet.set(true);
 			FensterManager.logErreignis("Sie haben sich Erfolgreich mit dem Konto "+instance.getName()+" angemeldet", Color.GREEN);
+			Listenverwaltung.instance().ladeListen(con);		
 		}catch(Exception e) {
 			FensterManager.logErreignis(e);
 			throw e;

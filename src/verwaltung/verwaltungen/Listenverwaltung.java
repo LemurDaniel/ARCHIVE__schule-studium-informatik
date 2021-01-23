@@ -28,8 +28,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 
 		
 	public void ladeListen(Connection con) throws SQLException {	
-		super.clear();
-		
+
 		String sql = "Select id, name from liste where besitzer=? ";	
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
@@ -54,6 +53,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 					li.addFilme(rs);
 				}
 			}
+			FensterManager.logErreignis("Liste '"+li.getName()+"' erfolgreich geladen", Color.GREEN);
 		}
 	}
 	
@@ -119,6 +119,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	@Override
 	protected void onDeleteSucess(Liste li, Connection con) throws SQLException{
 		super.onDeleteSucess(li, con);
+		li.clear();
 		FensterManager.logErreignis(String.format("\nDie Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
 	}
 	
@@ -129,6 +130,11 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		super.getObList().filtered(Liste::hatAuftraege).forEach(super::updateEntitaet);
 	}
 	
+	@Override
+	public void clear() {
+		list.forEach(li->li.clear());
+		super.clear();
+	}
 	
 	
 	public static int getMaxName() {

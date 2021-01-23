@@ -215,6 +215,12 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		while(!delete.empty())	filme.getObList().add(delete.pop());
 		super.reset();
 	}
+	@Override
+	public void clear() {
+		filme.clear();
+		super.clear();
+	}
+	
 
 	
 }

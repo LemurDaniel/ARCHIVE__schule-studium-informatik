@@ -42,6 +42,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import verwaltung.DB_Manager;
@@ -282,7 +283,9 @@ public class FensterManager {
 			statusmeldung.getDialogPane().getStylesheets().add(FensterManager.class.getResource("css/credit.css").toString());
 			statusmeldung.getDialogPane().setPrefHeight(300);
 			statusmeldung.getDialogPane().setPrefWidth(900);
+			statusmeldung.initModality(Modality.WINDOW_MODAL);
 		}
+		statusmeldung.close();
 		statusmeldung.show();
 	}
 	
@@ -313,7 +316,6 @@ public class FensterManager {
 				
 					vb.getChildren().add(hb);
 				});
-			} catch (FileNotFoundException e) {
 			} catch (IOException e) {
 			}
 			
@@ -322,6 +324,7 @@ public class FensterManager {
 			credits.setHeaderText(null);
 			credits.setGraphic(null);
 			credits.getDialogPane().setContent(vb);
+			credits.initModality(Modality.APPLICATION_MODAL);
 		}
 		credits.show();
 	}
