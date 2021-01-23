@@ -110,7 +110,7 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	@Override
 	public boolean addEntitaet(Film film) {
 		System.out.println(filme.existiert(film));
-//		if(filme.existiert(film) )		{
+		if(filme.existiert(film) && !delete.contains(film))		return false;
 //			if(delete.contains(film))	{
 //				delete.remove(film);
 //				filme.getObList().add(film);
@@ -131,7 +131,7 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	
 	@Override
 	public boolean removeEntitaet(Film film) {
-		if(!filme.existiert(film))			return false;
+		if(!filme.existiert(film) && !add.contains(film))		return false;
 		if(!super.removeEntitaet(film))		return false;
 		filme.getObList().remove(film);
 		return true;

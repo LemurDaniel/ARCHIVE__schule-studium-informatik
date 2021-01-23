@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.ClipboardContent;
@@ -97,6 +98,7 @@ public class HauptseiteCtrl {
 
 	@FXML
     void initialize() {  
+		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(fvw.getObList());
         t_Titel.setCellValueFactory(	data->data.getValue().getTitelProperty());
         t_genre.setCellValueFactory(	data->data.getValue().getGenreStringProperty());

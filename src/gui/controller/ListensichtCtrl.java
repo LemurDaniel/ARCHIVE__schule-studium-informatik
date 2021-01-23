@@ -146,7 +146,7 @@ public class ListensichtCtrl {
 	@FXML
     void initialize() {
 		table_listen.setEditable(true);
-    	table_listen.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    	table_listen.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     	table_listen.getSelectionModel().selectedItemProperty().addListener((ob,ov,liste)->aktualisiereAngezeigteListe(table_listen.getSelectionModel()));
     	table_listen.setItems(lvw.getObList());
     	tListe_name.setCellValueFactory(data->data.getValue().getNameProperty());
@@ -157,6 +157,7 @@ public class ListensichtCtrl {
      	cb.getSelectionModel().selectedItemProperty().addListener((ob,ov,liste)->aktualisiereAngezeigteListe(cb.getSelectionModel()));
     	cb.setItems(lvw.getObList());
     	
+    	table_film.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     	table_film.setOnDragDetected(this::onDragDected);
       	table_listen.setOnDragDetected(this::onDragDected);
     	table_film.setOnDragOver(this::onDragOverTable);
