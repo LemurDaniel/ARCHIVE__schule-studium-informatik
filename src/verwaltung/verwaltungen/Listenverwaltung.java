@@ -34,30 +34,30 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		try(PreparedStatement ps = con.prepareStatement(sql)){
 			ps.setInt(1, Nutzer.getNutzer().getId());				
 			try(ResultSet rs = ps.executeQuery()){
-				while(rs.next())	addObj(new Liste(rs.getInt(1), rs.getString(2)));
+				while(rs.next()) {
+					Liste li = new Liste(rs.getInt(1), rs.getString(2));
+					fuelleListe(li, con);
+					addObj(li);	
+					FensterManager.logErreignis("Liste '"+li.getName()+"' erfolgreich geladen", Color.GREEN);
+				}
 			}
-		}
-		fuelleListen(con);		
+		}	
+		FensterManager.logErreignis("Es wurden insgesamt "+getObList().size()+ (getObList().size()==1?" Liste":" Listen")+" geladen", Color.GREEN);
 	}
 		
-	private void fuelleListen(Connection con) throws SQLException {
-		if(getObList().size()==0)	return;
+	private void fuelleListe(Liste li, Connection con) throws SQLException {
 		
 		String	sql = "Select * from film "
 				+ "join genre_film on genre_film.fid=film.id "
 				+ "join liste_film on liste_film.fid=film.id "
 				+ "where lid=? order by film.id ";
 //		
-		for(Liste li:getList()) {
-			try(PreparedStatement ps = con.prepareStatement(sql)){
-				ps.setInt(1, li.getId());
-				try(ResultSet rs = ps.executeQuery()){
-					li.addFilme(rs);
-				}
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setInt(1, li.getId());
+			try(ResultSet rs = ps.executeQuery()){
+				li.addFilme(rs);
 			}
-			FensterManager.logErreignis("Liste '"+li.getName()+"' erfolgreich geladen", Color.GREEN);
 		}
-		FensterManager.logErreignis("Es wurden insgesamt "+getObList().size()+ (getObList().size()==1?" Liste":" Listen")+" geladen", Color.GREEN);
 	}
 	
 	

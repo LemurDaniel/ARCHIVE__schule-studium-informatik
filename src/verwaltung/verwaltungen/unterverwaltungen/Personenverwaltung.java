@@ -152,7 +152,6 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		super.onDeleteSucess(per, con);
 		FensterManager.logErreignis(String.format("Die Person '%s' mit der Rolle '%s' wurde erfolgreich vom Film '%s' gelöscht", per, per.getRolle(), film.getTitel()));
 	}
-
 	
 	
 	public static int getMaxName() {

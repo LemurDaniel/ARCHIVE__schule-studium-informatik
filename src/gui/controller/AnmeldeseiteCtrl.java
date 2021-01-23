@@ -53,7 +53,6 @@ public class AnmeldeseiteCtrl {
     		else if(i==3) Nutzer.anmeldenKonto("Daniel", "123456");
     		else if(i==4) Nutzer.anmeldenKonto("Unlimited", "123456");
     		
-        	if(Nutzer.getNutzer().isAngemeldet())	FensterManager.setPrimaryStage( FensterManager.getHauptSeite() );
     	}catch(NullPointerException np) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setContentText("Bitte geben sie etwas ein bevor sie sich anmelden");
@@ -131,7 +130,6 @@ public class AnmeldeseiteCtrl {
 			if(b.getResult().getButtonData().equals(ButtonData.OK_DONE)) {
 				try {
 					Nutzer.getNutzer().vonAnderenInstanzenAbmelden(tf_name.getText().trim(), tf_pwd.getText());
-					if(Nutzer.getNutzer().isAngemeldet())	FensterManager.setPrimaryStage(FensterManager.getHauptSeite());
 				} 
 				catch (SQLException e1) {}
 			}

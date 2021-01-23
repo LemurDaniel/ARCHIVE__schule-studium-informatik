@@ -99,7 +99,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		try {
 			while(!stack.empty()) {
 				if(Thread.interrupted()) throw new InterruptedException();
-				Thread.sleep(500);
+//				Thread.sleep(500);
 
 				T ent = stack.pop();
 				try {
@@ -159,14 +159,15 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 			return;
 		}
 		
-		FensterManager.logErreignis("\nDer Speichervorgang wurde gestartet");
+		FensterManager.logErreignis("\n  Der Speichervorgang wurde gestartet\n");
 		try (Connection con = DB_Manager.getCon()){
 			save(con);	
 		} catch (SQLException e) {
 		}catch(InterruptedException e) {
-			FensterManager.logErreignis("\nDer Speichervorgang wurder abgebrochen", Color.RED);
+			FensterManager.logErreignis("\n  Der Speichervorgang wurde abgebrochen", Color.RED);
+			return;
 		}
-		FensterManager.logErreignis("\nDer Speichervorgang wurde beendet");
+		FensterManager.logErreignis("\n  Der Speichervorgang wurde beendet");
 	}
 	
 }

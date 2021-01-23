@@ -2,10 +2,10 @@ package gui;
 
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
+
 
 import application.Main;
 import gui.controller.AddFilmCtrl;
@@ -14,41 +14,28 @@ import gui.controller.DetailCtrl;
 import gui.controller.FilterCtrl;
 import gui.controller.HauptseiteCtrl;
 import gui.controller.ListensichtCtrl;
-import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.Effect;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
-import verwaltung.entitaeten.Liste;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Stapelverarbeitung;
 
@@ -259,12 +246,17 @@ public class FensterManager {
 	
 	public static void logErreignis(String text, Color color) {
 		if(statusmeldung==null)	showStatusmeldung();
-			Text t = new Text(text+"\n");
-			t.setFill(color);
-		Platform.runLater(()->{
+		Text t = new Text(text+"\n");
+		t.setFill(color);
+		if(Platform.isFxApplicationThread()) {
 			statusTA.getChildren().add(t);	
-			if(statusTA.getChildren().size()>1000)	statusTA.getChildren().remove(0);
-		});	
+			if(statusTA.getChildren().size()>=1000)	statusTA.getChildren().remove(0);
+		}else {
+			Platform.runLater(()->{
+				statusTA.getChildren().add(t);	
+				if(statusTA.getChildren().size()>=1000)	statusTA.getChildren().remove(0);
+			});	
+		}
 	}
 
 	public static void showStatusmeldung() {
@@ -286,9 +278,12 @@ public class FensterManager {
 			HBox.setHgrow(sp, Priority.ALWAYS);
 			statusmeldung.getDialogPane().setContent(hb);
 			statusmeldung.getDialogPane().getStylesheets().add(FensterManager.class.getResource("css/status.css").toString());
-			statusmeldung.getDialogPane().setPrefHeight(300);
+			statusmeldung.getDialogPane().setPrefHeight(380);
 			statusmeldung.getDialogPane().setPrefWidth(900);
 			statusmeldung.initModality(Modality.WINDOW_MODAL);
+			
+			statusmeldung.getDialogPane().setOnMouseEntered(ev->sp.vvalueProperty().unbind());
+			statusmeldung.getDialogPane().setOnMouseExited(ev->sp.vvalueProperty().bind(statusTA.heightProperty()));
 		}
 		else if(statusmeldung.isShowing()) {
 			statusmeldung.close();

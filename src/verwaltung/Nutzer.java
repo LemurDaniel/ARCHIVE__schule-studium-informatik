@@ -12,8 +12,10 @@ import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 import exceptions.LogInException;
 import exceptions.RegisterException;
 import gui.FensterManager;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.concurrent.Task;
 import javafx.scene.paint.Color;
 import verwaltung.verwaltungen.Listenverwaltung;
 
@@ -116,9 +118,17 @@ public class Nutzer extends DB_Manager {
 				}
 			}	
 			instance.angemeldet.set(true);
-			Listenverwaltung.instance().ladeListen(con);	
-			FensterManager.logErreignis("\nSie haben sich Erfolgreich mit dem Konto "+instance.getName()+" angemeldet", Color.GREEN);	
-			instance.getRechte().log();
+			Thread th = new Thread(()->{
+				try (Connection conn = DB_Manager.con()){
+					Listenverwaltung.instance().ladeListen(conn);
+					FensterManager.logErreignis("\nSie haben sich Erfolgreich mit dem Konto "+instance.getName()+" angemeldet", Color.GREEN);	
+					instance.getRechte().log();
+					Platform.runLater(()->FensterManager.setPrimaryStage(FensterManager.getHauptSeite()));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			});
+			th.start();
 		}
 	}
 	
