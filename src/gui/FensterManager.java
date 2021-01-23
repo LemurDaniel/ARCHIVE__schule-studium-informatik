@@ -4,6 +4,7 @@ package gui;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import application.Main;
 import gui.controller.AddFilmCtrl;
@@ -306,7 +307,7 @@ public class FensterManager {
 			VBox vb = new VBox();
 			vb.setStyle("-fx-font-size: 20px");
 			
-			try(BufferedReader r = new BufferedReader(new FileReader(FensterManager.class.getResource("images/credit").getFile()))){
+			try(BufferedReader r = new BufferedReader(new FileReader(  URLDecoder.decode(FensterManager.class.getResource("images/credit").getFile().toString(), "UTF-8")  ))){
 				r.lines().forEach(string->{
 					String[] sarr = string.split(",");
 				
