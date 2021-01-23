@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>REACT4 Komponenten mit Ereignissen</title>
+
+</head>
+
+<body>
+
+<div id="app">
+	
+</div>
+	<script src="build/react.js"></script>
+	<script src="build/react-dom.js"></script>
+	<script>
+        
+        var TextZaehler = React.createClass({
+            PropTypes: {
+                text: React.PropTypes.string,
+            },
+            
+            getInitialState: function() { // wird von _textAenderung ausgelöst
+                return {
+                    text: this.props.text,
+                };
+                
+            },
+            
+            _textAenderung: function(ev) {
+                this.setState({
+                    text: ev.target.value,
+                });
+            },
+            
+            render: function() {
+                return React.DOM.div(null,
+                                    React.DOM.textarea({value: this.state.text,
+                                                       onChange: this._textAenderung,}),
+                                    React.DOM.h3(null, this.state.text.length));
+            }            
+        });
+	ReactDOM.render(
+	React.createElement(TextZaehler, {text: "Zaehler",}),
+        document.getElementById("app")
+	);		
+	</script>
+
+
+
+</body>
+</html>

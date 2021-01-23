@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<fuhrpark><pkw><hersteller>Ford</hersteller><typ>Mustang</typ><techdat Metrik="US"><Leistung>230hp</Leistung><Beschleunigung>7 sec auf 100mph</Beschleunigung></techdat></pkw><pkw><hersteller>VW</hersteller><typ>Golf GTI</typ><techdat Metrik="US"><Leistung>300hp</Leistung><Beschleunigung>5 sec auf 100mph</Beschleunigung><Verbrauch>9 l auf 100 km</Verbrauch></techdat></pkw></fuhrpark>

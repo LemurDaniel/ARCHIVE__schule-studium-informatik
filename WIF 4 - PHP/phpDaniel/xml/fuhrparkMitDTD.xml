@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE fuhrpark SYSTEM "fuhrpark.dtd">
+
+<fuhrpark>
+	<lkw typ="1">
+		<hersteller>Scania</hersteller>
+		<fahrer>Maier</fahrer>
+		<fahrer>Mueller</fahrer>
+	</lkw>
+	
+	<lkw typ="3">
+		<hersteller>MAN</hersteller>
+		<fahrer>Reuter</fahrer>
+		<fahrer>Mayer</fahrer>
+		<fahrer>Bergmann</fahrer>
+	</lkw>
+	
+	<lkw typ="2">
+		<hersteller>Mercedes</hersteller>
+		<fahrer>Bauer</fahrer>
+	</lkw>
+	
+	<lkw typ="3">
+		<hersteller>Saab</hersteller>
+		<fahrer>N.N.</fahrer>
+	</lkw>
+</fuhrpark>

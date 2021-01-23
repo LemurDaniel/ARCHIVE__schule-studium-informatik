@@ -1,0 +1,128 @@
+body {
+  height: 100%;
+  width: 100%;
+  padding-bottom:60px;
+
+  font: 25px/1.5 Arial, Helvetica, sans-serif;
+  paddint: 0;
+  margin:  0;
+  background-color: #f4f4f4;
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden; /* No Scrollbar when stuff outside of div*/
+}
+
+#branding {
+  font-size: 120%;
+  float: left;
+}
+
+
+
+
+/* main Section */
+header {
+  background-color: #35424a;
+  color: #ffffff;
+  padding-top: 30px;
+  min-height: 70px;
+  border-bottom: #e8491d 3px solid;
+}
+
+#mainTable  {
+    display: inline;
+    padding: 1%;
+    margin-top: 1%;
+    float: left;
+}
+
+table {
+  border-spacing: 15px;
+  border-width: 5px;
+  border-radius: 5px;
+  border-style: groove;
+  text-align: center;
+  width: auto;
+}
+
+th {
+  padding: 10px;
+  padding-left: 50px;
+  padding-right: 50px;
+  border-spacing: 15px;
+  border-width: 1px;
+  border-radius: 5px;
+  border-style: solid;
+}
+
+td{
+ padding: 10px;
+ border-spacing: 15px;
+ border-width: 1px;
+ border-radius: 5px;
+ border-style: dashed;
+}
+
+span {
+  display: block;
+  height: 45px;
+  overflow: hidden;
+}
+
+span:hover {
+  height: auto;
+  transition-duration: 5s;
+  transition-timing-function: ease-in-out;
+}
+
+
+/* Side Section */
+#sideElement {
+    display: inline;
+    padding: 1%;
+    margin-top: 1%;
+    margin-right: 2%;
+    float: right;
+    color: white;
+}
+
+#sideElement .container {
+  border-radius: 15px;
+  background: #35424a;
+  padding: 50px;
+}
+
+
+label, input {
+  padding: 10px;
+  display: inline-block;
+  width: 75%;
+  font-size: 20px;
+  border-radius: 5px;
+}
+
+input[type='radio']{
+  margin-left: 10%;
+  margin-right: 10%;
+  display: inline;
+  height: 20px;
+  width: 20px;
+}
+
+input[type='submit']{
+  margin-top: 15px;
+  margin-left: 60px;
+  display: inline;
+  float: left;
+  width: auto;
+}
+input[type='reset']{
+  margin-top: 15px;
+  margin-right: 60px;
+  display: inline;
+  float: right;
+  width: auto;
+}

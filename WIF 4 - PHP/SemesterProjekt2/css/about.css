@@ -1,0 +1,22 @@
+
+
+
+/* sidebar */
+aside#sidebar {
+  float: right;
+  margin-top: 50px;
+  width: 30%;
+}
+
+
+/*Main-col */
+article#main-col {
+  float: left;
+  width: 65%;
+}
+
+
+
+@media(max-width: 768px) {
+
+}

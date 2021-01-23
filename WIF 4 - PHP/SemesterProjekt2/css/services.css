@@ -1,0 +1,54 @@
+/* Services */
+ul#services li {
+  list-style: none;
+  padding: 20px;
+  border: #cccccc solid 1px;
+  margin-bottom: 5px;
+}
+
+aside#sidebar{
+  margin-top: 0;
+}
+
+aside#sidebar label {
+  float: left;
+  width: 90%;
+}
+
+aside#sidebar .quote input[type="text"], aside#sidebar .quote textarea {
+  border-radius: 5px;
+  border-style: none;
+
+  float: left;
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+
+aside#sidebar .quote table {
+  color: white;
+  width: 90%;
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+#main {
+  margin-top: 40px;
+}
+
+/* media Queris */
+@media(max-width: 768px) {
+  .quote, .quote textarea{
+    text-align: center;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .quote input[type="checkbox"] {
+    height: 50px;
+    width: auto;
+  }
+}

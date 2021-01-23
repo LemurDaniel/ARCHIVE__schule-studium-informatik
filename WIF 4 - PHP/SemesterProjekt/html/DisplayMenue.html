@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Semseterprojekt Bistro</title>
+    <link rel="stylesheet" href="../css/master.css">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div id="branding">
+          <h1>Bistro zum Guten Cafe</h1>
+        </div>
+      </div>
+    </header>
+
+    <section id="mainTable">
+      <div class="container">
+          <table id="speisekarte">
+            <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>ArtNummer</th>
+                  <th>ArtBezeichnung</th>
+                  <th>ArtBeschreibung</th>
+                  <th>ArtGruppe</th>
+                  <th>Menge</th>
+                  <th>Eigenschaft</th>
+                  <th>Preis</th>
+                </tr>
+              </thead>
+          </table>
+        </div>
+      </section>
+
+      <section id="sideElement">
+        <div class="container">
+          <h3> Füge einen neune Artikel hinzu:</h3>
+          <form enctype="multipart/form-data" action="../php/writeToDb.php" method="post">
+            <input type="radio" name="gruppe" id="gruppe" value="1" checked> Getränk
+            <input type="radio" name="gruppe" id="gruppe" value="2"> Speise<br>
+            <label for="artNummer">Artikel Nummer:</label>
+            <input type="number" min="99999" max="1000000" name="artNummer" id="artNummer"><br>
+            <label for="bezeichnung">Artikel Bezeichnung:</label>
+            <input type="text" name="bezeichnung" id="bezeichnung"><br>
+            <label for="beschreibung">Artikel Beschreibung:</label>
+            <input type="text" name="beschreibung" id="beschreibung"><br>
+            <label for="menge">Menge:</label>
+            <input type="text" name="menge" id="menge"><br>
+            <label for="eigenschaft">Eigenschaft:</label>
+            <input type="text" name="eigenschaft" id="eigenschaft"><br>
+            <label for="preis">Preis:</label>
+            <input type="number" name="preis" id="preis"><br>
+
+            <input type="submit" value="Speichern">
+            <input type="Reset">
+            </form>
+          </div>
+        </section>
+
+        <section id="Meldung">
+          <div class="container">
+            <p></p>
+          </div>
+        </sectio>
+  </body>
+</html>

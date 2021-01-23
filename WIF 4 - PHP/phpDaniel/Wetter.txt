@@ -1,0 +1,6 @@
+London 20 sonnig
+Berlin 25 bedeckt
+Paris 23 sonnig
+Dublin 17 regnerisch
+Hamburg 20 bedeckt
+Madrid 30 sonnig

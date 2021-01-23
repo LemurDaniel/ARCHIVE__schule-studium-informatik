@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Hello World of REACT</title>
+<style>
+	span {color: red}
+	.blue {color:blue}
+	</style>
+</head>
+<body>
+
+<div id="app">	
+</div>
+
+<div id="app2">	
+</div>
+    
+	<script src="build/react.js"></script>
+	<script src="build/react-dom.js"></script>
+	<script>
+		
+	ReactDOM.render(
+	React.DOM.span(null,
+				  "Hallo React es funktioniert"),
+		document.getElementById("app")
+	);	
+				
+	ReactDOM.render(
+	React.DOM.span({className:"blue"},
+				  "Hallo React es funktioniert mit class"),
+		document.getElementById("app2")
+	);	
+	</script>
+
+
+
+</body>
+</html>
