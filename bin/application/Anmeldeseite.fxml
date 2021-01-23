@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox fx:id="test" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AnmeldeseiteCtrl">
+   <children>
+      <ComboBox fx:id="cbox" prefWidth="150.0" promptText="Anmelden als" />
+      <TextField fx:id="tf_name" promptText="Nutzername" />
+      <PasswordField fx:id="tf_pwd" promptText="Passwort" />
+      <PasswordField fx:id="tf_pwd2" promptText="Passwort Bestätigung" />
+      <Button fx:id="btn" mnemonicParsing="false" onAction="#btnAction" text="anmelden" />
+   </children>
+</VBox>

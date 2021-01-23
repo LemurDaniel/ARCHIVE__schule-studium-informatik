@@ -1,28 +1,31 @@
-$dest = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\Spiel Mario\"
-$src = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\Java10c Projekte\PROJEKT - Mario\Spiel Mario - "
-$count = 2
-$target_count = 22
+$count = 4
+while ($count -lt 84) {
+    $path = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\WIF 3 - ProjektFilmDB\Backup History"
+    $version_path = $path+$count.ToString()
+    $src = $version_path+"\Filmdatenbank\"
 
-cd "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium"
+    $dest = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\"
 
-while($count -lt $target_count){
-    Remove-Item -Path $dest -Recurse
+    $dst1 = $dest+"src"
 
-    New-Item -Path $dest -ItemType Directory
+    $dst2 = $dest+"bin"
 
-    $item = $src+$count
+    Remove-Item -Path $dst1 -Force -Recurse
+    Remove-Item -Path $dst2 -Force -Recurse
 
-    ls $item | Copy-Item -Recurse -Destination $dest
+    ls $src | Copy-Item -Recurse -Destination $dest 
+
+    Remove-Item -Path $version_path -Force -Recurse
+
+    cd "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\"
 
     git add -A
 
-    Start-Sleep 1
+    Start-Sleep 2
 
     $message = "Version "+$count
 
     git commit -m $message
 
-    Remove-Item $item -Force -Recurse
-
-$count = $count+1
-}
+    $count = $count+1
+} 

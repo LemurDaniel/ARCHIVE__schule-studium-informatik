@@ -1,0 +1,40 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+* {
+	-fx-font-size: 15.0px;
+} 
+Accordion {
+	-fx-pref-height: 420.0px ;
+	-fx-pref-width: 600.0px ;
+}
+
+.hbox_allg {
+	-fx-alignment: center-left ;
+	-fx-padding: 0 0 0 20;
+}
+
+.hbox_allg TextField {
+	-fx-min-width: 0.0;
+	-fx-min-height: 0.0;
+	-fx-max-height: 31;
+	-fx-max-width: 200;
+	-fx-pref-height: 31;
+	-fx-pref-width: 200;
+}
+
+
+.hbox_allg Label {
+	-fx-min-width: 0.0;
+	-fx-min-height: 0.0;
+	-fx-max-height: 31;
+	-fx-max-width: 200;
+	-fx-pref-width: 150;
+	-fx-pref-height: 31;
+}
+
+TextField {
+	-fx-padding: 10.0;
+}
+
+
+
