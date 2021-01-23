@@ -68,11 +68,8 @@ public class DREIECK {
         positionX[2] = posx;              //Position der 3.Ecke auf x-Achse (rechte Ecke)
         positionY[2] = posy;              //Position der 3.Ecke auf y-Achse (rechte Ecke) 
        } else {
-           System.out.println("ungültige Eingabe der Ausgangsecke//Klasse: DREIECK  Konstruktor: public DREIECK()//");
-           System.out.print("Eingabe:  ");
-           System.out.println(Ecke);
+           Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Konstruktor\nKlasse: DREIECK \n ungültige Eingabe der Ausgangsecke \n Eingabe:  "+Ecke);
            gibAusgangsecken();
-           System.exit(0);
         }}}
         zeichnen();           // zeichen des Dreiecks
     }
@@ -101,7 +98,11 @@ public class DREIECK {
         zeichnen();
     }
     
-    public void aenderePosition(int posx, int posy){ //Methode zum aendern der Position des Standart Dreiecks. x- und y-Koordinaten von der eingestellten Standart Ecke ausgehend  
+    public void aenderePosition(int posx, int posy){
+        aenderePosition(posx,posy,StandartEcke);
+    }
+    
+    public void aenderePosition(int posx, int posy, String Ecke){ //Methode zum aendern der Position des Standart Dreiecks. x- und y-Koordinaten von der angegebenen Ecke ausgehend  
         if(StandartEcke==Ausgangsecke[0]){    //Position aendern von oberer Ecke ausgehend
         aenderePosition(posx,posy,posx-breite/2,posy+hoehe,posx+breite/2,posy+hoehe);
         }else{
@@ -111,54 +112,56 @@ public class DREIECK {
         if(StandartEcke==Ausgangsecke[2]){   ///Position aendern von oberer Ecke ausgehend  
         aenderePosition(posx-breite/2,posy-hoehe,posx-breite,posy,posx,posy);    
         }else{ 
-            System.out.println("Ungültige Ausgangsecke beim aendern der Position//Klasse: DREIECK, Methode: aenderePosition//");
-            System.out.print("Eingabe:  ");
-            System.out.println(StandartEcke);
+            Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Klasse: DREIECK\nMethode: aenderePosition \n ungültige Eingabe der Ausgangsecke \n Eingabe:  "+Ecke);
             gibAusgangsecken();
             System.exit(0);
         }}}
     }
     
-    public void aendereHoehe(int newheight){ //Methode zum aendern der Position des Standart Dreiecks. x- und y-Koordinaten von der Standart Ecke ausgehend
+    public void aendereHoehe(int newheight){
+        aendereHoehe(newheight,StandartEcke);
+    }
+    
+    public void aendereHoehe(int newheight, String Ecke){ //Methode zum aendern der Position des Standart Dreiecks. x- und y-Koordinaten von der angegebenen Ecke ausgehend
        loeschen();
        hoehe=newheight;
-        if(StandartEcke==Ausgangsecke[0]){   //Berechnen des Dreiecks von oberer Ecke ausgehend
+        if(Ecke==Ausgangsecke[0]){   //Berechnen des Dreiecks von oberer Ecke ausgehend
         positionY[0] = positionY[1]-hoehe;    //Position der 1.Ecke auf y-Achse (obere Ecke)
         }else{ 
-        if(StandartEcke==Ausgangsecke[1]){   //Berechnen des Dreiecks von linker Ecke ausgehend    
+        if(Ecke==Ausgangsecke[1]){   //Berechnen des Dreiecks von linker Ecke ausgehend    
         positionY[0] = positionY[1]+hoehe;  //Position der 1.Ecke auf y-Achse (obere Ecke)
         }else{ 
-        if(StandartEcke==Ausgangsecke[2]){  //Berechnen des Dreiecks von rechter Ecke ausgehend    
+        if(Ecke==Ausgangsecke[2]){  //Berechnen des Dreiecks von rechter Ecke ausgehend    
         positionY[0] = positionY[1]+hoehe;  //Position der 1.Ecke auf y-Achse (obere Ecke)
         }else{ 
-            System.out.println("Ungültige Ausgangsecke beim aendern der Hoehe//Klasse: DREIECK, Methode: aendereHoehe//");
-            System.out.print("Eingabe:  ");
-            System.out.println(StandartEcke);
+            Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Klasse: DREIECK\nMethode: aendereHoehe \n ungültige Eingabe der Ausgangsecke \n Eingabe:  "+Ecke);
             gibAusgangsecken();
             System.exit(0);
        }}}
         zeichnen();
     }
+    
+     public void aendereBreite(int newwidth){
+        aendereBreite(newwidth,StandartEcke);
+    }
      
-    public void aendereBreite(int newwidth){
+    public void aendereBreite(int newwidth, String Ecke){
         loeschen();
         breite=newwidth;       
-        if(StandartEcke==Ausgangsecke[0]){         //Berechnen des Dreiecks von oberer Ecke ausgehend
+        if(Ecke==Ausgangsecke[0]){         //Berechnen des Dreiecks von oberer Ecke ausgehend
         positionX[1] = positionX[0]-breite/2;      //Position der 2.Ecke auf x-Achse (linke Ecke)
         positionX[2] = positionX[0]+breite/2;      //Position der 3.Ecke auf x-Achse (rechte Ecke)
         }else{
-        if(StandartEcke==Ausgangsecke[1]){        //Berechnen des Dreiecks von linker Ecke ausgehend    
+        if(Ecke==Ausgangsecke[1]){        //Berechnen des Dreiecks von linker Ecke ausgehend    
         positionX[0] = positionX[1]+breite/2;     //Position der 1.Ecke auf x-Achse (obere Ecke)
         positionX[2] = positionX[1]+breite;       //Position der 3.Ecke auf x-Achse (rechte Ecke)
         } else {
-       if(StandartEcke==Ausgangsecke[2]){         //Berechnen des Dreiecks von rechter Ecke ausgehend    
+       if(Ecke==Ausgangsecke[2]){         //Berechnen des Dreiecks von rechter Ecke ausgehend    
         positionX[0] = positionX[2]-breite/2;     //Position der 1.Ecke auf x-Achse (obere Ecke)
         positionX[1] = positionX[2]-breite;       //Position der 2.Ecke auf x-Achse (linke Ecke)
 
        } else {
-           System.out.println("Ungültige Ausgangsecke beim aendern der Breite//Klasse: DREIECK, Methode: aendereBreite//");
-           System.out.print("Eingabe:  ");
-           System.out.println(StandartEcke);
+           Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Klasse: DREIECK\nMethode: aendereBreite \n ungültige Eingabe der Ausgangsecke \n Eingabe:  "+Ecke);
            gibAusgangsecken();
            System.exit(0);
         }}}        
@@ -185,7 +188,7 @@ public class DREIECK {
         break;
         
         default:
-        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der y-Achse//Klasse: DREIECK, Methode: bewegex//");  // Fehlermeldung bei ungültiger Eingabe der "direction"
+        Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Ungültige Richtungsangabe bei Bewegung auf der x-Achse \nKlasse: DREIECK\nMethode: bewegex \nEingabe:  "+direction);// Fehlermeldung bei ungültiger Eingabe der "direction"
         System.exit(0);
         }        
         zeichnen();
@@ -211,7 +214,7 @@ public class DREIECK {
         break;
         
         default:
-        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der y-Achse//Klasse: DREIECK, Methode: bewegey//");  // Fehlermeldung bei ungültiger Eingabe der "direction"
+        Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Ungültige Richtungsangabe bei Bewegung auf der y-Achse \nKlasse: DREIECK\nMethode: bewegey \nEingabe:  "+direction);;  // Fehlermeldung bei ungültiger Eingabe der "direction"
         System.exit(0);
         }  
         zeichnen();
@@ -230,21 +233,11 @@ public class DREIECK {
     }
     
     public void gibAusgangsecken(){  // Methode zur Ausgabe der aktuellen Ausgangsecken
-        System.out.println("-------------------------------------");
-        System.out.println("Mögliche Ausgangsecken:");       
-        for(int i=0;i<Ausgangsecke.length;i++){
-            System.out.print(i+1);
-            System.out.print(".Ausgangsecke:  ");
-            System.out.println(Ausgangsecke[i]);
-        }
-        System.out.println("-------------------------------------");
+        Dialogfenster.gibInformation("Ausgangsecken DREIECK","Mögliche Ausgangsecken:  "+Ausgangsecke[0]+", "+Ausgangsecke[1]+", "+Ausgangsecke[2]);
     }
     
     public void gibStandartEcke(){
-        System.out.println("-------------------------------------");
-        System.out.print("Standart-Ecke:  ");
-        System.out.println(StandartEcke);
-        System.out.println("-------------------------------------");
+        Dialogfenster.gibInformation("Standart-Ecke DREIECK","Standart-Ecke:  "+StandartEcke);
     }
     
     public void zeichnen(){  // Methode zum zeichnen des Dreiecks

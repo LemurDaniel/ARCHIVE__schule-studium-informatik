@@ -73,7 +73,7 @@ public class RECHTECK {
         break;
         
         default:
-        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der x-Achse//Klasse: RECHTECK, Methode: bewegex//");  // Fehlermeldung bei ungültiger Eingabe der "direction"
+        Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Ungültige Richtungsangabe bei Bewegung auf der x-Achse \nKlasse: RECHTECK\nMethode: bewegex"); // Fehlermeldung bei ungültiger Eingabe der "direction"
         System.exit(0);
         }
         zeichnen();
@@ -92,7 +92,7 @@ public class RECHTECK {
         break;
         
         default:
-        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der y-Achse//Klasse: RECHTECK, Methode: bewegey//");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
+        Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Ungültige Richtungsangabe bei Bewegung auf der y-Achse \nKlasse: RECHTECK\nMethode: bewegey");   // Fehlermeldung bei ungültiger Eingabe der "direction" 
         System.exit(0);
         } 
 		zeichnen();

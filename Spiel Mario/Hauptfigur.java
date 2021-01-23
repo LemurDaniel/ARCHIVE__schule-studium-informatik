@@ -25,8 +25,8 @@ public class Hauptfigur
     private String Bewegungsrichtungen[]={"rechtsLaufen","rechtsLaufenStop","linksLaufen"  ,"linksLaufenStop"  ,"Springen","SpringenStop"}; // Mögliche Knöpfe
     private String Knopfnamen[]         ={"Laufen"     ,"LaufenStop"      ,"zurueckLaufen","zurueckLaufenStop","Springen","SpringenStop"}; // Namen der Knöpfe unter jeweilgen Knopf gelistet
     
-    private static String SF[] = {"blablabla"  , "Mario-2"      , "Mario-3"      , "Luigi"       , "Luigi-2"      , "Luigi-3"      , "Wario"       , "Wario-2"      , "Waluigi"        , "Waluigi-2"       , "Mariotest"       , "Luigitest"       , "Wariotest"       , "Waluigitest"       ,"Yoshi"        ,"Browser"        ,"Koopa"        ,"Knochentrocken"        ,"Mario_mit_Yoshi"}; //array mit Namen aller im Spiel zu verfügung stehenden Spielfiguren
-    private String path[] =    {"pic/Mario.png","pic/Mario2.png","pic/Mario3.png","pic/Luigi.png","pic/Luigi2.png","pic/Luigi3.png","pic/Wario.png","pic/Wario2.png","pic/WaLuigi.png" ,"pic/WaLuigi2.png" ,"pic/MarioBild.png","pic/LuigiBild.png","pic/WarioBild.png","pic/WaluigiBild.png","pic/Yoshi.png","pic/Browser.png","pic/Koopa.png","pic/Knochentrocken.png","pic/Mario_mit_Yoshi.png"};  //array mit Pfaden zu den jeweiligen Bildern der Spielfiguren
+    private static String SF[] = {"blablabla"  , "Fhgfsjh,khh"      , "Mario-3"      , "Luigi"       , "Luigi-2"      , "Luigi-3"      , "Wario"       , "Wario-2"      , "Waluigi"        , "Waluigi-2"       , "Mariotest"       , "Luigitest"       , "Wariotest"       , "Waluigitest"       ,"Yoshi"        ,"Browser"        ,"Koopa"        ,"Knochentrocken"        ,"Mario mit Yoshi"        ,"DonkeyKong"        ,"Donkey mit Diddy"}; //array mit Namen aller im Spiel zu verfügung stehenden Spielfiguren
+    private String path[] =    {"pic/Mario.png","pic/Mario2.png","pic/Mario3.png","pic/Luigi.png","pic/Luigi2.png","pic/Luigi3.png","pic/Wario.png","pic/Wario2.png","pic/WaLuigi.png" ,"pic/WaLuigi2.png" ,"pic/MarioBild.png","pic/LuigiBild.png","pic/WarioBild.png","pic/WaluigiBild.png","pic/Yoshi.png","pic/Browser.png","pic/Koopa.png","pic/Knochentrocken.png","pic/Mario_mit_Yoshi.png","pic/DonkeyKong.png","pic/Donkey_mit_Diddy.png"};  //array mit Pfaden zu den jeweiligen Bildern der Spielfiguren
                                    // Hinzufügen von Spielfiguren und zuweisen Namen alleinig in dieser Klasse
     private Timer Lauftimer;
     private Timer Springhochtimer;
@@ -68,13 +68,7 @@ public class Hauptfigur
            });
              
        if(!Arrays.asList(SF).contains(Spielfigur)){ //prüfen auf gültige Werte mit Fehlerausgabe
-               System.out.println("--------------------------------------------------------------------------");
-               System.out.println("Ungültiger Eingabewert//Klasse: Hauptmap Konstruktor: public Hauptfigur((int x, int y, String Spielfigur)//");
-               System.out.print("Eingabwert:  ");
-               System.out.println(Spielfigur);
-               gibEingabewerteaus(SF);
-               System.out.println("--------------------------------------------------------------------------");
-               System.exit(0);
+           Dialogfenster.gibFehlermeldung("Ungültiger Eingabewert","Konstruktor\nKlasse:  Hauptfigur \nEingabewert:  "+Spielfigur);
        }
        posx = x;
        posy = y;
@@ -84,6 +78,10 @@ public class Hauptfigur
        for(int i=0;i<SF.length;i++){ 
           if(SF[i]==Spielfigur){Figur = new Bild(path[i] , posx, posy);break;} // zuweisen der Bildpfades, je nachdem welche Spielfigur gewählt wurde
        }  
+    }
+    
+    public void gibMöglicheEingabewerteaus(){
+       gibArrayaus("MöglicheEingabewerte:  ",SF);
     }
              
     public void zeichnen(){ // Methode zum zeichnen der objekte
@@ -95,7 +93,7 @@ public class Hauptfigur
     }
   
     public void LaufenStart(String Richtung){  // Methode um Hauptfigur laufen zu lassen
-          if(Richtung!="rechts"&&Richtung!="links"){System.out.println("Eigabefehler//Klasse: Hauptfigur Methode: LaufenStart//");System.exit(0);}
+          if(Richtung!="rechts"&&Richtung!="links"){Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Eigabefehler: \nKlasse: Hauptfigur\nMethode: LaufenStart");System.exit(0);}
           Laufrichtung=Richtung;
           Lauftimer.start();// (Laufen = Bewegung über x-Achse)
     }
@@ -106,12 +104,10 @@ public class Hauptfigur
     
     private void lauf(int zeit, int Geschwindigkeit){  //Methode um dei Figur auf der x-Achse zu bewegen
         loeschen();        
-        if(Laufrichtung=="rechts"){posx = posx + Geschwindigkeit * zeit;  // Formel um Verschiebung auf x-Achse nach rechts zu berechen  
+        if(Laufrichtung=="rechts"){posx += Geschwindigkeit * zeit;  // Formel um Verschiebung auf x-Achse nach rechts zu berechen  
             if(posx==Spielfeldende){posx = Spielfeldanfang-Bildbreite;}} // Falls Figur Zeichenfensterende erreicht wird sie an den Anfang des Zeichenfensters gesetzt
-        if(Laufrichtung=="links"){posx = posx - Geschwindigkeit * zeit;  // Formel um Verschiebung auf x-Achse nach rechts zu berechen
-            if(posx==Spielfeldanfang-Bildbreite){posx = Spielfeldende+Bildbreite;}} // Falls Figur Zeichenfensteranfang erreicht wird sie an das Ende des Zeichenfensters gesetzt
-        System.out.print(posx);
-        System.out.print(", ");
+        if(Laufrichtung=="links"){posx -= Geschwindigkeit * zeit;  // Formel um Verschiebung auf x-Achse nach rechts zu berechen
+            if(posx==Spielfeldanfang-Bildbreite){posx = Spielfeldende;}} // Falls Figur Zeichenfensteranfang erreicht wird sie an das Ende des Zeichenfensters gesetzt
         zeichnen();
     }
     
@@ -127,7 +123,7 @@ public class Hauptfigur
    private void springhoch(int zeit, int Geschwindigkeit){  //Methode um dei Figur auf der y-Achse zu bewegen
         loeschen();
         
-        posy = posy - Geschwindigkeit * zeit; //Formel um weite Groeße der Verschiebung zu berechen
+        posy -= Geschwindigkeit * zeit; //Formel um weite Groeße der Verschiebung zu berechen
         
         if(posy<=maxSprunghoehe){
                 Springhochtimer.stop();
@@ -141,7 +137,7 @@ public class Hauptfigur
        loeschen();
        
         int newposy = Geschwindigkeit * zeit;  //Formel um weite Groeße der Verschiebung zu berechen
-        posy=posy+newposy;    
+        posy+=newposy;    
                 
         if(posy>=Boden){
          Springruntertimer.stop();
@@ -154,8 +150,8 @@ public class Hauptfigur
         return SF;
     }
     
-    private void gibEingabewerteaus(String [] array){
-       System.out.print("Mögliche EingabeWerte:  ");
+    private void gibArrayaus(String Titel, String [] array){
+       System.out.print(Titel);
        for(int i=0;i<array.length;i++){
            System.out.print(array[i]);
            System.out.print(",  ");
@@ -166,13 +162,7 @@ public class Hauptfigur
     public void erstelleKnopf(String Knopf){  // Methode zum erstellen von ausgewählten Knöpfen im Zeichenfenster
         
         if(!Arrays.asList(Bewegungsrichtungen).contains(Knopf)){ //prüfen auf ungültige Werte
-            System.out.println("--------------------------------------------------------------------------");
-            System.out.println("Ungültiger Eingabewert//Klasse: Hauptfigur, Methode: erstelleKnopf//");
-            System.out.print("Eingabewert:  ");
-            System.out.println(Knopf);
-            gibEingabewerteaus(Bewegungsrichtungen);
-            System.out.println("--------------------------------------------------------------------------");
-            System.exit(0);
+            Dialogfenster.gibFehlermeldung("Ungültiger Eingabewert","Klasse: Hauptfigur\nMethode: erstelleKnopf\nEingabewert:  "+Knopf);
         }
    
         if(Knopf==Bewegungsrichtungen[0]){           // erstellen des Laufen Knopfes mit der Funktion die LaufenBewegung zu Starten

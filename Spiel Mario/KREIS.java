@@ -70,7 +70,7 @@ public class KREIS {
         break;
         
         default:
-        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der x-Achse//Klasse: KREIS, Methode: bewegex//");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
+        Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Ungültige Richtungsangabe bei Bewegung auf der x-Achse \nKlasse: KREIS\nMethode: bewegex");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
         System.exit(0);
         }
         
@@ -90,7 +90,7 @@ public class KREIS {
         break;
         
         default:
-        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der y-Achse//Klasse: KREIS, Methode: bewegey//");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
+        Dialogfenster.gibFehlermeldung("Ungültige Eingabe","Ungültige Richtungsangabe bei Bewegung auf der y-Achse \nKlasse: RECHTECK\nMethode: bewegey");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
         System.exit(0);
         }
         
