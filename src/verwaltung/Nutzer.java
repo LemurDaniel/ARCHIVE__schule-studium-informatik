@@ -32,6 +32,8 @@ public class Nutzer extends DB_Manager {
 	private Rechte rechte = new Rechte();
 	private ReadOnlyBooleanWrapper angemeldet = new ReadOnlyBooleanWrapper(false);
 
+	private static boolean logingIn = false;
+	
 	private Nutzer() {};
 	
 	private void setNutzer(ResultSet rs) throws SQLException{
@@ -47,11 +49,14 @@ public class Nutzer extends DB_Manager {
 	}
 	
 	public static void anmeldenKonto(String name, String passwort) throws SQLException, LogInException {	
+		if(logingIn)	return;
 		try(Connection con = con()){
 			anmeldenKonto(name, passwort, con);
 		}
 	}	
 	private static void anmeldenKonto(String name, String passwort, Connection con) throws SQLException, LogInException {	
+		if(logingIn)	return;
+		logingIn = true;
 		
 		try(Statement st = con.createStatement()){			
 			//Existiert Nutzer?
@@ -123,7 +128,10 @@ public class Nutzer extends DB_Manager {
 					Listenverwaltung.instance().ladeListen(conn);
 					FensterManager.logErreignis("\nSie haben sich Erfolgreich mit dem Konto "+instance.getName()+" angemeldet", Color.GREEN);	
 					instance.getRechte().log();
-					Platform.runLater(()->FensterManager.setPrimaryStage(FensterManager.getHauptSeite()));
+					Platform.runLater(()->{
+						FensterManager.setPrimaryStage(FensterManager.getHauptSeite());
+						logingIn = false;
+					});
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

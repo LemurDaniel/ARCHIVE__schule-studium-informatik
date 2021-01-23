@@ -31,6 +31,12 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 			while(rs.next())
 				addObj(new Rezension(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6), film));	
 		}
+		
+		try(Statement st = con.createStatement()){
+			try(ResultSet rs = st.executeQuery("Select bewertung from film where id="+film.getId())){
+				film.setBewertung(rs.getInt(1));
+			}
+		}
 	}
 
 	public boolean existiert(int rid) {
@@ -107,12 +113,14 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		super.onAddSucess(rez, con);
 		System.out.println(rez.getVerfasserId()+ "   "+Nutzer.getNutzer().getId());
 		FensterManager.logErreignis(String.format("\nDie Rezension '%s' mit %d Sternen wurde erfolgreich zum Film '%s' hinzugefügt", rez.getTitel(), rez.getBewertung(), film.getTitel()));
+		lade(con);
 		FensterManager.logErreignis(String.format("Die Filmbewertung wurde auf %s geändert", film.getBwtStringProperty().get()));
 	}
 	@Override
 	protected void onUpdateSucess(Rezension rez, Connection con) 	throws SQLException, InterruptedException{
 		super.onUpdateSucess(rez, con);
 		FensterManager.logErreignis(String.format("\nDie Rezension '%s' zum Film '%s' wurde erfolgreich auf ´%d Sterne geändert", rez.getTitel(), film.getTitel(), rez.getBewertung()));
+		lade(con);
 		FensterManager.logErreignis(String.format("Die Filmbewertung wurde auf %s geändert", film.getBwtStringProperty().get()));
 	}
 	
