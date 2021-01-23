@@ -6,9 +6,8 @@ import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Person {
+public class Person extends Entitaet{
 	
-	private int id;
 	public StringProperty vorname;
 	public StringProperty name;
 	public List<String> rolle;   
@@ -18,7 +17,7 @@ public class Person {
 	}
 	
 	public Person(int id, String vorname, String name, String rolle){
-		this.id = id;
+		super(id);
 		this.vorname = new SimpleStringProperty(vorname);
 		this.name = new SimpleStringProperty(name);
 		this.rolle = new ArrayList<>();
@@ -38,9 +37,6 @@ public class Person {
 
 	public String getName() {
 		return name.get();
-	}
-	public int getId() {
-		return id;
 	}
 	
 	public StringProperty getVornameProperty() {
@@ -63,33 +59,32 @@ public class Person {
 		this.rolle.add(rolle);
 	}
 	public void removeRolle(String rolle) {
+		if(rolle==null)return;
 		this.rolle.remove(rolle);
 	}
 	public void addRollen(List<String> rollen) {
 		if(rollen==null)return;
 		rollen.forEach(r->rolle.add(r));
 	}
-	
-	public Person getCopy() {
-		Person p = new Person(id,vorname.get(),name.get());
-		p.addRollen(rolle);
-		return p;
-	}
 
 	public List<String> getRollen() {
-		return rolle;
+		return new ArrayList<>(this.rolle);
 	}
 	
 	
 	
-	
+	public Person getCopy() {
+		Person p = new Person(getId(),vorname.get(),name.get());
+		p.addRollen(getRollen());
+		return p;
+	}
 	
 	public List<PersonMitRolle> getPersonenMitRolle(){
-		List<PersonMitRolle> l = new ArrayList<>();
+		List<PersonMitRolle> list = new ArrayList<>();
 		rolle.forEach(r->{
-			l.add(new PersonMitRolle(r, this));
+			list.add(new PersonMitRolle(r, this));
 		});
-		return l;
+		return list;
 	}
 	
 	public class PersonMitRolle {

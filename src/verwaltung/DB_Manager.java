@@ -9,12 +9,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import verwaltung.entitaeten.Nutzer;
-
 public class DB_Manager {
 	
 	
-	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=TEST";
+	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=FilmDB";
 	private static String user = "DanielTest";
 	private static String password = "Test";
 	
@@ -36,7 +34,6 @@ public class DB_Manager {
 //			password = "wifuser";
 //		}
 		InstanzAnmelden();
-		metaDaten();
 		System.out.println(maxSize.size());
 		maxSize.forEach( (k,o)->System.out.println(k+"   "+o));
 	}
@@ -50,13 +47,16 @@ public class DB_Manager {
 	}
 	
 	public static void InstanzAnmelden() {
-		try(Connection con = getCon();){
-			PreparedStatement ps = con.prepareStatement("insert into instanz(angemeldet, online) values(?, 1); select SCOPE_IDENTITY();");
+		try(Connection con = DriverManager.getConnection(url, user, password);
+				PreparedStatement ps = con.prepareStatement("insert into instanz(angemeldet, connectionsMade) values(?, 1); select SCOPE_IDENTITY();");){
 			ps.setString(1, LocalDateTime.now().toString());
-			ResultSet rs = ps.executeQuery();
-			rs.next();
-			ApplikationsId = rs.getInt(1);
-			System.out.println("app  "+ApplikationsId);
+			
+			try(ResultSet rs = ps.executeQuery();){
+				rs.next();
+				ApplikationsId = rs.getInt(1);
+				System.out.println("app  "+ApplikationsId);
+			}
+			metaDaten(con);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -71,8 +71,8 @@ public class DB_Manager {
 				e1.printStackTrace();
 			}
 
-		try(Connection con = getCon();){
-			PreparedStatement ps = con.prepareStatement("Update instanz set abgemeldet=?, online=0 where id=?;");
+		try(Connection con = getCon();
+				PreparedStatement ps = con.prepareStatement("Update instanz set abgemeldet=? where id=?;");){
 			ps.setString(1, LocalDateTime.now().toString());
 			ps.setInt(2, ApplikationsId);
 			ps.execute();
@@ -85,23 +85,26 @@ public class DB_Manager {
 	
 	protected static Connection getCon() throws SQLException {
 		Connection con = DriverManager.getConnection(url, user, password);
-		try {	
+		try (PreparedStatement ps1 = con.prepareStatement("update instanz set connectionsMade=? where id=?");){	
 			
-			if(Nutzer.getNutzer().isAngemeldet()) {
-				if(!Nutzer.getNutzer().getRechte().isMultiLogin()) {
-					PreparedStatement ps = con.prepareStatement("Select iid from instanz_nutzer where nid=? and iid=?;");
-					ps.setInt(1, Nutzer.getNutzer().getId());
-					ps.setInt(2, ApplikationsId);
-					ResultSet rs = ps.executeQuery();
-					
-					if(!rs.next()) {
-						Nutzer.getNutzer().abmelden();
-						throw new SQLException("Sie wurden von einer anderen Applikation ausgeloggt");
+			if(Nutzer.getNutzer().isAngemeldet() && !Nutzer.getNutzer().getRechte().isMultiLogin()) {
+				try(PreparedStatement ps2 = con.prepareStatement("Select iid from instanz_nutzer where nid=? and iid=?");){
+					ps2.setInt(1, Nutzer.getNutzer().getId());
+					ps2.setInt(2, ApplikationsId);
+						
+					try(ResultSet rs = ps2.executeQuery();){							
+						if(!rs.next()) {
+							Nutzer.getNutzer().abmelden();
+							throw new SQLException("Sie wurden von einer anderen Applikation ausgeloggt");
+						}
 					}
 				}
 			}
-
-			System.out.println("Connection: "+ ++connectionsCreated);
+		
+			ps1.setInt(1, ++connectionsCreated);
+			ps1.setInt(2, ApplikationsId);
+			ps1.executeUpdate();
+			System.out.println("Connection: "+ connectionsCreated);
 			return con;
 		} catch (SQLException e) {
 			con.close();
@@ -110,9 +113,9 @@ public class DB_Manager {
 	}
 	
 	
-	private static void metaDaten() {
-		try(Connection con = getCon()){
-			ResultSet rs = con.getMetaData().getColumns(null, "dbo", null, null);
+	private static void metaDaten(Connection con) throws SQLException {
+			
+		try(ResultSet rs = con.getMetaData().getColumns(null, "dbo", null, null)){
 
 			while(rs.next()) {
 				String col = rs.getString("COLUMN_NAME");
@@ -135,8 +138,6 @@ public class DB_Manager {
 					else if(col.equals("name"))		maxSize.put("PerName", size);
 				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 

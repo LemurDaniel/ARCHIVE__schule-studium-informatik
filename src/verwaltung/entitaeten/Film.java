@@ -9,26 +9,25 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import verwaltung.verwaltungen.Personenverwaltung;
-import verwaltung.verwaltungen.Rezensionenverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.VerwaltungenWrapper;
 
-public class Film {
+public class Film extends Entitaet {
 	
-	private int id, erstellerId;
+	private int erstellerId;
 	private List<Genre> genres;
 	private ReadOnlyStringWrapper titel, dauer_string, genre_string;
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
 	private ReadOnlyFloatWrapper bewertung;
 	
-	private Personenverwaltung pvw;
-	private Rezensionenverwaltung rvw;
-	
+	private VerwaltungenWrapper unterverwaltungen;
 //	public Film(int id, int erstellerId, String titel, int dauer, int erscheinungsjahr, float bewertung) {
 //		this(id, erstellerId, titel, null, dauer, erscheinungsjahr, bewertung);
 //	}
 	
 	public Film(int id, int erstellerId, String titel, int dauer, int erscheinungsjahr, float bewertung) {
-		this.id = id;
+		super(id);
 		this.erstellerId = erstellerId;
 		this.titel = new ReadOnlyStringWrapper(titel);
 		//this.genre = genre;
@@ -38,12 +37,10 @@ public class Film {
 		this.bewertung = new ReadOnlyFloatWrapper(bewertung);
 		genre_string = new ReadOnlyStringWrapper("");
 		genres = new ArrayList<>();
+		unterverwaltungen = new VerwaltungenWrapper(this);
 	}
 	
 	
-	public int getId() {
-		return id;
-	}
 	public int getErstellerId() {
 		return erstellerId;
 	}
@@ -79,18 +76,11 @@ public class Film {
 	return genre_string.getReadOnlyProperty();
 }
 	public List<Genre> getGenres() {
-		return genres;
+		return new ArrayList<>(genres);
 	}
 	
-	public Rezensionenverwaltung getRvw() {
-		if(rvw == null)
-			rvw = new Rezensionenverwaltung(this);
-		return rvw;
-	}
-	public Personenverwaltung getPvw() {
-		if(pvw == null)
-			pvw = new Personenverwaltung(this);
-		return pvw;
+	public VerwaltungenWrapper getUnterverwaltungen() {
+		return unterverwaltungen;
 	}
 	
 	
@@ -107,6 +97,8 @@ public class Film {
 	public void setErscheinungsjahr(int jahr) {
 		this.erscheinungsjahr.set(jahr);
 	}
+	
+	
 	public void addGenre(Genre genre) {
 		genres.add(genre);
 		genres.sort((o1,o2)->o1.compare(o1, o2));

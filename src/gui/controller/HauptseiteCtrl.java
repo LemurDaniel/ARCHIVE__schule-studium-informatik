@@ -12,8 +12,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
-import verwaltung.entitaeten.Nutzer;
 import verwaltung.verwaltungen.Filmverwaltung;
 
 public class HauptseiteCtrl {

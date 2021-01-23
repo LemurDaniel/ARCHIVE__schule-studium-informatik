@@ -1,16 +1,17 @@
-package verwaltung;
+package verwaltung.verwaltungen;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import verwaltung.DB_Manager;
+import verwaltung.entitaeten.Entitaet;
 
-public abstract class Verwaltung <T> extends DB_Manager{
+public abstract class Verwaltung <T extends Entitaet> extends DB_Manager{
 	
 
 	/** VAR */
-	//protected ObservableList<T> list = FXCollections.observableArrayList();
 	private ObservableList<T> liste;
 	protected List<T> list; 
 	

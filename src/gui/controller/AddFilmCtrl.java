@@ -41,7 +41,7 @@ import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.verwaltungen.Filmverwaltung;
-import verwaltung.verwaltungen.Personenverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 public class AddFilmCtrl {
 
@@ -67,7 +67,7 @@ public class AddFilmCtrl {
 			
 		this.film = film;		
 		if(film!=null) {
-			pvw = film.getPvw();
+			pvw = film.getUnterverwaltungen().getPvw();
 			pvw.load();
 		}else
 			pvw = null;
@@ -341,7 +341,7 @@ public class AddFilmCtrl {
     			//Wenn kein Film vorhanden
     			if(film==null) {
     				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), selected, dauer, jahr );
-    				pvw = new Personenverwaltung(film);
+    				pvw = film.getUnterverwaltungen().getPvw();
     			}else		
     				Filmverwaltung.instance().updateFilm(tf_titel.getText(), selected, dauer, jahr, film);
     		}

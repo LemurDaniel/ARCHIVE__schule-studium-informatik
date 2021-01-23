@@ -28,15 +28,16 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.input.KeyEvent;
+import verwaltung.Nutzer;
+import verwaltung.Nutzer.Rechte;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
-import verwaltung.entitaeten.Nutzer;
-import verwaltung.entitaeten.Nutzer.Rechte;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.entitaeten.Rezension;
 import verwaltung.verwaltungen.Filmverwaltung;
-import verwaltung.verwaltungen.Personenverwaltung;
-import verwaltung.verwaltungen.Rezensionenverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.VerwaltungenWrapper;
 
 public class DetailCtrl {
 
@@ -47,8 +48,8 @@ public class DetailCtrl {
 	private Map<Genre, BooleanProperty> checked_genre = new HashMap<>();
 	
 	private Rezension displayed;
-	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
+	private Personenverwaltung pvw;
 	
 	private long lastMouseClick;
 
@@ -60,11 +61,11 @@ public class DetailCtrl {
 		if(this.film!=null && this.film.equals(film))
 			return;
         
-		pvw = film.getPvw();
-		rvw = film.getRvw();
-		rvw.loadIfnotLoaded();
-		pvw.loadIfnotLoaded();
-
+		VerwaltungenWrapper vw = film.getUnterverwaltungen();
+		vw.loadIfnotLoaded();
+		rvw = vw.getRvw();
+		pvw = vw.getPvw();
+		
         table.setItems(FXCollections.observableArrayList(pvw.getPersonenMitRollen()));
         table1.setItems(rvw.getList());
 		

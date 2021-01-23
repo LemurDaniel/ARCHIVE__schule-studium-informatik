@@ -14,8 +14,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.stage.Stage;
 import verwaltung.DB_Manager;
+import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
-import verwaltung.entitaeten.Nutzer;
 
 public class FensterManager {
 
@@ -72,8 +72,6 @@ public class FensterManager {
     		detail.setScene(new Scene(loader.getRoot()));
 		}
 		detailCtrl.setFilm(film);
-		if(!detail.isShowing())	detail.show();
-		detail.requestFocus();
 		return detail;
 	}
 	
@@ -95,8 +93,6 @@ public class FensterManager {
     		addFilm.setScene(new Scene(loader.getRoot()));
 		}
 		addFilmCtrl.setFilm(film);
-		if(!addFilm.isShowing())	addFilm.show();
-		addFilm.requestFocus();
 		return addFilm;
 	}
 	
@@ -109,8 +105,6 @@ public class FensterManager {
 			anmeldenCtrl = loader.getController();
 			anmelden.setScene(new Scene(loader.getRoot()));
 		}
-		if(!anmelden.isShowing()) anmelden.show();
-		anmelden.requestFocus();
 		return anmelden;
 	}
 	
@@ -123,17 +117,18 @@ public class FensterManager {
 			hauptseiteCtrl = loader.getController();
 			hauptseite.setScene(new Scene(loader.getRoot()));
 		}
-		if(!hauptseite.isShowing()) hauptseite.show();
-		hauptseite.requestFocus();
 		return hauptseite;
 	}
 	
-	public static void setPrimaryStage(Stage primaryStage) {
-		if(FensterManager.primaryStage!=null)	FensterManager.primaryStage.close();
-		FensterManager.primaryStage = primaryStage;
+	public static void setPrimaryStage(Stage stage) {
+		if(primaryStage!=null)	primaryStage.close();
+		primaryStage = stage;
+		primaryStage.requestFocus();
+		primaryStage.show();
 		
-		FensterManager.primaryStage.setOnCloseRequest(ev->{
+		primaryStage.setOnCloseRequest(ev->{
 			ev.consume();
+			
 			Alert a = new Alert(AlertType.CONFIRMATION);
 			a.setTitle("Anwendung Beenden");
 			a.setContentText("Möchten sie die Anwendung wirklich beenden");
@@ -148,9 +143,11 @@ public class FensterManager {
 		});
 	}
 	
-	public static void setDialog(Stage dialog) {
-		if(FensterManager.dialog!=null && FensterManager.dialog!=dialog)	FensterManager.dialog.close();
-		FensterManager.dialog = dialog;
+	public static void setDialog(Stage stage) {
+		if(dialog!=null && dialog!=stage)	dialog.close();
+		dialog = stage;
+		dialog.requestFocus();
+		dialog.show();
 	}
 	
 	public static void reset() {

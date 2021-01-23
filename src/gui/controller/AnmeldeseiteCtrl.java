@@ -14,7 +14,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import verwaltung.entitaeten.Nutzer;
+import verwaltung.Nutzer;
 
 public class AnmeldeseiteCtrl {
 

@@ -5,14 +5,14 @@ import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 
-public class Rezension {
+public class Rezension extends Entitaet{
 	
-	private int id, verfasserId;
+	private int verfasserId;
 	private ReadOnlyStringWrapper titel, inhalt, verfasser;
 	private ReadOnlyIntegerWrapper bewertung;
 	
 	public Rezension(int id, String titel, String inhalt, String verfasser, int verfasserId, int bewertung) {
-		this.id = id;
+		super(id);
 		this.verfasserId = verfasserId;
 		this.titel = new ReadOnlyStringWrapper(titel);
 		this.inhalt = new ReadOnlyStringWrapper(inhalt);
@@ -35,9 +35,6 @@ public class Rezension {
 	}
 	public int getVerfasserId() {
 		return verfasserId;
-	}
-	public int getId() {
-		return id;
 	}
 	
 	
