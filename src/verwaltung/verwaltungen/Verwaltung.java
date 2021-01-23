@@ -26,7 +26,7 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 	private Stack<T> delete, add, update;
 	private List<T> deleteErr, addErr, updateErr;
 	
-	private List<Exception>	fehlerlog;
+	protected List<Exception>	fehlerlog;
 	
 	private List<T> list; 
 	
@@ -91,6 +91,8 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 				entitaet = temp;
 			}
 		}
+		
+		observablelist.forEach(f->System.out.println(f));
 		observablelist.add(entitaet);
 	}
 	public void removeEntitaet(T entitaet) {
@@ -133,6 +135,9 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 			deleteErr.forEach(delete::push);
 			updateErr.forEach(update::push);
 			addErr.forEach(add::push);
+			
+			System.out.println("ttttttttttttttt");
+			add.forEach(l->System.out.println(l));
 			
 			deleteErr.clear();
 			updateErr.clear();

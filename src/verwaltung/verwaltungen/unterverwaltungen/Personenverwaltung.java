@@ -36,7 +36,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	private void aktualisierePmrliste() {
 		pmrliste.clear();
-		getList().forEach(per->pmrliste.addAll(per.getPersonenMitRolle()));
+		getObList().forEach(per->pmrliste.addAll(per.getPersonenMitRolle()));
 	}
 	
 	@Override

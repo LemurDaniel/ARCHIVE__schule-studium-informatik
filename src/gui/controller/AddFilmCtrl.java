@@ -222,12 +222,12 @@ public class AddFilmCtrl {
 
     private void resetFilm() {
 		fvw.reset();
-		fvw.getObList().forEach(f->f.getPvw().reset());
 		if(film.getId()==-1) {
 			film = new Film(-1, 0, "", 0, 0, 0);
 			pvw = film.getPvw();
 		}
 		setDisplay();
+		setTable();
 	}
 	@FXML
     void initialize() {
@@ -364,6 +364,7 @@ public class AddFilmCtrl {
        	
     	if(pmr.getPerson().getId()!=-1 && pmr.getUpdateProperty().get()==false)	{
         	pvw.updateEntitaet(pmr.getPerson());
+        	backupfilm();
         	pmr.getUpdateProperty().set(true);
     	}
        	
@@ -383,6 +384,7 @@ public class AddFilmCtrl {
 
     private void addPerson() {
     	PersonMitRolle pmr = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0) ).getPersonenMitRolle().get(0);
+    	backupfilm();
     	pvw.addEntitaet(pmr.getPerson());
     	pmr.getUpdateProperty().set(true);
     }
@@ -411,7 +413,7 @@ public class AddFilmCtrl {
     	
     	try(Connection con = DB_Manager.getCon()){
     		fvw.save(con);
-    		for(Film f: fvw.getObList())	film.getPvw().save(con);
+    		fvw.getFehlerlog().forEach(f->System.out.println(f.getMessage()));
     	}catch(Exception e) {
     		//fvw.reset();
     		//pvw.reset();
