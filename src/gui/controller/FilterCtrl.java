@@ -141,8 +141,8 @@ public class FilterCtrl {
     	
     	
     	
-    	tf_anzahl = new IntegerMinMaxTextField(100, 1000, " Ergebnisse");
-    	tf_anzahl.setDefVal(100);
+    	tf_anzahl = new IntegerMinMaxTextField(Filmverwaltung.getMinErgebnisse(), Filmverwaltung.getMaxErgebnisse(), " Ergebnisse");
+    	tf_anzahl.setDefVal(Filmverwaltung.getMinErgebnisse());
     	tf_anzahl.getStyleClass().add("tf_kurz");
     	hb_anzahl.getChildren().add(tf_anzahl);
     	hb_anzahl.getChildren().add(new Label());

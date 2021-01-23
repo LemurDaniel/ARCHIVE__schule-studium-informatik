@@ -144,24 +144,37 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		
 		StringBuilder sb = new StringBuilder();
 
-//		sb.append("Select * from film join "
-//					+"(Select fid from (Select * from genre_film where gid in(75, 72)) as g "
-//					+"group by fid Having count(g.gid)=2) as fmg "
-//				+ "on fmg.fid = film.id ");
+		//Genre ODER
+		//Select id, ... from
+		//	(Select Top (?) * from 
+		//		(Select fid from genre_film where gid in ( ?,... ) group by fid  ) as fmg 
+		//	join film on fmg.fid=film.id where ...) as filtered 
+		//join genre_film on genre_film.fid=filtered.fid order by id
 		
-		sb.append("Select Top (?) * from film ");
+		//Genre UND
+		//Select id, ... from
+		//	(Select Top (?) * from 
+		//		(Select fid from genre_film where gid in ( ?,... ) group by fid  Having count(gid)=?) as fmg 
+		//	join film on fmg.fid=film.id where...) as filtered 
+		//join genre_film on genre_film.fid=filtered.fid order by id
 		
-		if(genre.size()!=0) {		
-			sb.append("join ");
-				sb.append("(Select fid from (Select * from genre_film where gid in ( ");			// In( ?, ... ) kurz für multiple Or
+		//Kein Genre ausgewählt
+		//Select id, ... from (Select Top (?) film.id as fid, * from film where ... ) as filtered 
+		//join genre_film on genre_film.fid=filtered.fid order by id 
+		
+		sb.append("Select id, titel, dauer, erscheinungsjahr, bewertung, ersteller, gid from ");
+		
+		if(genre.size()!=0) {
+			sb.append("(Select Top (?) * from ");
+				sb.append("(Select fid from genre_film where gid in ( ");			// In( ?, ... ) kurz für multiple Or
 				for(int i=0; i<genre.size(); i++) 
-					sb.append("?" + (i==genre.size()-1 ? ")) as g group by fid ":", ") );
-				if(and) sb.append("Having count(g.gid)=? ");
+					sb.append("?" + (i==genre.size()-1 ? " ) group by fid ":", ") );
+				if(and) sb.append("Having count(gid)=? ");
 				sb.append(") as fmg ");
-			sb.append("on fmg.fid = film.id ");
-		}
+				sb.append("join film on fmg.fid=film.id ");
+		}else
+			sb.append("(Select Top (?) film.id as fid, * from film ");
 		
-		sb.append("join genre_film on film.id=genre_film.fid ");
 		sb.append("where ");
 		
 		if(titel!=null)	sb.append("titel Like ? and ");
@@ -174,7 +187,9 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			for(int i=0; i<tags.size(); i++) 
 				sb.append("titel Like ? "+ (i==tags.size()-1 ? ") ":"or ") );
 		}
-		sb.append("order by film.id ");
+		sb.append(") as filtered ");
+		sb.append("join genre_film on genre_film.fid=filtered.fid ");
+		sb.append("order by id ");
 		
 		System.out.println(sb.toString());
 		
@@ -253,5 +268,11 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	}
 	public static int getMaxGenre() {
 		return maxSize.get("Genre");
+	}
+	public static int getMinErgebnisse() {
+		return maxSize.get("MinErgebnisse");
+	}
+	public static int getMaxErgebnisse() {
+		return maxSize.get("MaxErgebnisse");
 	}
 }

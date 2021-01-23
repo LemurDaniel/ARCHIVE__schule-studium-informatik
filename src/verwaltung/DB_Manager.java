@@ -160,6 +160,8 @@ public class DB_Manager {
 		maxSize.put("MinJahr", 1878);	//The Horse In Motion
 		maxSize.put("MaxJahr", LocalDate.now().getYear());
 		maxSize.put("Genre", 5);
+		maxSize.put("MinErgebnisse", 10);
+		maxSize.put("MaxErgebnisse", 1000);
 		
 		genre = new HashMap<>();
 		try(Statement st = con.createStatement();
