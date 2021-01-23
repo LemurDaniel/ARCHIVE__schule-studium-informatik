@@ -12,6 +12,7 @@ import java.util.function.UnaryOperator;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import fxControls.CustomTextField;
 import fxControls.MinMaxTextField;
 import gui.FensterManager;
 import javafx.beans.property.BooleanProperty;
@@ -109,13 +110,13 @@ public class AddFilmCtrl {
 		blocked = false;
 		
 		if(film == null) {
-			tf_titel.setText(null);
-			tf_dauer.setText(null);
-			tf_jahr.setText(null);
+			tf_titel.setDefVal(null);
+			tf_dauer.setDefVal(null);
+			tf_jahr.setDefVal(null);
 			tf_genre.setText(null);
 			tf_bewertung.setText(null);
 		}else {
-			tf_titel.setText(film.getTitel());
+			tf_titel.setDefVal(film.getTitel());
 			tf_dauer.setDefVal(film.getDauer());
 			tf_jahr.setDefVal(film.getErscheinungsjahr());
 			tf_bewertung.setText(film.getBewertung()+"");
@@ -150,18 +151,18 @@ public class AddFilmCtrl {
 	    private Button btn_detail;
 
 	    @FXML
-	    private TextField tf_titel;
-
-	    @FXML
 	    private TextField tf_genre;
 
 	    @FXML
 	    private TextField tf_bewertung;
 	    
 	    @FXML
+	    private HBox hb_titel;
+	    @FXML
 	    private HBox hb_dauer;
 	    @FXML
 	    private HBox hb_jahr;
+	    private CustomTextField<String> tf_titel;
 	    private MinMaxTextField tf_dauer;
 	    private MinMaxTextField tf_jahr;
 
@@ -223,29 +224,19 @@ public class AddFilmCtrl {
     void initialize() {
         accordion.setExpandedPane(tp_allg);
         
-        tf_titel.setTextFormatter(new TextFormatter<>( (UnaryOperator<TextFormatter.Change>) change-> {
-        	int maxlen = Filmverwaltung.getMaxTitel();
-			if(change.getControlNewText().length()>=maxlen) {
-				int z = maxlen - (change.getControlNewText().length() - change.getText().length());
-				change.setText( change.getText().substring(0, z) );
-			}
-			return change;	
-        }));
-        tf_titel.focusedProperty().addListener((ob,ov,focused)->{
-        	if(!focused && film!=null && (tf_titel.getText()==null || tf_titel.getText().length()==0) )
-        		tf_titel.setText(film.getTitel());
-        });
+        /** Allg **/
+        tf_titel = new CustomTextField<>(Filmverwaltung.getMaxTitel());
+        hb_titel.getChildren().add(tf_titel);
         
         tf_dauer = new MinMaxTextField(0, Filmverwaltung.getMaxDauer());
         tf_jahr = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
-        tf_dauer.setPromptText("Laufzeit");
-        tf_dauer.setSchwanzF( (Supplier<String>) ()->{
-        	return " Minuten "+Film.getGenaueZeit(tf_dauer.getValue());
-        });
-        tf_jahr.setPromptText("Erscheinungsjahr");
+        tf_dauer.setTailSupplier( ()->" Minuten "+Film.getGenaueZeit(tf_dauer.getValue())	);
         hb_dauer.getChildren().add(tf_dauer);
         hb_jahr.getChildren().add(tf_jahr);
-        
+             
+        tf_titel.setPromptText("Filmtitel");
+        tf_dauer.setPromptText("Laufzeit");
+        tf_jahr.setPromptText("Erscheinungsjahr");
         
         tf_bewertung.setDisable(true);
         tf_genre.setEditable(false);
@@ -255,15 +246,12 @@ public class AddFilmCtrl {
         table_genre.setEditable(true);
         table_genre.setItems(FXCollections.observableArrayList(Filmverwaltung.getGenres()));
         table_genre.getSelectionModel().selectedItemProperty().addListener( (ob,ov,nv)->{
-        	if(nv!=null)
-        		ta_genre.setText(nv.getText());
-        	else
-        		ta_genre.setText(null);
+        	if(nv!=null)	ta_genre.setText(nv.getText());
+        	else			ta_genre.setText(null);
         });
         
-        t_check.setCellFactory(CheckBoxTableCell.forTableColumn(t_check));
-        
         Filmverwaltung.getGenres().forEach(genre->checked_genre.put(genre, new SimpleBooleanProperty(false)));
+        t_check.setCellFactory(CheckBoxTableCell.forTableColumn(t_check));
         t_check.setCellValueFactory(data->checked_genre.get(data.getValue()));
         t_genre.setCellValueFactory(data->new SimpleStringProperty( data.getValue().getGenre() ));
 
@@ -307,7 +295,7 @@ public class AddFilmCtrl {
         t_confirm1.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm1));
         t_confirm2.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm2));
         
-        
+        //Konvertiere Rolle zu String für t_rolle spalte
         StringConverter<Rolle> stconv = new StringConverter<Rolle>() {
 			@Override
 			public String toString(Rolle object) {
@@ -323,7 +311,7 @@ public class AddFilmCtrl {
         t_vorname.setOnEditCommit(	data->{
         	String val = data.getNewValue();
         	if(val.length()>Personenverwaltung.getMaxVorname())
-        		val = val.substring(0, Personenverwaltung.getMaxVorname());
+        		val = val.substring(0, Personenverwaltung.getMaxVorname());	//Wenn Eingabe zu Lang abschneiden.
         	data.getRowValue().getPerson().setVorname(val);
         	changes[1]=true;
         });

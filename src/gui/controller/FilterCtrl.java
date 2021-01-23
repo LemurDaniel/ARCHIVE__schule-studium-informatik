@@ -6,6 +6,7 @@ import java.util.function.UnaryOperator;
 
 import org.controlsfx.control.CheckComboBox;
 
+import fxControls.CustomTextField;
 import fxControls.MinMaxTextField;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -23,7 +24,7 @@ import verwaltung.verwaltungen.Filmverwaltung;
 public class FilterCtrl {
 
     @FXML
-    private TextField tf_titel;
+    private HBox hb_titel;
 
     @FXML
     private HBox hb_bwt;
@@ -49,33 +50,28 @@ public class FilterCtrl {
     @FXML
     private Button btn_reset;
     
-    
-    private CheckBox cb_genreVerkuepfung;  
+    private CustomTextField<String> tf_titel;
     private MinMaxTextField tf_bwtMin, tf_bwtMax;
     private MinMaxTextField tf_dauerMin, tf_dauerMax;
     private MinMaxTextField tf_jahrMin, tf_jahrMax;
     private MinMaxTextField tf_anzahl;
+    private CheckBox cb_genreVerkuepfung;  
     private CheckComboBox<Genre> cb_genre;
 
     @FXML
     void initialize() { 	
-    	tf_titel.setTextFormatter(new TextFormatter<>( (UnaryOperator<TextFormatter.Change>) change->{
-    		int maxlen = Filmverwaltung.getMaxTitel();
-				if(change.getControlNewText().length()>=maxlen) {
-					int z = maxlen - (change.getControlNewText().length() - change.getText().length());
-					change.setText( change.getText().substring(0, z) );
-				}
-				return change;		
-		}));
- 
+    	tf_titel = new CustomTextField<>(Filmverwaltung.getMaxTitel());
+    	hb_titel.getChildren().add(tf_titel);
+    	tf_titel.setPromptText("Filmtitel");
+    	
     	
     	tf_bwtMin = new MinMaxTextField(0, 10, " Sterne");
     	tf_bwtMax = new MinMaxTextField(0, 10, " Sterne");
     	tf_bwtMin.setPromptText("Bewertung Minimum");
     	tf_bwtMax.setPromptText("Bewertung Maximum");
     	
-    	tf_bwtMax.setMintf(tf_bwtMin);
-    	tf_bwtMin.setMaxtf(tf_bwtMax);
+    	tf_bwtMax.setMinSupplier( ()->tf_bwtMin.getValue() );
+    	tf_bwtMin.setMaxSupplier( ()->tf_bwtMax.getValue() );
     	
     	hb_bwt.getChildren().add(tf_bwtMin);
     	hb_bwt.getChildren().add(new Label("bis"));
@@ -88,8 +84,8 @@ public class FilterCtrl {
     	tf_dauerMin.setPromptText("Laufzeit Minimum");
     	tf_dauerMax.setPromptText("Laufzeit Maximum");
     	
-    	tf_dauerMax.setMintf(tf_dauerMin);
-    	tf_dauerMin.setMaxtf(tf_dauerMax);
+    	tf_dauerMax.setMinSupplier( ()->tf_dauerMin.getValue() );
+    	tf_dauerMin.setMaxSupplier( ()->tf_dauerMax.getValue() );
     	
     	hb_dauer.getChildren().add(tf_dauerMin);
     	hb_dauer.getChildren().add(new Label("bis"));
@@ -102,8 +98,8 @@ public class FilterCtrl {
     	tf_jahrMin.setPromptText("Jahr Minimum");
     	tf_jahrMax.setPromptText("Jahr Maximum");
     	
-    	tf_jahrMax.setMintf(tf_jahrMin);
-    	tf_jahrMin.setMaxtf(tf_jahrMax);
+    	tf_jahrMax.setMinSupplier( ()->tf_jahrMin.getValue() );
+    	tf_jahrMin.setMaxSupplier( ()->tf_jahrMax.getValue() );
     	
     	hb_jahr.getChildren().add(tf_jahrMin);
     	hb_jahr.getChildren().add(new Label("bis"));

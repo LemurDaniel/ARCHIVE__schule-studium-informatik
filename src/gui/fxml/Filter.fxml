@@ -8,11 +8,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="549.0" prefWidth="600.0" styleClass="root" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.FilterCtrl">
    <children>
-      <HBox prefHeight="74.0" prefWidth="560.0" styleClass="hbox_allg">
-         <children>
-            <TextField fx:id="tf_titel" promptText="Titel" />
-         </children>
-      </HBox>
+      <HBox fx:id="hb_titel" prefHeight="74.0" prefWidth="560.0" styleClass="hbox_allg" />
       <HBox fx:id="hb_bwt" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
       <HBox fx:id="hb_dauer" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
       <HBox fx:id="hb_jahr" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />

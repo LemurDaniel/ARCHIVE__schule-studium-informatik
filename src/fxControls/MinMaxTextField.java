@@ -6,15 +6,14 @@ import java.util.function.UnaryOperator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 
-public class MinMaxTextField extends TextField{
+public class MinMaxTextField extends CustomTextField<Integer>{
 	
 	private int min, max;
-	private MinMaxTextField mintf, maxtf;
-	private Integer value, defVal;
+	private Supplier<Integer> minSupplier, maxSupplier;
 	
-	private boolean schwanzAdded;
-	private String schwanz;
-	private Supplier<String> setSchwanzF;
+	private boolean tailAdded;
+	private String tail;
+	private Supplier<String> tailSupplier;
 	private boolean formatText;
 	
 	public MinMaxTextField(int min, int max) {
@@ -22,14 +21,12 @@ public class MinMaxTextField extends TextField{
 	}
 	
 	public MinMaxTextField(int min, int max, String schwanz) {
-		super();
+		super(9);	//Integer Limit: 2 147 483 647 -> 10 Zeichen lang -> 9 ist safe
 		this.min = min;
 		this.max = max;
-		this.schwanz = schwanz;
-		schwanzAdded = false;
-		value = null;
-		defVal = null;
-		
+		this.tail = schwanz;
+		tailAdded = false;
+
 		focusedProperty().addListener((ob,ov,focus)->{
 			formatText = focus;
 			if(focus==false)
@@ -38,38 +35,36 @@ public class MinMaxTextField extends TextField{
 				trimSchwanz();		
 		});
 		
+		
 		setTextFormatter(new TextFormatter<>( (UnaryOperator<TextFormatter.Change>) change->{
 			if(!formatText) return change;
 			change.setText( change.getText().replaceAll("[^0-9]",	""));
-			// Mögliche NumberFormatException wenn nach Integer geparster Text größer als 9 Zeichen ist.
-			if(change.getControlNewText().length()>=9) {
-				int z =  9 - (change.getControlNewText().length() - change.getText().length());
-				change.setText( change.getText().substring(0, z) );
-			}
-    		return change;
+			return super.getMaxLenFilter().apply(change);
     	}));
 	}
 	
-	public void setMintf(MinMaxTextField mintf) {
-		this.mintf = mintf;
+	public void setMinSupplier(Supplier<Integer> minSupplier) {
+		this.minSupplier = minSupplier;
 	}
-	public void setMaxtf(MinMaxTextField maxtf) {
-		this.maxtf = maxtf;
+	public void setMaxSupplier(Supplier<Integer> maxSupplier) {
+		this.maxSupplier = maxSupplier;
+	}
+	public void setTailSupplier(Supplier<String> tailSupplier) {
+		this.tailSupplier = tailSupplier;
 	}
 	public void setDefVal(Integer defVal) {
-		if(defVal>max)		defVal=max;
-		else if(defVal<min)	defVal=min;
+		if(defVal!=null) {
+			if(defVal>max)		defVal=max;
+			else if(defVal<min)	defVal=min;
+		}
 		this.defVal = defVal;
 		pruefe();
 	}
-	public void setSchwanzF(Supplier<String> f) {
-		this.setSchwanzF = f;
-	}
 	
 	private void trimSchwanz() {
-		if(!schwanzAdded)	return;
-		setText( getText().substring(0, getLength()-schwanz.length()));
-		schwanzAdded = false;
+		if(!tailAdded)	return;
+		setText( getText().substring(0, getLength()-tail.length()));
+		tailAdded = false;
 	}
 	private void setTextToVal() {		
 		if(value==null) {
@@ -79,9 +74,9 @@ public class MinMaxTextField extends TextField{
 		boolean temp = formatText;
 		formatText = false;
 		
-		if(setSchwanzF!=null)	schwanz=setSchwanzF.get();
-		setText(value+schwanz);
-		schwanzAdded = true;
+		if(tailSupplier!=null)	tail=tailSupplier.get();
+		setText(value+tail);
+		tailAdded = true;
 		selectPositionCaret(getLength());
 		
 		formatText = temp;
@@ -98,14 +93,13 @@ public class MinMaxTextField extends TextField{
 		}
 			
 		value = Integer.parseInt( getText() );
-		int min = this.min;
-		int max = this.max;
+		Integer min = null, max = null;
 		
-		if(mintf != null && mintf.getValue()!=null) 
-			min = mintf.getValue();		
-		if(maxtf != null && maxtf.getValue()!=null) 
-			max = maxtf.getValue();
+		if(minSupplier!=null) min = minSupplier.get();		
+		if(maxSupplier!=null) max = maxSupplier.get();	
 		
+		if(min==null) 	min=this.min;
+		if(max==null)	max=this.max;
 		
 		if(value > max)
 			value = max;

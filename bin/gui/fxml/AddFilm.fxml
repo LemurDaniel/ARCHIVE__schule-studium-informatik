@@ -33,11 +33,7 @@
                      <content>
                         <VBox prefHeight="320.0" prefWidth="360.0">
                            <children>
-                              <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
-                                 <children>
-                                    <TextField fx:id="tf_titel" maxWidth="281.0" prefWidth="281.0" promptText="Titel" />
-                                 </children>
-                              </HBox>
+                              <HBox fx:id="hb_titel" prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg" />
                               <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
                                  <children>
                                     <TextField fx:id="tf_genre" promptText="Genre" />
