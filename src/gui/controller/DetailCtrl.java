@@ -15,7 +15,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
@@ -44,8 +43,9 @@ import verwaltung.Nutzer;
 import verwaltung.Nutzer.Rechte;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
-import verwaltung.entitaeten.Person.PersonMitRolle;
+import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Rezension;
+import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Stapelverarbeitung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
@@ -81,7 +81,7 @@ public class DetailCtrl {
 			}
 		}
 		
-        table.setItems(pvw.getPersonenMitRollen());
+        table.setItems(pvw.getObList());
         table1.setItems(rvw.getObList());
 		
         tf_titel.setText(film.getTitel());
@@ -167,16 +167,16 @@ public class DetailCtrl {
     private TitledPane tp_mit;  
 
     @FXML
-    private TableView<PersonMitRolle> table;  
+    private TableView<Person> table;  
 
     @FXML
-    private TableColumn<PersonMitRolle, String> t_vorname;  
+    private TableColumn<Person, String> t_vorname;  
 
     @FXML
-    private TableColumn<PersonMitRolle, String> t_name;  
+    private TableColumn<Person, String> t_name;  
 
     @FXML
-    private TableColumn<PersonMitRolle, String> t_rolle;  
+    private TableColumn<Person, Rolle> t_rolle;  
     
     /** Rezension **/
     @FXML
@@ -296,9 +296,9 @@ public class DetailCtrl {
         t_check.setCellValueFactory(data-> checked_genre.get(data.getValue()));
         
         /** Mitwirkende  Tabelle **/       
-        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()							);
-        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()						);
-        t_rolle.setCellValueFactory(	data->new SimpleStringProperty( data.getValue().getRolle().getRolle() )		);     
+        t_name.setCellValueFactory(		data->data.getValue().getNameProperty()				);
+        t_vorname.setCellValueFactory(	data->data.getValue().getVornameProperty()			);
+        t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()	);     
         
         /** Reze Detail **/
         cb_r.setItems(FXCollections.observableArrayList());

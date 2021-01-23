@@ -40,10 +40,10 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		else							add.push(entitaet);
 		
 		
-//		System.out.println("add----------add");
-//		add.forEach(a->System.out.println(a));
-//		System.out.println("delete----------");
-//		delete.forEach(a->System.out.println(a));
+		System.out.println("add----------add");
+		add.forEach(a->System.out.println(a));
+		System.out.println("delete----------");
+		delete.forEach(a->System.out.println(a));
 		return true;
 	}
 
@@ -52,24 +52,24 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		if(add.contains(entitaet))	add.remove(entitaet);
 		else						delete.push(entitaet);
 		
-//		System.out.println("delete----------delete");
-//		delete.forEach(a->System.out.println(a));
-//		System.out.println("add----------");
-//		add.forEach(a->System.out.println(a));
+		System.out.println("delete----------delete");
+		delete.forEach(a->System.out.println(a));
+		System.out.println("add----------");
+		add.forEach(a->System.out.println(a));
 		return true;
 	}
 	public boolean updateEntitaet(T entitaet) {
 		if(entitaet==null  || add.contains(entitaet) || update.contains(entitaet))	return false;
 		update.push(entitaet);
 		
-//		System.out.println(this.getClass().getSimpleName());
+		System.out.println(this.getClass().getSimpleName());
 		
-//		System.out.println("update----------add");
-//		update.forEach(a->System.out.println(a));
-//		System.out.println("delete----------");
-//		delete.forEach(a->System.out.println(a));
-//		System.out.println("add----------add");
-//		add.forEach(a->System.out.println(a));
+		System.out.println("update----------add");
+		update.forEach(a->System.out.println(a));
+		System.out.println("delete----------");
+		delete.forEach(a->System.out.println(a));
+		System.out.println("add----------add");
+		add.forEach(a->System.out.println(a));
 		return true;
 	}
 	
@@ -132,6 +132,11 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 	
 	
 	public void reset() {
+		if(!hatAuftraege()) {
+			FensterManager.logErreignis("\nEs sind keine Änderungen vorhanden");
+			return;
+		}
+		
 		update.forEach(	item->	item.backupReset());
 		add.clear();
 		delete.clear();

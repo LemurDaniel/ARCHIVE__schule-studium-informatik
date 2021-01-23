@@ -105,7 +105,6 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 	}
 	@Override
 	protected void onUpdateSucess(T ent, Connection con) throws SQLException, InterruptedException{
-		if(!ent.hasBackup()) return;
 		ent.deleteBackup();
 	}
 	@Override

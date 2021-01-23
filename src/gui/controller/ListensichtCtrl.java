@@ -39,7 +39,7 @@ import verwaltung.verwaltungen.Listenverwaltung;
 
 public class ListensichtCtrl {
 
-	private final static DataFormat NICHTS = new DataFormat("nichts");
+	public final static DataFormat NICHTS = new DataFormat("nichts");
 	
 	private Listenverwaltung lvw = Listenverwaltung.instance();
 	private Thread th;

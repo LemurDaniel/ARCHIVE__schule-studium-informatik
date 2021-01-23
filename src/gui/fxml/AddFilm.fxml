@@ -12,7 +12,8 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -98,7 +99,14 @@
                         <TableColumn fx:id="t_rolle" prefWidth="201.0" text="Rolle" />
                      </columns>
                   </TableView>
-                  <FlowPane prefHeight="6.0" prefWidth="558.0" styleClass="FlowPaneCenter" />
+                  <ImageView fx:id="muell" fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                     </VBox.margin>
+                     <image>
+                        <Image url="@../images/delete.png" />
+                     </image>
+                  </ImageView>
                </children>
             </VBox>
          </content>

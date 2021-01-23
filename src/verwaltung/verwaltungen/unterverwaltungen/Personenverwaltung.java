@@ -13,7 +13,6 @@ import javafx.collections.ObservableList;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Person;
-import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.entitaeten.Rolle;
 
 public class Personenverwaltung extends Unterverwaltung<Person>{
@@ -23,8 +22,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		rolleMap =  new HashMap<>();
 		try(Statement st = con.createStatement();
 				ResultSet rs = st.executeQuery("Select id, rolle from rolle")){
-			while(rs.next()) 
-				rolleMap.put(rs.getInt(1), new Rolle(rs.getInt(1), rs.getString(2)));
+			while(rs.next()) rolleMap.put(rs.getInt(1), new Rolle(rs.getInt(1), rs.getString(2)));
 		}	
 	}
 	
@@ -35,42 +33,13 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	
 	
 	/**  **/
-	public ObservableList<PersonMitRolle> pmrliste;
 	
 	public Personenverwaltung(Film film) {
 		super(film);
-		pmrliste = FXCollections.observableArrayList();
 	}
 	
 	
-	
-	public ObservableList<PersonMitRolle> getPersonenMitRollen(){
-		return pmrliste;
-	}
-	private void aktualisierePmrliste() {
-		pmrliste.clear();
-		getList().forEach(per->pmrliste.addAll(per.getPersonenMitRolle()));
-	}
-	
-	@Override
-	public boolean addEntitaet(Person per) {
-		if(!super.addEntitaet(per)) return false;
-		per.getPersonenMitRolle().forEach(item->{
-			if(!pmrliste.contains(item)	)	
-					pmrliste.add(item);	
-		});
-		return true;
-	}	
-	@Override
-	public void reset() {
-		super.reset();
-		aktualisierePmrliste();
-		pmrliste.forEach(item->{
-			item.getDeleteProperty().set(false);
-			item.getUpdateProperty().set(false);
-		});
-	}
-	
+
 	@Override
 	public void lade(Connection con) throws SQLException {
 		super.lade(con);
@@ -80,18 +49,11 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		
 		try(Statement st = con.createStatement();
 				ResultSet rs = st.executeQuery(sql)){
-			
-			Person person = null;
-			while(rs.next()) {
-				if(person == null || person.getId() != rs.getInt(1)) {
-					person = new Person(rs.getInt(1), rs.getString(2), rs.getString(3));
-					addObj(person);
-				}
-				person.addRolle(rolleMap.get(rs.getInt("rid")));
-			}
+
+			while(rs.next()) addObj( new Person(rs.getInt(1), rs.getString(2), rs.getString(3), rolleMap.get(rs.getInt(4))) );
+
 			getList().forEach(p->System.out.println(p+ "  "+p.getId()));
 		}
-		aktualisierePmrliste();
 	}
 
 		
@@ -111,7 +73,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			}
 		}
 		
-		if(original == null) {
+		if(id==-1) {
 			//Existiert nicht -> muss angelegt werden
 			try(PreparedStatement ps = con.prepareStatement("insert into person(vorname, name) values(?, ?); Select SCOPE_IDENTITY()")){
 				ps.setString(1, person.getVorname());
@@ -123,78 +85,59 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			}
 		}
 		
-		for(PersonMitRolle pmr: person.getPersonenMitRolle()) {
-			
-			if(pmr.getUpdateProperty().get()==false)	continue;
-			
-			int rolleid = pmr.getRolle().getId();
-			//Kombination schon vorhanden?
-			try(PreparedStatement ps1 = con.prepareStatement("Select * from film_person_rolle where fid=? and pid=? and rid=?");
-					PreparedStatement ps2 = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)")){
-				ps1.setInt(1, film.getId());
-				ps1.setInt(2, id);
-				ps1.setInt(3, rolleid);
-
-				try(ResultSet rs = ps1.executeQuery()){
-					//Wenn bereits vorhanden dann nicht nochmal hinzufügen
-					if(!rs.next()) {
-						ps2.setInt(1, film.getId());
-						ps2.setInt(2, id);
-						ps2.setInt(3, rolleid);
-						ps2.executeUpdate();	
-					}
-				}
-			}
-			//TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//			if(person != original) {
-//				person.removePMR(pmr);
-//				original.addPMR(pmr);
-//				if(pmr.getDeleteProperty().get()==true)
-//					super.removeEntitaet(pmr.getPerson());
-//			}
-			
-//			pmr.getUpdateProperty().set(false);	
-//			System.out.println(pmr+"  "+pmr.getPerson());
-//			System.out.println(pmr.getUpdateProperty());
+		
+		try(PreparedStatement ps = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)")){
+			ps.setInt(1, film.getId());
+			ps.setInt(2, id);
+			ps.setInt(3, person.getRolle().getId());
+			ps.executeUpdate();
 		}
+		
+		person.setTempId(id);
 	}
 		
 	@Override
 	protected void onUpdate(Person per, Connection con) throws Exception {
 		super.onUpdate(per, con);
 		
-		for(PersonMitRolle pmr: per.getPersonenMitRolle()) {
-			
-			int rolleid = pmr.getinitialRolle().getId();
-			try(PreparedStatement ps = con.prepareStatement("Delete from film_person_rolle where fid=? and pid=? and rid=?;")){
-				ps.setInt(1, film.getId());
-				ps.setInt(2, per.getId());
-				ps.setInt(3, rolleid);
-				ps.executeUpdate();
-			}
-			pmr.resetInitialRolle();
-			pmr.getUpdateProperty().set(true);
+		if(per.isNameChanged()) {
+			onDelete(per.getBackup(), con);
+			onAdd(per, con);
+			return;
 		}
-		onAdd(per, con);		
+		
+		try(PreparedStatement ps = con.prepareStatement("Update film_person_rolle set rid=? where fid=? and pid=? ")){
+			ps.setInt(1, per.getRolle().getId());
+			ps.setInt(2, film.getId());
+			ps.setInt(3, per.getId());
+			ps.executeUpdate();
+		}
+		
 	}
 	
 	@Override
 	protected void onDelete(Person per, Connection con) throws Exception {
 		super.onDelete(per, con);
-		
-		for(PersonMitRolle pmr: per.getPersonenMitRolle()) {
-			if(pmr.getDeleteProperty().get()==false)	continue;
-			int rolleid;
-			if(pmr.getinitialRolle()!=pmr.getRolle())	rolleid = pmr.getinitialRolle().getId();
-			else										rolleid = pmr.getRolle().getId();
-			try(PreparedStatement ps = con.prepareStatement("Delete from film_person_rolle where fid=? and pid=? and rid=?;")){
-				ps.setInt(1, film.getId());
-				ps.setInt(2, per.getId());
-				ps.setInt(3, rolleid);
-				ps.executeUpdate();
-			}	
+				
+		try(PreparedStatement ps = con.prepareStatement("Delete film_person_rolle where rid=? and fid=? and pid=? ")){
+			ps.setInt(1, per.getRolle().getId());
+			ps.setInt(2, film.getId());
+			ps.setInt(3, per.getId());
+			ps.executeUpdate();
 		}
 	}
+	
+	@Override
+	protected void onUpdateSucess(Person per, Connection con) 	throws SQLException, InterruptedException{
+		super.onUpdateSucess(per, con);
+		if(per.isNameChanged()) {
+			per.commitId();
+			per.setNameChanged(false);
+		}
+	}
+	
+	
+	
 
 	@Override
 	public void save(Connection con) throws SQLException, InterruptedException {
@@ -207,6 +150,13 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	public static int getMaxVorname() {
 		return DB_Manager.get("PerVornameMax");
+	}
+
+	public static int getMinName() {
+		return DB_Manager.get("PerNameMin");
+	}
+	public static int getMinVorname() {
+		return DB_Manager.get("PerVornameMin");
 	}
 }
 	

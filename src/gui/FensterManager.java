@@ -251,6 +251,7 @@ public class FensterManager {
 	
 	public static void logErreignis(Exception e) {
 		logErreignis(e.getMessage(), Color.RED);
+		e.printStackTrace();
 	}
 	public static void logErreignis(String text) {
 		logErreignis(text, Color.GREEN);

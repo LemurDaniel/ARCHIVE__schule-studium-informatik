@@ -4,19 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import verwaltung.verwaltungen.Filmverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 public class Person implements Backup, EingabePruefung, Id{
 	
 	private Person backup;
 	private int tempid;
 	
-	public int id;
-	public StringProperty vorname;
-	public StringProperty name;
-	private List<PersonMitRolle> pmrlist;
+	private int id;
+	private ReadOnlyStringWrapper vorname;
+	private ReadOnlyStringWrapper name;
+	private Rolle rolle;
+	private boolean nameChanged;
 	
 	public Person(int id, String vorname, String name){
 		this(id, vorname, name, null);
@@ -24,10 +29,10 @@ public class Person implements Backup, EingabePruefung, Id{
 	
 	public Person(int id, String vorname, String name, Rolle rolle){
 		this.id = id;
-		this.vorname = new SimpleStringProperty(vorname);
-		this.name = new SimpleStringProperty(name);
-		pmrlist = new ArrayList<>();
-		this.addRolle(rolle);
+		this.vorname = new ReadOnlyStringWrapper(vorname);
+		this.name = new ReadOnlyStringWrapper(name);
+		this.rolle = rolle;
+		nameChanged = false;
 	}
 	
 	public int getId() {
@@ -36,53 +41,42 @@ public class Person implements Backup, EingabePruefung, Id{
 	public String getVorname() {
 		return vorname.get();
 	}
-
 	public String getName() {
 		return name.get();
 	}
-	
-	public StringProperty getVornameProperty() {
-		return vorname;
+	public Rolle getRolle() {
+		return rolle;
 	}
-	public StringProperty getNameProperty() {
-		return name;
+	
+	public ReadOnlyStringProperty getVornameProperty() {
+		return vorname.getReadOnlyProperty();
+	}
+	public ReadOnlyStringProperty getNameProperty() {
+		return name.getReadOnlyProperty();
+	}
+	
+	public boolean isNameChanged() {
+		return nameChanged;
 	}
 
+	
+	
 	public void setId(int id) {
 		this.id = id;
 	}
 	public void setVorname(String vorname) {
 		this.vorname.set(vorname);
+		nameChanged = true;
 	}
 	public void setName(String name) {
 		this.name.set(name);
+		nameChanged = true;
 	}
-	
-	
-	public void addRolle(Rolle rolle) {
-		if(rolle==null)	return;
-		pmrlist.add(new PersonMitRolle(rolle, this));
+	public void setRolle(Rolle rolle) {
+		this.rolle = rolle;
 	}
-	
-	public void removePMR(PersonMitRolle pmr) {
-		if(pmr==null)return;
-		pmrlist.remove(pmr);
-		pmr.per = null;
-	}	
-	public void addPMR(PersonMitRolle pmr) {
-		if(pmr==null || existiert(pmr.getRolle()))	return;
-		pmrlist.add(pmr);
-		pmr.per = this;
-	}
-	public boolean existiert(Rolle rolle) {
-		return pmrlist.stream().anyMatch(pmr->pmr.getRolle()==rolle);
-	}
-	
-	public List<PersonMitRolle> getPersonenMitRolle(){
-		return new ArrayList<>(pmrlist);
-	}
-	public int size() {
-		return pmrlist.size();
+	public void setNameChanged(boolean nameChanged) {
+		this.nameChanged = nameChanged;
 	}
 	
 	
@@ -96,13 +90,13 @@ public class Person implements Backup, EingabePruefung, Id{
 	}
 	
 	
+	
 	@Override
 	public void backup() {
 		if(backup!=null)	return;
 		
 		backup = new Person(getId(), vorname.get(), name.get());
-		backup.pmrlist = new ArrayList<>(pmrlist);
-		backup.pmrlist.forEach(pmr->pmr.backup());
+		backup.rolle = rolle;
 	}
 	@Override
 	public void backupReset() {
@@ -111,8 +105,7 @@ public class Person implements Backup, EingabePruefung, Id{
 		id = backup.id;
 		vorname.set(backup.getVorname());
 		name.set(backup.getName());
-		pmrlist = backup.pmrlist;
-		pmrlist.forEach(pmr->pmr.backupReset());
+		rolle = backup.rolle;
 		
 		backup = null;
 	}
@@ -125,7 +118,9 @@ public class Person implements Backup, EingabePruefung, Id{
 		return backup!=null;
 	}
 	
-	
+	public Person getBackup() {
+		return backup;
+	}
 	
 	
 	
@@ -136,93 +131,14 @@ public class Person implements Backup, EingabePruefung, Id{
 
 
 
-
-
-
-	//Für table Einträge
-	public class PersonMitRolle implements Backup{
-		
-		private PersonMitRolle backup;
-		
-		private Person per;
-		private Rolle rolle, initialRolle;
-
-		private BooleanProperty update, delete;
-		
-		public PersonMitRolle(Rolle rolle, Person per) {
-			this.per = per;
-			this.rolle = rolle;
-			this.initialRolle = rolle;
-			update = new SimpleBooleanProperty(false);
-			delete = new SimpleBooleanProperty(false);
-		}
-		
-		public Rolle getRolle() {
-			return rolle;
-		}
-		public void setRolle(Rolle rolle) {
-			this.rolle = rolle;
-		}
-		
-		public Person getPerson() {
-			return per;
-		}
-		
-		public Rolle getinitialRolle() {
-			return initialRolle;
-		}
-		public void resetInitialRolle() {
-			initialRolle = rolle;
-		}
-	
-		public BooleanProperty getDeleteProperty() {
-			return delete;
-		}
-		public BooleanProperty getUpdateProperty() {
-			return update;
-		}
-
-		
-		@Override
-		public void backup() {
-			if(backup!=null)	return;
-			
-			backup = new PersonMitRolle(rolle, per);
-			backup.initialRolle = initialRolle;
-			backup.delete.set(delete.get());
-			backup.update.set(update.get());
-		}
-		@Override
-		public void backupReset() {
-			if(backup==null)	return;
-			
-			rolle = backup.rolle;
-			initialRolle = backup.initialRolle;
-			per = backup.per;
-			delete.set(backup.delete.get());
-			update.set(backup.update.get());
-			
-			backup = null;
-		}
-		@Override
-		public void deleteBackup() {
-			backup = null;
-		}
-		@Override
-		public boolean hasBackup() {
-			return backup!=null;
-		}
-
-	
-	}
-
-
-
-
-
 	@Override
 	public void checkEingaben() throws Exception {
-
+		StringBuilder sb = new StringBuilder();
+		if(name.length().intValue() > Personenverwaltung.getMaxName())				sb.append("\n--jahr Titel");
+		if(name.length().intValue() < Personenverwaltung.getMinName())				sb.append("\n  Der Name '"+name.get()+"' ist zu kurz min."+Personenverwaltung.getMinName());
+		if(vorname.length().intValue() > Personenverwaltung.getMaxVorname())		sb.append("\n--jahr Titel");
+		if(vorname.length().intValue() < Personenverwaltung.getMinVorname())	 	sb.append("\n  Der Vorname '"+vorname.get()+"' ist zu kurz min."+Personenverwaltung.getMinVorname());
+		if(sb.length()>0)	throw new Exception(String.format("\nFehler Person: '%s %s' ", vorname, name));
 	}
 
 }

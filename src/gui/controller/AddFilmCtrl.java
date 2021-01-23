@@ -2,6 +2,7 @@ package gui.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.BiMap;
@@ -21,7 +22,6 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -33,13 +33,17 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
-import javafx.util.StringConverter;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Person;
-import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Stapelverarbeitung;
@@ -54,7 +58,7 @@ public class AddFilmCtrl {
 
 	private BiMap<Genre, BooleanProperty> checked_genre = HashBiMap.create();
 	private List<Genre> selected;
-	private boolean blocked;
+	private boolean blocked, added;
 	
 	public void setFilm(Film film, Stapelverarbeitung<Film> stpv) throws SQLException{
 		accordion.setExpandedPane(tp_allg);
@@ -73,13 +77,14 @@ public class AddFilmCtrl {
 		
 	    this.film = film;
 	    this.stpv = stpv;
+	    added = false;
 		setDisplay();
 		setTable();
 	}
 	
 	private void setTable() {
 		tp_mit.setDisable(film.getId()==-1);
-		table.setItems(pvw.getPersonenMitRollen());	
+		table.setItems(pvw.getObList());	
 	}
 	
 	private void setDisplay() {
@@ -153,25 +158,28 @@ public class AddFilmCtrl {
 	    private TitledPane tp_mit;
 
 	    @FXML
-	    private TableView<PersonMitRolle> table;
+	    private TableView<Person> table;
 
 	    @FXML
-	    private TableColumn<PersonMitRolle, Boolean> t_confirm;
+	    private TableColumn<Person, Boolean> t_confirm;
 
 	    @FXML
-	    private TableColumn<PersonMitRolle, Boolean> t_confirm1;
+	    private TableColumn<Person, Boolean> t_confirm1;
 
 	    @FXML
-	    private TableColumn<PersonMitRolle, Boolean> t_confirm2;
+	    private TableColumn<Person, Boolean> t_confirm2;
 
 	    @FXML
-	    private TableColumn<PersonMitRolle, String> t_vorname;
+	    private TableColumn<Person, String> t_vorname;
 
 	    @FXML
-	    private TableColumn<PersonMitRolle, String> t_name;
+	    private TableColumn<Person, String> t_name;
 
 	    @FXML
-	    private TableColumn<PersonMitRolle, Rolle> t_rolle;
+	    private TableColumn<Person, Rolle> t_rolle;
+	    
+	    @FXML
+	    private ImageView muell;
 
 	    @FXML
 	    private Button btn_rel2;
@@ -235,20 +243,12 @@ public class AddFilmCtrl {
         
         /** Table Mitwirkende **/
         table.setEditable(true);
-        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()				);
-        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()			);
-        t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()				);
-        t_confirm1.setCellValueFactory(	data->data.getValue().getUpdateProperty()						);
-        t_confirm2.setCellValueFactory(	data->data.getValue().getDeleteProperty()						);
+        t_name.setCellValueFactory(		data->data.getValue().getNameProperty()				);
+        t_vorname.setCellValueFactory(	data->data.getValue().getVornameProperty()			);
+        t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()	);
         
         t_name.setCellFactory(TextFieldTableCell.forTableColumn());
         t_vorname.setCellFactory(TextFieldTableCell.forTableColumn());
-       // t_rolle.setCellFactory( ChoiceBoxTableCell.forTableColumn(Personenverwaltung.getRollen()) );
-        t_confirm1.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm1));
-        t_confirm2.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm2));
-        t_confirm1.setEditable(false);
-        
-        //Konvertiere Rolle zu String für t_rolle spalte
         t_rolle.setCellFactory(ComboBoxTableCell.forTableColumn(Personenverwaltung.getRollen()));
         
         
@@ -261,8 +261,25 @@ public class AddFilmCtrl {
         tf_jahr.textProperty().addListener(this::changeListener);
         tf_titel.textProperty().addListener(this::changeListener);    
         
+        table.setOnDragDetected(this::onDragDetected);
+        muell.setOnDragOver(this::onDragOver);
+        muell.setOnDragDropped(this::onDragDropped);
     }
     
+	private void onDragDetected(MouseEvent event) {
+		ClipboardContent content = new ClipboardContent();
+		content.put(ListensichtCtrl.NICHTS, "");
+		table.startDragAndDrop(TransferMode.MOVE).setContent(content);
+	}
+	private void onDragOver(DragEvent event) {
+		if(event.getGestureSource()==table)	event.acceptTransferModes(TransferMode.MOVE);
+	}
+	private void onDragDropped(DragEvent event) {
+		table.getSelectionModel().getSelectedItems().forEach(pvw::removeEntitaet);
+	}
+	
+	
+	
     private void aktualisierGenre( ObservableValue<? extends Boolean> ob, Boolean ov, Boolean nv) {
     	if(blocked)	return;
     	backupfilm();
@@ -289,13 +306,13 @@ public class AddFilmCtrl {
     }
     
     private void backupfilm() {
-    	System.out.println(film.getId());
-    	if(film.getId()==-1) 
-        	stpv.addEntitaet(film);
+    	if(added)	return;
+    	if(film.getId()==-1) stpv.addEntitaet(film);
     	else	if(!film.hasBackup()) {
     		film.backup();
     		stpv.updateEntitaet(film);
     	}
+    	added = true;
     }
     
     private void changeListener( ObservableValue<? extends String> ob, String ov, String nv) {
@@ -307,25 +324,27 @@ public class AddFilmCtrl {
 		if(tf_jahr.getValue()!=null)	film.setErscheinungsjahr(tf_jahr.getValue());
     }
     
-    private void onEditCommit( CellEditEvent<PersonMitRolle, ?> data ) {
-     	PersonMitRolle pmr = data.getRowValue();
-       	pmr.getPerson().backup();
-     	
-       	if(data.getTableColumn()==t_rolle){
-       		if(pmr.getPerson().existiert((Rolle) data.getNewValue())) {
-       			data.consume();
-       			data.getTableView().refresh();
-       			return;
-       		}
-       		pmr.setRolle((Rolle) data.getNewValue());
-       	}
-       	
-    	if(pmr.getPerson().getId()!=-1 && pmr.getUpdateProperty().get()==false)	{
-        	pvw.updateEntitaet(pmr.getPerson());
-        	pmr.getUpdateProperty().set(true);
+    private void onEditCommit( CellEditEvent<Person, ?> data ) {
+    	Person per = data.getRowValue();
+//       	if(data.getTableColumn()==t_rolle){
+//       		if(pmr.getPerson().existiert((Rolle) data.getNewValue())) {
+//       			data.consume();
+//       			data.getTableView().refresh();
+//       			return;
+//       		}
+//       		pmr.setRolle((Rolle) data.getNewValue());
+//       	}
+//       	
+    	
+    	if(per.getId()!=-1 && !per.hasBackup() ){
+    	   	per.backup();
+        	pvw.updateEntitaet(per);
     	}
        	
-       	if(data.getTableColumn()==t_rolle)	return;
+       	if(data.getTableColumn()==t_rolle) {
+       		per.setRolle((Rolle)data.getNewValue());
+       		return;
+       	}
     	
     	int maxlen = 0;
     	if(data.getTableColumn()==t_vorname) 		maxlen = Personenverwaltung.getMaxVorname();
@@ -334,15 +353,14 @@ public class AddFilmCtrl {
     	String val = data.getNewValue().toString();
     	if(val.length()>maxlen) 					val = val.substring(0, maxlen);
     	
-     	if(data.getTableColumn()==t_vorname) 		pmr.getPerson().setVorname(val);
-    	else if(data.getTableColumn()==t_name)		pmr.getPerson().setName(val);
+     	if(data.getTableColumn()==t_vorname) 		per.setVorname(val);
+    	else if(data.getTableColumn()==t_name)		per.setName(val);
      		
     }
 
     private void addPerson() {
-    	PersonMitRolle pmr = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0) ).getPersonenMitRolle().get(0);
-    	pvw.addEntitaet(pmr.getPerson());
-    	pmr.getUpdateProperty().set(true);
+    	Person per = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0) );
+    	pvw.addEntitaet(per);
     }
     
 //    private void commitFilm() throws Exception {
@@ -361,8 +379,7 @@ public class AddFilmCtrl {
 //    }
     
     private void commitPersonen() throws Exception{
-    	
-    	pvw.getPersonenMitRollen().filtered(pmr->pmr.getDeleteProperty().get()==true).forEach(pmr-> pvw.removeEntitaet(pmr.getPerson()));   	
+    		
 		try(Connection con = DB_Manager.getCon()){
     		pvw.save(con);
 		}

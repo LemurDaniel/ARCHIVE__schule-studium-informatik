@@ -138,6 +138,13 @@ public class HauptseiteCtrl {
         table.setOnDragDetected(this::onDragDetected);
         muell.setOnDragOver(this::onDragOver);
         muell.setOnDragDropped(this::onDragDropped);
+        
+        try {
+			fvw.filter(null, 10f, 0f, 999, 0, 9999, 0, null, true, null, 10);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 	
 	private void onMouseClicked(MouseEvent event) {
