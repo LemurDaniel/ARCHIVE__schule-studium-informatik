@@ -71,6 +71,7 @@ public class ZEICHENFENSTER
         frame.setTitle(titel);
         backgroundColor = hintergrundFarbe;
         frame.pack();
+        frame.setLocationRelativeTo(null);
         zeige();
     }
 

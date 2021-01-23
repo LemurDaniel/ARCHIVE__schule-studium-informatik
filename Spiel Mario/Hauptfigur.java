@@ -25,8 +25,8 @@ public class Hauptfigur
     private String Bewegungsrichtungen[]={"rechtsLaufen","rechtsLaufenStop","linksLaufen"  ,"linksLaufenStop"  ,"Springen","SpringenStop"}; // Mögliche Knöpfe
     private String Knopfnamen[]         ={"Laufen"     ,"LaufenStop"      ,"zurueckLaufen","zurueckLaufenStop","Springen","SpringenStop"}; // Namen der Knöpfe unter jeweilgen Knopf gelistet
     
-    private static String SF[] = {"blablabla"  , "Mario-2"      , "Mario-3"      , "Luigi"       , "Luigi-2"      , "Luigi-3"      , "Wario"       , "Wario-2"      , "Waluigi"        , "Waluigi-2"       , "Mariotest"       , "Luigitest"       , "Wariotest"       , "Waluigitest"       ,""}; //array mit Namen aller im Spiel zu verfügung stehenden Spielfiguren
-    private String path[]= {"pic/Mario.png","pic/Mario2.png","pic/Mario3.png","pic/Luigi.png","pic/Luigi2.png","pic/Luigi3.png","pic/Wario.png","pic/Wario2.png","pic/WaLuigi.png" ,"pic/WaLuigi2.png" ,"pic/MarioBild.png","pic/LuigiBild.png","pic/WarioBild.png","pic/WaluigiBild.png","    "};  //array mit Pfaden zu den jeweiligen Bildern der Spielfiguren
+    private static String SF[] = {"blablabla"  , "Mario-2"      , "Mario-3"      , "Luigi"       , "Luigi-2"      , "Luigi-3"      , "Wario"       , "Wario-2"      , "Waluigi"        , "Waluigi-2"       , "Mariotest"       , "Luigitest"       , "Wariotest"       , "Waluigitest"       ,"Yoshi"        ,"Browser"        ,"Koopa"        ,"Knochentrocken"        ,"Mario_mit_Yoshi"}; //array mit Namen aller im Spiel zu verfügung stehenden Spielfiguren
+    private String path[] =    {"pic/Mario.png","pic/Mario2.png","pic/Mario3.png","pic/Luigi.png","pic/Luigi2.png","pic/Luigi3.png","pic/Wario.png","pic/Wario2.png","pic/WaLuigi.png" ,"pic/WaLuigi2.png" ,"pic/MarioBild.png","pic/LuigiBild.png","pic/WarioBild.png","pic/WaluigiBild.png","pic/Yoshi.png","pic/Browser.png","pic/Koopa.png","pic/Knochentrocken.png","pic/Mario_mit_Yoshi.png"};  //array mit Pfaden zu den jeweiligen Bildern der Spielfiguren
                                    // Hinzufügen von Spielfiguren und zuweisen Namen alleinig in dieser Klasse
     private Timer Lauftimer;
     private Timer Springhochtimer;
@@ -67,7 +67,7 @@ public class Hauptfigur
                                 }
            });
              
-       if(Arrays.asList(SF).contains(Spielfigur)==false){ //prüfen auf gültige Werte mit Fehlerausgabe
+       if(!Arrays.asList(SF).contains(Spielfigur)){ //prüfen auf gültige Werte mit Fehlerausgabe
                System.out.println("--------------------------------------------------------------------------");
                System.out.println("Ungültiger Eingabewert//Klasse: Hauptmap Konstruktor: public Hauptfigur((int x, int y, String Spielfigur)//");
                System.out.print("Eingabwert:  ");
@@ -82,7 +82,7 @@ public class Hauptfigur
        blauesHintergrundBild = new Bild("pic/blauesHintergrundBild.png",0,-95); // y=-95 sodass es bei Spielbeginn außerhalb des Zeichenfensters ist und somit nicht gezeichnet wird
       
        for(int i=0;i<SF.length;i++){ 
-          if(SF[i]==Spielfigur){Figur = new Bild(path[i] , posx, posy);} // zuweisen der Bildpfades, je nachdem welche Spielfigur gewählt wurde
+          if(SF[i]==Spielfigur){Figur = new Bild(path[i] , posx, posy);break;} // zuweisen der Bildpfades, je nachdem welche Spielfigur gewählt wurde
        }  
     }
              
@@ -165,7 +165,7 @@ public class Hauptfigur
     
     public void erstelleKnopf(String Knopf){  // Methode zum erstellen von ausgewählten Knöpfen im Zeichenfenster
         
-        if(Arrays.asList(Bewegungsrichtungen).contains(Knopf)==false){ //prüfen auf ungültige Werte
+        if(!Arrays.asList(Bewegungsrichtungen).contains(Knopf)){ //prüfen auf ungültige Werte
             System.out.println("--------------------------------------------------------------------------");
             System.out.println("Ungültiger Eingabewert//Klasse: Hauptfigur, Methode: erstelleKnopf//");
             System.out.print("Eingabewert:  ");
@@ -174,7 +174,7 @@ public class Hauptfigur
             System.out.println("--------------------------------------------------------------------------");
             System.exit(0);
         }
-                
+   
         if(Knopf==Bewegungsrichtungen[0]){           // erstellen des Laufen Knopfes mit der Funktion die LaufenBewegung zu Starten
         JButton FigurBewegrechtsStart=new JButton(Knopfnamen[0]);
         ZEICHENFENSTER.gibFenster().steuerungSued.add(FigurBewegrechtsStart);;
@@ -182,7 +182,7 @@ public class Hauptfigur
                    public void actionPerformed(ActionEvent e){     
                       LaufenStart("rechts");   
                    }
-              });
+              }); return;
         }   
          
         if(Knopf==Bewegungsrichtungen[1]){     // erstellen des LaufenStop Knopfes mit der Funktion die LaufenBewegung zu Stopen
@@ -192,7 +192,7 @@ public class Hauptfigur
                    public void actionPerformed(ActionEvent e){                                                                    
                       LaufenStop();   
                    }
-              });
+              }); return;
         }
          
         if(Knopf==Bewegungsrichtungen[2]){           // erstellen des Laufen Knopfes mit der Funktion die LaufenBewegung zu Starten
@@ -202,7 +202,7 @@ public class Hauptfigur
                    public void actionPerformed(ActionEvent e){    
                       LaufenStart("links");   
                    }
-              });
+              }); return;
         }   
          
         if(Knopf==Bewegungsrichtungen[3]){     // erstellen des LaufenStop Knopfes mit der Funktion die LaufenBewegung zu Stopen
@@ -212,7 +212,7 @@ public class Hauptfigur
                    public void actionPerformed(ActionEvent e){                                                                    
                       LaufenStop();   
                    }
-              });
+              }); return;
         } 
          
         if(Knopf==Bewegungsrichtungen[4]){          // erstellen des Springen Knopfes mit der Funktion die SpringBewegung zu Starten
@@ -222,7 +222,7 @@ public class Hauptfigur
                    public void actionPerformed(ActionEvent e){                                                                    
                       SpringenStart();   
                    }
-              });
+              }); return;
         } 
               
         if(Knopf==Bewegungsrichtungen[5]){    // erstellen des SpringenStop Knopfes mit der Funktion die SpringBewegung zu Stopen
@@ -232,7 +232,7 @@ public class Hauptfigur
                    public void actionPerformed(ActionEvent e){                                                                    
                       SpringenStop();   
                    }
-              });
+              }); return;
        }
     }
 }

@@ -17,7 +17,7 @@ public class DREIECK {
     private int breite;
     
     private String fuellfarbe;
-    
+                                           //obereEcke , linkeEcke , rechteEcke
     private static String Ausgangsecke[] = {"obereEcke","linkeEcke","rechteEcke"}; //Array das alle Ausgangsecken beinhaltet
     
     private String StandartEcke; //Standart-Ecke von der aus Koordinaten berrechnet werden
@@ -169,7 +169,7 @@ public class DREIECK {
         bewegex(newposx,newposx,newposx,direction);
     }
     
-    public void bewegex(int newposx1, int newposx2, int newposx3, String direction){  // bewegen auf der x-Achse um angegebenen Werte
+    public void bewegex(int newposx1, int newposx2, int newposx3, String direction){  // bewegen einzelner Ecken auf der x-Achse um angegebenen Werte
         loeschen();                                                                   // entscheiden über Bewegunsrichtung auf x-Achse mit "direction"        
         switch(direction){
         case "rechts":  // Bewegen nach rechts auf x-Achse um den Wert newposx
@@ -195,7 +195,7 @@ public class DREIECK {
         bewegey(newposy,newposy,newposy,direction);
     }
     
-    public void bewegey(int newposy1, int newposy2, int newposy3, String direction){  // bewegen auf der y-Achse um angegebenen Werte
+    public void bewegey(int newposy1, int newposy2, int newposy3, String direction){  // bewegen einzelner Ecken auf der y-Achse um angegebenen Werte
         loeschen();                                                                  // entscheiden über Bewegunsrichtung auf y-Achse mit "direction"      
         switch(direction){
         case "hoch":  // Bewegen nach oben auf y-Achse um den Wert newposy
@@ -232,7 +232,7 @@ public class DREIECK {
     public void gibAusgangsecken(){  // Methode zur Ausgabe der aktuellen Ausgangsecken
         System.out.println("-------------------------------------");
         System.out.println("Mögliche Ausgangsecken:");       
-        for(int i=0;i<3;i++){
+        for(int i=0;i<Ausgangsecke.length;i++){
             System.out.print(i+1);
             System.out.print(".Ausgangsecke:  ");
             System.out.println(Ausgangsecke[i]);

@@ -5,12 +5,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
-
+import java.util.Arrays;
              
 public class Menue extends JFrame{
     
-    private String Spielfigur;  // Name der Spielfigur
-    private String Spielkarte;  // Name der Spielkarte
+    private String Spielfigur = "keine Spielfigur gewählt" ;  // Name der Spielfigur
+    private String Spielkarte = "keine Spielkarte gewählt" ;  // Name der Spielkarte
     private String SF[]=Hauptfigur.gibSpielfiguren(); // holen des Arrays mit den verfügbaren Spielfiguren
     private String SK[]=Hauptmap.gibSpielkarten();    // holen des Arrays mit den verfügbaren Spielkarten
 
@@ -39,9 +39,7 @@ public class Menue extends JFrame{
            //Knopfgenerator kn5 = new Knopfgenerator("Jump","unten","Jump");
            //Knopfgenerator kn6 = new Knopfgenerator("Stop","unten","Stop");
            
-           if(Spielkarte==null || Spielfigur==null){aendereSettings();} // prüfen ob Spiekarte oder Spielfigur einen gültigen Wert aufweisen. Falls kein gültiger Wert: Abfragen des Spielers nach gültigen Werten mit der Methode aendereSettings()
-           if(Spielkarte==null || Spielfigur==null){defaultSettings();} // prüfen ob Spiekarte oder Spielfigur einen gültigen Wert aufweisen. Falls kein gültiger Wert: einstellen der Standart-Einstellungen mit der Methode defaultSettings() 
-           zeigeSettings();
+           if(!Arrays.asList(SF).contains(Spielfigur)||!Arrays.asList(SK).contains(Spielkarte)){defaultSettings(); aendereSettings();} // prüfen ob Spiekarte oder Spielfigur einen gültigen Wert aufweisen.
       
            JButton SettingsKnopf = new JButton("Settings"); // erstellen des "Settings" Knopfs im Zeichenfenster
            ZEICHENFENSTER.gibFenster().steuerungOst.add(SettingsKnopf);
@@ -51,7 +49,16 @@ public class Menue extends JFrame{
                    }
               });
                
-           Knopfgenerator kn2 = new Knopfgenerator("Credits","rechts","Credits"); // erstellen des "Credits" Knopfes mit der Klasse Knopfgenerator
+              
+           JButton CreditsKnopf = new JButton("Credits"); // erstellen des "Credits" Knopfs im Zeichenfenster
+           ZEICHENFENSTER.gibFenster().steuerungOst.add(CreditsKnopf);
+           CreditsKnopf.addActionListener(new ActionListener(){ // zuweisen eines AL
+               public void actionPerformed( ActionEvent e ) { // Methode welche nach klicken des "Credits" Knops ausgeführt wird
+                   zeigeCredits(); // zeigen der aktuellen Einstellungen
+                   }
+              });
+               
+               
            Knopfgenerator kn3 = new Knopfgenerator("End","rechts","Stop");  // erstellen des "End" Knopfes mit der Klasse Knopfgenerator
            
            Hauptmap Map = new Hauptmap(Spielkarte);  // erstellen der Map mit dem Parameter Spielkarte (Karte-1)
@@ -76,17 +83,16 @@ public class Menue extends JFrame{
          Settings.addActionListener(new ActionListener() { // zuweisen eines AL
            
           public void actionPerformed(ActionEvent e) { // Methode welche nach klicken des "Settings" Knops ausgeführt wird
-              aendereSettings(); //aendern der aktuellen Einstellungen
-              zeigeSettings();  //zeigen der aktuellen Einstellugnen
+              aendereSettings(); //zeigen der aktuellen Einstellugnen
          }
       
-    });
+     });
         
         JButton Credits = new JButton("Credits");  // erstellen des "Credits" Knopfs im Hauptmenue
        Credits.addActionListener(new ActionListener() { // zuweisen eines AL
            
           public void actionPerformed(ActionEvent e) { // Methode welche nach klicken des "Credits" Knops ausgeführt wird
-           System.out.println("Developed by Alexander Kiselov, Patric Zimonich, Daniel Landau and Dominic Zimonich in 2015 ");  
+           zeigeCredits();
       }
      
      });
@@ -107,51 +113,50 @@ public class Menue extends JFrame{
      
      return panel;
   }
-
-   private int waehleSpielfigur(){ // Methode zum Abfragen des Spieler nach der zu wählenden Spielfigur
-        return JOptionPane.showOptionDialog(null, "Mit welcher Spielfigur möchten sie spielen?", "Spielfigurwahl",  // Erstellen einer Dialogbox (Titel: "Spielfigurwahl", Dialog: "Mit welcher Spielfigur möchten sie spielen?")
-               JOptionPane.DEFAULT_OPTION,             // Einstellungen: Standart
-               JOptionPane.QUESTION_MESSAGE, null,     // Nachrichtentyp: Frage
-               SF, "A");  // AuswahlKnöpfe: Alle Strings des Arrays SF
-    }
-    
-   private int waehleSpielkarte(){ // Methode zum Abfragen des Spieler nach der zu wählenden Spielkarte
-        return  JOptionPane.showOptionDialog(null, "Auf welcher Karte möchten sie spielen?", "Spielkartenwahl",  // Erstellen einer Dialogbox (Titel: "Spielkartenwahl", Dialog: "Auf welcher Karte möchten sie spielen?")
-                JOptionPane.DEFAULT_OPTION,          // Einstellungen: Standart
-                JOptionPane.QUESTION_MESSAGE, null,  // Nachrichtentyp: Frage
-                SK, "A");  // AuswahlKnöpfe: Alle Strings des Arrays SK
-   }
-
-  private void aendereSettings(){ // Methode zum aendern der Einstellungen (Spielfigur und Spielkarte)
-      int Figur=waehleSpielfigur(); // ausführen der Methode waehleSpielfigur und dem zurückgegebenen Wert dem integer Figur zuweisen
-      for(int i=0;i<SF.length;i++){if(Figur==i){Spielfigur=SF[i];} //zuweisen der Spielfigur
-      }
-      
-      int Karte=waehleSpielkarte(); // ausführen der Methode waehleSpielkarte und dem zurückgegebenen Wert dem integer Karte zuweisen
-      for(int i=0;i<SK.length;i++){if(Karte==i){Spielkarte=SK[i];} //zuweisen der SpieKarte
-      }
-   }
-    
-    private void defaultSettings(){ // Setzt die Standart Wert für Spielkarte oder Spielfigur.
-       if(Spielkarte==null){Spielkarte="Karte-1";} //Setzt Standartwert für Spielkarte, wenn Spielkarte keinen Wert besitzt
-       if(Spielfigur==null){Spielfigur="Mario";}  //Setzt Standartwert für Spielfigur, wenn Spielfigur keinen Wert besitzt
-    }
- 
-  private void zeigeSettings(){ // Methode zum anzeigen der aktuellen Einstellungen (Spielfigur und Spielkarte)
-      System.out.println("-----------------------"); 
-      System.out.println("       Settings:       "); 
-      
-      System.out.print("SpielFigur:    ");  
-      if(Spielfigur==null){System.out.println("keine Spielfigur ausgewählt");} else {System.out.println(Spielfigur);}; //prüfen ob Spielfigur einen gültigen Wert besitzt und ausgeben eines Textes. 
-                                                                                                                   //Falls kein gültiger Wert zugewiesen: Ausgabetext = "keine Spielfigur ausgewählt"
-                                                                                                                   //Falls  eingültiger Wert zugewiesen: Ausgabetext = String Spielfigur
-      System.out.print("SpielKarte:    ");                                                                        
-      if(Spielkarte==null){System.out.println("keine Spielkarte ausgewählt");} else {System.out.println(Spielkarte);}  //prüfen ob Spielkarte gültigen einen Wert besitzt und ausgeben eines Textes. 
-                                                                                                                   //Falls kein gültiger Wert zugewiesen: Ausgabetext = "keine Spielfigur ausgewählt"
-                                                                                                                   //Falls  ein gültiger Wert zugewiesen: Ausgabetext = String Spielfigur
-      System.out.println("-----------------------");                    
+   
+   private String waehleSpielfigur(){ // Methode zum Abfragen des Spieler nach der zu wählenden Spielkarte
+        return  (String)JOptionPane.showInputDialog(
+                 null,"Mit welcher Spielfigur möchten sie spielen?\n\n"+"wählen sie eine Figur:","Spielfigurwahl", //Titel: "Spielfigurenwahl" Dialog: "Mit welcher Spielfigur möchten sie spielen?\n"+ "wählen sie eine Figur:"
+                 JOptionPane.QUESTION_MESSAGE,null,SF,SF[0]); // Nachrichtentyp: Frage // Auswahl: Alle Strings des Arrays SF // Standartauswahl: SF[0]
    }
    
+   private String waehleSpielkarte(){ // Methode zum Abfragen des Spieler nach der zu wählenden Spielkarte
+        return  (String)JOptionPane.showInputDialog(
+                 null,"Auf welcher Karte möchten sie spielen?\n\n"+"wählen sie eine Karte:","Spielkartenwahl", //Titel: "Spielkartenwahl" Dialog: "Auf welcher Karte möchten sie spielen?\n"+ "wählen sie eine Karte:"
+                 JOptionPane.QUESTION_MESSAGE,null,SK,SK[0]); // Nachrichtentyp: Frage // Auswahl: Alle Strings des Arrays SK // Standartauswahl: SK[0]
+   }
+   
+   private void aendereSettings(){ // Methode zum aendern der Einstellungen (Spielfigur und Spielkarte)
+      if(FrageSettingsaendern()==0){          
+         String Figur=waehleSpielfigur();
+      if(Figur!=null){Spielfigur=Figur;}; //prüfen auf gültigen Wert
+      
+         String Karte=waehleSpielkarte();
+      if(Karte!=null){Spielkarte=Karte;}; //prüfen auf gültigen Wert
+      } 
+    }
+    
+    private void defaultSettings(){ // Setzt die Standart Wert für Spielkarte oder Spielfigur.
+       if(!Arrays.asList(SK).contains(Spielkarte)){Spielkarte=SK[0];} //Setzt Standartwert für Spielkarte, wenn Spielkarte keinen gültigen Wert besitzt
+       if(!Arrays.asList(SF).contains(Spielfigur)){Spielfigur=SF[0];}  //Setzt Standartwert für Spielfigur, wenn Spielfigur keinen gültigen Wert besitzt
+     }
+    
+   private void zeigeSettings(){ // Methode zum anzeigen der aktuellen Einstellungen (Spielfigur und Spielkarte)
+     JOptionPane.showMessageDialog(null,"Spielfigur:  "+Spielfigur +"\n"+"Spielkarte:  "+Spielkarte+"\n\n", "Aktuelle Einstellungen", //Titel: Aktuelle Einstellungen
+     JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void zeigeCredits(){ // Methode zum anzeigen der aktuellen Einstellungen (Spielfigur und Spielkarte)
+     JOptionPane.showMessageDialog(null,"Developed in 2015: \n\n"+"Alexander Kiselov\n"+"Daniel Landau\n"+"Patric Zimonich\n"+"Dominic Zimonich\n\n", "Credits" , //Titel: Aktuelle Einstellungen
+     JOptionPane.INFORMATION_MESSAGE);
+    }
+ 
+   private int FrageSettingsaendern(){ // Methode zum anzeigen der aktuellen Einstellungen (Spielfigur und Spielkarte)
+     String Auswahl[]={"Ändern","Behalten!!!"};
+     return JOptionPane.showOptionDialog(null,"Spielfigur:  "+Spielfigur +"\n"+"Spielkarte:  "+Spielkarte+"\n\n", // Dialog
+            "Aktuelle Einstellung", JOptionPane.YES_NO_OPTION, //Ja, Nein option
+            JOptionPane.INFORMATION_MESSAGE, null, Auswahl, Auswahl[1]);  // Titel:  "Aktuelle Einstellung" // Nachrichtentyp: Information
+   }
 }
 
         

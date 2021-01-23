@@ -15,9 +15,9 @@ public class Hauptmap{
    private int posy;
    private int t=10;
    
-   private RECHTECK [] Boden = new RECHTECK [2];
-   private RECHTECK [] Block= new RECHTECK [12];
-   private RECHTECK [] Gras= new RECHTECK [12];
+   private RECHTECK [] Boden;
+   private RECHTECK [] Block;
+   private RECHTECK [] Gras;
    private RECHTECK Mast;
    private RECHTECK Fahne; 
    private KREIS Muster;
@@ -49,7 +49,7 @@ public class Hauptmap{
                          bewege(1,4);  // Zugreifen auf die Methode bewege
                      }
             });
-       if(Arrays.asList(SK).contains(Karte)==false){ // prüfen auf gültige Werte mit Fehlerausgabe
+       if(!Arrays.asList(SK).contains(Karte)){ // prüfen auf gültige Werte mit Fehlerausgabe
                   
                  System.out.println("--------------------------------------------------------------------------");
                  System.out.println("Ungültiger Eingabewert//Klasse: Hauptmap Konstruktor: public Hauptmap(int x, int y, int t, String Karte)");
@@ -62,7 +62,11 @@ public class Hauptmap{
         }
             
         
-        if(Karte==SK[0]){    
+       if(Karte==SK[0]){  
+            
+       Boden = new RECHTECK [2];
+       Block= new RECHTECK [12];
+       Gras= new RECHTECK [12];
             Kartenende = 1300;    // Festlegen des des Kartenendes
         Boden[0]= new RECHTECK(x,y,2*x,x-t,"braun", true);// 1 Erdblock 
         Boden[0]= new RECHTECK(x-x,y,60*x,x-t,"braun", true);// 1 Erdblock 
@@ -97,9 +101,12 @@ public class Hauptmap{
        }
        
        if(Karte==SK[1]){
+       Boden = new RECHTECK [2];
+       Block= new RECHTECK [12];
+       Gras= new RECHTECK [12];
             Kartenende = 1100;    // Festlegen des des Kartenendes
-        Boden[0]= new RECHTECK(0,Kartenboden+10,800,40,"rot", true);// 1 Erdblock // 1 Erdblock 
-        Boden[1]= new RECHTECK(0,Kartenboden,800,10,"gelb", true); // 1 Grasblock               
+        Boden[0]= new RECHTECK(0,Kartenboden+10,800,40,"rot", true);
+        Boden[1]= new RECHTECK(0,Kartenboden,800,10,"gelb", true);            
         Block[0]= new RECHTECK(120,290,70,30,"rot", true);
         Block[1]= new RECHTECK(190,260,70,30,"rot", true);
         Block[2]= new RECHTECK(260,230,70,30,"rot", true);
@@ -135,24 +142,18 @@ public class Hauptmap{
     }
 
     public void zeichnen(){  //zeichnen der jeweiligen Objekte in Klasse Hauptmap
-        for(int i=0;i<=11;i++){
-            Block[i].zeichnen();
-            Gras[i].zeichnen();
-        }
-        Boden[0].zeichnen();
-        Boden[1].zeichnen();
+        for(int i=0;i<Block.length;i++){Block[i].zeichnen();}
+        for(int i=0;i<Gras.length;i++){Gras[i].zeichnen();}
+        for(int i=0;i<Boden.length;i++){Boden[i].zeichnen();}
         Mast.zeichnen();
         Fahne.zeichnen();
         Muster.zeichnen();
     }
     
     public void loeschen(){  //loeschen der jeweiligen Objekte in Klasse Hauptmap
-        for(int i=0;i<=11;i++){
-            Block[i].loeschen();
-            Gras[i].loeschen();
-        }
-        Boden[0].loeschen();
-        Boden[1].loeschen();
+        for(int i=0;i<Block.length;i++){Block[i].loeschen();}
+        for(int i=0;i<Gras.length;i++){Gras[i].loeschen();}
+        for(int i=0;i<Boden.length;i++){Boden[i].loeschen();}
         Mast.loeschen();
         Fahne.loeschen();
         Muster.loeschen();
@@ -170,11 +171,11 @@ public class Hauptmap{
         int newposx= Geschwindigkeit * zeit;   // Formel um weite Groeße der Verschiebung zu berechen
         posx=posx+newposx;
         
-        if(posx>=Kartenende){BewegenStop();}       // Zugreifen auf die Bewegungsfunktionen der einzelnen Objekte um  
-            for(int i=0;i<=11;i++){            // sie um den errechneten Wert "newposx" zu verschieben
-            Block[i].bewegex(newposx,"links");
-            Gras[i].bewegex(newposx,"links");
-        }
+        if(posx>=Kartenende){BewegenStop();}       // Zugreifen auf die Bewegungsfunktionen der einzelnen Objekte um  sie um den errechneten Wert "newposx" zu verschieben
+        for(int i=0;i<Block.length;i++){Block[i].bewegex(newposx,"links");}
+        for(int i=0;i<Gras.length;i++){Gras[i].bewegex(newposx,"links");}
+        for(int i=0;i<Boden.length;i++){Boden[i].bewegex(newposx,"links");}
+        
         Mast.bewegex(newposx,"links");
         Fahne.bewegex(newposx,"links");
         Muster.bewegex(newposx,"links");
@@ -199,7 +200,7 @@ public class Hauptmap{
     
     public void erstelleKnopf(String Knopf){  // Methode zum erstellen von ausgewählten Knöpfen im Zeichenfenster
         
-        if(Arrays.asList(Bewegungsrichtungen).contains(Knopf)==false){ //prüfen auf ungültige Werte
+        if(!Arrays.asList(Bewegungsrichtungen).contains(Knopf)){ //prüfen auf ungültige Werte
             System.out.println("--------------------------------------------------------------------------");
             System.out.println("Ungültiger Eingabewert//Klasse: Hauptfigur, Methode: erstelleKnopf()//");
             System.out.print("Eingabewert:  ");
@@ -216,7 +217,7 @@ public class Hauptmap{
                    public void actionPerformed(ActionEvent e){                                                                    
                       BewegenStart();   
                    }
-              });
+              }); return;
         }
          
         if(Knopf==Bewegungsrichtungen[1]){  // erstellen des Stop Knopfes mit der Funktion die Bewegung zu Stopen
@@ -226,7 +227,7 @@ public class Hauptmap{
                    public void actionPerformed(ActionEvent e){                                                                    
                       BewegenStop();   
                    }
-              });
+              }); return;
        }
     }
     

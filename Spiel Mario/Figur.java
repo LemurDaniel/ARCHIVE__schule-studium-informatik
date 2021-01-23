@@ -389,13 +389,13 @@ public class Figur
    
        
     public void zeichnen(){ // Methode zum zeichnen der objekte
-        for(int i=0;i<=143;i++){
+        for(int i=0;i<Pixel.length;i++){
             Pixel[i].zeichnen();
         }
     }
     
     public void loeschen(){  // Methode zum loeschen der objekte
-        for(int i=0;i<=143;i++){
+        for(int i=0;i<Pixel.length;i++){
             Pixel[i].loeschen();
         }
     }
@@ -411,7 +411,7 @@ public class Figur
     private  void lauf(int zeit, int Geschwindigkeit){  //Methode um dei Figur auf der x-Achse zu bewegen
         int newposx = Geschwindigkeit * zeit;  // Formel um weite Groeße der Verschiebung zu berechen
         
-            for(int i=0;i<=143;i++){
+            for(int i=0;i<Pixel.length;i++){
             Pixel[i].bewegex(newposx,"rechts");
             }
             
@@ -434,7 +434,7 @@ public class Figur
                 Springruntertimer.start();
                 
         } else {
-                for(int i=0;i<=143;i++){                // Zugreifen auf die Bewegungsfunktionen der einzelnen Objekte um 
+                for(int i=0;i<Pixel.length;i++){                // Zugreifen auf die Bewegungsfunktionen der einzelnen Objekte um 
                 Pixel[i].bewegey(newposy,"hoch");      // sie um den errechneten Wert "newposy" zu verschieben
                 }
         }
@@ -444,7 +444,7 @@ public class Figur
         int newposy = Geschwindigkeit * zeit;  //Formel um weite Groeße der Verschiebung zu berechen
         y=y+newposy;
         
-                for(int i=0;i<=143;i++){              // Zugreifen auf die Bewegungsfunktionen der einzelnen Objekte um
+                for(int i=0;i<Pixel.length;i++){              // Zugreifen auf die Bewegungsfunktionen der einzelnen Objekte um
                 Pixel[i].bewegey(newposy,"runter");  // sie um den errechneten Wert "newposy" zu verschieben
                 }
                 

@@ -16,7 +16,7 @@ public class Knopfgenerator
  
         Knopfgenerator()
         {
-            this("Start","rechts","start");
+            this("Start","rechts","Credits");
         }
         
         Knopfgenerator(String Beschriftung, String Ort, String Bef)
