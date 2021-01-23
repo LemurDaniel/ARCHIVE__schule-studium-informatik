@@ -13,13 +13,14 @@ import javafx.collections.ObservableList;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
+import verwaltung.entitaeten.Rolle;
 
 public class Personenverwaltung extends Unterverwaltung<Person>{
 
-	public static ObservableList<String> getRollen() {
-		ObservableList<String> rlist = FXCollections.observableArrayList();
-		rolleMap.forEach((k, v)->rlist.add(v));
-		return FXCollections.observableArrayList(rlist);
+	public static ObservableList<Rolle> getRollen() {
+		ObservableList<Rolle> rlist = FXCollections.observableArrayList();
+		rolleMap.forEach((k,v)->rlist.add(v));
+		return rlist;
 	}
 	
 	public Personenverwaltung(Film film) {
@@ -37,9 +38,8 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	@Override
 	public void load(Connection con) throws SQLException {
 		super.load(con);
-		String sql = "Select pid, vorname, name, rolle from person "
+		String sql = "Select pid, vorname, name, rid from person "
 					+"inner join film_person_rolle on pid = person.id "
-					+"inner join rolle on rid = rolle.id "
 					+"where fid="+film.getId()+" order by pid";
 		
 		try(Statement st = con.createStatement();
@@ -51,7 +51,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					person = new Person(rs.getInt(1), rs.getString(2), rs.getString(3));
 					list.add(person);
 				}
-				person.addRolle(rs.getString(4));
+				person.addRolle(rolleMap.get(rs.getInt("rid")));
 			}
 			list.forEach(p->System.out.println(p+ "  "+p.getId()));
 		}
@@ -123,29 +123,28 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					}				
 				}
 
-				Integer rolleId = rolleMap.inverse().get(pmr.getRolle().get());
+				int rolleId = pmr.getRolle().getId();
 				
-				if(rolleId!=null) {
-					//Kombination schon vorhanden?
-					try(PreparedStatement ps1 = con.prepareStatement("Select * from film_person_rolle where fid=? and pid=? and rid=?");
-							PreparedStatement ps2 = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)");){
-						ps1.setInt(1, film.getId());
-						ps1.setInt(2, original.getId());
-						ps1.setInt(3, rolleId);
+				//Kombination schon vorhanden?
+				try(PreparedStatement ps1 = con.prepareStatement("Select * from film_person_rolle where fid=? and pid=? and rid=?");
+						PreparedStatement ps2 = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)");){
+					ps1.setInt(1, film.getId());
+					ps1.setInt(2, original.getId());
+					ps1.setInt(3, rolleId);
 
-						try(ResultSet rs = ps1.executeQuery()){
-							//Wenn bereits vorhanden dann nicht nochmal hinzufügen
-							if(!rs.next()) {
-								ps2.setInt(1, film.getId());
-								ps2.setInt(2, original.getId());
-								ps2.setInt(3, rolleId);
-								ps2.executeUpdate();
-								con.commit();					
-								original.addRolle(pmr.getRolle().get());
-							}
+					try(ResultSet rs = ps1.executeQuery()){
+						//Wenn bereits vorhanden dann nicht nochmal hinzufügen
+						if(!rs.next()) {
+							ps2.setInt(1, film.getId());
+							ps2.setInt(2, original.getId());
+							ps2.setInt(3, rolleId);
+							ps2.executeUpdate();
+							con.commit();					
+							original.addRolle(pmr.getRolle());
 						}
 					}
 				}
+			
 			}
 			
 		}
@@ -157,22 +156,19 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		try(Connection con = conect!=null? conect:getCon()){
 		
 			for(PersonMitRolle pmr: pmrlist) {			
-				Integer rolleId = rolleMap.inverse().get(pmr.getRolle().get());				
-				if(rolleId!=null) {
-					try (PreparedStatement ps = con.prepareStatement("Delete film_person_rolle where fid=? and pid=? and rid=?");){
-						ps.setInt(1, film.getId());
-						ps.setInt(2, pmr.getPerson().getId());
-						ps.setInt(3, rolleId);
-						ps.executeUpdate();
-						pmr.getPerson().removeRolle(pmr.getRolle().get());
-					}
+				int rolleId = pmr.getRolle().getId();			
+				try (PreparedStatement ps = con.prepareStatement("Delete film_person_rolle where fid=? and pid=? and rid=?");){
+					ps.setInt(1, film.getId());
+					ps.setInt(2, pmr.getPerson().getId());
+					ps.setInt(3, rolleId);
+					ps.executeUpdate();
+					pmr.getPerson().removeRolle(pmr.getRolle());
+				}
 
-					if(pmr.getPerson().getRollen().size()==0) {
-						list.remove( list.stream().filter(per->per.getId()==pmr.getPerson().getId()).findFirst().orElse(null) );
-					}
-				}				
-			}
-			
+				if(pmr.getPerson().getRollen().size()==0) {
+					list.remove( list.stream().filter(per->per.getId()==pmr.getPerson().getId()).findFirst().orElse(null) );
+				}							
+			}		
 		}
 	}
 

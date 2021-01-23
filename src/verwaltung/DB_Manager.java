@@ -11,10 +11,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import verwaltung.entitaeten.Genre;
+import verwaltung.entitaeten.Rolle;
 
 
 public class DB_Manager {
@@ -30,7 +28,7 @@ public class DB_Manager {
 	
 	public static Map<String, Integer> maxSize = new HashMap<>();
 	protected static Map<Integer, Genre> genre;
-	protected static BiMap<Integer, String> rolleMap;
+	protected static Map<Integer, Rolle> rolleMap;
 	
    static {
 		try {
@@ -166,11 +164,11 @@ public class DB_Manager {
 				genre.put(rs.getInt(1), new Genre(rs.getInt(1), rs.getString(2), rs.getString(3)));
 		}
 		
-		rolleMap = HashBiMap.create();
+		rolleMap =  new HashMap<>();
 		try(Statement st = con.createStatement();
 				ResultSet rs = st.executeQuery("Select id, rolle from rolle")){
 			while(rs.next()) 
-				rolleMap.put(rs.getInt(1), rs.getString(2));
+				rolleMap.put(rs.getInt(1), new Rolle(rs.getInt(1), rs.getString(2)));
 		}
 	}
 

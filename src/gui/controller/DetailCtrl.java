@@ -273,9 +273,9 @@ public class DetailCtrl {
         
         /** Mitwirkende  **/
         
-        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()		);
-        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()	);
-        t_rolle.setCellValueFactory(	data->data.getValue().getRolle()				);     
+        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()							);
+        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()						);
+        t_rolle.setCellValueFactory(	data->new SimpleStringProperty( data.getValue().getRolle().getRolle() )		);     
         
         /** Reze Detail **/
         cb_r.setItems(FXCollections.observableArrayList());

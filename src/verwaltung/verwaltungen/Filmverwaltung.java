@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.collections.ObservableList;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
@@ -151,7 +150,9 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				for(int i=0; i<genre.size(); i++) 
 					sb.append(" ?" + (i==genre.size()-1 ? ") ":", ") );
 				sb.append(") as g ");
-				sb.append("group by fid Having count(g.gid)=?) as fmg ");	
+				sb.append("group by fid ");	
+				if(and) sb.append("Having count(g.gid)=? ");
+				sb.append(") as fmg ");
 			sb.append("on fmg.fid = film.id ");
 		}
 		
@@ -181,7 +182,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				if(genre.size()!=0) {
 					for(Genre g:genre)	ps.setInt(++count, g.getId());
 					if(and)	ps.setInt(++count, genre.size());
-					else	ps.setInt(++count, 1);
 				}
 				
 				if(titel!=null) ps.setString(++count, titel+"%");

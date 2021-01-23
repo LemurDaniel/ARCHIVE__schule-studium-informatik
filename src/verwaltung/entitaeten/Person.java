@@ -10,13 +10,13 @@ public class Person extends Entitaet{
 	
 	public StringProperty vorname;
 	public StringProperty name;
-	public List<String> rolle;   
+	public List<Rolle> rolle;   
 	
 	public Person(int id, String vorname, String name){
 		this(id, vorname, name, null);
 	}
 	
-	public Person(int id, String vorname, String name, String rolle){
+	public Person(int id, String vorname, String name, Rolle rolle){
 		super(id);
 		this.vorname = new SimpleStringProperty(vorname);
 		this.name = new SimpleStringProperty(name);
@@ -47,20 +47,20 @@ public class Person extends Entitaet{
 	}
 	
 	
-	public void addRolle(String rolle) {
+	public void addRolle(Rolle rolle) {
 		if(rolle==null)return;
 		this.rolle.add(rolle);
 	}
-	public void removeRolle(String rolle) {
+	public void removeRolle(Rolle rolle) {
 		if(rolle==null)return;
 		this.rolle.remove(rolle);
 	}
-	public void addRollen(List<String> rollen) {
+	public void addRollen(List<Rolle> rollen) {
 		if(rollen==null)return;
 		rollen.forEach(r->rolle.add(r));
 	}
 
-	public List<String> getRollen() {
+	public List<Rolle> getRollen() {
 		return new ArrayList<>(this.rolle);
 	}
 	
@@ -83,18 +83,18 @@ public class Person extends Entitaet{
 	//Für table Einträge
 	public class PersonMitRolle {
 		private Person per;
-		private StringProperty rolle;
+		private Rolle rolle;
 		
-		public PersonMitRolle(String r, Person per) {
+		public PersonMitRolle(Rolle rolle, Person per) {
 			this.per = per;
-			rolle = new SimpleStringProperty(r);
+			this.rolle = rolle;
 		}
 		
-		public StringProperty getRolle() {
+		public Rolle getRolle() {
 			return rolle;
 		}
-		public void setRolle(String rolle) {
-			this.rolle.set(rolle);
+		public void setRolle(Rolle rolle) {
+			this.rolle = rolle;
 		}
 		
 		public Person getPerson() {

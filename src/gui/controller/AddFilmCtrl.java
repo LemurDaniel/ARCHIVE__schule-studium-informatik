@@ -38,11 +38,13 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
+import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
@@ -192,7 +194,7 @@ public class AddFilmCtrl {
 	    private TableColumn<PersonMitRolle, String> t_name;
 
 	    @FXML
-	    private TableColumn<PersonMitRolle, String> t_rolle;
+	    private TableColumn<PersonMitRolle, Rolle> t_rolle;
 
 	    @FXML
 	    private Button btn_rel2;
@@ -228,34 +230,8 @@ public class AddFilmCtrl {
         tf_jahr = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
         hb_dauer.getChildren().add(tf_dauer);
         hb_jahr.getChildren().add(tf_jahr);
+
         
-//        tf_jahr.addEventFilter(KeyEvent.KEY_TYPED, ev->{
-//        	if( !Character.isDigit(ev.getCharacter().charAt(0)) )	ev.consume();
-//        	if(tf_jahr.getLength() >= 4) ev.consume();
-//        });
-//        
-//        tf_dauer.addEventFilter(KeyEvent.KEY_TYPED, ev->{
-//        	if( !Character.isDigit(ev.getCharacter().charAt(0)) || tf_dauer.getLength() >= 3) {
-//        		ev.consume();
-//        		return;
-//        	}
-//        });     
-//        tf_dauer.focusedProperty().addListener((ob,ov,newVal)->{
-//        	if(newVal==false && tf_dauer.getLength()>0)
-//        		tf_dauer.setText(tf_dauer.getText()+" Minuten");
-//        	else if(tf_dauer.getLength()>0)
-//        		tf_dauer.setText(tf_dauer.getText().replaceAll("[^0-9]", ""));
-//        });
-//       
-//        //The Horse In Motion (1878)
-//        tf_jahr.focusedProperty().addListener((ob,ov,newVal)->{
-//        	if(newVal == true || tf_jahr.getLength()==0) return;
-//        	int jahr = Integer.parseInt(tf_jahr.getText());
-//        	if(jahr < 1878 || jahr > LocalDate.now().getYear())	{
-//        		tf_jahr.setText(null);
-//        	}
-//        });
-//        
         tf_bewertung.setDisable(true);
         tf_genre.setEditable(false);
         ta_genre.setWrapText(true);
@@ -294,21 +270,35 @@ public class AddFilmCtrl {
         	tf_genre.setText(sb.toString());
         }));
         
+        
+        
         /** Table Mitwirkende **/
         table.setEditable(true);
         t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()		);
         t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()	);
-        t_rolle.setCellValueFactory(	data->data.getValue().getRolle()				);
+        t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()			);
         t_confirm1.setCellValueFactory(	data->confirmed.get(data.getValue())[0]			);
         t_confirm2.setCellValueFactory(	data->confirmed.get(data.getValue())[1]			);
         
         t_name.setCellFactory(TextFieldTableCell.forTableColumn());
         t_vorname.setCellFactory(TextFieldTableCell.forTableColumn());
        // t_rolle.setCellFactory( ChoiceBoxTableCell.forTableColumn(Personenverwaltung.getRollen()) );
-        t_rolle.setCellFactory(ComboBoxTableCell.forTableColumn(Personenverwaltung.getRollen()));
         t_confirm1.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm1));
         t_confirm2.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm2));
-
+        
+        
+        StringConverter<Rolle> stconv = new StringConverter<Rolle>() {
+			@Override
+			public String toString(Rolle object) {
+				return object.getRolle();
+			}
+			@Override
+			public Rolle fromString(String string) {return null;}
+		};
+        t_rolle.setCellFactory(ComboBoxTableCell.forTableColumn(stconv, Personenverwaltung.getRollen()));
+        
+        Personenverwaltung.getRollen().forEach(a->System.out.println(a.getRolle()));
+        
         /**Changes**/
         t_vorname.setOnEditCommit(	data->{
         	String val = data.getNewValue();
