@@ -31,7 +31,7 @@ public class ZEICHENFENSTER
      */
     public ZEICHENFENSTER(String titel)
     {
-        this(titel, 600, 350, Color.cyan);   
+        this(titel, 800, 370, Color.cyan);   
     }
 
     /**
@@ -391,6 +391,15 @@ public class ZEICHENFENSTER
         boolean result = graphic.drawImage(bild, x, y, null);
         canvas.repaint();
         return result;
+    }
+    
+     public void loescheBild(Image bild, int x, int y) // Methode zum loeschen eines Bildes
+    {
+        Color original = graphic.getColor();
+        graphic.setColor(backgroundColor);
+        graphic.drawImage(bild, x, y, null);
+        graphic.setColor(original);
+        canvas.repaint();
     }
 
     /**

@@ -13,21 +13,10 @@ public class Knopfgenerator
         private JButton knopf;  // Instanzvariable fuer einen JButton
         private ZEICHENFENSTER fenster; // Instanzvariable fuer den Zeiger zum aktuellen Zeichenfenster
         public String Befehl; // Instanzvariable zum auswaehlen fuer den Befehl beim Klicken;
-        Hauptfigur Figur = new Hauptfigur();
-        
+ 
         Knopfgenerator()
         {
-            this("Start");
-        }
-        
-        Knopfgenerator(String Beschriftung)
-        {
-            this(Beschriftung, "rechts");
-        } 
-        
-        Knopfgenerator(String Beschriftung, String Ort)
-        {
-            this(Beschriftung, Ort, "abbrechen");
+            this("Start","rechts","start");
         }
         
         Knopfgenerator(String Beschriftung, String Ort, String Bef)
@@ -56,9 +45,6 @@ public class Knopfgenerator
                     fenster.gibFrame().getContentPane().add(knopf);
                  break;
                  
-                
-      
-                 
                  default:
                     fenster.steuerungOst.add(knopf);
                  break;
@@ -79,20 +65,15 @@ public class Knopfgenerator
             switch (Befehl)
             {
                 case "Start":
-                    //Hauptfigur Figur  = new Hauptfigur();
-                    //Hauptmap1 Map1  = new Hauptmap1();
-                    //Map1.Bewegenstart();
-                    DemoThread Thread = new DemoThread();
-                    Thread.run2();
+                    
                 break;
                 
                 case "Settings":
-                    System.out.println("........");     
+
                 break;
                 
                 case "Credits":
                     System.out.println("Developed by Alexander Kiselov, Patric Zimonich, Daniel Landau and Dominic Zimonich in 2015 ");
-                    //System.exit (0);
                 break;
                 
                 case "End":                    
@@ -100,22 +81,19 @@ public class Knopfgenerator
                 break;
                 
                  case "Jump":
-                   Hauptfigur Figur1  = new Hauptfigur();
-                   //Figur.springhoch();
+
                  break;
                  
                  case "Walk":
-                  
+
                  break;
-                 
+                     
                  case "Stop":
-                   Hauptfigur Figur3  = new Hauptfigur();
-                   Figur3.LaufenStop();
-                   Figur3.SpringenStop();    
+
                  break;  
                    
-                
                 default: System.exit (0);
             }
         }
+        
 }

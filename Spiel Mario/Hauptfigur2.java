@@ -14,7 +14,7 @@ public class Hauptfigur2
     Timer Lauftimer;
     Timer Springhochtimer;
     Timer Springruntertimer;
-    Image Mario = getImage(getCodeBase(),"Mario.jpg");
+   
         
     public Hauptfigur2()
     {
@@ -35,14 +35,14 @@ public class Hauptfigur2
             {
              public void actionPerformed(ActionEvent e)
                    {
-                       springhoch(1,1,280);
+                       springhoch(1,2,180);
                                 }
            });
           Springruntertimer = new Timer(1, new ActionListener()
             {
              public void actionPerformed(ActionEvent e)
                    {
-                       springrunter(1,1);
+                       springrunter(1,2);
                                 }
            });
       

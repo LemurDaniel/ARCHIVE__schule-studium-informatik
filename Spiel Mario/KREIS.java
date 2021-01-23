@@ -22,92 +22,95 @@ public class KREIS {
         this(30, 60, 20, "blau", false);
     }
     
-    public KREIS(int posx, int posy, int r,  String color, boolean filled)
+    public KREIS(int posx, int posy, int r,  String color, boolean filled) // Methode um einen Kreis mit den jeweiligen Werten zu zeichen
     {
-        mittelpunktX = posx;
-        mittelpunktY = posy;
-        radius = r;
-        fuellfarbe = color;
-        fuellung = filled;
-        zeichnen();
+        mittelpunktX = posx;  // Position des Mittelpunktes auf x-Achse
+        mittelpunktY = posy;  // Position des Mittelpunktes auf y-Achse
+        radius = r;           // radius des Kreises
+        fuellfarbe = color;   // Farbe mit der der Kreis gefüllt wird
+        fuellung = filled;    // true/false Wert ob der Kreis gefuellt wird oder nicht
+        zeichnen();           // zeichen des Kreises
     }
 
-    public void aendereFarbe(String newcolor){
+    public void aendereFarbe(String newcolor){  // aendern der Füllfarbe
         loeschen();
         fuellfarbe = newcolor;
         zeichnen();
     }
     
-    public void aenderePosition(int newpositionx, int newpositiony){
+    public void aenderePosition(int newpositionx, int newpositiony){ // aendern der Position
         loeschen();
         mittelpunktX = newpositionx;
         mittelpunktY = newpositiony;
         zeichnen();
     }
     
-    public void aendereRadius(int newradius){
+    public void aendereRadius(int newradius){  // aender des Radiuses
         loeschen();
         radius = newradius;
         zeichnen();
     }
     
-    public void Fuellung(boolean filled){
+    public void Fuellung(boolean filled){  // aendern ob mit Farbe geüllt oder nicht
         loeschen();
         fuellung = filled;
         zeichnen();
     }
     
-     public void bewegex(int newposx,String direction){
-        loeschen();
+     public void bewegex(int newposx,String direction){   // bewegen auf der x-Achse um angegebenen Werte "newposx"
+        loeschen();                                      // entscheiden über Bewegunsrichtung auf x-Achse mit "direction"
         
         switch(direction){
-        case "rechts":
-        mittelpunktX = mittelpunktX + newposx;
+        case "rechts":  // Bewegen nach rechts auf x-Achse um den Wert newposx
+        mittelpunktX = mittelpunktX + newposx;  // Formel um neue  Position des Mittelpunktes zu errechenen
         break;
         
-        case "links":
-        mittelpunktX = mittelpunktX - newposx;
+        case "links":  // Bewegen nach links auf x-Achse um den Wert newposx
+        mittelpunktX = mittelpunktX - newposx;  // Formel um neue  Position des Mittelpunktes zu errechenen
         break;
         
         default:
-        System.out.print("Ungültige Eingabe");
+        System.out.print("Ungültige Eingabe");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
         break;
         }
         
 		zeichnen();
     }
     
-    public void bewegey(int newposy, String direction){
-        loeschen();
+    public void bewegey(int newposy, String direction){  // bewegen auf der y-Achse um angegebenen Werte "newposy"
+        loeschen();                                      // entscheiden über Bewegunsrichtung auf y-Achse mit "direction"
         
         switch(direction){
-        case "hoch":
-        mittelpunktY = mittelpunktY - newposy;
+        case "hoch":  // Bewegen nach oben auf y-Achse um den Wert newposy
+        mittelpunktY = mittelpunktY - newposy;  // Formel um neue  Position des Mittelpunktes zu errechenen
         break;
         
-        case "runter":
-        mittelpunktY = mittelpunktY + newposy;
+        case "runter":  // Bewegen nach unten auf y-Achse um den Wert newposy
+        mittelpunktY = mittelpunktY + newposy;  // Formel um neue  Position des Mittelpunktes zu errechenen
         break;
         
         default:
-        System.out.print("Ungültige Eingabe");
+        System.out.print("Ungültige Eingabe");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
         break;
         }
         
 		zeichnen();
     }
     
-    public void zeichnen() {
-        if(fuellung==true){
-        ZEICHENFENSTER.gibFenster().zeichneKreis(mittelpunktX, mittelpunktY, radius);
-        ZEICHENFENSTER.gibFenster().fuelleKreis(mittelpunktX, mittelpunktY, radius, fuellfarbe); 
-        }else{
-        ZEICHENFENSTER.gibFenster().zeichneKreis(mittelpunktX, mittelpunktY, radius);
+    public void zeichnen() {  // Methode zum zeichnen des Kreises
+        if(fuellung==true){  // prüfen ob es mit oder ohne Füllung gezeichnet werden soll
+        ZEICHENFENSTER.gibFenster().fuelleKreis(mittelpunktX, mittelpunktY, radius, fuellfarbe);       // zeichnen mit Füllung        
+        }else{ 
+        ZEICHENFENSTER.gibFenster().zeichneKreis(mittelpunktX, mittelpunktY, radius);                  // eichen ohne Füllung
         }
      }
      
-     public void loeschen() {
-        ZEICHENFENSTER.gibFenster().loescheKreis(mittelpunktX, mittelpunktY, radius);
+     public void loeschen() {  // Methode zum loeschen des Kreises
+        if(fuellung==true){  // prüfen ob es mit oder ohne Füllung gezeichnet werden soll
+        ZEICHENFENSTER.gibFenster().loescheKreis(mittelpunktX, mittelpunktY, radius);  // loeschen des Kreises       
+        }else{ 
+        ZEICHENFENSTER.gibFenster().loescheKreis(mittelpunktX, mittelpunktY, radius);  // Mit radius+1 da der Kreis sonst nicht komplett gelöscht wird
+        }
      }
 
 

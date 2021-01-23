@@ -91,9 +91,7 @@ class Tasten extends JFrame implements ActionListener, KeyListener
 		}
 		else if (oben)
 		{
-		    //System.out.println("oben");
-			Hauptfigur Figur  = new Hauptfigur();
-			Figur.SpringenStart();
+		    System.out.println("oben");
 		}
 		else if (rechts && oben)
 		{
