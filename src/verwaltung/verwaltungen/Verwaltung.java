@@ -2,18 +2,10 @@ package verwaltung.verwaltungen;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import verwaltung.Stapelverarbeitung;
 import verwaltung.entitaeten.interfaces.Backup;
@@ -32,15 +24,18 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 		observablelist = FXCollections.observableArrayList();
 	}
 	
+	public ObservableList<T> getList(){
+		return FXCollections.observableArrayList(list);
+	}
 	public ObservableList<T> getObList(){
 		return observablelist;
 	}
 	public int size() {
 		return list.size();
 	}
-	public List<T> getList() {
-		return new ArrayList<>(list);
-	}
+//	public List<T> getList() {
+//		return new ArrayList<>(list);
+//	}
 	public boolean existiert(T entitaet) {
 		return list.contains(entitaet);
 	}

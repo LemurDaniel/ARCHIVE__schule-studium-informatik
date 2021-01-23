@@ -116,6 +116,6 @@ public class Rezension implements Backup, EingabePruefung, Id{
 		if(inhalt.length()> Rezensionenverwaltung.getMaxInhalt())			sb.append("\n--inhalt zu lang");
 		if(inhalt.length()< Rezensionenverwaltung.getMinInhalt())			sb.append("\n  Der Rezensionsinhalt ist zu lang min."+Rezensionenverwaltung.getMinInhalt());
 		if(sb.length()>0)
-			throw new Exception(String.format("\nFehler Rezension '%s' zu Film '%s' "+sb.toString(), titel.get(), film.getTitel()));
+			throw new Exception(String.format("Fehler Rezension '%s' zu Film '%s' "+sb.toString(), titel.get(), film.getTitel()));
 	}
 }

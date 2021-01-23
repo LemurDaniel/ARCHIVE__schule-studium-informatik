@@ -6,10 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,11 +14,8 @@ import gui.FensterManager;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
-import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Nutzer;
-import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
-import verwaltung.verwaltungen.Listenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 
@@ -57,7 +51,6 @@ public class DB_Manager {
 	}
 	
 	
-	private static int connectionsCreated = 0;	
 	private static int ApplikationsId;
 	public static int getApplikationsId() {
 		return ApplikationsId;
@@ -67,7 +60,6 @@ public class DB_Manager {
 	}
 	
 	protected static Connection con() throws SQLException {
-		connectionsCreated++;
 		return DriverManager.getConnection(url, user, password);
 	}
 	

@@ -18,7 +18,6 @@ import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
-import verwaltung.entitaeten.Liste;
 import verwaltung.entitaeten.Nutzer;
 
 public class Filmverwaltung extends Verwaltung<Film>{
@@ -87,6 +86,9 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				rs.next();
 				id = rs.getInt(1);
 				f.setTempId(id);
+			}catch(SQLException e) {
+				if(e.getSQLState().equals("23000")) throw new Exception("Es existiert bereits ein Film mit dem Titel'"+f.getTitel()+"'");
+				else throw e;
 			}
 		}		
 		updateGenres(con, f.getGenres(), id);
@@ -267,7 +269,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	}
 	@Override
 	public void clear() {
-		getList().forEach(this::removeObj);;
+		new ArrayList<>(list).forEach(this::removeObj);
+		super.clear();
 	}
 	
 	
@@ -275,6 +278,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		geladeneFilme.clear();
 		referenziert.clear();
 		fvws.forEach(fvw->fvw.clear());
+		
 	}
 	
 	public static void refreshAll() throws SQLException {
@@ -313,7 +317,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
    	 	db.setContent(content);
 	}
 	public static List<Film> kopiereAusDragbord(Dragboard db) {		
-   	 	@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 		List<Integer> ids = (List<Integer>) db.getContent(dfFilm);
    	 	List<Film> filme = new ArrayList<>();
    	 	ids.forEach(id->filme.add(geladeneFilme.get(id)));

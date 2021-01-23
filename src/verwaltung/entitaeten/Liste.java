@@ -7,16 +7,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import gui.FensterManager;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import javafx.scene.paint.Color;
-import javafx.util.StringConverter;
-import verwaltung.DB_Manager;
 import verwaltung.Stapelverarbeitung;
 import verwaltung.entitaeten.interfaces.Backup;
 import verwaltung.entitaeten.interfaces.EingabePruefung;

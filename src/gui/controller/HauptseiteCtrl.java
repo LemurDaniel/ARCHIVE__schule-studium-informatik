@@ -1,17 +1,8 @@
 package gui.controller;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import gui.FensterManager;
-import impl.org.controlsfx.tools.rectangle.change.NewChangeStrategy;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -19,14 +10,10 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.stage.Stage;
-import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Nutzer;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -132,23 +119,12 @@ public class HauptseiteCtrl {
         muell.setOnDragOver(this::onDragOver);
         muell.setOnDragDropped(this::onDragDropped);
         
-        try {
-			fvw.filter(null, 10f, 0f, 999, 0, 9999, 0, null, true, null, 10);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
 	
 	private void onMouseClicked(MouseEvent event) {
 		long now = System.currentTimeMillis();
     	if(now-lastMouseClick<200 && table.getSelectionModel().getSelectedIndex()!=-1) {
-    		try {
-				FensterManager.setDialog(FensterManager.getDetail(table.getSelectionModel().getSelectedItem(), fvw));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    		btn_detail.fire();
     	}
     	lastMouseClick = now;
 	}

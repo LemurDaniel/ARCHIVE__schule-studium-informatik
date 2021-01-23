@@ -20,9 +20,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -40,16 +40,14 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.Modality;
 import verwaltung.DB_Manager;
 import verwaltung.Stapelverarbeitung;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Nutzer;
+import verwaltung.entitaeten.Nutzer.Rechte;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Rezension;
-import verwaltung.entitaeten.Rolle;
-import verwaltung.entitaeten.Nutzer.Rechte;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
@@ -83,8 +81,8 @@ public class DetailCtrl {
 			}
 		}
 		
-        table.setItems(pvw.getObList());
-        table1.setItems(rvw.getObList());
+        table.setItems(pvw.getList());
+        table1.setItems(rvw.getList());
 		
         tf_titel.setText(film.getTitel());
         tf_genre.setText(film.getGenreStringProperty().get());
@@ -101,10 +99,12 @@ public class DetailCtrl {
         tp_mit.setDisable( pvw.getList().size()==0 );
         tp_rez.setDisable( rvw.getList().size()==0 );
        
-		cb_r.setDisable(true);
-		// Wenn keine Rechte zum schreiben einer Review und keine bereits geschreiben vorhanden
-        if(!rechte.isReviewWrite() && rvw.getRezensionVonNutzer(nid)==null)		cb_r.getSelectionModel().select(0);
-        else																	cb_r.getSelectionModel().select(1);
+        if(film.getId()!=-1) {
+        	cb_r.setDisable(true);
+        	// Wenn keine Rechte zum schreiben einer Review und keine bereits geschreiben vorhanden
+        	if(!rechte.isReviewWrite() && rvw.getRezensionVonNutzer(nid)==null)		cb_r.getSelectionModel().select(0);
+        	else																	cb_r.getSelectionModel().select(1);
+        }else tp_rez.setDisable(true);
         
         this.film = film;
         this.stpv = stpv;
@@ -395,8 +395,9 @@ public class DetailCtrl {
     private void openAddFilm(ActionEvent event) {
     	try {
 			FensterManager.setDialog(FensterManager.getAddFilm(film, stpv));
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Alert a = new Alert(AlertType.ERROR);
+			a.setTitle("Fehler - Film modifizieren");
 			a.setContentText(e.getMessage());
 			a.show();
 		}

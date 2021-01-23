@@ -4,17 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import gui.FensterManager;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.Dragboard;
 import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
-import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;
 import verwaltung.entitaeten.Nutzer;
 

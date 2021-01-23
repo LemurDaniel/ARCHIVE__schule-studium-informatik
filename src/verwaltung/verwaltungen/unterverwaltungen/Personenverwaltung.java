@@ -64,7 +64,6 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		super.onAdd(per, con);
 		
 		int id = -1;
-		Person original = null;
 		//Existiert bereits in Datenbank?
 		try(PreparedStatement ps = con.prepareStatement("Select id from person where name=? and vorname=?")){
 			ps.setString(1, per.getName());

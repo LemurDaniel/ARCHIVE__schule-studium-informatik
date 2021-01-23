@@ -2,15 +2,11 @@ package verwaltung;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 import gui.FensterManager;
 import javafx.scene.paint.Color;
 import verwaltung.entitaeten.interfaces.Backup;
-import verwaltung.entitaeten.interfaces.EingabePruefung;
-import verwaltung.entitaeten.interfaces.Id;
 
 public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 

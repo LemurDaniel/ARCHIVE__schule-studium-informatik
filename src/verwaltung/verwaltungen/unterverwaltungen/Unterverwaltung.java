@@ -37,4 +37,7 @@ public abstract class Unterverwaltung<T extends Backup & EingabePruefung & Id> e
 	public boolean isGeladen() {
 		return istGeladen;
 	}
+	public void setGeladen(boolean istGeladen) {
+		this.istGeladen = istGeladen;
+	}
 }

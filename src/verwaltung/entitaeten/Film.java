@@ -246,7 +246,7 @@ public class Film implements Backup, EingabePruefung, Id{
 		if(genres.size()< Filmverwaltung.getMinGenre()) 					sb.append("\n  Der Film gehört nicht zu genügend Genre min."+Filmverwaltung.getMinGenre());
 		if(genres.size()> Filmverwaltung.getMaxGenre())						sb.append("\n--Genre");
 		if(sb.length()>0)
-			throw new Exception("\nFehler Film: '"+titel.get()+"'"+sb.toString());
+			throw new Exception("Fehler Film: '"+titel.get()+"'"+sb.toString());
 	}
 	
 }

@@ -2,7 +2,6 @@ package gui.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -36,7 +35,6 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
@@ -45,6 +43,7 @@ import verwaltung.DB_Manager;
 import verwaltung.Stapelverarbeitung;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
+import verwaltung.entitaeten.Nutzer;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -60,14 +59,16 @@ public class AddFilmCtrl {
 	private BiMap<Genre, BooleanProperty> checked_genre = HashBiMap.create();
 	private List<Genre> selected;
 	private boolean blocked, added;
-	
+		
 	public void setFilm(Film film, Stapelverarbeitung<Film> stpv) throws SQLException{
 		accordion.setExpandedPane(tp_allg);
 	    tab_pane.getSelectionModel().select(tab_allg);
 	    tab_pane.requestFocus();	
 
-	    if(film==null) film = new Film(-1, -1, null, 120, 2000, 0);	   
+	    if(film==null) film = new Film(-1, Nutzer.getNutzer().getId(), null, 120, 2000, 0);	   
 	    pvw = film.getPvw();
+	    pvw.setGeladen(true);
+	    film.getRvw().setGeladen(true);
 	    
 		if(film.getId()!=-1 && (!pvw.isGeladen() || !film.getRvw().isGeladen())) {
 			try(Connection con = DB_Manager.getCon()){
@@ -394,9 +395,9 @@ public class AddFilmCtrl {
     private void openDetail() {
     	try {
 			FensterManager.setDialog( FensterManager.getDetail(film, stpv) );
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Alert a2 = new Alert(AlertType.ERROR);
-			a2.setTitle(e.getClass().getSimpleName());
+			a2.setTitle("Fehler - Detailansicht");
 			a2.setContentText(e.getMessage());
 			a2.show();
 			e.printStackTrace();

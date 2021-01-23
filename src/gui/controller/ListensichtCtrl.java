@@ -1,14 +1,8 @@
 package gui.controller;
 
-import java.awt.datatransfer.Clipboard;
-import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import gui.FensterManager;
-import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -21,17 +15,14 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.paint.Color;
-import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;
 import verwaltung.verwaltungen.Filmverwaltung;

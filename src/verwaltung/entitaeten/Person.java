@@ -1,18 +1,10 @@
 package verwaltung.entitaeten;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import verwaltung.entitaeten.interfaces.Backup;
 import verwaltung.entitaeten.interfaces.EingabePruefung;
 import verwaltung.entitaeten.interfaces.Id;
-import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 public class Person implements Backup, EingabePruefung, Id{
@@ -74,11 +66,11 @@ public class Person implements Backup, EingabePruefung, Id{
 		this.id = id;
 	}
 	public void setVorname(String vorname) {
-		this.vorname.set(vorname);
+		this.vorname.set(vorname.trim());
 		nameChanged = true;
 	}
 	public void setName(String name) {
-		this.name.set(name);
+		this.name.set(name.trim());
 		nameChanged = true;
 	}
 	public void setWeiteres(String weiteres) {
@@ -150,7 +142,7 @@ public class Person implements Backup, EingabePruefung, Id{
 		if(name.length().intValue() < Personenverwaltung.getMinName())				sb.append("\n  Der Name '"+name.get()+"' ist zu kurz min."+Personenverwaltung.getMinName());
 		if(vorname.length().intValue() > Personenverwaltung.getMaxVorname())		sb.append("\n--jahr Titel");
 		if(vorname.length().intValue() < Personenverwaltung.getMinVorname())	 	sb.append("\n  Der Vorname '"+vorname.get()+"' ist zu kurz min."+Personenverwaltung.getMinVorname());
-		if(sb.length()>0)	throw new Exception("\nFehler Person: '"+this+"' "+sb.toString());
+		if(sb.length()>0)	throw new Exception("Fehler Person: '"+this+"' "+sb.toString());
 	}
 
 }

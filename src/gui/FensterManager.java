@@ -4,8 +4,6 @@ package gui;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.SQLException;
-
 
 import application.Main;
 import gui.controller.AddFilmCtrl;
@@ -13,9 +11,7 @@ import gui.controller.AnmeldeseiteCtrl;
 import gui.controller.DetailCtrl;
 import gui.controller.FilterCtrl;
 import gui.controller.HauptseiteCtrl;
-import gui.controller.ListensichtCtrl;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -34,7 +30,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import verwaltung.DB_Manager;
 import verwaltung.Stapelverarbeitung;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Nutzer;
@@ -58,7 +53,7 @@ public class FensterManager {
 	private  static HauptseiteCtrl hauptseiteCtrl;	
 	
 	private static Stage listensicht;
-	private static ListensichtCtrl listensichtCtrl;
+//	private static ListensichtCtrl listensichtCtrl;
 	
 	private  static Stage detail;
 	private  static DetailCtrl detailCtrl;
@@ -84,8 +79,8 @@ public class FensterManager {
 	}
 	
 	
-	public static Stage getDetail(Film film, Stapelverarbeitung<Film> stpv) throws SQLException{
-		if(!Nutzer.getNutzer().getRechte().isRead())	throw new SQLException("Keine Berechtigung");
+	public static Stage getDetail(Film film, Stapelverarbeitung<Film> stpv) throws Exception{
+		if(!Nutzer.getNutzer().getRechte().isRead())	throw new Exception("Sie sind nicht berechtigt die Detailansicht zu öffnen");
 		
 		if(detail==null) {
 			detail = new Stage();
@@ -99,12 +94,12 @@ public class FensterManager {
 		return detail;
 	}
 	
-	public static Stage getAddFilm(Film film, Stapelverarbeitung<Film> stpv) throws SQLException{
-		if(film != null) {
+	public static Stage getAddFilm(Film film, Stapelverarbeitung<Film> stpv) throws Exception{
+		if(film != null && film.getId()!=-1) {
 			if( !(Nutzer.getNutzer().getRechte().isUpdate() && film.getErstellerId()==Nutzer.getNutzer().getId() || Nutzer.getNutzer().getRechte().isUpdateAll())	)
-				throw new SQLException("Keine Berechtigung");
+				throw new Exception("Sie sind nicht dazu berechtigt diesen Film zu modifizieren");
 		}else if(film == null && !Nutzer.getNutzer().getRechte().isAdd())
-			throw new SQLException("Keine Berechtigung");
+			throw new Exception("Sie sind nicht dazu berechtigt neue Filme zu erstellen");
 
 		
 		if(addFilm==null) {
@@ -156,13 +151,15 @@ public class FensterManager {
 		return filter;
 	}
 	
-	public static Stage getListensicht() {
+	public static Stage getListensicht() throws Exception {
+		if(!Nutzer.getNutzer().getRechte().islist())	throw new Exception("Sie sind nicht dazu berechtigt Listen zu erstellen bzw. zu verwalten");
+		
 		if(listensicht==null) {
 			listensicht = new Stage();
 			listensicht.setResizable(false);
 			listensicht.setTitle("Filmdatenbank - Listensicht");
 			FXMLLoader loader = getLoader("fxml/Listensicht.fxml");
-			listensichtCtrl = loader.getController();
+//			listensichtCtrl = loader.getController();
 			listensicht.setScene(new Scene(loader.getRoot()));
 		}
 		return listensicht;
@@ -241,7 +238,6 @@ public class FensterManager {
 	
 	
 	public static void logErreignis(Exception e) {
-		e.printStackTrace();
 		logErreignis(e.getMessage(), Color.RED);
 	}
 	public static void logErreignis(String text) {

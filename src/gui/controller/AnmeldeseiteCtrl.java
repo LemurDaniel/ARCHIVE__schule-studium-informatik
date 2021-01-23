@@ -1,7 +1,5 @@
 package gui.controller;
 
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 
 import exceptions.LogInException;
@@ -19,8 +17,6 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import verwaltung.entitaeten.Nutzer;
 

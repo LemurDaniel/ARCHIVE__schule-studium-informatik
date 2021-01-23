@@ -10,9 +10,7 @@ import java.util.Optional;
 import gui.FensterManager;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
-import verwaltung.entitaeten.Nutzer;
 import verwaltung.entitaeten.Rezension;
-import verwaltung.verwaltungen.Filmverwaltung;
 
 public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 

@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
@@ -15,7 +14,6 @@ import gui.FensterManager;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.concurrent.Task;
 import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
 import verwaltung.verwaltungen.Listenverwaltung;
@@ -40,7 +38,7 @@ public class Nutzer extends DB_Manager {
 	private void setNutzer(ResultSet rs) throws SQLException{
 		id = rs.getInt("id");
 		name = rs.getString("name");
-		rechte.setRechte(rs.getString("berechtigung"), rs.getBoolean("read"), rs.getBoolean("add"), rs.getBoolean("update"), rs.getBoolean("updateAll"), rs.getBoolean("multiLogin"), rs.getBoolean("reviewRead"), rs.getBoolean("reviewWrite"), rs.getBoolean("reviewWriteAll"));
+		rechte.setRechte(rs.getString("berechtigung"), rs.getBoolean("read"), rs.getBoolean("add"), rs.getBoolean("update"), rs.getBoolean("updateAll"), rs.getBoolean("multiLogin"), rs.getBoolean("reviewRead"), rs.getBoolean("reviewWrite"), rs.getBoolean("reviewWriteAll"), rs.getBoolean("list"));
 	}
 	
 	public static void anmeldenGast() throws SQLException, LogInException {
@@ -254,6 +252,7 @@ public class Nutzer extends DB_Manager {
 		private boolean reviewRead;
 		private boolean reviewWrite;
 		private boolean reviewWriteAll;
+		private boolean list;
 		
 		private Rechte() {}
 		
@@ -265,9 +264,10 @@ public class Nutzer extends DB_Manager {
 			FensterManager.logErreignis("Beliebige Filme modifizieren: ",	updateAll? Color.GREEN:Color.RED);
 			FensterManager.logErreignis("Rezension lesen ",		reviewRead? Color.GREEN:Color.RED);
 			FensterManager.logErreignis("Rezension verfassen ", reviewWrite? Color.GREEN:Color.RED);
+			FensterManager.logErreignis("Listen verwalten ", list? Color.GREEN:Color.RED);
 		}
 
-		private void setRechte(String berechtigung, boolean read, boolean add, boolean update, boolean updateAll, boolean multiLogin, boolean reviewRead, boolean reviewWrite, boolean reviewWriteAll) {
+		private void setRechte(String berechtigung, boolean read, boolean add, boolean update, boolean updateAll, boolean multiLogin, boolean reviewRead, boolean reviewWrite, boolean reviewWriteAll, boolean list) {
 			this.berechtigung = berechtigung;
 			this.read = read;
 			this.add = add;
@@ -277,10 +277,11 @@ public class Nutzer extends DB_Manager {
 			this.reviewRead = reviewRead;
 			this.reviewWrite = reviewWrite;
 			this.reviewWriteAll = reviewWriteAll;
+			this.list = list;
 		}
 		
 		private void reset() {
-			setRechte(null, false, false, false, false, false, false, false, false);
+			setRechte(null, false, false, false, false, false, false, false, false, false);
 		}
 
 		public String getBerechtigung() {
@@ -318,15 +319,10 @@ public class Nutzer extends DB_Manager {
 		public boolean isReviewWriteAll() {
 			return reviewWriteAll;
 		}
-
-		@Override
-		public String toString() {
-			return "Rechte [berechtigung=" + berechtigung + ", read=" + read + ", add=" + add + ", update=" + update
-					+ ", updateAll=" + updateAll + ", multiLogin=" + multiLogin + ", reviewRead=" + reviewRead
-					+ ", reviewWrite=" + reviewWrite + ", reviewWriteAll=" + reviewWriteAll + "]";
+	
+		public boolean islist() {
+			return list;
 		}
-
-		
 	}
 	
 
