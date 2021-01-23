@@ -1,12 +1,8 @@
-
 /**
- * Klasse f?r eine Kreis-Figur
+ * Write a description of class DREIECK here.
  * 
- * Ein Objekt dieser Klasse benutzt zur Darstellung
- * seines Grafiksymbols ein Objekt der Klasse ZEICHENFLAECHE
- * 
- * @author U.Freiberger
- * @version 1.0
+ * @author (Daniel Landau) 
+ * @version (04.05.2015v1)
  */
 
 public class KREIS {
@@ -19,82 +15,99 @@ public class KREIS {
 
     private String fuellfarbe;
     
-    private boolean sichtbar;
-    
-    private int kennung;
+    private boolean fuellung;           
 
-    
-    /**
-     * Erzeugt einen neuen Kreis mit einer Standardposition und einer
-     * Standardf?llfarbe. Das zugeh?rige Symbol wird sofort angezeigt. 
-     */
+
     public KREIS() {
-        mittelpunktX = 30;
-        mittelpunktY = 60;
-        radius = 20;
-        fuellfarbe = "blau";
-        sichtbar = true;
-        kennung = ZEICHENFLAECHE.ObjektGeben().anmelden(ZEICHENFLAECHE.SymbolArt.artKreis);
-        Zeichnen();
-    }
-  public KREIS(int x, int y, int r,  String farbe)
-    {
-        mittelpunktX = x;
-        mittelpunktY = y;
-        radius = r;
-        fuellfarbe = farbe;
-        sichtbar = true;
-        kennung = ZEICHENFLAECHE.ObjektGeben().anmelden(ZEICHENFLAECHE.SymbolArt.artKreis);
-        Zeichnen();
-		
-    }
-    /**
-     * Den Mittelpunkt dieses Kreises auf die neuen Werte
-     * setzen.
-     */
-    public void MittelpunktSetzen(int neuesX, int neuesY) {
-        mittelpunktX = neuesX;
-        mittelpunktY = neuesY;
-        Zeichnen();
-    }
-
-    /**
-     * Den Radius dieses Kreises auf den neuen Wert setzen.
-     */
-    public void RadiusSetzen(int neuerRadius) {
-        radius = neuerRadius;
-        Zeichnen();
-    }
-
-    /**
-     * Die F?llfarbe dieses Kreises auf 'neueFarbe' setzen. 
-     * Erlaubte Parameterwerte sind:
-     * "rot", "gruen", "blau", "gelb", "cyan", "magenta", "schwarz", "weiss"
-     * "hellgelb", "hellgruen", "orange", "braun"
-     */
-    public void FarbeSetzen(String neueFarbe) {
-        fuellfarbe = neueFarbe;
-        Zeichnen();
+        this(30, 60, 20, "blau", false);
     }
     
-    /**
-     * Die Sichtbarkeit dieses Kreises ein- oder ausschalten.
-     * Erlaubte Parameterwerte: true, false
-     */
-    public void SichtbarSetzen(boolean neueSichtbarkeit) {
-        sichtbar = neueSichtbarkeit;
-        Zeichnen();
-       }
-       
-    /**
-     * Zeichne f?r diesen Kreis ein entsprechendes Grafiksymbol 
-     * in dem Grafikfenster.
-     * Nach jeder ?nderung muss der Kreis diese ?nderung seinem 
-     * Grafiksymbol mitteilen.
-     */
-    public void Zeichnen() {
-        ZEICHENFLAECHE.ObjektGeben().zeichnen(kennung, mittelpunktX-radius, 
-        		mittelpunktY-radius, 2*radius, 2*radius, fuellfarbe, sichtbar);      
+    public KREIS(int posx, int posy, int r,  String color, boolean filled)
+    {
+        mittelpunktX = posx;
+        mittelpunktY = posy;
+        radius = r;
+        fuellfarbe = color;
+        fuellung = filled;
+        zeichnen();
+    }
+
+    public void aendereFarbe(String newcolor){
+        loeschen();
+        fuellfarbe = newcolor;
+        zeichnen();
+    }
+    
+    public void aenderePosition(int newpositionx, int newpositiony){
+        loeschen();
+        mittelpunktX = newpositionx;
+        mittelpunktY = newpositiony;
+        zeichnen();
+    }
+    
+    public void aendereRadius(int newradius){
+        loeschen();
+        radius = newradius;
+        zeichnen();
+    }
+    
+    public void Fuellung(boolean filled){
+        loeschen();
+        fuellung = filled;
+        zeichnen();
+    }
+    
+     public void bewegex(int newposx,String direction){
+        loeschen();
+        
+        switch(direction){
+        case "rechts":
+        mittelpunktX = mittelpunktX + newposx;
+        break;
+        
+        case "links":
+        mittelpunktX = mittelpunktX - newposx;
+        break;
+        
+        default:
+        System.out.print("Ungültige Eingabe");
+        break;
+        }
+        
+		zeichnen();
+    }
+    
+    public void bewegey(int newposy, String direction){
+        loeschen();
+        
+        switch(direction){
+        case "hoch":
+        mittelpunktY = mittelpunktY - newposy;
+        break;
+        
+        case "runter":
+        mittelpunktY = mittelpunktY + newposy;
+        break;
+        
+        default:
+        System.out.print("Ungültige Eingabe");
+        break;
+        }
+        
+		zeichnen();
+    }
+    
+    public void zeichnen() {
+        if(fuellung==true){
+        ZEICHENFENSTER.gibFenster().zeichneKreis(mittelpunktX, mittelpunktY, radius);
+        ZEICHENFENSTER.gibFenster().fuelleKreis(mittelpunktX, mittelpunktY, radius, fuellfarbe); 
+        }else{
+        ZEICHENFENSTER.gibFenster().zeichneKreis(mittelpunktX, mittelpunktY, radius);
+        }
+     }
+     
+     public void loeschen() {
+        ZEICHENFENSTER.gibFenster().loescheKreis(mittelpunktX, mittelpunktY, radius);
      }
 
 

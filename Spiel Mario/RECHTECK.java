@@ -1,12 +1,8 @@
-
 /**
- * Klasse f?r eine Rechteck-Figur
+ * Write a description of class DREIECK here.
  * 
- * Ein Objekt dieser Klasse benutzt zur Darstellung
- * seines Grafiksymbols ein Objekt der Klasse ZEICHENFLAECHE
- * 
- * @author U.Freiberger
- * @version 1.0
+ * @author (Daniel Landau) 
+ * @version (04.05.2015v1)
  */
 
 public class RECHTECK {
@@ -19,89 +15,102 @@ public class RECHTECK {
 	
 	private int hoehe;
 	
+	private boolean fuellung;
+	
 	private String fuellfarbe;
-    
-    private boolean sichtbar;
-    
-    private int kennung;
-
-    
-    /**
-     * Erzeuge ein neues Rechteck mit einer Standardposition und einer
-     * Standardf?llfarbe. Das zugeh?rige Symbol wird sofort angezeigt.
-     */
+ 
     public RECHTECK() {
-		positionX = 60;
-		positionY = 50;
-		breite = 60;
-		hoehe = 30;
-		fuellfarbe = "rot";
-		sichtbar = true;
-        kennung = ZEICHENFLAECHE.ObjektGeben().anmelden(ZEICHENFLAECHE.SymbolArt.artViereck);
-        Zeichnen();
-    }
-    public RECHTECK(int x, int y, int br, int hoe, String farbe)
-    {
-        positionX = x;
-		positionY = y;
-		breite = br;
-		hoehe = hoe;
-		fuellfarbe = farbe;
-		sichtbar = true;
-        kennung = ZEICHENFLAECHE.ObjektGeben().anmelden(ZEICHENFLAECHE.SymbolArt.artViereck);
-        Zeichnen();
-    }
-
-    /**
-     * Die Position (linke, obere Ecke) dieses Rechtecks
-     * auf die neuen Werte setzen.
-     */
-	public void PositionSetzen(int NeuesX, int NeuesY) {
-		positionX = NeuesX;
-		positionY = NeuesY;
-		Zeichnen();
-    }
-
-	/**
-	 * Die Gr??e dieses Rechteckes auf die neue Breite 
-	 * und die neue H?he setzen. 
-	 */
-	public void GroesseSetzen(int neueBreite, int neueHoehe) {
-		breite = neueBreite;
-		hoehe = neueHoehe;
-		Zeichnen();
-	}
-
-    /**
-     * Die F?llfarbe dieses Rechtecks auf 'neueFarbe' setzen. 
-     * Erlaubte Parameterwerte sind:
-     * "rot", "gruen", "blau", "gelb", "cyan", "magenta", "schwarz", "weiss"
-     * "hellgelb", "hellgruen", "orange", "braun"
-     */
-    public void FarbeSetzen(String neueFarbe) {
-        fuellfarbe = neueFarbe;
-        Zeichnen();
+        this(60, 50, 60, 30, "rot", false);
     }
     
-    /**
-     * Die Sichtbarkeit dieses Rechtecks ein- oder ausschalten.
-     * Erlaubte Parameterwerte: true, false
-     */
-    public void SichtbarSetzen(boolean neueSichtbarkeit) {
-        sichtbar = neueSichtbarkeit;
-        Zeichnen();
-       }
-       
-    /**
-     * Zeichne f?r dieses Rechteck ein entsprechendes Grafiksymbol
-     * in dem Grafikfenster.
-     * Nach jeder ?nderung muss das Rechteck diese ?nderung seinem 
-     * Grafiksymbol mitteilen.
-     */
-    public void Zeichnen() {
-        ZEICHENFLAECHE.ObjektGeben().zeichnen(kennung, positionX, 
-        		positionY, breite, hoehe, fuellfarbe, sichtbar);      
+    public RECHTECK(int posx, int posy, int width, int height, String color, boolean filled)
+    {
+        positionX = posx;
+		positionY = posy;
+		breite = width;
+		hoehe = height;
+		fuellfarbe = color;
+		fuellung = filled;
+		zeichnen();
+    }
+    
+    public void aendereFarbe(String newcolor){
+        loeschen();
+        fuellfarbe = newcolor;
+        zeichnen();
+    }
+    
+    public void aenderePosition(int newpositionx, int newpositiony){
+        loeschen();
+        positionX = newpositionx;
+        positionY = newpositiony;
+        zeichnen();
+    }
+    
+    public void aendereGroesse(int newheight, int newwidth){
+        loeschen();
+        hoehe = newheight;
+        breite = newwidth;
+        zeichnen();
+    }
+    
+    public void aendereFuellung(boolean filled){
+        loeschen();
+        fuellung = filled;
+        zeichnen();
+    }
+    
+    public void bewegex(int newposx,String direction){
+        loeschen();
+        
+        switch(direction){
+        case "rechts":
+        positionX = positionX + newposx;
+        break;
+        
+        case "links":
+        positionX = positionX - newposx;
+        break;
+        
+        default:
+        System.out.print("Ungültige Eingabe");
+        break;
+        }
+        
+		zeichnen();
+    }
+    
+    public void bewegey(int newposy, String direction){
+        loeschen();
+        
+        switch(direction){
+        case "hoch":
+        positionY = positionY - newposy;
+        break;
+        
+        case "runter":
+        positionY = positionY + newposy;
+        break;
+        
+        default:
+        System.out.print("Ungültige Eingabe");
+        break;
+        }
+        
+		zeichnen();
+    }
+    
+    public void zeichnen(){ 
+        if (fuellung==true){
+        ZEICHENFENSTER.gibFenster().zeichneRechteck(positionX, positionY, breite, hoehe);  
+        ZEICHENFENSTER.gibFenster().fuelleRechteck(positionX, positionY, breite, hoehe,fuellfarbe);
+        }else{
+        ZEICHENFENSTER.gibFenster().zeichneRechteck(positionX, positionY, breite, hoehe);
+        }
      }
-
+     
+     public void loeschen(){
+         ZEICHENFENSTER.gibFenster().loescheRechteck(positionX, positionY, breite+1, hoehe+1); 
+     }
 
 }

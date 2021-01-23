@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.*;
 import java.awt.geom.*;
 import java.awt.event.*;
+import java.util.*;
 /**
  * Class ZEICHENFENSTER - Eine Klasse, die einfache grafische Zeichnungen 
  * in einem Programmfenster ermöglicht.
@@ -430,7 +432,7 @@ public class ZEICHENFENSTER
         graphic.drawLine(x1, y1, x2, y2);   
         canvas.repaint();
     }
-
+    
     /**
      * Setzt die Vordergrundfarbe des Zeichenfensters.
      * @param  neueFarbe   neue Vordergrundfarbe 
@@ -473,6 +475,8 @@ public class ZEICHENFENSTER
         if (farbe=="magenta") return Color.magenta;
         if (farbe=="cyan") return Color.cyan;
         if (farbe=="grau") return Color.gray;
+        if (farbe=="hautfarbe") return new Color(229,198,163);
+        if (farbe=="braun") return new Color(128,64,0);
         return graphic.getColor();
     }
     
