@@ -21,26 +21,20 @@ import verwaltung.entitaeten.Nutzer;
 
 public class AnmeldeseiteCtrl {
 
-    @FXML // ResourceBundle that was given to the FXMLLoader
-    private ResourceBundle resources;
-
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
-    private URL location;
+    @FXML
+    private ComboBox<String> cbox;  
     
-    @FXML // fx:id="cbox"
-    private ComboBox<String> cbox; // Value injected by FXMLLoader
-    
-    @FXML // fx:id="tf_name"
-    private TextField tf_name; // Value injected by FXMLLoader
+    @FXML
+    private TextField tf_name;  
 
-    @FXML // fx:id="tf_pwd"
-    private TextField tf_pwd; // Value injected by FXMLLoader
+    @FXML
+    private TextField tf_pwd;  
 
-    @FXML // fx:id="tf_pwd2"
-    private TextField tf_pwd2; // Value injected by FXMLLoader
+    @FXML
+    private TextField tf_pwd2;  
 
-    @FXML // fx:id="btn"
-    private Button btn; // Value injected by FXMLLoader
+    @FXML
+    private Button btn;  
     
     @FXML
     void btnAction(ActionEvent event) {

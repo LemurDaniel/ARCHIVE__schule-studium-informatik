@@ -27,7 +27,7 @@ public class DB_Manager {
 			System.out.println("Kein Treiber gefunden");
 			e.printStackTrace();
 		}
-		
+	
 		
 //		try {
 //			getCon();
@@ -51,7 +51,7 @@ public class DB_Manager {
 	
 	public static void InstanzAnmelden() {
 		try(Connection con = getCon();){
-			PreparedStatement ps = con.prepareStatement("insert into instanzen(angemeldet, online) values(?, 1); select SCOPE_IDENTITY();");
+			PreparedStatement ps = con.prepareStatement("insert into instanz(angemeldet, online) values(?, 1); select SCOPE_IDENTITY();");
 			ps.setString(1, LocalDateTime.now().toString());
 			ResultSet rs = ps.executeQuery();
 			rs.next();
@@ -72,7 +72,7 @@ public class DB_Manager {
 			}
 
 		try(Connection con = getCon();){
-			PreparedStatement ps = con.prepareStatement("Update instanzen set abgemeldet=?, online=0 where id=?;");
+			PreparedStatement ps = con.prepareStatement("Update instanz set abgemeldet=?, online=0 where id=?;");
 			ps.setString(1, LocalDateTime.now().toString());
 			ps.setInt(2, ApplikationsId);
 			ps.execute();
@@ -89,7 +89,7 @@ public class DB_Manager {
 			
 			if(Nutzer.getNutzer().isAngemeldet()) {
 				if(!Nutzer.getNutzer().getRechte().isMultiLogin()) {
-					PreparedStatement ps = con.prepareStatement("Select iid from instanzen_nutzer where nid=? and iid=?;");
+					PreparedStatement ps = con.prepareStatement("Select iid from instanz_nutzer where nid=? and iid=?;");
 					ps.setInt(1, Nutzer.getNutzer().getId());
 					ps.setInt(2, ApplikationsId);
 					ResultSet rs = ps.executeQuery();
@@ -119,16 +119,20 @@ public class DB_Manager {
 				String tab = rs.getString("TABLE_NAME");
 				int size = rs.getInt("COLUMN_SIZE");
 				
-				if(tab.equals("Nutzer")) {
+				if(tab.equals("nutzer")) {
 					if(col.equals("name")) 			maxSize.put("name", size);
 					else if(col.equals("passwort")) maxSize.put("passwort", size);
 				}
-				else if(tab.equals("rezensionen")) {
+				else if(tab.equals("rezension")) {
 					if(col.equals("titel") ) 		maxSize.put("rezTitel", size);
 					else if(col.equals("inhalt") ) 	maxSize.put("rezInhalt", size);
 				}
-				else if(tab.equals("filme")) {
+				else if(tab.equals("film")) {
 					if(col.equals("titel")) 		maxSize.put("filmTitel", size);
+				}
+				else if(tab.equals("person")) {
+					if(col.equals("vorname"))		maxSize.put("PerVorname", size);
+					else if(col.equals("name"))		maxSize.put("PerName", size);
 				}
 			}
 		} catch (SQLException e) {

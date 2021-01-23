@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.controlsfx.control.CheckComboBox;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import gui.FensterManager;
 import javafx.beans.InvalidationListener;
@@ -37,8 +41,11 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
@@ -53,6 +60,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Nutzer;
@@ -65,14 +73,21 @@ public class AddFilmCtrl {
 
 	private Film film;
 	private Personenverwaltung pvw;
-	private Map<Genre, TreeItem<Genre>> genreMap;
 	
 	// 0 - update 1 - delete
-	private ObservableMap<PersonMitRolle, BooleanProperty[]> confirmed;
+	private BiMap<Genre, BooleanProperty> checked_genre = HashBiMap.create();
+	private List<Genre> selected = new ArrayList<>();
+	private boolean blocked;
+	
+	private Map<PersonMitRolle, BooleanProperty[]> confirmed = new HashMap<>();
 	private ObservableList<PersonMitRolle> personen;
 	private boolean[] changes = {false, false};
 	
 	public void setFilm(Film film) throws SQLException{
+		 accordion.setExpandedPane(tp_allg);
+	     tab_pane.getSelectionModel().select(tab_allg);
+	     tab_pane.requestFocus();
+		
 		if(this.film!=null && this.film.equals(film))	
 			return;
 			
@@ -82,116 +97,129 @@ public class AddFilmCtrl {
 			pvw.load();
 		}else
 			pvw = null;
+	        	
 		setDisplay();
 		setTable();
 	}
 	
 	private void setTable() {
-		changes[1] = false;
-		
 		if(pvw!=null)
 			personen = FXCollections.observableArrayList(pvw.getPersonenMitRollen());
 		else
 			personen = FXCollections.observableArrayList();
 		
 		table.setItems(personen);
-		Map<PersonMitRolle, BooleanProperty[]> map = new HashMap<>();		
-		personen.forEach(per->{
-			map.put(per, new SimpleBooleanProperty[]{new SimpleBooleanProperty(false), new SimpleBooleanProperty(false)});
-		});
-		confirmed = FXCollections.observableMap(map);
+		confirmed.clear();		
+		personen.forEach(per->	confirmed.put(per, new SimpleBooleanProperty[]{new SimpleBooleanProperty(), new SimpleBooleanProperty()})	);
+		
+		changes[1] = false;
 	}
 	
 	private void setDisplay() {
-		changes[0] = false;
 		table_genre.getSelectionModel().clearSelection();
+		//ConcurrentModificationException
+		blocked = true;
+		selected.forEach(ge->checked_genre.get(ge).set(false));
+		selected.clear();
+		blocked = false;
 		
 		if(film == null) {
 			tf_titel.setText(null);
 			tf_dauer.setText(null);
 			tf_jahr.setText(null);
 			tf_genre.setText(null);
+			tf_bewertung.setText(null);
 		}else {
 			tf_titel.setText(film.getTitel());
 			tf_dauer.setText(film.getDauer()+" Minuten");
 			tf_jahr.setText(film.getErscheinungsjahr()+"");
-			tf_genre.setText(film.getGenreStringProperty().get());
-			
-			if(film.getGenre()==null)	return;
-			film.getGenre().forEach(g->{
-				table_genre.getSelectionModel().select(genreMap.get(g));
-			});
+			tf_bewertung.setText(film.getBewertung()+"");
+			tf_genre.setText(null);
+			film.getGenres().forEach(g->checked_genre.get(g).set(true));
 		}
+		
+		changes[0] = false;
 	}
 	
-    @FXML // fx:id="accordion"
-    private Accordion accordion; // Value injected by FXMLLoader
+	/** Variablen **/
+	  	@FXML
+	    private Accordion accordion;
 
-    @FXML // fx:id="tp_allg"
-    private TitledPane tp_allg; // Value injected by FXMLLoader
-    
-    @FXML // fx:id="btn_rel1"
-    private Button btn_rel1; // Value injected by FXMLLoader
+	    @FXML
+	    private TitledPane tp_allg;
+	    
+	    @FXML
+	    private Tab tab_allg;
+	    
+	    @FXML
+	    private TabPane tab_pane;
 
-    @FXML // fx:id="btn_commit1"
-    private Button btn_commit1; // Value injected by FXMLLoader
+	    @FXML
+	    private Button btn_rel1;
 
-    @FXML // fx:id="btn_detail"
-    private Button btn_detail; // Value injected by FXMLLoader
+	    @FXML
+	    private Button btn_commit1;
 
-    @FXML // fx:id="tf_titel"
-    private TextField tf_titel; // Value injected by FXMLLoader
+	    @FXML
+	    private Button btn_detail;
 
-    @FXML // fx:id="tf_genre"
-    private TextField tf_genre; // Value injected by FXMLLoader
+	    @FXML
+	    private TextField tf_titel;
 
-    @FXML // fx:id="tf_dauer"
-    private TextField tf_dauer; // Value injected by FXMLLoader
+	    @FXML
+	    private TextField tf_genre;
 
-    @FXML // fx:id="tf_bewertung"
-    private TextField tf_bewertung; // Value injected by FXMLLoader
+	    @FXML
+	    private TextField tf_dauer;
 
-    @FXML // fx:id="tf_jahr"
-    private TextField tf_jahr; // Value injected by FXMLLoader
+	    @FXML
+	    private TextField tf_bewertung;
 
-    @FXML // fx:id="tp_genre"
-    private TitledPane tp_genre; // Value injected by FXMLLoader
+	    @FXML
+	    private TextField tf_jahr;
 
-    @FXML // fx:id="table_genre"
-    private TreeTableView<Genre> table_genre; // Value injected by FXMLLoader
+	    @FXML
+	    private TableView<Genre> table_genre;
 
-    @FXML // fx:id="t_genre"
-    private TreeTableColumn<Genre, String> t_genre; // Value injected by FXMLLoader
-    
-    @FXML // fx:id="tp_mit"
-    private TitledPane tp_mit; // Value injected by FXMLLoader
+	    @FXML
+	    private TableColumn<Genre, Boolean> t_check;
 
-    @FXML // fx:id="table"
-    private TableView<PersonMitRolle> table; // Value injected by FXMLLoader
-    
-    @FXML // fx:id="t_confirm"
-    private TableColumn<PersonMitRolle, Boolean> t_confirm; // Value injected by FXMLLoader
-    
-    @FXML // fx:id="t_confirm1"
-    private TableColumn<PersonMitRolle, Boolean> t_confirm1; // Value injected by FXMLLoader
+	    @FXML
+	    private TableColumn<Genre, String> t_genre;
 
-    @FXML // fx:id="t_confimr2"
-    private TableColumn<PersonMitRolle, Boolean> t_confirm2; // Value injected by FXMLLoader
+	    @FXML
+	    private TextArea ta_genre;
 
-    @FXML // fx:id="t_vorname"
-    private TableColumn<PersonMitRolle, String> t_vorname; // Value injected by FXMLLoader
+	    @FXML
+	    private TitledPane tp_mit;
 
-    @FXML // fx:id="t_name"
-    private TableColumn<PersonMitRolle, String> t_name; // Value injected by FXMLLoader
+	    @FXML
+	    private TableView<PersonMitRolle> table;
 
-    @FXML // fx:id="t_rolle"
-    private TableColumn<PersonMitRolle, String> t_rolle; // Value injected by FXMLLoader
+	    @FXML
+	    private TableColumn<PersonMitRolle, Boolean> t_confirm;
 
-    @FXML // fx:id="btn_addP"
-    private Button btn_addP; // Value injected by FXMLLoader
-    
-    @FXML // fx:id="btn_rel2"
-    private Button btn_rel2; // Value injected by FXMLLoader
+	    @FXML
+	    private TableColumn<PersonMitRolle, Boolean> t_confirm1;
+
+	    @FXML
+	    private TableColumn<PersonMitRolle, Boolean> t_confirm2;
+
+	    @FXML
+	    private TableColumn<PersonMitRolle, String> t_vorname;
+
+	    @FXML
+	    private TableColumn<PersonMitRolle, String> t_name;
+
+	    @FXML
+	    private TableColumn<PersonMitRolle, String> t_rolle;
+
+	    @FXML
+	    private Button btn_rel2;
+	    
+	    @FXML
+	    private Button btn_addP;
+	    
 
     @FXML
     void action(ActionEvent event) {
@@ -205,28 +233,6 @@ public class AddFilmCtrl {
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert accordion != null : "fx:id=\"accordion\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert tp_allg != null : "fx:id=\"tp_allg\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert tf_titel != null : "fx:id=\"tf_titel\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert tf_genre != null : "fx:id=\"tf_genre\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert tf_dauer != null : "fx:id=\"tf_dauer\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert tf_bewertung != null : "fx:id=\"tf_bewertung\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert tf_jahr != null : "fx:id=\"tf_jahr\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert table_genre != null : "fx:id=\"table_genre\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert t_genre != null : "fx:id=\"t_genre\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert btn_commit1 != null : "fx:id=\"btn_commit\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert btn_rel1 != null : "fx:id=\"btn_rel1\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert tp_mit != null : "fx:id=\"tp_mit\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert t_confirm != null : "fx:id=\"t_confirm\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert t_confirm1 != null : "fx:id=\"t_confirm1\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert t_confirm2 != null : "fx:id=\"t_confirm2\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert t_vorname != null : "fx:id=\"t_vorname\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert t_name != null : "fx:id=\"t_name\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert t_rolle != null : "fx:id=\"t_rolle\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert btn_addP != null : "fx:id=\"btn_addP\" was not injected: check your FXML file 'AddFilm.fxml'.";
-        assert btn_rel2 != null : "fx:id=\"btn_rel2\" was not injected: check your FXML file 'AddFilm.fxml'.";
-
         accordion.setExpandedPane(tp_allg);
         
         tf_titel.addEventFilter(KeyEvent.KEY_TYPED, ev->{
@@ -250,7 +256,7 @@ public class AddFilmCtrl {
         	else if(tf_dauer.getLength()>0)
         		tf_dauer.setText(tf_dauer.getText().replaceAll("[^0-9]", ""));
         });
-        
+       
         //The Horse In Motion (1878)
         tf_jahr.focusedProperty().addListener((ob,ov,newVal)->{
         	if(newVal == true || tf_jahr.getLength()==0) return;
@@ -260,39 +266,45 @@ public class AddFilmCtrl {
         	}
         });
         
-
         tf_bewertung.setDisable(true);
         tf_genre.setEditable(false);
+        ta_genre.setWrapText(true);
         
-        table_genre.setShowRoot(false);
-        table_genre.setRoot(new TreeItem<Genre>(new Genre(-1, "")));
-        table_genre.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        t_genre.setText("Genre");
-        t_genre.setCellValueFactory(data-> new SimpleStringProperty(data.getValue().getValue().getGenre()) );       
-
-        genreMap = new HashMap<>();
-        for(Genre g: Filmverwaltung.getGenres()) {
-            TreeItem<Genre> item = new TreeItem<>(g);
-            table_genre.getRoot().getChildren().add(item);  
-            genreMap.put(g, item);
-            
-            if(g.getSubGenre()!=null) {
-            	for(Genre sg: g.getSubGenre()) {
-            		TreeItem<Genre> itemChild = new TreeItem<>(sg);
-                	item.getChildren().add( itemChild);
-                	genreMap.put(sg, itemChild);
-            	}
-            }
-        }
-
-        table_genre.setOnMouseReleased(ev->checkGenre());
-        table_genre.setOnKeyReleased(kev->{
-        	if(kev.getCode().equals(KeyCode.SHIFT))
-        		table_genre.getSelectionModel().clearSelection();
+        /** Table Genre **/
+        table_genre.setEditable(true);
+        table_genre.setItems(FXCollections.observableArrayList(Filmverwaltung.getGenres()));
+        table_genre.getSelectionModel().selectedItemProperty().addListener( (ob,ov,nv)->{
+        	if(nv!=null)
+        		ta_genre.setText(nv.getText());
+        	else
+        		ta_genre.setText(null);
         });
-
         
-        /** Mitwirkende **/
+        t_check.setCellFactory(CheckBoxTableCell.forTableColumn(t_check));
+        
+        Filmverwaltung.getGenres().forEach(genre->checked_genre.put(genre, new SimpleBooleanProperty(false)));
+        t_check.setCellValueFactory(data->checked_genre.get(data.getValue()));
+        t_genre.setCellValueFactory(data->new SimpleStringProperty( data.getValue().getGenre() ));
+
+        // Beim abhaken -> Genre Textfeld aktualisieren
+        checked_genre.forEach((k,v)->v.addListener((ob,ov,nv)->{
+        	if(blocked) return;
+        	if(nv.booleanValue()==true)
+        		selected.add(checked_genre.inverse().get(ob));
+        	else
+        		selected.remove(checked_genre.inverse().get(ob));
+        	
+        	tf_genre.setText(null);
+        	if(selected.size()==0)
+        		return;
+        	selected.sort((o1, o2)-> o1.compare(o1, o2));
+        	StringBuilder sb = new StringBuilder(selected.get(0).getGenre());
+        	for(int i=1; i<selected.size(); i++)
+        		sb.append( ", "+selected.get(i).getGenre() );
+        	tf_genre.setText(sb.toString());
+        }));
+        
+        /** Table Mitwirkende **/
         table.setEditable(true);
         t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()		);
         t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()	);
@@ -308,11 +320,25 @@ public class AddFilmCtrl {
         t_confirm2.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm2));
 
         /**Changes**/
-//        t_vorname.setOnEditCommit(	ev->changes[1]=true);
-//        t_name.setOnEditCommit(		ev->changes[1]=true);
-//        t_rolle.setOnEditCommit(	ev->changes[1]=true);
-//        t_confirm1.setOnEditCommit(	ev->changes[1]=true);
-//        t_confirm1.setOnEditCommit(	ev->changes[1]=true);
+        t_vorname.setOnEditCommit(	data->{
+        	String val = data.getNewValue();
+        	if(val.length()>Personenverwaltung.getMaxVorname())
+        		val = val.substring(0, Personenverwaltung.getMaxVorname());
+        	data.getRowValue().getPerson().setVorname(val);
+        	changes[1]=true;
+        });
+        t_name.setOnEditCommit(	data->{
+        	String val = data.getNewValue();
+        	if(val.length()>Personenverwaltung.getMaxName())
+        		val = val.substring(0, Personenverwaltung.getMaxName());
+        	data.getRowValue().getPerson().setName(val);
+        	changes[1]=true;
+        });
+        t_rolle.setOnEditCommit(	data->{
+        	data.getRowValue().setRolle(data.getNewValue());
+        	changes[1]=true;
+        });
+        //t_confirm.setOnEditCommit <- funkt nicht mit checkbox
         
         tf_bewertung.textProperty().addListener((ob,ov,nv)-> changes[0]=true);
         tf_dauer.textProperty().addListener(	(ob,ov,nv)-> changes[0]=true);
@@ -330,28 +356,28 @@ public class AddFilmCtrl {
     }
     
     private void commit() {
+    	System.out.println(changes[0]+"  "+changes[1]);
+    	
     	try {
-        	checkEingaben();
     		//Wenn Fildaten geändert
     		if(changes[0]) {
+            	checkEingaben();
     			int dauer = Integer.parseInt(tf_dauer.getText().replaceAll("[^0-9]", ""));
     			int jahr = Integer.parseInt(tf_jahr.getText());
-    			List<Genre> genres = new ArrayList<>();
-    			table_genre.getSelectionModel().getSelectedItems().forEach(item-> genres.add(item.getValue()) );
-    			
-    			genres.forEach(g->System.out.println(g.getGenre()));
     			//Wenn kein Film vorhanden
     			if(film==null) {
-    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), genres, dauer, jahr );
+    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), selected, dauer, jahr );
     				pvw = new Personenverwaltung(film);
     			}else		
-    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), genres, dauer, jahr, film);
+    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), selected, dauer, jahr, film);
     		}
     		
-        	FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
+    		
+    		FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
         	FilteredList<PersonMitRolle> delete = personen.filtered(per->confirmed.get(per)[1].get());
-			pvw.addOrUpdate(update.subList(0, update.size()));
+        	pvw.addOrUpdate(update.subList(0, update.size()));
 			pvw.delete(delete.subList(0, delete.size()));
+    		
 		} catch (Exception e) {
 			Alert a = new Alert(AlertType.ERROR);
 			a.setTitle(e.getClass().getSimpleName());
@@ -369,7 +395,7 @@ public class AddFilmCtrl {
     	if(tf_titel.getLength() < 10)	throw new Exception("Titel zu kurz");
     	if(tf_jahr.getLength() != 4)	throw new Exception("Geben sie ein gültiges jahr ein");
     	if(tf_dauer.getLength() == 0)   throw new Exception("dauer");
-    	if(table_genre.getSelectionModel().getSelectedItems().size()==0) throw new Exception("Kein Genre");
+    	if(selected.size()==0) throw new Exception("Kein Genre");
     }
     
     private void detail() {
@@ -398,33 +424,6 @@ public class AddFilmCtrl {
 			e.printStackTrace();
 		}
     }
-    
-    //Deselect Parents and Generere String für Genre TextField
-    private void checkGenre() {
-    	List<TreeItem<Genre>> remove = new ArrayList<>();
-    	table_genre.getSelectionModel().getSelectedItems().forEach(item->{
-    		if(item.getParent()!=null)	remove.add(item.getParent());
-    	});
-    	
-    	List<TreeItem<Genre>> list2 = new ArrayList<>();
-    	table_genre.getSelectionModel().getSelectedItems().forEach(item->{
-    		if(!remove.stream().anyMatch(rItem->rItem==item)) {
-    			list2.add(item);
-    			table_genre.getSelectionModel().select(item);
-    		}
-    	});
 
-    	table_genre.getSelectionModel().clearSelection();
-    	if(list2.size()==0) {
-			tf_genre.setText(null);
-			return;
-		}
-		tf_genre.setText(list2.get(0).getValue().getGenre());
-		table_genre.getSelectionModel().select( list2.get(0) );
-        for(int i=1; i<list2.size(); i++) {
-        	tf_genre.setText( tf_genre.getText()+", "+list2.get(i).getValue().getGenre());
-        	table_genre.getSelectionModel().select( list2.get(i) );
-        }
-    }
 
 }

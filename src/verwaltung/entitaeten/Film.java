@@ -15,7 +15,7 @@ import verwaltung.verwaltungen.Rezensionenverwaltung;
 public class Film {
 	
 	private int id, erstellerId;
-	private List<Genre> genre;
+	private List<Genre> genres;
 	private ReadOnlyStringWrapper titel, dauer_string, genre_string;
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
 	private ReadOnlyFloatWrapper bewertung;
@@ -37,6 +37,7 @@ public class Film {
 		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);
 		this.bewertung = new ReadOnlyFloatWrapper(bewertung);
 		genre_string = new ReadOnlyStringWrapper("");
+		genres = new ArrayList<>();
 	}
 	
 	
@@ -77,8 +78,8 @@ public class Film {
 	public ReadOnlyStringProperty getGenreStringProperty() {
 	return genre_string.getReadOnlyProperty();
 }
-	public List<Genre> getGenre() {
-		return genre;
+	public List<Genre> getGenres() {
+		return genres;
 	}
 	
 	public Rezensionenverwaltung getRvw() {
@@ -107,19 +108,19 @@ public class Film {
 		this.erscheinungsjahr.set(jahr);
 	}
 	public void addGenre(Genre genre) {
-		if(this.genre == null) this.genre = new ArrayList<>();
-		this.genre.add(genre);
-
-		if(genre_string.get().length()==0)
-			genre_string.set(genre.getGenre());
-		else
-			genre_string.set(genre_string.get()+", "+genre.getGenre());
+		genres.add(genre);
+		genres.sort((o1,o2)->o1.compare(o1, o2));
+		
+		StringBuilder sb = new StringBuilder(genres.get(0).getGenre());
+    	for(int i=1; i<genres.size(); i++)
+    		sb.append( ", "+genres.get(i).getGenre() );
+    	genre_string.set(sb.toString());
 	}
 
 	public void clearGenre() {
-		if(genre==null)
+		if(genres==null)
 			return;
-		genre.clear();
+		genres.clear();
 		genre_string.set("");
 	}
 }

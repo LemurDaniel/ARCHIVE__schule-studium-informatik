@@ -31,7 +31,7 @@ public class Nutzer extends DB_Manager {
 	
 		System.out.println(rechte.toString());
 	}
-
+	
 	public static void anmeldenGast() throws SQLException, LogInException {
 		anmeldenKonto("Gast", "Gast");
 	}
@@ -52,11 +52,11 @@ public class Nutzer extends DB_Manager {
 			Nutzer ntz = getNutzer();
 			ntz.setNutzer(rs);
 		
-			rs = con.createStatement().executeQuery("Select * from instanzen_nutzer where nid="+ntz.id+"and not iid="+getApplikationsId());
+			rs = con.createStatement().executeQuery("Select * from instanz_nutzer where nid="+ntz.id+"and not iid="+getApplikationsId());
 			if( !ntz.getRechte().isMultiLogin() && rs.next()) 
 				throw new LogInException("Sie sind mit diesem Konto bereits in einer anderen Instanz angemeldet", LogInException.ALREADY_LOGGED_IN);		
 			
-			ps = con.prepareStatement("Insert into instanzen_nutzer(nid, iid) values(?, ?);");
+			ps = con.prepareStatement("Insert into instanz_nutzer(nid, iid) values(?, ?);");
 			ps.setInt(1, ntz.getId());
 			ps.setInt(2, getApplikationsId());
 			ps.executeUpdate();
@@ -84,8 +84,8 @@ public class Nutzer extends DB_Manager {
 	
 	public void vonAnderenInstanzenAbmelden() throws SQLException {
 		try(Connection con = getCon();) {
-			PreparedStatement ps = con.prepareStatement("Delete from instanzen_nutzer where nid=?;"
-														+"Insert into instanzen_nutzer(nid, iid) values(?, ?);");
+			PreparedStatement ps = con.prepareStatement("Delete from instanz_nutzer where nid=?;"
+														+"Insert into instanz_nutzer(nid, iid) values(?, ?);");
 			ps.setInt(1, id);
 			ps.setInt(2, id);
 			ps.setInt(3, getApplikationsId());
@@ -95,7 +95,7 @@ public class Nutzer extends DB_Manager {
 	}
 	
 	public void abmelden() throws SQLException {
-		String s = "Delete instanzen_nutzer where nid="+id+"and iid="+DB_Manager.getApplikationsId();
+		String s = "Delete instanz_nutzer where nid="+id+"and iid="+DB_Manager.getApplikationsId();
 		id = -1;
 		name = null;
 		rechte.reset();

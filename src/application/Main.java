@@ -10,10 +10,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 	
-		//FensterManager.setPrimaryStage( FensterManager.showAnmelden() );
-		FensterManager.getInstance().showAddFilm(null);
+		FensterManager.setPrimaryStage( FensterManager.showAnmelden() );
+		//FensterManager.getInstance().showAddFilm(null);
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}

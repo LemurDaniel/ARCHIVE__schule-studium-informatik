@@ -3,7 +3,6 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -11,8 +10,6 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -30,9 +27,9 @@
             </ButtonBar>
          </graphic>
          <content>
-            <TabPane prefHeight="99.0" prefWidth="598.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tab_pane" prefHeight="99.0" prefWidth="598.0" tabClosingPolicy="UNAVAILABLE">
                <tabs>
-                  <Tab text="Eingaben">
+                  <Tab fx:id="tab_allg" text="Allgemein">
                      <content>
                         <VBox prefHeight="320.0" prefWidth="360.0">
                            <children>
@@ -69,29 +66,21 @@
                      <content>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <TreeTableView fx:id="table_genre" prefHeight="290.0" prefWidth="236.0">
-                                 <columns>
-                                    <TreeTableColumn fx:id="t_genre" prefWidth="530.0" sortable="false" text="Genre" />
-                                 </columns>
-                              </TreeTableView>
-                           </children>
-                        </VBox>
-                     </content>
-                  </Tab>
-                  <Tab text="2">
-                     <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                           <children>
                               <HBox prefHeight="354.0" prefWidth="558.0">
                                  <children>
                                     <FlowPane prefHeight="200.0" prefWidth="298.0" styleClass="FlowPaneLeft">
                                        <children>
-                                          <ListView prefHeight="285.0" prefWidth="213.0" />
+                                          <TableView fx:id="table_genre" prefHeight="279.0" prefWidth="223.0">
+                                            <columns>
+                                              <TableColumn fx:id="t_check" prefWidth="46.0" text="Check" />
+                                              <TableColumn fx:id="t_genre" prefWidth="155.0" text="Genre" />
+                                            </columns>
+                                          </TableView>
                                        </children>
                                     </FlowPane>
                                     <FlowPane prefHeight="200.0" prefWidth="298.0" styleClass="FlowPaneCenter">
                                        <children>
-                                          <TextArea prefHeight="276.0" prefWidth="330.0" />
+                                          <TextArea fx:id="ta_genre" prefHeight="276.0" prefWidth="330.0" />
                                        </children>
                                     </FlowPane>
                                  </children>

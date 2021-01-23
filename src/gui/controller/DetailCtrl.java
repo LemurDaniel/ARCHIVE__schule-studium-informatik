@@ -2,7 +2,12 @@ package gui.controller;
 
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,18 +18,23 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.input.KeyEvent;
 import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Nutzer;
 import verwaltung.entitaeten.Nutzer.Rechte;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.entitaeten.Rezension;
+import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.Rezensionenverwaltung;
 
@@ -34,14 +44,22 @@ public class DetailCtrl {
 	private int nid= Nutzer.getNutzer().getId();
 	private Rechte rechte = Nutzer.getNutzer().getRechte();
 	
+	private Map<Genre, BooleanProperty> checked_genre = new HashMap<>();
+	
 	private Rezension displayed;
 	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
 	
 	private long lastMouseClick;
-	
+
 	public void setFilm(Film film) throws SQLException {
-		this.film = film;
+        accordion.setExpandedPane(tp_allg);
+        tab_pane.getSelectionModel().select(tab_allg);
+        tab_pane.requestFocus();
+		
+		if(this.film!=null && this.film.equals(film))
+			return;
+        
 		pvw = film.getPvw();
 		rvw = film.getRvw();
 		rvw.loadIfnotLoaded();
@@ -56,7 +74,16 @@ public class DetailCtrl {
         tf_dauer.setText(film.getDauer()+" Minuten");
         tf_jahr.setText(film.getErscheinungsjahr()+""); 
         
-        accordion.setExpandedPane(tp_allg);
+        if(this.film!=null)
+        	this.film.getGenres().forEach(g->checked_genre.get(g).set(false));
+        film.getGenres().forEach(g->checked_genre.get(g).set(true));
+        table_genre.getSelectionModel().clearSelection();
+        
+        if(pvw.getList().size()==0)
+        	tp_mit.setDisable(true);
+        
+        if(rvw.getList().size()==0)
+        	tp_rez.setDisable(true);
         
         setEdit(false);
 		cb_r.setDisable(true);
@@ -66,86 +93,107 @@ public class DetailCtrl {
         	cb_r.getSelectionModel().select(0);
         else
         	cb_r.getSelectionModel().select(1);
+        
+        this.film = film;
 	}
-	
+
     /** Allgemein **/
-    @FXML // fx:id="accordion"
-    private Accordion accordion; // Value injected by FXMLLoader
+    @FXML
+    private Accordion accordion;  
 	
-    @FXML // fx:id="tp_allg"
-    private TitledPane tp_allg; // Value injected by FXMLLoader
+    @FXML
+    private TitledPane tp_allg;  
+    
+    @FXML
+    private Tab tab_allg;
+    
+    @FXML
+    private TabPane tab_pane;
 
-    @FXML // fx:id="tf_titel"
-    private TextField tf_titel; // Value injected by FXMLLoader
+    @FXML 
+    private TextField tf_titel;  
 
-    @FXML // fx:id="tf_genre"
-    private TextField tf_genre; // Value injected by FXMLLoader
+    @FXML
+    private TextField tf_genre;  
 
-    @FXML // fx:id="tf_dauer"
-    private TextField tf_dauer; // Value injected by FXMLLoader
+    @FXML
+    private TextField tf_dauer;  
 
-    @FXML // fx:id="tf_bewertung"
-    private TextField tf_bewertung; // Value injected by FXMLLoader
+    @FXML
+    private TextField tf_bewertung;  
 
-    @FXML // fx:id="tf_jahr"
-    private TextField tf_jahr; // Value injected by FXMLLoader
+    @FXML
+    private TextField tf_jahr;  
+    
+    @FXML
+    private TableView<Genre> table_genre;
+
+    @FXML
+    private TableColumn<Genre, Boolean> t_check;
+
+    @FXML
+    private TableColumn<Genre, String> t_genre;
+
+    @FXML
+    private TextArea ta_genre;
+
 
     /** Mitwirkende **/
-    @FXML // fx:id="tp_mit"
-    private TitledPane tp_mit; // Value injected by FXMLLoader
+    @FXML
+    private TitledPane tp_mit;  
 
-    @FXML // fx:id="table"
-    private TableView<PersonMitRolle> table; // Value injected by FXMLLoader
+    @FXML
+    private TableView<PersonMitRolle> table;  
 
-    @FXML // fx:id="t_vorname"
-    private TableColumn<PersonMitRolle, String> t_vorname; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<PersonMitRolle, String> t_vorname;  
 
-    @FXML // fx:id="t_name"
-    private TableColumn<PersonMitRolle, String> t_name; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<PersonMitRolle, String> t_name;  
 
-    @FXML // fx:id="t_rolle"
-    private TableColumn<PersonMitRolle, String> t_rolle; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<PersonMitRolle, String> t_rolle;  
     
     /** Rezension **/
-    @FXML // fx:id="tp_rez"
-    private TitledPane tp_rez; // Value injected by FXMLLoader
+    @FXML
+    private TitledPane tp_rez;  
 
-    @FXML // fx:id="table1"
-    private TableView<Rezension> table1; // Value injected by FXMLLoader
+    @FXML
+    private TableView<Rezension> table1;  
 
-    @FXML // fx:id="t_ersteller"
-    private TableColumn<Rezension, String> t_ersteller; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<Rezension, String> t_ersteller;  
 
-    @FXML // fx:id="t_bwt"
-    private TableColumn<Rezension, Number> t_bwt; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<Rezension, Number> t_bwt;  
 
-    @FXML // fx:id="t_titel"
-    private TableColumn<Rezension, String> t_titel; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<Rezension, String> t_titel;  
     
     /** Rezension Detail**/
-    @FXML // fx:id="tp_rezd"
-    private TitledPane tp_rezd; // Value injected by FXMLLoader
+    @FXML
+    private TitledPane tp_rezd;  
 
-    @FXML // fx:id="cb_r"
-    private ChoiceBox<String> cb_r; // Value injected by FXMLLoader
+    @FXML
+    private ChoiceBox<String> cb_r;  
 
-    @FXML // fx:id="tbtn_r"
-    private ToggleButton tbtn_r; // Value injected by FXMLLoader
+    @FXML
+    private ToggleButton tbtn_r;
 
-    @FXML // fx:id="tf_rtile"
-    private TextField tf_rtitel; // Value injected by FXMLLoader
+    @FXML
+    private TextField tf_rtitel;
     
-    @FXML // fx:id="s_bwt"
-    private Slider s_bwt; // Value injected by FXMLLoader
+    @FXML
+    private Slider s_bwt;
 
-    @FXML // fx:id="ta_rtext"
-    private TextArea ta_rtext; // Value injected by FXMLLoader
+    @FXML
+    private TextArea ta_rtext;
 
-    @FXML // fx:id="btn_r"
-    private Button btn_r; // Value injected by 
+    @FXML 
+    private Button btn_r;
     
-    @FXML // fx:id="lbl_r"
-    private Label lbl_r; // Value injected by FXMLLoader
+    @FXML
+    private Label lbl_r;
     
     @FXML
     void add_rez(ActionEvent event) {
@@ -165,6 +213,7 @@ public class DetailCtrl {
         	displayRezension();
           	setEdit(false);
             tf_bewertung.setText(film.getBewertung()+"");
+            tp_rez.setDisable(false);
           }catch(Exception e) {
         	  a.setAlertType(AlertType.ERROR);
         	  a.setContentText(e.getMessage());
@@ -174,30 +223,6 @@ public class DetailCtrl {
     
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert accordion != null : "fx:id=\"accordion\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tp_allg != null : "fx:id=\"tp_allg\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tf_titel != null : "fx:id=\"tf_titel\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tf_genre != null : "fx:id=\"tf_genre\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tf_dauer != null : "fx:id=\"tf_dauer\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tf_bewertung != null : "fx:id=\"tf_bewertung\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tf_jahr != null : "fx:id=\"tf_jahr\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tp_mit != null : "fx:id=\"tp_mit\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert t_vorname != null : "fx:id=\"t_vorname\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert t_name != null : "fx:id=\"t_name\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert t_rolle != null : "fx:id=\"t_rolle\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert table1 != null : "fx:id=\"table1\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert t_ersteller != null : "fx:id=\"t_ersteller\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert t_bwt != null : "fx:id=\"t_bwt\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert t_titel != null : "fx:id=\"t_titel\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tp_rezd != null : "fx:id=\"tp_rezd\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert cb_r != null : "fx:id=\"cb_r\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tbtn_r != null : "fx:id=\"tbtn_r\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert tf_rtitel != null : "fx:id=\"tf_rtile\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert s_bwt != null : "fx:id=\"s_bwt\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert ta_rtext != null : "fx:id=\"ta_rtext\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert btn_r != null : "fx:id=\"btn_r\" was not injected: check your FXML file 'Detail.fxml'.";
-        assert lbl_r != null : "fx:id=\"lbl_r\" was not injected: check your FXML file 'Detail.fxml'.";
         
         /** Rechte **/
         if(!rechte.isReviewRead()) tp_rezd.setDisable(true);
@@ -221,13 +246,35 @@ public class DetailCtrl {
         	if(!rechte.isReviewRead() && nv==false) tp_rezd.setDisable(true);
         });
 
-        /** Rechte **/
+        /** Allg **/
         
         tf_titel.setEditable(false);
         tf_bewertung.setEditable(false);
         tf_dauer.setEditable(false);
         tf_genre.setEditable(false);
         tf_jahr.setEditable(false);
+        
+        /** Genre **/
+        table_genre.setEditable(false);
+        table_genre.setItems(FXCollections.observableArrayList(Filmverwaltung.getGenres()));
+        table_genre.getSelectionModel().selectedItemProperty().addListener( (ob,ov,nv)->{
+        	if(nv!=null)
+        		ta_genre.setText(nv.getText());
+        	else
+        		ta_genre.setText(null);
+        });
+        
+        t_check.setCellFactory(CheckBoxTableCell.forTableColumn(t_check));
+        
+      	Filmverwaltung.getGenres().forEach(g->checked_genre.put(g, new SimpleBooleanProperty(false)));
+        t_genre.setCellValueFactory(data-> new SimpleStringProperty(data.getValue().getGenre()));
+        t_check.setCellValueFactory(data-> checked_genre.get(data.getValue()));
+        
+        /** Mitwirkende  **/
+        
+        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()		);
+        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()	);
+        t_rolle.setCellValueFactory(	data->data.getValue().getRolle()				);     
         
         /** Reze Detail **/
         cb_r.setItems(FXCollections.observableArrayList());
@@ -260,12 +307,6 @@ public class DetailCtrl {
         	if(ta_rtext.getLength() >= Rezensionenverwaltung.getMaxInhalt()) ev.consume();
         	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-ta_rtext.getLength()+"");
         });
-        
-        /**  **/
-        
-        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()		);
-        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()	);
-        t_rolle.setCellValueFactory(	data->data.getValue().getRolle()				);     
         
         t_ersteller.setCellValueFactory(data->data.getValue().getVerfasser());
         t_bwt.setCellValueFactory(data->data.getValue().getBewertung());
@@ -301,7 +342,7 @@ public class DetailCtrl {
         	lastMouseClick = now;
         });
     }
-    
+   
     // Rezension anzeigen
     private void displayRezension() {
     	if(cb_r.getSelectionModel().selectedIndexProperty().intValue()==1) {

@@ -17,19 +17,9 @@
 	-fx-min-width: 0.0;
 	-fx-min-height: 0.0;
 	-fx-max-height: 31;
-	-fx-max-width: 380;
+	-fx-max-width: 420;
 	-fx-pref-height: 31;
-	-fx-pref-width: 380;
-}
-
-
-.hbox_allg > Label {
-	-fx-min-width: 0.0;
-	-fx-min-height: 0.0;
-	-fx-max-height: 31;
-	-fx-max-width: 200;
-	-fx-pref-width: 150;
-	-fx-pref-height: 31;
+	-fx-pref-width: 420;
 }
 
 VBox {

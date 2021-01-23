@@ -1,49 +1,39 @@
 package verwaltung.entitaeten;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableValueBase;
 
-public class Genre extends ObservableValueBase<Genre>{
+public class Genre implements Comparator<Genre>{
 	private int id;
-	private ReadOnlyStringProperty genre;
-	private List<Genre> subgenre;
-	
-	public Genre(int id, String genre) {
+	private String genre, text;
+
+	public Genre(int id, String genre, String text) {
 		this.id = id;
-		this.genre = new SimpleStringProperty(genre);
+		this.genre = genre;
+		this.text = text;
 	}
 
 	public int getId() {
 		return id;
 	}
-
+	
 	public String getGenre() {
-		return genre.get();
-	}
-	public ReadOnlyStringProperty getGenreProperty() {
 		return genre;
 	}
 	
-	public void addSubGenre(Genre subgenre) {
-		if(this.subgenre==null)this.subgenre = new ArrayList<>();
-		this.subgenre.add(subgenre);
-	}
-	public List<Genre> getSubGenre() {
-		return subgenre;
+	public String getText() {
+		return text;
 	}
 
 	@Override
-	public Genre getValue() {
-		return this;
+	public int compare(Genre o1, Genre o2) {
+		if(o1.getId()>o2.getId())
+			return 1;
+		else if(o1.getId()<o2.getId())
+			return -1;
+		return 0;
 	}
+
+	
 	
 }

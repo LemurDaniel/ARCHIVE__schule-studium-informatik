@@ -23,13 +23,13 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		if(rollen == null) {
 			rollen = new HashMap<>();
 			try(Connection con = getCon();){
-				ResultSet rs = con.createStatement().executeQuery("Select id, rolle from rollen");
+				ResultSet rs = con.createStatement().executeQuery("Select id, rolle from rolle");
 				while(rs.next()) rollen.put(rs.getString(2), rs.getInt(1));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
-
+		
 		ObservableList<String> oblist = FXCollections.observableArrayList();
 		rollen.forEach( (k, v)-> oblist.add(k) );
 		return oblist;
@@ -51,9 +51,9 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	public void load() throws SQLException {
 		super.load();
 		try(Connection con = getCon()){
-			ResultSet rs = con.createStatement().executeQuery("Select pid, vorname, name, rolle from personen "
-															+"inner join filme_personen_rollen on pid = personen.id "
-															+"inner join rollen on rid = rollen.id "
+			ResultSet rs = con.createStatement().executeQuery("Select pid, vorname, name, rolle from person "
+															+"inner join film_person_rolle on pid = person.id "
+															+"inner join rolle on rid = rolle.id "
 															+"where fid="+film.getId());
 			while(rs.next()) {
 				int pid = rs.getInt(1);
@@ -96,7 +96,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 				
 	
 					//Existiert bereits in Datenbank?
-					PreparedStatement ps = con.prepareStatement("Select id from personen where name=? and vorname=?");
+					PreparedStatement ps = con.prepareStatement("Select id from person where name=? and vorname=?");
 					ps.setString(1, person.getName());
 					ps.setString(2, person.getVorname());
 					ResultSet rs = ps.executeQuery();
@@ -112,7 +112,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					
 					if(original == null) {
 						//Existiert nicht -> muss angelegt werden
-						ps = con.prepareStatement("insert into personen(vorname, name) values(?, ?);"
+						ps = con.prepareStatement("insert into person(vorname, name) values(?, ?);"
 																+ "Select SCOPE_IDENTITY()");
 						ps.setString(1, person.getVorname());
 						ps.setString(2, person.getName());
@@ -122,7 +122,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 						list.add(original);	
 					}else {
 						//Updaten
-						ps = con.prepareStatement("update personen set vorname=?,  name=? where id=?");
+						ps = con.prepareStatement("update person set vorname=?,  name=? where id=?");
 						ps.setString(1, person.getVorname());
 						ps.setString(2, person.getName());
 						ps.setInt(3, original.getId());
@@ -137,13 +137,13 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 				
 				if(rolleId!=null) {
 					//Kombination schon vorhanden?
-					PreparedStatement ps = con.prepareStatement("Select * from filme_personen_rollen where fid=? and pid=? and rid=?");
+					PreparedStatement ps = con.prepareStatement("Select * from film_person_rolle where fid=? and pid=? and rid=?");
 					ps.setInt(1, film.getId());
 					ps.setInt(2, original.getId());
 					ps.setInt(3, rolleId);
 					ResultSet rs = ps.executeQuery();
 					if(!rs.next()) {
-						ps = con.prepareStatement("insert into filme_personen_rollen(fid, pid, rid) values(?, ?, ?)");
+						ps = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)");
 						ps.setInt(1, film.getId());
 						ps.setInt(2, original.getId());
 						ps.setInt(3, rolleId);
@@ -166,7 +166,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			for(PersonMitRolle pmr: pmrlist) {			
 				rolleId = rollen.get(pmr.getRolle().get());				
 				if(rolleId!=null) {
-					PreparedStatement ps = con.prepareStatement("Delete filme_personen_rollen where fid=? and pid=? and rid=?");
+					PreparedStatement ps = con.prepareStatement("Delete film_person_rolle where fid=? and pid=? and rid=?");
 					ps.setInt(1, film.getId());
 					ps.setInt(2, pmr.getPerson().getId());
 					ps.setInt(3, rolleId);
@@ -187,9 +187,16 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		list.forEach(per->pml.addAll(per.getCopy().getPersonenMitRolle()));
 		return pml;
 	}
-
 	public void setFilm(Film addFilm) {
 		this.film = film;
+	}
+	
+	
+	public static int getMaxName() {
+		return maxSize.get("PerName");
+	}
+	public static int getMaxVorname() {
+		return maxSize.get("PerVorname");
 	}
 
 }

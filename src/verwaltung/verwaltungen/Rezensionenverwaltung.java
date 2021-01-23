@@ -21,14 +21,14 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	public void load() throws SQLException {
 		super.load();
 		try(Connection con = getCon()){
-			ResultSet rs = con.createStatement().executeQuery("Select rezensionen.id, titel, inhalt, name, verfasser, bewertung from rezensionen "
+			ResultSet rs = con.createStatement().executeQuery("Select rezension.id, titel, inhalt, name, verfasser, bewertung from rezension "
 															+"inner join nutzer on verfasser = nutzer.id "
 															+"where filmid ="+film.getId());
 		while(rs.next())list.add(new Rezension(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6)));	
 		}
 	}
 
-
+	
 	public boolean exists(int rid) {
 		return list.stream().anyMatch(r->r.getId()==rid);
 	}
@@ -47,13 +47,13 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		
 		check(titel, inhalt);
 		try(Connection con = getCon()) {
-			PreparedStatement ps = con.prepareStatement("Insert into rezensionen(titel, inhalt, bewertung, verfasser, filmid) values(?, ?, ?, ?, ?); "
-														+"Update filme set bewertung = (Select AVG( CAST(bewertung AS decimal(3,1)) ) from rezensionen where filmid = ?) "
+			PreparedStatement ps = con.prepareStatement("Insert into rezension(titel, inhalt, bewertung, verfasser, filmid) values(?, ?, ?, ?, ?); "
+														+"Update filme set bewertung = (Select AVG( CAST(bewertung AS decimal(3,1)) ) from rezension where filmid = ?) "
 							  							+"where filme.id = ?;"
-														+ "Select SCOPE_IDENTITY(), name, filme.bewertung from nutzer " 
-														+ "join rezensionen on verfasser = nutzer.id "
-														+ "join filme on filmid = filme.id "
-														+ "where rezensionen.id = SCOPE_IDENTITY();");
+														+ "Select SCOPE_IDENTITY(), name, film.bewertung from nutzer " 
+														+ "join rezension on verfasser = nutzer.id "
+														+ "join film on filmid = film.id "
+														+ "where rezension.id = SCOPE_IDENTITY();");
 			ps.setString(1, titel);
 			ps.setString(2, inhalt);
 			ps.setInt(3, bewertung);
@@ -77,10 +77,10 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		Rezension rez = opt.get();
 		check(titel, inhalt);
 		try(Connection con = getCon()) {
-			PreparedStatement ps = con.prepareStatement("Update rezensionen set titel=?, inhalt=?, bewertung=? where id=?;"
-														+"Update filme set bewertung = (Select AVG( CAST(bewertung AS decimal(3,1)) ) from rezensionen where filmid = ?) "
-														+"where filme.id = ?; "
-														+"Select filme.bewertung from filme where filme.id=?");
+			PreparedStatement ps = con.prepareStatement("Update rezension set titel=?, inhalt=?, bewertung=? where id=?;"
+														+"Update film set bewertung = (Select AVG( CAST(bewertung AS decimal(3,1)) ) from rezension where filmid = ?) "
+														+"where film.id = ?; "
+														+"Select film.bewertung from film where film.id=?");
 			ps.setString(1, titel);
 			ps.setString(2, inhalt);
 			ps.setInt(3, bewertung);

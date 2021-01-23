@@ -49,6 +49,14 @@ public class Person {
 	public StringProperty getNameProperty() {
 		return name;
 	}
+
+	public void setVorname(String vorname) {
+		this.vorname.set(vorname);
+	}
+	public void setName(String name) {
+		this.name.set(name);
+	}
+	
 	
 	public void addRolle(String rolle) {
 		if(rolle==null)return;
@@ -72,6 +80,10 @@ public class Person {
 		return rolle;
 	}
 	
+	
+	
+	
+	
 	public List<PersonMitRolle> getPersonenMitRolle(){
 		List<PersonMitRolle> l = new ArrayList<>();
 		rolle.forEach(r->{
@@ -91,6 +103,9 @@ public class Person {
 		
 		public StringProperty getRolle() {
 			return rolle;
+		}
+		public void setRolle(String rolle) {
+			this.rolle.set(rolle);
 		}
 		
 		public Person getPerson() {

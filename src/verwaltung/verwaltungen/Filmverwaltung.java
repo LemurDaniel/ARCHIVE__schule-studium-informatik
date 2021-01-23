@@ -21,38 +21,20 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		if(instance == null) instance = new Filmverwaltung();
 		return instance;
 	}
-	private static Map<Integer, Genre> gMap;
-	private static List<Genre> genre;
-	
-	public static List<Genre> getGenres(){
-		if(genre == null) {
-			gMap = new HashMap<>();
-			try(Connection con = getCon();){
-				ResultSet rs = con.createStatement().executeQuery("Select id, genre from genre");		
-				while(rs.next())
-					gMap.put(rs.getInt("id"), new Genre(rs.getInt("id"), rs.getString("genre")) );
-				
-				rs = con.createStatement().executeQuery("Select sgid, gid from genre_subgenre order by sgid");
-				rs.next();
-				
-				ArrayList<Integer> sgidList = new ArrayList<>();
-				int lastSgid = rs.getInt("sgid"), sgid, gid;
-				sgidList.add(lastSgid);
-				do{
-					sgid = rs.getInt("sgid");
-					gid = rs.getInt("gid");
-					if(lastSgid != sgid) {
-						sgidList.add(sgid);
-						lastSgid = sgid;
-					}
-					gMap.get(gid).addSubGenre( gMap.get(sgid) );
-				}while(rs.next()); 
 
-				genre = new ArrayList<>();
-				gMap.values().forEach(g->{
-					if(!sgidList.stream().anyMatch(id->id==g.getId()))
-						genre.add(g);
-				});
+	private static Map<Integer, Genre> gMap;
+	private static List<Genre> genre;	
+	public static List<Genre> getGenres(){
+		if(gMap == null) {
+			gMap = new HashMap<>();
+			genre = new ArrayList<>();
+			try(Connection con = getCon();){
+				ResultSet rs = con.createStatement().executeQuery("Select id, genre, text from genre");		
+				while(rs.next()) {
+					Genre g = new Genre(rs.getInt("id"), rs.getString("genre"), rs.getString("text"));
+					gMap.put(g.getId(), g);
+					genre.add(g);
+				}				
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -63,11 +45,11 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	private Filmverwaltung() {
 		getGenres();
 	}
-	
+
 	public void test() throws SQLException{
 		getGenres();
 		try(Connection con = getCon();){
-			ResultSet rs = con.createStatement().executeQuery("select * from filme left join genre_filme on fid = filme.id order by filme.id");
+			ResultSet rs = con.createStatement().executeQuery("select * from film left join genre_film on fid = film.id order by film.id");
 			
 			int lastId = -1, idNow;
 			Film current = null;
@@ -88,7 +70,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		
 		try(Connection con = getCon();){
 			con.setAutoCommit(false);
-			PreparedStatement ps = con.prepareStatement("Insert into filme(titel, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?); Select SCOPE_IDENTITY()");
+			PreparedStatement ps = con.prepareStatement("Insert into film(titel, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?); Select SCOPE_IDENTITY()");
 			ps.setString(	1, 	titel				);
 			ps.setInt(		2, 	dauer				);
 			ps.setInt(		3,	erscheinungsjahr	);
@@ -99,7 +81,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			Film f = new Film(rs.getInt(1), Nutzer.getNutzer().getId(), titel, dauer, erscheinungsjahr, 0 );
 
 			for(Genre g: genres) {
-				ps = con.prepareStatement("Insert into genre_filme(gid, fid) values(?,?)");
+				ps = con.prepareStatement("Insert into genre_film(gid, fid) values(?,?)");
 				ps.setInt(1, g.getId());
 				ps.setInt(2, f.getId());
 				ps.executeUpdate();
@@ -115,17 +97,17 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 		try(Connection con = getCon();){
 			con.setAutoCommit(false);
-			PreparedStatement ps = con.prepareStatement("Update filme set titel=?, dauer=?, erscheinungsjahr=? where id=?;");
+			PreparedStatement ps = con.prepareStatement("Update film set titel=?, dauer=?, erscheinungsjahr=? where id=?;");
 			ps.setString(	1, 	titel				);
 			ps.setInt(		2, 	dauer				);
 			ps.setInt(		3,	erscheinungsjahr	);
 			ps.setInt(		4,	film.getId()		);
 			ps.executeUpdate();
 
-			con.createStatement().executeUpdate("Delete from genre_filme where fid="+film.getId());		
+			con.createStatement().executeUpdate("Delete from genre_film where fid="+film.getId());		
 			
 			for(Genre g: genres) {
-				ps = con.prepareStatement("Insert into genre_filme(gid, fid) values(?,?)");
+				ps = con.prepareStatement("Insert into genre_film(gid, fid) values(?,?)");
 				ps.setInt(1, g.getId());
 				ps.setInt(2, film.getId());
 				ps.executeUpdate();

@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -20,35 +22,70 @@
   <panes>
       <TitledPane fx:id="tp_allg" animated="false" text="Allgemein">
          <content>
-            <VBox prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
-                     <children>
-                        <TextField fx:id="tf_titel" />
-                     </children>
-                  </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
-                     <children>
-                        <TextField fx:id="tf_genre" />
-                     </children>
-                  </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
-                     <children>
-                        <TextField fx:id="tf_dauer" />
-                     </children>
-                  </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
-                     <children>
-                        <TextField fx:id="tf_bewertung" />
-                     </children>
-                  </HBox>
-                  <HBox prefHeight="100.0" prefWidth="425.0" styleClass="hbox_allg">
-                     <children>
-                        <TextField fx:id="tf_jahr" prefWidth="176.0" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
+            <TabPane fx:id="tab_pane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab fx:id="tab_allg" text="Allgemein">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
+                                 <children>
+                                    <TextField fx:id="tf_titel" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
+                                 <children>
+                                    <TextField fx:id="tf_genre" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
+                                 <children>
+                                    <TextField fx:id="tf_dauer" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
+                                 <children>
+                                    <TextField fx:id="tf_bewertung" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="425.0" styleClass="hbox_allg">
+                                 <children>
+                                    <TextField fx:id="tf_jahr" prefWidth="176.0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                </Tab>
+                <Tab text="Genre">
+                 <content>
+                        <VBox prefHeight="199.0" prefWidth="598.0">
+                           <children>
+                              <HBox prefHeight="178.0" prefWidth="558.0">
+                                 <children>
+                                    <FlowPane prefHeight="167.0" prefWidth="228.0" styleClass="FlowPaneLeft">
+                                       <children>
+                                          <TableView fx:id="table_genre" prefHeight="241.0" prefWidth="223.0">
+                                            <columns>
+                                              <TableColumn fx:id="t_check" prefWidth="46.0" text="Check" />
+                                              <TableColumn fx:id="t_genre" prefWidth="155.0" text="Genre" />
+                                            </columns>
+                                          </TableView>
+                                       </children>
+                                    </FlowPane>
+                                    <FlowPane prefHeight="200.0" prefWidth="298.0" styleClass="FlowPaneCenter">
+                                       <children>
+                                          <TextArea fx:id="ta_genre" prefHeight="239.0" prefWidth="330.0" />
+                                       </children>
+                                    </FlowPane>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
          </content>
       </TitledPane>
       <TitledPane fx:id="tp_mit" animated="false" text="Mitwirkende">
@@ -62,7 +99,7 @@
             </TableView>
          </content>
       </TitledPane>
-      <TitledPane animated="false" text="Rezensionen">
+      <TitledPane fx:id="tp_rez" animated="false" text="Rezensionen">
          <content>
             <TableView fx:id="table1" prefHeight="141.0" prefWidth="392.0">
                <columns>
