@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 import gui.FensterManager;
+import impl.org.controlsfx.tools.rectangle.change.NewChangeStrategy;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -22,6 +25,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.stage.Stage;
 import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
@@ -86,6 +90,8 @@ public class HauptseiteCtrl {
     
     @FXML
     private ImageView muell;
+    @FXML
+    private Button btn_fun;
 
     @FXML
     void action(ActionEvent event) {
@@ -101,6 +107,7 @@ public class HauptseiteCtrl {
     		else if(event.getSource()==btn_liste)		FensterManager.setSecondary(FensterManager.getListensicht());
     		else if(event.getSource()==btn_status)		FensterManager.showStatusmeldung();
     		else if(event.getSource()==btn_credits)		FensterManager.showCredits();
+    		else if(event.getSource()==btn_fun)			fun();
     	}catch(Exception e) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle(e.getClass().getSimpleName());
@@ -110,6 +117,13 @@ public class HauptseiteCtrl {
     	}
     }
     
+	private void fun() throws Exception{
+		Stage g = new Stage();
+		g.setScene( new Scene( FXMLLoader.load(getClass().getResource("../../sudoku/Test.fxml"))));
+		FensterManager.setSecondary( g);
+		
+	}
+
 	@FXML
     void initialize() {  
 		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
