@@ -41,7 +41,9 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 	public List<T> getList() {
 		return new ArrayList<>(list);
 	}
-
+	public boolean existiert(T entitaet) {
+		return list.contains(entitaet);
+	}
 	
 	
 	

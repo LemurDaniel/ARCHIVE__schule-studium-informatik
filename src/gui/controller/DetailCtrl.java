@@ -20,6 +20,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -35,6 +37,7 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
@@ -221,10 +224,13 @@ public class DetailCtrl {
     private Label lbl_r;
     
     @FXML
-    void add_rez(ActionEvent event) {
+    private ImageView muell;
+    
+    @FXML
+    private void add_rez(ActionEvent event) {
           Alert a = new Alert(AlertType.INFORMATION);
                   
-          if(angezeigt.getId()!=-1) {
+          if(rvw.existiert(angezeigt)) {
         	  a.setTitle("Rezension - Update");
         	  a.setContentText("Rezension erfolgreich upgedatet");   
         	  angezeigt.setBewertung((int)s_bwt.getValue());
@@ -240,25 +246,51 @@ public class DetailCtrl {
               angezeigt.setTitel(tf_rtitel.getText());
         	  rvw.addEntitaet(angezeigt);
           }
-          
-         try(Connection con = DB_Manager.getCon()){
-        	 rvw.save(con);
-         }catch(Exception e) {
-        	 Alert err = new Alert(AlertType.ERROR);
-        	 err.setContentText(e.getMessage());
-        	 err.initOwner(FensterManager.getDialog());
-        	 err.initModality(Modality.APPLICATION_MODAL);
-        	 err.show();
-        	 return;
-          }
-
-        setEdit(false);
-        tf_bewertung.setText(film.getBwtStringProperty().get());
-        tp_rez.setDisable(false);
-        System.out.println(rvw.existiert(Nutzer.getNutzer().getId()));
-        setRezension();
-        a.show();
+          sichere();
+         // a.initOwner(FensterManager.getDialog());
+          a.initModality(Modality.APPLICATION_MODAL);
+          a.show();
     }
+     @FXML
+     private void delete_rez(MouseEvent event) {
+    	 if(!rvw.existiert(angezeigt))	return;
+    	 Alert a = new Alert(AlertType.ERROR);
+     	 a.setTitle("Rezension - Löschen");
+       	 a.setContentText("Möchten sie die Rezension wirklich löschen");  
+       	 a.getButtonTypes().add(new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE));
+    	 a.setOnCloseRequest(ev->{
+    		 if(!a.getResult().getButtonData().equals(ButtonData.OK_DONE))	return;
+    		 Alert a2 = new Alert(AlertType.INFORMATION); 
+           	 a2.setTitle("Rezension - Löschen");
+           	 a2.setContentText("Rezension erfolgreich gelöscht");   
+           	 angezeigt.setBewertung((int)s_bwt.getValue());
+           	 rvw.removeEntitaet(angezeigt);
+     
+           	 sichere();
+           //	 a2.initOwner(FensterManager.getDialog());
+           	 a2.show();
+    	 });
+    	// a.initOwner(FensterManager.getDialog());
+    	 a.show();
+     }    
+          
+    private void sichere() {
+        try(Connection con = DB_Manager.getCon()){
+         rvw.save(con);
+        }catch(Exception e) {
+        	Alert err = new Alert(AlertType.ERROR);
+        	err.setContentText(e.getMessage());
+        	err.initOwner(FensterManager.getDialog());
+        	err.show();
+         return;
+         }
+
+       setEdit(false);
+       tf_bewertung.setText(film.getBwtStringProperty().get());
+       setRezension();
+       tp_rez.setDisable( rvw.getList().size()==0 );
+   }
+
     
     @FXML
     void initialize() {
@@ -342,10 +374,10 @@ public class DetailCtrl {
         table1.setOnMouseClicked(this::onMouseClicked);      
         btn_mod.setOnAction(this::openAddFilm);
     }
+    
     private void rezTableListener(ObservableValue<? extends Rezension> ob, Rezension oldValue, Rezension newValue) {
     	// Wenn ausgewählter Rez == Nutzerrez dann nur eine Option anzeigen
-    	Rezension r = rvw.getRezensionVonNutzer(nid);
-    	if(newValue==null || r!=null && newValue.getId()==r.getId()) {
+    	if(newValue==null || newValue.getVerfasserId()==nid) {
     		cb_r.setDisable(true);
     		cb_r.getSelectionModel().select(1);
     	}else {
@@ -363,10 +395,8 @@ public class DetailCtrl {
     		if(rechte.isReviewRead())	{
     			tp_rezd.setExpanded(true);
     			// Wenn eigene Rez ausgewähl, dann erste Option anzeigen
-    			if(table1.getSelectionModel().getSelectedItem().getId()==rvw.getRezensionVonNutzer(nid).getId())
-    				cb_r.getSelectionModel().select(1);
-    			else
-    				cb_r.getSelectionModel().select(0);
+    			if(table1.getSelectionModel().getSelectedItem().getVerfasserId()==nid)	cb_r.getSelectionModel().select(1);
+    			else																	cb_r.getSelectionModel().select(0);
     		}
     	}
     	lastMouseClick = now;
@@ -384,12 +414,8 @@ public class DetailCtrl {
    
     // Zu anzeigende Rezension auswählen
     private void setRezension() {
-    	if(cb_r.getSelectionModel().selectedIndexProperty().intValue()==1) {
-    		// Wenn keine eigen vorhanden neue erstellen
-    		angezeigt = rvw.getRezensionVonNutzer(nid);
-    		if(angezeigt==null) angezeigt = new Rezension(-1, "", "", Nutzer.getNutzer().getName(), nid, 0, film);		
-    	} else 
-    		angezeigt = table1.getSelectionModel().getSelectedItem();
+    	if(cb_r.getSelectionModel().selectedIndexProperty().intValue()==1) 	angezeigt = rvw.getRezensionVonNutzer(nid).orElse(new Rezension("", "", Nutzer.getNutzer().getName(), nid, 0, film));
+    	else 																angezeigt = table1.getSelectionModel().getSelectedItem();
     		
     	// wenn weder eigene noch ausgewählte vorhanden disable Rez detail
     	if(angezeigt==null) {
@@ -404,12 +430,14 @@ public class DetailCtrl {
     	if( (angezeigt.getVerfasserId()==nid && rechte.isReviewWrite()) || rechte.isReviewWriteAll()) {
     		btn_r.setVisible(true);
     		tbtn_r.setVisible(true);
-    		// Button anpassen
-    		if(!rvw.existiert(angezeigt.getId()))	btn_r.setText("Erstelle Rezension");
-        	else 									btn_r.setText("Update Rezension");
+    		muell.setVisible(true);
+    		
+    		if(!rvw.existiert(angezeigt))	btn_r.setText("Erstelle Rezension");
+        	else 							btn_r.setText("Update Rezension");
     	} else {
     		btn_r.setVisible(false);
     		tbtn_r.setVisible(false);
+    		muell.setVisible(false);
     		setEdit(false);
     	}
     	 	

@@ -16,6 +16,8 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -157,6 +159,14 @@
                         <FlowPane prefHeight="62.0" prefWidth="303.0" styleClass="FlowPaneLeft">
                            <children>
                               <Button fx:id="btn_r" mnemonicParsing="false" onAction="#add_rez" prefHeight="31.0" prefWidth="156.0" styleClass="rez_el" text="Button" />
+                              <ImageView fx:id="muell" fitHeight="33.0" fitWidth="36.0" onMouseClicked="#delete_rez" pickOnBounds="true" preserveRatio="true">
+                                 <FlowPane.margin>
+                                    <Insets left="10.0" />
+                                 </FlowPane.margin>
+                                 <image>
+                                    <Image url="@../images/delete.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </FlowPane>
                         <FlowPane prefHeight="62.0" prefWidth="303.0" styleClass="FlowPaneRight">

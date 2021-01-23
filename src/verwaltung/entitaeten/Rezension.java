@@ -9,17 +9,15 @@ import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 public class Rezension implements Backup, EingabePruefung, Id{
 	
 	private Rezension backup;
-	private int tempid;
-	
-	private int id, verfasserId;
+
+	private int verfasserId;
 	private String inhalt;
 	private ReadOnlyStringWrapper titel, verfasser;
 	private ReadOnlyIntegerWrapper bewertung;
 	
 	private Film film;
 	
-	public Rezension(int id, String titel, String inhalt, String verfasser, int verfasserId, int bewertung, Film film) {
-		this.id = id;
+	public Rezension(String titel, String inhalt, String verfasser, int verfasserId, int bewertung, Film film) {
 		this.verfasserId = verfasserId;
 		this.titel = new ReadOnlyStringWrapper(titel);
 		this.inhalt = inhalt;
@@ -28,9 +26,7 @@ public class Rezension implements Backup, EingabePruefung, Id{
 		this.film = film;
 		setBewertung(bewertung);
 	}
-	public int getId() {
-		return id;
-	}
+
 	public String getTitel() {
 		return titel.get();
 	}
@@ -58,9 +54,7 @@ public class Rezension implements Backup, EingabePruefung, Id{
 		return verfasserId;
 	}
 	
-	public void setId(int id) {
-		this.id = id;
-	}
+
 	public void setTitel(String titel) {
 		this.titel.set(titel);
 	}
@@ -75,33 +69,30 @@ public class Rezension implements Backup, EingabePruefung, Id{
 
 	
 	@Override
-	public void setTempId(int id) {
-		tempid = id;
-	}
+	public void setTempId(int id) {}
 	@Override
-	public void commitId() {
-		id = tempid;
-	}
+	public void commitId() {}
+	
+	
+	
+	
 	
 	@Override
 	public void backup() {
 		if(backup!=null)	return;
 		
-		backup = new Rezension(getId(), titel.get(), inhalt, verfasser.get(), verfasserId, bewertung.get(), film);
+		backup = new Rezension(titel.get(), inhalt, verfasser.get(), verfasserId, bewertung.get(), film);
 	}
-
 	@Override
 	public void backupReset() {
 		if(backup==null)	return;
 		
-		id = backup.id;
 		inhalt = backup.inhalt;
 		titel.set(backup.getTitel());
 		bewertung.set(backup.getBewertung());
 		
 		backup = null;
 	}
-
 	@Override
 	public void deleteBackup() {
 		backup = null;
@@ -111,6 +102,7 @@ public class Rezension implements Backup, EingabePruefung, Id{
 		return backup!=null;
 	}
 
+	
 	
 	@Override
 	public void checkEingaben() throws Exception {	
