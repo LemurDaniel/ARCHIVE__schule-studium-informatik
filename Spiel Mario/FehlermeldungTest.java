@@ -22,6 +22,11 @@ public class FehlermeldungTest
         TestFigur.erstelleKnopf("blafl");
     }
     
+    public void FehlermeldungHauptfigur3(){
+        Hauptfigur TestFigur = new Hauptfigur();
+        TestFigur.LaufenStart("blafdal");
+    }
+    
     public void FehlermeldungHauptmap(){
         Hauptmap TestKarte = new Hauptmap("falscheKarte");
     }

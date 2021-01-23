@@ -7,17 +7,17 @@ import java.util.Arrays;
 public class Hauptmap{
     
     // ZeichenfensterGröße 800x370pxl
-    // Kartenboden ist bei y=225-370!!!
-    
-   private RECHTECK [] Boden = new RECHTECK [150];
+    // Kartenboden ist bei y=320!!!
+   private static int Kartenboden = 320; //Der Festgelegte Kartenboden
    
    private int breite = 6;
    private int posx;
    private int posy;
    private int t=10;
    
-   private RECHTECK [] Block= new RECHTECK [150];
-   private RECHTECK [] Gras= new RECHTECK [150];
+   private RECHTECK [] Boden = new RECHTECK [2];
+   private RECHTECK [] Block= new RECHTECK [12];
+   private RECHTECK [] Gras= new RECHTECK [12];
    private RECHTECK Mast;
    private RECHTECK Fahne; 
    private KREIS Muster;
@@ -27,12 +27,13 @@ public class Hauptmap{
    
    private static String SK[] = {"Karte-1", "Karte-2"}; // array mit allen im Spiel zu Verfügung stehenden Spielkarten
                                  // Hinzufügen von Spielkartem und zuweisen Namen alleinig in dieser Klasse
-   private int Kartenende = 0; // Standart-Kartenende = 0
+                                 
+   private int Kartenende; 
    
    private Timer Bewegungstimer;
    
    public Hauptmap(){
-       this(300,330,10,"Karte-1");
+       this(300,330,10,SK[0]);
     }
     
     public Hauptmap(String Karte){
@@ -97,9 +98,8 @@ public class Hauptmap{
        
        if(Karte==SK[1]){
             Kartenende = 1100;    // Festlegen des des Kartenendes
-        Boden[0]= new RECHTECK(x,y,2*x,x-t,"rot", true);// 1 Erdblock 
-        Boden[0]= new RECHTECK(x-x,y,60*x,x-t,"rot", true);// 1 Erdblock 
-        Boden[1]= new RECHTECK(x-x,y-t,60*x,t,"gelb", true); // 1 Grasblock               
+        Boden[0]= new RECHTECK(0,Kartenboden+10,800,40,"rot", true);// 1 Erdblock // 1 Erdblock 
+        Boden[1]= new RECHTECK(0,Kartenboden,800,10,"gelb", true); // 1 Grasblock               
         Block[0]= new RECHTECK(120,290,70,30,"rot", true);
         Block[1]= new RECHTECK(190,260,70,30,"rot", true);
         Block[2]= new RECHTECK(260,230,70,30,"rot", true);
@@ -193,6 +193,10 @@ public class Hauptmap{
         return SK;
     }
     
+    public static int gibKartenboden(){ // gibt den Kartenboden aus
+        return Kartenboden;
+    }
+    
     public void erstelleKnopf(String Knopf){  // Methode zum erstellen von ausgewählten Knöpfen im Zeichenfenster
         
         if(Arrays.asList(Bewegungsrichtungen).contains(Knopf)==false){ //prüfen auf ungültige Werte
@@ -202,6 +206,7 @@ public class Hauptmap{
             System.out.println(Knopf);
             gibEingabewerteaus(Bewegungsrichtungen);
             System.out.println("--------------------------------------------------------------------------");
+            System.exit(0);
         }
 
         if(Knopf==Bewegungsrichtungen[0]){  // erstellen des Start Knopfes mit der Funktion die Bewegung zu Starten

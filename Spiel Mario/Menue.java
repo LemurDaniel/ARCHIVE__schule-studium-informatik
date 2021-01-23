@@ -112,14 +112,14 @@ public class Menue extends JFrame{
         return JOptionPane.showOptionDialog(null, "Mit welcher Spielfigur möchten sie spielen?", "Spielfigurwahl",  // Erstellen einer Dialogbox (Titel: "Spielfigurwahl", Dialog: "Mit welcher Spielfigur möchten sie spielen?")
                JOptionPane.DEFAULT_OPTION,             // Einstellungen: Standart
                JOptionPane.QUESTION_MESSAGE, null,     // Nachrichtentyp: Frage
-               SF, "A");  // AuswahlKnöpfe: Alle Strings in dem Array SF
+               SF, "A");  // AuswahlKnöpfe: Alle Strings des Arrays SF
     }
     
    private int waehleSpielkarte(){ // Methode zum Abfragen des Spieler nach der zu wählenden Spielkarte
         return  JOptionPane.showOptionDialog(null, "Auf welcher Karte möchten sie spielen?", "Spielkartenwahl",  // Erstellen einer Dialogbox (Titel: "Spielkartenwahl", Dialog: "Auf welcher Karte möchten sie spielen?")
                 JOptionPane.DEFAULT_OPTION,          // Einstellungen: Standart
                 JOptionPane.QUESTION_MESSAGE, null,  // Nachrichtentyp: Frage
-                SK, "A");       // AuswahlKnöpfe: Alle Strings in dem Array SK
+                SK, "A");  // AuswahlKnöpfe: Alle Strings des Arrays SK
    }
 
   private void aendereSettings(){ // Methode zum aendern der Einstellungen (Spielfigur und Spielkarte)
