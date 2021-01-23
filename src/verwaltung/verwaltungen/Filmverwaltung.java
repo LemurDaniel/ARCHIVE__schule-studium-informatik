@@ -128,19 +128,22 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		}
 	}
 	
-	public void filter(String titel, Integer bwtMax, Integer bwtMin, Integer dauerMax, Integer dauerMin, Integer jahrMax,
+	public void filter(String titel, Float bwtMax, Float bwtMin, Integer dauerMax, Integer dauerMin, Integer jahrMax,
 			Integer jahrMin, List<Genre> genre, boolean and, List<String> tags, int anzahl) throws SQLException {
 		
 		System.out.println(titel);
 
-		if(bwtMax==null)	bwtMax=10;
-		if(bwtMin==null)	bwtMin=0;
+		if(bwtMax==null)	bwtMax=10f;
+		if(bwtMin==null)	bwtMin=0f;	else bwtMin-=0.01f;
 		if(dauerMax==null)  dauerMax=getMaxDauer();
 		if(dauerMin==null) 	dauerMin=0;
 		if(jahrMax==null)	jahrMax=getMaxJahr();
 		if(jahrMin==null)	jahrMin=getMinJahr();
 		if(tags==null)		tags=new ArrayList<>();
 		if(genre==null)		genre=new ArrayList<>();
+		
+		System.out.println(bwtMax);
+		System.out.println(bwtMin);
 		
 		StringBuilder sb = new StringBuilder();
 
@@ -188,8 +191,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				}
 				
 				if(titel!=null) ps.setString(++count, titel+"%");
-				ps.setInt(++count, bwtMin);
-				ps.setInt(++count, bwtMax);
+				ps.setFloat(++count, bwtMin);
+				ps.setFloat(++count, bwtMax);
 				ps.setInt(++count, dauerMin);
 				ps.setInt(++count, dauerMax);
 				ps.setInt(++count, jahrMin);

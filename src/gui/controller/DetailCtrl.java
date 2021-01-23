@@ -77,7 +77,7 @@ public class DetailCtrl {
 		
         tf_titel.setText(film.getTitel());
         tf_genre.setText(film.getGenreStringProperty().get());
-        tf_bewertung.setText(film.getBewertung()+"");
+        tf_bewertung.setText(film.getBwtStringProperty().get());
         tf_dauer.setText(film.getDauerStringProperty().get());
         tf_jahr.setText(film.getErscheinungsjahr()+""); 
         
@@ -223,7 +223,7 @@ public class DetailCtrl {
         	else		rvw.addRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), nid);
         	displayRezension();
           	setEdit(false);
-            tf_bewertung.setText(film.getBewertung()+"");
+            tf_bewertung.setText(film.getBwtStringProperty().get());
             tp_rez.setDisable(false);
           }catch(Exception e) {
         	  a.setAlertType(AlertType.ERROR);

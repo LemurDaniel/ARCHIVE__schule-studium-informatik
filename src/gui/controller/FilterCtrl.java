@@ -2,12 +2,13 @@ package gui.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.UnaryOperator;
 
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.textfield.CustomTextField;
 
-import fxControls.CustomTextField;
-import fxControls.MinMaxTextField;
+import fxControls.FloatMinMaxTextField;
+import fxControls.IntegerMinMaxTextField;
+import fxControls.StringTextField;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import verwaltung.entitaeten.Genre;
@@ -50,25 +50,27 @@ public class FilterCtrl {
     @FXML
     private Button btn_reset;
     
-    private CustomTextField<String> tf_titel;
-    private MinMaxTextField tf_bwtMin, tf_bwtMax;
-    private MinMaxTextField tf_dauerMin, tf_dauerMax;
-    private MinMaxTextField tf_jahrMin, tf_jahrMax;
-    private MinMaxTextField tf_anzahl;
+    private StringTextField tf_titel;
+    private FloatMinMaxTextField tf_bwtMin, tf_bwtMax;
+    private IntegerMinMaxTextField tf_dauerMin, tf_dauerMax;
+    private IntegerMinMaxTextField tf_jahrMin, tf_jahrMax;
+    private IntegerMinMaxTextField tf_anzahl;
     private CheckBox cb_genreVerkuepfung;  
     private CheckComboBox<Genre> cb_genre;
 
     @FXML
     void initialize() { 	
-    	tf_titel = new CustomTextField<>(Filmverwaltung.getMaxTitel());
+    	tf_titel = new StringTextField(Filmverwaltung.getMaxTitel());
     	hb_titel.getChildren().add(tf_titel);
     	tf_titel.setPromptText("Filmtitel");
+    	tf_titel.getStyleClass().add("tf_lang");
     	
-    	
-    	tf_bwtMin = new MinMaxTextField(0, 10, " Sterne");
-    	tf_bwtMax = new MinMaxTextField(0, 10, " Sterne");
+    	tf_bwtMin = new FloatMinMaxTextField(0f, 10f, " Sterne");
+    	tf_bwtMax = new FloatMinMaxTextField(0f, 10f, " Sterne");
     	tf_bwtMin.setPromptText("Bewertung Minimum");
     	tf_bwtMax.setPromptText("Bewertung Maximum");
+    	tf_bwtMin.getStyleClass().add("tf_kurz");
+    	tf_bwtMax.getStyleClass().add("tf_kurz");
     	
     	tf_bwtMax.setMinSupplier( ()->tf_bwtMin.getValue() );
     	tf_bwtMin.setMaxSupplier( ()->tf_bwtMax.getValue() );
@@ -79,10 +81,12 @@ public class FilterCtrl {
     	
     	
     	
-    	tf_dauerMin = new MinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
-    	tf_dauerMax = new MinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
+    	tf_dauerMin = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
+    	tf_dauerMax = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
     	tf_dauerMin.setPromptText("Laufzeit Minimum");
     	tf_dauerMax.setPromptText("Laufzeit Maximum");
+    	tf_dauerMin.getStyleClass().add("tf_kurz");
+    	tf_dauerMax.getStyleClass().add("tf_kurz");
     	
     	tf_dauerMax.setMinSupplier( ()->tf_dauerMin.getValue() );
     	tf_dauerMin.setMaxSupplier( ()->tf_dauerMax.getValue() );
@@ -93,10 +97,12 @@ public class FilterCtrl {
     	
     	
     	
-    	tf_jahrMin = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
-    	tf_jahrMax = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
+    	tf_jahrMin = new IntegerMinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
+    	tf_jahrMax = new IntegerMinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
     	tf_jahrMin.setPromptText("Jahr Minimum");
     	tf_jahrMax.setPromptText("Jahr Maximum");
+    	tf_jahrMin.getStyleClass().add("tf_kurz");
+    	tf_jahrMax.getStyleClass().add("tf_kurz");
     	
     	tf_jahrMax.setMinSupplier( ()->tf_jahrMin.getValue() );
     	tf_jahrMin.setMaxSupplier( ()->tf_jahrMax.getValue() );
@@ -130,8 +136,9 @@ public class FilterCtrl {
     	
     	
     	
-    	tf_anzahl = new MinMaxTextField(100, 1000, " Ergebnisse");
+    	tf_anzahl = new IntegerMinMaxTextField(100, 1000, " Ergebnisse");
     	tf_anzahl.setDefVal(100);
+    	tf_anzahl.getStyleClass().add("tf_kurz");
     	hb_anzahl.getChildren().add(tf_anzahl);
     	hb_anzahl.getChildren().add(new Label());
     	hb_anzahl.getChildren().add(cb_genreVerkuepfung);
@@ -155,14 +162,15 @@ public class FilterCtrl {
     
     private void filter(ActionEvent event) {
     	Filmverwaltung fvw = Filmverwaltung.instance();
-    	String[] sarr = tf_tags.getText().split(",");
-    	List<String> tags = new ArrayList<>();
-    	
-    	for(int i=0; i<sarr.length; i++) {
-    		sarr[i] = sarr[i].trim();
-    		if(sarr[i].length()!=0)	tags.add(sarr[i]);
+		List<String> tags = new ArrayList<>();
+		
+    	if(tf_tags.getText()!=null && tf_tags.getText().length()!=0) {
+    		String[] sarr = tf_tags.getText().split(",");	
+    		for(int i=0; i<sarr.length; i++) {
+    			sarr[i] = sarr[i].trim();
+    			if(sarr[i].length()!=0)	tags.add(sarr[i]);
+    		}
     	}
-
     	if(tf_titel.getText()!=null)	tf_titel.setText(tf_titel.getText().trim());
     	
     	try {

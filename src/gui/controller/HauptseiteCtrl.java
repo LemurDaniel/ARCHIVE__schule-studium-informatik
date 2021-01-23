@@ -33,7 +33,7 @@ public class HauptseiteCtrl {
     private TableColumn<Film, String> t_genre; 
 
     @FXML
-    private TableColumn<Film, Number> t_bewertung; 
+    private TableColumn<Film, String> t_bewertung; 
 
     @FXML
     private TableColumn<Film, String>t_dauer; 
@@ -75,7 +75,7 @@ public class HauptseiteCtrl {
         table.setItems(Filmverwaltung.instance().getList());
         t_Titel.setCellValueFactory(	data->data.getValue().getTitelProperty());
         t_genre.setCellValueFactory(	data->data.getValue().getGenreStringProperty());
-        t_bewertung.setCellValueFactory(data->data.getValue().getBewertungProperty());
+        t_bewertung.setCellValueFactory(data->data.getValue().getBwtStringProperty());
         t_dauer.setCellValueFactory(	data->data.getValue().getDauerStringProperty());
         t_jahr.setCellValueFactory(		data->data.getValue().getErscheinungsjahrProperty());
         

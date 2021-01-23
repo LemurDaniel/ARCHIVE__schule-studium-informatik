@@ -3,8 +3,6 @@ package verwaltung.entitaeten;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.beans.property.ReadOnlyFloatProperty;
-import javafx.beans.property.ReadOnlyFloatWrapper;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -17,9 +15,10 @@ public class Film extends Entitaet {
 	
 	private int erstellerId;
 	private List<Genre> genres;
-	private ReadOnlyStringWrapper titel, dauer_string, genre_string;
-	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
-	private ReadOnlyFloatWrapper bewertung;
+	private ReadOnlyStringWrapper titel, dauer_string, genre_string, bwt_string;
+	private ReadOnlyIntegerWrapper erscheinungsjahr;
+	private int dauer;
+	private float bewertung;
 	
 	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
@@ -31,12 +30,16 @@ public class Film extends Entitaet {
 		super(id);
 		this.erstellerId = erstellerId;
 		this.titel = new ReadOnlyStringWrapper(titel);
-		//this.genre = genre;
-		this.dauer = new ReadOnlyIntegerWrapper(dauer);
-		this.dauer_string = new ReadOnlyStringWrapper();
-		this.setDauer(dauer);
-		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);
-		this.bewertung = new ReadOnlyFloatWrapper(bewertung);
+		this.dauer = dauer;		
+		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);		
+		this.bewertung = bewertung;
+		
+		bwt_string = new ReadOnlyStringWrapper();
+		setBewertung(bewertung);
+		
+		dauer_string = new ReadOnlyStringWrapper();
+		setDauer(dauer);
+		
 		genre_string = new ReadOnlyStringWrapper("");
 		genres = new ArrayList<>();
 		rvw = new Rezensionenverwaltung(this);
@@ -51,14 +54,12 @@ public class Film extends Entitaet {
 		return titel.get();
 	}
 	public int getDauer() {
-		return dauer.get();
+		return dauer;
 	}
 	public int getErscheinungsjahr() {
 		return erscheinungsjahr.get();
 	}
-	public float getBewertung() {
-		return bewertung.get();
-	}
+
 	
 	
 	
@@ -69,15 +70,16 @@ public class Film extends Entitaet {
 	public ReadOnlyIntegerProperty getErscheinungsjahrProperty() {
 		return erscheinungsjahr.getReadOnlyProperty();
 	}
-	public ReadOnlyFloatProperty getBewertungProperty() {
-		return bewertung.getReadOnlyProperty();
-	}
 	public ReadOnlyStringProperty getDauerStringProperty() {
 		return dauer_string.getReadOnlyProperty();
 	}
 	public ReadOnlyStringProperty getGenreStringProperty() {
-	return genre_string.getReadOnlyProperty();
-}
+		return genre_string.getReadOnlyProperty();
+	}
+	public ReadOnlyStringProperty getBwtStringProperty() {
+		return bwt_string.getReadOnlyProperty();
+	}
+	
 	public List<Genre> getGenres() {
 		return new ArrayList<>(genres);
 	}
@@ -91,14 +93,15 @@ public class Film extends Entitaet {
 	
 	
 	public void setBewertung(float bewertung) {
-		this.bewertung.set(bewertung);
+		this.bewertung = bewertung;
+		bwt_string.set(bewertung+" Sterne");
 	}
 	public void setTitel(String titel) {
 		this.titel.set(titel);
 	}
 	public void setDauer(int dauer) {
-		this.dauer.set(dauer);
-		this.dauer_string.set(dauer+" Minuten "+getGenaueZeit(dauer));
+		this.dauer = dauer;
+		dauer_string.set(dauer+" Minuten "+getGenaueZeit(dauer));
 	}
 	public void setErscheinungsjahr(int jahr) {
 		this.erscheinungsjahr.set(jahr);

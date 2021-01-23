@@ -8,5 +8,6 @@ import verwaltung.entitaeten.Liste;
 
 public class ListensichtCtrl {
 	
-	private Map<Liste, List<Film>> add, delMap, displayed;
+	private Map<Liste, List<Film>> addFilme, delFilme, anzeige_Filme;
+	private Map<Liste, String> umbennenen, anzeige_Name;
 }

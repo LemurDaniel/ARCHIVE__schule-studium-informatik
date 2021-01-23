@@ -12,8 +12,8 @@ import java.util.function.UnaryOperator;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import fxControls.CustomTextField;
-import fxControls.MinMaxTextField;
+import fxControls.StringTextField;
+import fxControls.IntegerMinMaxTextField;
 import gui.FensterManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -119,7 +119,7 @@ public class AddFilmCtrl {
 			tf_titel.setDefVal(film.getTitel());
 			tf_dauer.setDefVal(film.getDauer());
 			tf_jahr.setDefVal(film.getErscheinungsjahr());
-			tf_bewertung.setText(film.getBewertung()+"");
+			tf_bewertung.setText(film.getBwtStringProperty().get());
 			tf_genre.setText(null);
 			film.getGenres().forEach(g->checked_genre.get(g).set(true));
 		}		
@@ -161,9 +161,9 @@ public class AddFilmCtrl {
 	    private HBox hb_dauer;
 	    @FXML
 	    private HBox hb_jahr;
-	    private CustomTextField<String> tf_titel;
-	    private MinMaxTextField tf_dauer;
-	    private MinMaxTextField tf_jahr;
+	    private StringTextField tf_titel;
+	    private IntegerMinMaxTextField tf_dauer;
+	    private IntegerMinMaxTextField tf_jahr;
 
 	    @FXML
 	    private TableView<Genre> table_genre;
@@ -224,11 +224,11 @@ public class AddFilmCtrl {
         accordion.setExpandedPane(tp_allg);
         
         /** Allg **/
-        tf_titel = new CustomTextField<>(Filmverwaltung.getMaxTitel());
+        tf_titel = new StringTextField(Filmverwaltung.getMaxTitel());
         hb_titel.getChildren().add(tf_titel);
         
-        tf_dauer = new MinMaxTextField(0, Filmverwaltung.getMaxDauer());
-        tf_jahr = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
+        tf_dauer = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer());
+        tf_jahr = new IntegerMinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
         tf_dauer.setTailSupplier( ()->" Minuten "+Film.getGenaueZeit(tf_dauer.getValue())	);
         hb_dauer.getChildren().add(tf_dauer);
         hb_jahr.getChildren().add(tf_jahr);

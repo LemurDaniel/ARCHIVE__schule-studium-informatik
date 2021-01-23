@@ -21,14 +21,15 @@
 	
 	-fx-max-height: 31;
 	-fx-max-width: 420;
+	
 }
 
-.hbox_allg > TextField {	
+.hbox_allg > IntegerMinMaxTextField, FloatMinMaxTextField, TextField, StringTextField {
 	-fx-pref-height: 31;
 	-fx-pref-width: 420;	
 }
 
-.hbox_allg > MinMaxTextField {
+.tf_kurz {	
 	-fx-pref-height: 31;
 	-fx-pref-width: 180;	
 }

@@ -1,60 +1,54 @@
 package fxControls;
 
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 
-public class MinMaxTextField extends CustomTextField<Integer>{
+abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	
-	private Integer value;
-	private int min, max;
-	private Supplier<Integer> minSupplier, maxSupplier;
+	private T value;
+	private T min, max;
+	private Supplier<T> minSupplier, maxSupplier;
 	
 	private String tail;
 	private Supplier<String> tailSupplier;
 	
-	public MinMaxTextField(int min, int max) {
-		this(min, max, "");
+	protected MinMaxTextField(T min, T max, int length) {
+		this(min, max, "", length);
 	}
 	
-	public MinMaxTextField(int min, int max, String tail) {
-		super(9);	//Integer Limit: 2 147 483 647 -> 10 Zeichen lang -> 9 ist safe
+	protected MinMaxTextField(T min, T max, String tail, int length) {
+		super(length);
 		this.min = min;
 		this.max = max;
 		this.tail = tail;
 
 		focusedProperty().addListener((ob,ov,focus)->{
 			if(focus==true)	setText( value+"" );	
-		});
-		
-		
-		setTextFormatter(new TextFormatter<>( (UnaryOperator<TextFormatter.Change>) change->{
-			if(!formatText) return change;
-			change.setText( change.getText().replaceAll("[^0-9]",	""));
-			return super.getMaxLenFilter().apply(change);
-    	}));
+		});		
 	}
 	
-	public void setMinSupplier(Supplier<Integer> minSupplier) {
+	@Override
+	protected Change filter(Change change) {
+		if(!formatText) return change;
+		if(change.getControlNewText().equals("-") || change.getControlNewText().length()==0)	return change;		
+		change = super.filter(change);
+		try {
+			parseTextAufValue(change.getControlNewText());
+		}catch(NumberFormatException nfe) {
+			change.setText("");
+		}
+		return change;
+	}
+		
+	public void setMinSupplier(Supplier<T> minSupplier) {
 		this.minSupplier = minSupplier;
 	}
-	public void setMaxSupplier(Supplier<Integer> maxSupplier) {
+	public void setMaxSupplier(Supplier<T> maxSupplier) {
 		this.maxSupplier = maxSupplier;
 	}
 	public void setTailSupplier(Supplier<String> tailSupplier) {
 		this.tailSupplier = tailSupplier;
-	}
-	@Override
-	public void setDefVal(Integer defVal) {
-		if(defVal!=null) {
-			if(defVal>max)		defVal=max;
-			else if(defVal<min)	defVal=min;
-		}
-		this.defVal = defVal;
-		value = defVal;
-		setTextToVal();
 	}
 	
 	private void setTextToVal() {		
@@ -72,32 +66,37 @@ public class MinMaxTextField extends CustomTextField<Integer>{
 		formatText = temp;
 	}
 	
+	
 	@Override
-	protected void pruefe() {
-		
-		if(getText()==null || getText().length()==0) {
+	protected void pruefe() {	
+		try {
+			value = parseTextAufValue(getText());	
+			if(value!=null)	value = pruefeMinMax(getMin(), getMax(), value);
+		}catch(NumberFormatException nfe) {
 			value = defVal;
-			setTextToVal();
-			return;
 		}
-			
-		value = Integer.parseInt( getText() );
-		Integer min = null, max = null;
-		
-		if(minSupplier!=null) min = minSupplier.get();		
-		if(maxSupplier!=null) max = maxSupplier.get();	
-		
-		if(min==null) 	min=this.min;
-		if(max==null)	max=this.max;
-		
-		if(value > max)			value = max;
-		else if(value < min)	value = min;
-		
+		setTextToVal();
+	}	
+	@Override
+	public void setDefVal(T defVal) {
+		this.defVal = pruefeMinMax(getMin(), getMax(), defVal);
+		value = this.defVal;
 		setTextToVal();
 	}
-
 	
-	public Integer getValue() {
+	protected T getMin() {
+		if(minSupplier!=null && minSupplier.get()!=null) return minSupplier.get();	
+		return min;
+	}
+	protected T getMax() {
+		if(maxSupplier!=null && maxSupplier.get()!=null) return maxSupplier.get();	
+		return max;
+	}
+	
+	abstract protected T pruefeMinMax(T min, T max, T wert);
+	abstract protected T parseTextAufValue(String text) throws NumberFormatException;
+
+	public T getValue() {
 		return value;
 	}
 }

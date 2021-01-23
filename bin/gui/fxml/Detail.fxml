@@ -67,7 +67,7 @@
                                     <TableView fx:id="table_genre" prefHeight="281.0" prefWidth="223.0">
                                       <columns>
                                         <TableColumn fx:id="t_check" prefWidth="46.0" text="Check" />
-                                        <TableColumn fx:id="t_genre" prefWidth="155.0" text="Genre" />
+                                        <TableColumn fx:id="t_genre" prefWidth="149.0" text="Genre" />
                                       </columns>
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
