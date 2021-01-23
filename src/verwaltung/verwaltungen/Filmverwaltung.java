@@ -63,10 +63,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		}
 	}
 	
-	public void test() throws SQLException{
-		filter(null, 10f, 0f, null, null, null, null, null, true, null, 10);	
-	}
-	
 	@Override
 	protected void onAdd(Film f, Connection con) throws Exception {
 		super.onAdd(f, con);
@@ -327,9 +323,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 	
 	
-	public static boolean existiertGlobal(Film f) {
-		return geladeneFilme.get(f.getId())==f;
-	}	
+
 	public static Film getFilmById(int id) {
 		return geladeneFilme.get(id);
 	}

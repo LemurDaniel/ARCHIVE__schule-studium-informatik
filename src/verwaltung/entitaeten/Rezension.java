@@ -18,7 +18,7 @@ public class Rezension implements Backup, EingabePruefung, Id{
 	private ReadOnlyStringWrapper titel, verfasser;
 	private ReadOnlyIntegerWrapper bewertung;
 	
-	public Film film;
+	private Film film;
 	
 	public Rezension(String titel, String inhalt, String verfasser, int verfasserId, int bewertung, Film film) {
 		this.verfasserId = verfasserId;

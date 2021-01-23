@@ -29,8 +29,8 @@ public class Nutzer extends DB_Manager {
 	private int id;
 	private String name;
 	private Rechte rechte = new Rechte();
-	private ReadOnlyBooleanWrapper angemeldet = new ReadOnlyBooleanWrapper(false);
-
+	
+	private static boolean angemeldet = false;
 	private static boolean logingIn = false;
 	
 	private Nutzer() {};
@@ -119,7 +119,8 @@ public class Nutzer extends DB_Manager {
 				}
 			}	
 			
-			instance.angemeldet.set(true);
+			angemeldet = true;
+			
 			logingIn = true;
 			Thread th = new Thread(()->{
 				try (Connection conn = DB_Manager.con()){
@@ -206,7 +207,7 @@ public class Nutzer extends DB_Manager {
 		id = -1;
 		name = null;
 		rechte.reset();
-		angemeldet.set(false);
+		angemeldet = false;
 		try(Statement st = con.createStatement()){
 			st.executeUpdate(s);
 		}catch (Exception e) {}
@@ -223,11 +224,9 @@ public class Nutzer extends DB_Manager {
 		return rechte;
 	}
 	public boolean isAngemeldet() {
-		return angemeldet.get();
+		return angemeldet;
 	}
-	public ReadOnlyBooleanProperty angemeldetProperty() {
-		return angemeldet.getReadOnlyProperty();
-	}
+
 	 
 	public static int getMaxName() {
 		return maxSize.get("NameMax");

@@ -29,9 +29,6 @@ public class Film implements Backup, EingabePruefung, Id{
 	
 	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
-//	public Film(int id, int erstellerId, String titel, int dauer, int erscheinungsjahr, float bewertung) {
-//		this(id, erstellerId, titel, null, dauer, erscheinungsjahr, bewertung);
-//	}
 	
 	public Film(int id, int erstellerId, String titel, int dauer, int erscheinungsjahr, float bewertung) {
 		this.id = id;

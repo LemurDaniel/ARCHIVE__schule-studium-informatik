@@ -33,9 +33,6 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 	public int size() {
 		return list.size();
 	}
-//	public List<T> getList() {
-//		return new ArrayList<>(list);
-//	}
 	public boolean existiert(T entitaet) {
 		return list.contains(entitaet);
 	}
@@ -50,12 +47,6 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 		list.remove(obj);
 		observablelist.remove(obj);
 	}
-	public void clear() {
-		list.clear();
-		observablelist.clear();
-		super.clear();
-	}
-		
 	
 	
 	
@@ -110,12 +101,19 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> exten
 	}
 
 	
+	public void clear() {
+		list.clear();
+		observablelist.clear();
+		super.clear();
+	}
 	@Override
 	public void reset() {
 		add.forEach(observablelist::remove);
 		delete.forEach(observablelist::add);
 		super.reset();
 	}
+		
+		
 
 
 }

@@ -22,12 +22,6 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		err = new Stack<>();
 	}
 	
-
-	public void clear(){
-		delete.clear();
-		add.clear();
-		update.clear();
-	}
 	
 	public boolean addEntitaet(T entitaet) {
 		if(entitaet==null || add.contains(entitaet))	return false;
@@ -128,6 +122,13 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 	protected abstract void onDeleteSucess(T ent, Connection con) 	throws SQLException, InterruptedException;
 	
 	
+
+	public void clear(){
+		delete.clear();
+		add.clear();
+		update.clear();
+	}
+	
 	public void reset() {
 		if(!hatAuftraege()) {
 			FensterManager.logErreignis("\nEs sind keine Änderungen vorhanden");
@@ -135,9 +136,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		}
 		
 		update.forEach(	item->	item.backupReset());
-		add.clear();
-		delete.clear();
-		update.clear();
+		clear();
 		FensterManager.logErreignis("\nAlle ungespeicherten Änderungen wurden zurückgesetzt");
 	}
 	

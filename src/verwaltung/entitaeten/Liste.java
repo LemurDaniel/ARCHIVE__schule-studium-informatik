@@ -77,8 +77,126 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	}
 	
 	
-
 	
+	public void addEntitaeten(List<Film> filmListe) {
+		filmListe.stream().filter(film->!filme.getObList().contains(film) && super.addEntitaet(film)).forEach(film->{
+				if(film.getId()==-1) 				filme.addEntitaet(film);
+				else 								filme.getObList().add(film);
+		});
+		Listenverwaltung.instance().updateEntitaet(this);
+		aktualisiereGroeße();
+	}
+	public void removeEntitaeten(List<Film> filmListe) {
+		filmListe.stream().filter(film->filme.getObList().contains(film) && super.removeEntitaet(film)).forEach(filme.getObList()::remove);
+		Listenverwaltung.instance().updateEntitaet(this);
+		aktualisiereGroeße();
+	}
+	
+	
+	
+	@Override
+	public boolean addEntitaet(Film film) {
+		if(filme.getObList().contains(film) && !delete.contains(film))		return false;
+		if(!super.addEntitaet(film))		return false;
+		if(film.getId()==-1) 				filme.addEntitaet(film);
+		else 								filme.getObList().add(film);
+		Listenverwaltung.instance().updateEntitaet(this);
+		aktualisiereGroeße();
+		return true;
+	}
+	
+	@Override
+	public boolean removeEntitaet(Film film) {
+		if(!filme.getObList().contains(film) && !add.contains(film))	return false;
+		if(!super.removeEntitaet(film))		return false;
+		filme.getObList().remove(film);
+		Listenverwaltung.instance().updateEntitaet(this);
+		aktualisiereGroeße();
+		return true;
+	}	
+	@Override
+	public boolean updateEntitaet(Film film) {
+		if(!filme.updateEntitaet(film))	return false;
+		Listenverwaltung.instance().updateEntitaet(this);
+		return true;
+	}
+	
+	
+	
+	
+	@Override
+	protected void onAdd(Film film, Connection con) throws Exception {
+		if(film.getId()==-1)	throw new Exception("Der Film '"+film.getTitel()+"' konnte nicht zur liste hinzugefügt werden");
+		
+		String sql = "Insert into liste_film(lid, fid) values(?, ?)";
+		
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setInt(1, id);
+			ps.setInt(2, film.getId());
+			ps.executeUpdate();
+		}
+	}
+	@Override
+	protected void onDelete(Film film, Connection con) throws Exception {
+		
+		String sql = "Delete liste_film where lid=? and fid=?";
+		
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setInt(1, id);
+			ps.setInt(2, film.getId());
+			ps.executeUpdate();
+		}
+		
+	}
+	
+	@Override
+	protected void onAddSucess(Film film, Connection con) {
+		filme.addObj(film);
+		aktualisiereGroeße();
+		FensterManager.logErreignis(String.format("'%s' wurde erfolgreich zu Liste '%s' hinzugefügt", film.getTitel(), name.get()));
+	}
+	@Override
+	protected void onDeleteSucess(Film film, Connection con) {
+		filme.removeObj(film);
+		aktualisiereGroeße();
+		FensterManager.logErreignis(String.format("'%s' wurde erfolgreich aus Liste '%s' gelöscht", film.getTitel(), name.get()));
+	}
+	
+	
+	@Override
+	protected void onUpdate(Film ent, Connection con) throws Exception {}
+	@Override
+	protected void onUpdateSucess(Film film, Connection con) {}
+	
+	
+	
+	
+	
+	@Override
+	public void save(Connection con) throws SQLException, InterruptedException{
+		FensterManager.logErreignis(String.format("Der Inhalt der Liste '%s' wird aktualisiert", name.get()));
+		filme.save(con);
+		super.save(con);
+		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%s' wurde beendet", name.get()));
+	}
+	@Override
+	public void reset() {
+		filme.reset();
+		while(!add.empty())		filme.getObList().remove(add.pop());
+		while(!delete.empty())	filme.getObList().add(delete.pop());
+		aktualisiereGroeße();
+		super.reset();
+	}
+	@Override
+	public void clear() {
+		filme.clear();
+		super.clear();
+	}
+		
+	@Override
+	public boolean hatAuftraege() {
+		return super.hatAuftraege() || filme.hatAuftraege();
+	}
 	
 	@Override
 	public String toString() {
@@ -92,11 +210,6 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	public void commitId() {
 		id = tempid;
 	}
-	
-	
-	
-	
-	
 	
 	@Override
 	public void backup() {
@@ -122,10 +235,7 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	}
 		
 	
-	
-	
-	
-	
+
 	@Override
 	public void checkEingaben() throws Exception {
 		StringBuilder sb = new StringBuilder();
@@ -138,139 +248,4 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		if(sb.length()>0)
 			throw new Exception("Fehler Liste: '"+name.get()+"'"+sb.toString());
 	}
-
-	
-	
-	
-	
-	
-	
-	public void addEntitaeten(List<Film> filmListe) {
-		filmListe.stream().filter(film->!filme.getObList().contains(film) && super.addEntitaet(film)).forEach(film->{
-				if(film.getId()==-1) 				filme.addEntitaet(film);
-				else 								filme.getObList().add(film);
-		});
-		Listenverwaltung.instance().updateEntitaet(this);
-		aktualisiereGroeße();
-	}
-	public void removeEntitaeten(List<Film> filmListe) {
-		filmListe.stream().filter(film->filme.getObList().contains(film) && super.removeEntitaet(film)).forEach(filme.getObList()::remove);
-		Listenverwaltung.instance().updateEntitaet(this);
-		aktualisiereGroeße();
-	}
-	
-	
-	@Override
-	public boolean addEntitaet(Film film) {
-		if(filme.getObList().contains(film) && !delete.contains(film))		return false;
-		if(!super.addEntitaet(film))		return false;
-		if(film.getId()==-1) 				filme.addEntitaet(film);
-		else 								filme.getObList().add(film);
-		Listenverwaltung.instance().updateEntitaet(this);
-		aktualisiereGroeße();
-		return true;
-	}
-	
-	
-	//Neu angelegte Filme können nicht mit dragndrop entfernt werden
-	// nicht via id, diese ist immer -1 !!
-	@Override
-	public boolean removeEntitaet(Film film) {
-		if(!filme.getObList().contains(film) && !add.contains(film))	return false;
-		if(!super.removeEntitaet(film))		return false;
-		filme.getObList().remove(film);
-		Listenverwaltung.instance().updateEntitaet(this);
-		aktualisiereGroeße();
-		return true;
-	}	
-	@Override
-	public boolean updateEntitaet(Film film) {
-		if(!filme.updateEntitaet(film))	return false;
-		Listenverwaltung.instance().updateEntitaet(this);
-		return true;
-	}
-	
-	
-	
-	
-	
-	
-	@Override
-	protected void onAdd(Film film, Connection con) throws Exception {
-		if(!Filmverwaltung.existiertGlobal(film))	throw new Exception("Der Film '"+film.getTitel()+"' konnte nicht zur liste hinzugefügt werden");
-		
-		String sql = "Insert into liste_film(lid, fid) values(?, ?)";
-		
-		try(PreparedStatement ps = con.prepareStatement(sql)){
-			ps.setInt(1, id);
-			ps.setInt(2, film.getId());
-			ps.executeUpdate();
-		}
-	}
-	@Override
-	protected void onDelete(Film film, Connection con) throws Exception {
-		
-		String sql = "Delete liste_film where lid=? and fid=?";
-		
-		try(PreparedStatement ps = con.prepareStatement(sql)){
-			ps.setInt(1, id);
-			ps.setInt(2, film.getId());
-			ps.executeUpdate();
-		}
-		
-	}
-	
-	
-	
-	
-	@Override
-	protected void onAddSucess(Film film, Connection con) {
-		filme.addObj(film);
-		aktualisiereGroeße();
-		FensterManager.logErreignis(String.format("'%s' wurde erfolgreich zu Liste '%s' hinzugefügt", film.getTitel(), name.get()));
-	}
-	@Override
-	protected void onDeleteSucess(Film film, Connection con) {
-		filme.removeObj(film);
-		aktualisiereGroeße();
-		FensterManager.logErreignis(String.format("'%s' wurde erfolgreich aus Liste '%s' gelöscht", film.getTitel(), name.get()));
-	}
-	
-	
-	@Override
-	protected void onUpdate(Film ent, Connection con) throws Exception {}
-	@Override
-	protected void onUpdateSucess(Film film, Connection con) {}
-	
-	
-	
-	
-	@Override
-	public void save(Connection con) throws SQLException, InterruptedException{
-		FensterManager.logErreignis(String.format("Der Inhalt der Liste '%s' wird aktualisiert", name.get()));
-		filme.save(con);
-		super.save(con);
-		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%s' wurde beendet", name.get()));
-	}
-	@Override
-	public void reset() {
-		filme.reset();
-		while(!add.empty())		filme.getObList().remove(add.pop());
-		while(!delete.empty())	filme.getObList().add(delete.pop());
-		aktualisiereGroeße();
-		super.reset();
-	}
-	@Override
-	public void clear() {
-		filme.clear();
-		super.clear();
-	}
-	
-	
-	@Override
-	public boolean hatAuftraege() {
-		return super.hatAuftraege() || filme.hatAuftraege();
-	}
-
-	
 }
