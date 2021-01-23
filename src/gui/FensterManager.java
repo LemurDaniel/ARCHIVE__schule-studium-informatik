@@ -250,8 +250,8 @@ public class FensterManager {
 	
 	
 	public static void logErreignis(Exception e) {
+		if(SQLException.class.isInstance(e)) logErreignis( ((SQLException)e).getSQLState()  );
 		logErreignis(e.getMessage(), Color.RED);
-		e.printStackTrace();
 	}
 	public static void logErreignis(String text) {
 		logErreignis(text, Color.GREEN);

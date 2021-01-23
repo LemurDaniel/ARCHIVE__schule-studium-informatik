@@ -99,7 +99,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		try {
 			while(!stack.empty()) {
 				if(Thread.interrupted()) throw new InterruptedException();
-				Thread.sleep(50);
+				Thread.sleep(500);
 
 				T ent = stack.pop();
 				try {
@@ -154,6 +154,11 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 	
 	@Override
 	public void run() {
+		if(!hatAuftraege())	{
+			FensterManager.logErreignis("\nEs existieren keine Änderungen zum speichern");
+			return;
+		}
+		
 		FensterManager.logErreignis("\nDer Speichervorgang wurde gestartet");
 		try (Connection con = DB_Manager.getCon()){
 			save(con);	

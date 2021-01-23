@@ -136,12 +136,19 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		super.onAddSucess(f, con);
 	//	super.log.add(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich hinzugefügt", f.getTitel()));
 		FensterManager.logErreignis(String.format("Der Film '%s' wurde erfolgreich hinzugefügt", f.getTitel()));
+		
+		if(f.getPvw().hatAuftraege())	super.updateEntitaet(f);
+		
 	}
 	@Override
 	protected void onUpdateSucess(Film f, Connection con) throws SQLException, InterruptedException{
+		if(f.hasBackup()) FensterManager.logErreignis(String.format("Der Film '%s' wurde erfolgreich geändert", f.getTitel()));
 		super.onUpdateSucess(f, con);
-	//	super.log.add(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich geupdatet", f.getTitel()));
-		FensterManager.logErreignis(String.format("Der Film '%s' wurde erfolgreich geändert", f.getTitel()));
+		
+		if(!f.getPvw().hatAuftraege()) return;
+		FensterManager.logErreignis(String.format("Die Mitwirkenden zum Film '%s' werden aktualisiert", f.getTitel()));
+		f.getPvw().save(con);
+		FensterManager.logErreignis(String.format("Die Aktualisierung der Mitwirkenden zum Film '%s' wurde abgeschlossen", f.getTitel()));
 	}
 
 		

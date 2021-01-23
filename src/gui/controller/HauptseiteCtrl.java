@@ -36,6 +36,7 @@ public class HauptseiteCtrl {
 	
 	private long lastMouseClick = 0;
 	private Filmverwaltung fvw = new Filmverwaltung();
+	private Thread th;
 
     @FXML
     private TableView<Film> table; 
@@ -192,17 +193,23 @@ public class HauptseiteCtrl {
 	}
     
 	private void speichern() throws Exception{
-		try(Connection con = DB_Manager.getCon()){
-				System.out.println("Performance Test");
-				long nano = System.nanoTime();
-				long mili = System.currentTimeMillis();
-
-				fvw.save(con);
-				
-				nano = System.nanoTime()-nano;
-				mili = System.currentTimeMillis()-mili;
-				System.out.println(String.format("nano: %,d", nano));
-				System.out.println(String.format("milli: %,d", mili));
+//		try(Connection con = DB_Manager.getCon()){
+//				System.out.println("Performance Test");
+//				long nano = System.nanoTime();
+//				long mili = System.currentTimeMillis();
+//
+//				fvw.save(con);
+//				
+//				nano = System.nanoTime()-nano;
+//				mili = System.currentTimeMillis()-mili;
+//				System.out.println(String.format("nano: %,d", nano));
+//				System.out.println(String.format("milli: %,d", mili));
+//		}
+		
+		if(th!=null && th.isAlive()) th.interrupt();
+		else {
+			th = new Thread(fvw);
+			th.start();
 		}
 	}
 }

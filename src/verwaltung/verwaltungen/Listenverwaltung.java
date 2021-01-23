@@ -114,7 +114,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		if(li.hasBackup())	FensterManager.logErreignis(String.format("Der name der Liste '%s' wurde erfolgreich geändert", li.getName()));
 		super.onUpdateSucess(li, con);
 		if(!li.hatAuftraege())	return;
-		FensterManager.logErreignis(String.format("\nDer Inhalt der Liste '%s' wird aktualisiert", li.getName()));
+		FensterManager.logErreignis(String.format("Der Inhalt der Liste '%s' wird aktualisiert", li.getName()));
 		li.save(con);
 		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%s' wurde beendet", li.getName()));
 	}

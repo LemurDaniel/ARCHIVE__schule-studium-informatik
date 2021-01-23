@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import gui.FensterManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import verwaltung.DB_Manager;
@@ -56,18 +57,17 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		}
 	}
 
-		
 	
 	@Override
-	protected void onAdd(Person person, Connection con) throws Exception {
-		super.onAdd(person, con);
+	protected void onAdd(Person per, Connection con) throws Exception {
+		super.onAdd(per, con);
 		
 		int id = -1;
 		Person original = null;
 		//Existiert bereits in Datenbank?
 		try(PreparedStatement ps = con.prepareStatement("Select id from person where name=? and vorname=?")){
-			ps.setString(1, person.getName());
-			ps.setString(2, person.getVorname());
+			ps.setString(1, per.getName());
+			ps.setString(2, per.getVorname());
 			try(ResultSet rs = ps.executeQuery()){
 				if(rs.next())	id = rs.getInt(1);							
 			}
@@ -76,8 +76,8 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		if(id==-1) {
 			//Existiert nicht -> muss angelegt werden
 			try(PreparedStatement ps = con.prepareStatement("insert into person(vorname, name) values(?, ?); Select SCOPE_IDENTITY()")){
-				ps.setString(1, person.getVorname());
-				ps.setString(2, person.getName());
+				ps.setString(1, per.getVorname());
+				ps.setString(2, per.getName());
 				try(ResultSet rs = ps.executeQuery()){
 					rs.next();
 					id = rs.getInt(1);	
@@ -89,11 +89,14 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		try(PreparedStatement ps = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)")){
 			ps.setInt(1, film.getId());
 			ps.setInt(2, id);
-			ps.setInt(3, person.getRolle().getId());
+			ps.setInt(3, per.getRolle().getId());
 			ps.executeUpdate();
+		}catch(SQLException e) {
+			if(!e.getSQLState().equals("23000")) throw e;
+			throw new Exception(String.format("Die Person '%s' mit der Rolle %s existiert bereits", per, per.getRolle()));
 		}
 		
-		person.setTempId(id);
+		per.setTempId(id);
 	}
 		
 	@Override
@@ -111,6 +114,9 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			ps.setInt(2, film.getId());
 			ps.setInt(3, per.getId());
 			ps.executeUpdate();
+		}catch(SQLException e) {
+			if(!e.getSQLState().equals("23000")) throw e;
+			throw new Exception(String.format("Die Person '%s' mit der Rolle %s existiert bereits", per, per.getRolle()));
 		}
 		
 	}
@@ -134,16 +140,20 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			per.commitId();
 			per.setNameChanged(false);
 		}
+		FensterManager.logErreignis(String.format("Die Person '%s' mit der Rolle '%s' wurde erfolgreich zum Film '%s' hinzugefügt", per, per.getRolle(), film.getTitel()));
 	}
-	
-	
-	
-
 	@Override
-	public void save(Connection con) throws SQLException, InterruptedException {
-		super.save(con);
-		lade(con);
+	protected void onAddSucess(Person per, Connection con) throws SQLException, InterruptedException{
+		super.onAddSucess(per, con);
+		FensterManager.logErreignis(String.format("Die Person '%s' mit der Rolle '%s' wurde erfolgreich zum Film '%s' hinzugefügt", per, per.getRolle(), film.getTitel()));
 	}
+	@Override
+	protected void onDeleteSucess(Person per, Connection con) throws SQLException, InterruptedException{
+		super.onDeleteSucess(per, con);
+		FensterManager.logErreignis(String.format("Die Person '%s' mit der Rolle '%s' wurde erfolgreich vom Film '%s' gelöscht", per, per.getRolle(), film.getTitel()));
+	}
+
+	
 	
 	public static int getMaxName() {
 		return DB_Manager.get("PerNameMax");

@@ -306,13 +306,14 @@ public class AddFilmCtrl {
     }
     
     private void backupfilm() {
-    	if(added)	return;
-    	if(film.getId()==-1) stpv.addEntitaet(film);
-    	else	if(!film.hasBackup()) {
+    	if(!film.hasBackup() && film.getId()!=-1) {
     		film.backup();
     		stpv.updateEntitaet(film);
     	}
-    	added = true;
+    	else if(film.getId()==-1 && added == false) {
+    	   stpv.addEntitaet(film);
+    	   added = true;
+    	}
     }
     
     private void changeListener( ObservableValue<? extends String> ob, String ov, String nv) {
@@ -356,11 +357,19 @@ public class AddFilmCtrl {
      	if(data.getTableColumn()==t_vorname) 		per.setVorname(val);
     	else if(data.getTableColumn()==t_name)		per.setName(val);
      		
+     	if(film.getId()!=-1 && added==false)	{
+     		stpv.updateEntitaet(film);
+     		added = true;
+     	}
     }
 
     private void addPerson() {
     	Person per = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0) );
     	pvw.addEntitaet(per);
+    	if(film.getId()!=-1 && added==false)	{
+     		stpv.updateEntitaet(film);
+     		added = true;
+     	}    
     }
     
 //    private void commitFilm() throws Exception {
