@@ -23,7 +23,7 @@ import javafx.scene.input.KeyEvent;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Nutzer;
 import verwaltung.entitaeten.Nutzer.Rechte;
-import verwaltung.entitaeten.Person;
+import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.entitaeten.Rezension;
 import verwaltung.verwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.Rezensionenverwaltung;
@@ -47,7 +47,7 @@ public class DetailCtrl {
 		rvw.loadIfnotLoaded();
 		pvw.loadIfnotLoaded();
 
-        table.setItems(pvw.getList());
+        table.setItems(FXCollections.observableArrayList(pvw.getPersonenMitRollen()));
         table1.setItems(rvw.getList());
 		
         tf_titel.setText(film.getTitel().get());
@@ -95,16 +95,16 @@ public class DetailCtrl {
     private TitledPane tp_mit; // Value injected by FXMLLoader
 
     @FXML // fx:id="table"
-    private TableView<Person> table; // Value injected by FXMLLoader
+    private TableView<PersonMitRolle> table; // Value injected by FXMLLoader
 
     @FXML // fx:id="t_vorname"
-    private TableColumn<Person, String> t_vorname; // Value injected by FXMLLoader
+    private TableColumn<PersonMitRolle, String> t_vorname; // Value injected by FXMLLoader
 
     @FXML // fx:id="t_name"
-    private TableColumn<Person, String> t_name; // Value injected by FXMLLoader
+    private TableColumn<PersonMitRolle, String> t_name; // Value injected by FXMLLoader
 
     @FXML // fx:id="t_rolle"
-    private TableColumn<Person, String> t_rolle; // Value injected by FXMLLoader
+    private TableColumn<PersonMitRolle, String> t_rolle; // Value injected by FXMLLoader
     
     /** Rezension **/
     @FXML // fx:id="tp_rez"
@@ -263,9 +263,9 @@ public class DetailCtrl {
         
         /**  **/
         
-        t_vorname.setCellValueFactory(data->data.getValue().vorname);
-        t_name.setCellValueFactory(data->data.getValue().name);
-        t_rolle.setCellValueFactory(data->data.getValue().rolle);     
+        t_name.setCellValueFactory(		data->data.getValue().getPerson().getName()		);
+        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVorname()	);
+        t_rolle.setCellValueFactory(	data->data.getValue().getRolle()				);     
         
         t_ersteller.setCellValueFactory(data->data.getValue().getVerfasser());
         t_bwt.setCellValueFactory(data->data.getValue().getBewertung());

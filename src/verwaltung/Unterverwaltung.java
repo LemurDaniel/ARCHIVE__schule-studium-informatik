@@ -14,6 +14,7 @@ public abstract class Unterverwaltung<T> extends Verwaltung<T>{
 	}
 	
 	protected void load() throws SQLException {
+		if(isLoaded) list.clear();
 		isLoaded = true;
 	}
 	public void loadIfnotLoaded() throws SQLException {

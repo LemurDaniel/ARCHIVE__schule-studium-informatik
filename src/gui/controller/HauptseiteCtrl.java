@@ -9,11 +9,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.Callback;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Nutzer;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -65,7 +63,7 @@ public class HauptseiteCtrl {
     	try {
     		if(film == null) 
     			throw new Exception("Es wurde kein Film ausgewählt");
-			FensterManager.getInstance().showDetail(film);
+			FensterManager.setDialog( FensterManager.showDetail(film) );
 		} catch (Exception e) {
 			Alert a = new Alert(AlertType.ERROR);
 			a.setTitle("Detailansicht - Fehler");
@@ -123,7 +121,7 @@ public class HauptseiteCtrl {
        
         btn_add.setOnAction(ev->{
         	try {
-				FensterManager.getInstance().showAddFilm(table.getSelectionModel().getSelectedItem());
+				FensterManager.setDialog( FensterManager.showAddFilm(table.getSelectionModel().getSelectedItem()) );
 			} catch (SQLException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

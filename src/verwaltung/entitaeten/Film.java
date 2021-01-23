@@ -1,8 +1,5 @@
 package verwaltung.entitaeten;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javafx.beans.property.ReadOnlyFloatProperty;
 import javafx.beans.property.ReadOnlyFloatWrapper;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -15,6 +12,7 @@ import verwaltung.verwaltungen.Rezensionenverwaltung;
 public class Film {
 	
 	private int id;
+	@SuppressWarnings("unused")
 	private Genre genre;
 	private ReadOnlyStringWrapper titel, genre_prop, dauer_string;
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;

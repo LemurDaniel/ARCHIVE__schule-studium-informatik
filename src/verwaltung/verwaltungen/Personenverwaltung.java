@@ -8,14 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import verwaltung.Unterverwaltung;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Person;
+import verwaltung.entitaeten.Person.PersonMitRolle;
 
 public class Personenverwaltung extends Unterverwaltung<Person>{
 
@@ -36,29 +35,16 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		return oblist;
 	}
 	
-	
-	private static List<Person> allLoadedPersons;
-	public static Person getIfexists(int pid) {
-		Optional<Person> opt = allLoadedPersons.stream().filter(per->per.getId()==pid).findFirst();
-		if(opt.isPresent()) return opt.get();
-		return null;
-	}
-	public static Person getIfexists(String name, String vorname) {
-		Optional<Person> opt = allLoadedPersons.stream().filter(per->{
-			if(per.getName().get().equals(name) && per.getVorname().get().equals(vorname))
-				return true;
-			return false;
-		}).findFirst();
-		if(opt.isPresent()) return opt.get();
-		return null;
-	}
-	
-	
-	
-	private Map<Integer, List<String>> perRolleMap;
-	
 	public Personenverwaltung(Film film) {
 		super(film);
+		
+//		ArrayList<String> r = new ArrayList<>();
+//		r.add("aaa");
+//		r.add("awwwaa");
+//		r.add("aadadaa");
+//		r.add("a22aa");
+//		list.add(new Person(1, "Tom", "T", r));
+//		list.add(new Person(2, "Tosm", "T", r));
 	}
 	
 	@Override
@@ -70,94 +56,123 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 															+"inner join rollen on rid = rollen.id "
 															+"where fid="+film.getId());
 			while(rs.next()) {
-				Person per = getIfexists(rs.getInt(1));
-				if(per==null) {
-					per = new Person(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
-					allLoadedPersons.a
-				}if(!perRolleMap.containsKey(per.getId())) 
-					perRolleMap.put(per.getId(), new ArrayList<String>());
-				perRolleMap.get(per).add(per.rolle.get());
-				list.add(per);
+				int pid = rs.getInt(1);
+				Person person = list.stream().filter(per->per.getId()==pid).findFirst().orElse(null);
+				if(person == null)
+					list.add(new Person(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4)));
+				else
+					person.addRolle(rs.getString(4));
 			}
+			list.forEach(p->System.out.println(p+ "  "+p.getId()));
 		}
 	}
 	
 	
-	public void addOrUpdate(List<Person> personen) throws Exception {
+	public void addOrUpdate(List<PersonMitRolle> pmrlist) throws Exception {
 		if(film == null) throw new Exception("No Film");
 		
 		try(Connection con = getCon();){
 			con.setAutoCommit(false);
 			
-			for(Person person: personen) {
-				Integer rolleId = rollen.get(person.getRolle().get());
-				Integer pid = null;
-			
-				Person original = person.getId()>-1 ? getIfexists(person.getId()) : null;
+			//Working Copy for AddFilm , Actual object
+			Person person = null, original = null;
+			Integer rolleId;
+			for(PersonMitRolle pmr: pmrlist) {
+
 				
-				if(original == null)
-					original = getIfexists(person.getName().get(), person.getVorname().get());
-				
-				if(original == null) {
-					//Existiert bereits in Datenbank?
-					PreparedStatement ps = con.prepareStatement("Select id, vorname, name from personen where name=? and vorname=?");
-					ps.setString(1, personen.get(0).getName().get());
-					ps.setString(2, personen.get(0).getVorname().get());
-					ResultSet rs = ps.executeQuery();
-					if(rs.next()) {
-						original = new Person(rs.getInt(1), rs.getString(2), rs.getString(3), "");
-						allLoadedPersons.add(original);
+				if(person != pmr.getPerson()) {
+					person = pmr.getPerson();
+					for(Person per: list) {
+						if(per.getId()==person.getId()) {
+							original = per;
+							break;
+						}
 					}
-				}
-			
-				if(original == null) {
-					//Existiert nicht -> muss angelegt werden
-					PreparedStatement ps = con.prepareStatement("insert into personen(vorname, name) values(?, ?);"
-															+ "Select id, vorname, name from personen where id=SCOPE_IDENTITY()");
-					ps.setString(1, person.getVorname().get());
-					ps.setString(2, person.getName().get());
-					ResultSet rs = ps.executeQuery();
-					rs.next();
-					original = new Person(rs.getInt(1), rs.getString(2), rs.getString(3), "");
-					allLoadedPersons.add(original);
-				}else {
-					PreparedStatement ps = con.prepareStatement("update personen set vorname=?,  name=? where id=?");
-					ps.setString(1, person.getVorname().get());
-					ps.setString(2, person.getName().get());
-					ps.setInt(3, pid);
-					ps.executeUpdate();
-				}
 				
-				//Kombination schon vorhanden?
-				PreparedStatement ps = con.prepareStatement("Select * from filme_personen_rollen where fid=? and pid=? and rid=?");
-				ps.setInt(1, film.getId());
-				ps.setInt(2, pid);
-				ps.setInt(3, rolleId);
-				ResultSet rs = ps.executeQuery();
-				if(!rs.next()) {
-					ps = con.prepareStatement("insert into filme_personen_rollen(fid, pid, rid) values(?, ?, ?)");
+					
+					if(original == null) {
+						//Existiert bereits in Datenbank?
+						PreparedStatement ps = con.prepareStatement("Select id, vorname, name from personen where name=? and vorname=?");
+						ps.setString(1, person.getName().get());
+						ps.setString(2, person.getVorname().get());
+						ResultSet rs = ps.executeQuery();
+						if(rs.next())
+							original = new Person(rs.getInt(1), rs.getString(2), rs.getString(3), person.getRollen());
+					}
+					
+					if(original == null) {
+						//Existiert nicht -> muss angelegt werden
+						PreparedStatement ps = con.prepareStatement("insert into personen(vorname, name) values(?, ?);"
+																+ "Select id, vorname, name from personen where id=SCOPE_IDENTITY()");
+						ps.setString(1, person.getVorname().get());
+						ps.setString(2, person.getName().get());
+						ResultSet rs = ps.executeQuery();
+						rs.next();
+						original = new Person(rs.getInt(1), rs.getString(2), rs.getString(3), person.getRollen());
+					}else {
+						//Updaten
+						PreparedStatement ps = con.prepareStatement("update personen set vorname=?,  name=? where id=?");
+						ps.setString(1, person.getVorname().get());
+						ps.setString(2, person.getName().get());
+						ps.setInt(3, original.getId());
+						ps.executeUpdate();
+					}
+					con.commit();
+					original.getName().set( person.getName().get() );
+					original.getVorname().set(person.getVorname().get() );
+					if(!list.contains(original)) list.add(original);	
+				}
+
+				rolleId = rollen.get(pmr.getRolle().get());
+				
+				if(rolleId!=null) {
+					//Kombination schon vorhanden?
+					PreparedStatement ps = con.prepareStatement("Select * from filme_personen_rollen where fid=? and pid=? and rid=?");
 					ps.setInt(1, film.getId());
-					ps.setInt(2, pid);
+					ps.setInt(2, original.getId());
 					ps.setInt(3, rolleId);
-					ps.executeUpdate();
+					ResultSet rs = ps.executeQuery();
+					if(!rs.next()) {
+						ps = con.prepareStatement("insert into filme_personen_rollen(fid, pid, rid) values(?, ?, ?)");
+						ps.setInt(1, film.getId());
+						ps.setInt(2, original.getId());
+						ps.setInt(3, rolleId);
+						ps.executeUpdate();
+					}
+					rs.close();
+					con.commit();					
+					original.addRolle(pmr.getRolle().get());
 				}
-				rs.close();
-				con.commit();
-				
-				if(!perRolleMap.containsKey(original)) 
-					perRolleMap.put(original, new ArrayList<String>());
-				perRolleMap.get(original).add(person.rolle.get());
-				list.add(original); // lokale Liste
-				
-				original.getName().set( person.getName().get() );
-				original.getVorname().set(person.getVorname().get() );
-				
 			}
 		}	
 	}
 	
-	public List<String> perRolleMap(Person per) {
-		return perRolleMap(per);
+	public void delete(List<PersonMitRolle> pmrlist) throws SQLException {
+		try(Connection con = getCon();){
+		
+			Integer rolleId;
+			for(PersonMitRolle pmr: pmrlist) {			
+				rolleId = rollen.get(pmr.getRolle().get());				
+				if(rolleId!=null) {
+					PreparedStatement ps = con.prepareStatement("Delete filme_personen_rollen where fid=? and pid=? and rid=?");
+					ps.setInt(1, film.getId());
+					ps.setInt(2, pmr.getPerson().getId());
+					ps.setInt(3, rolleId);
+					ps.executeUpdate();
+					pmr.getPerson().removeRolle(pmr.getRolle().get());
+				}				
+			}
+		}
 	}
+
 	
+	public List<PersonMitRolle> getPersonenMitRollen(){
+		List<PersonMitRolle> pml = new ArrayList<>();
+		list.forEach(per->pml.addAll(per.getCopy().getPersonenMitRolle()));
+		return pml;
+	}
+
 }
+	
+
+	

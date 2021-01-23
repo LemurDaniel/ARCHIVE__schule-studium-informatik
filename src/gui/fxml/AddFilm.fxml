@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -13,9 +14,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<Accordion fx:id="accordion" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="419.0" prefWidth="600.0" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.AddFilmCtrl">
-  <panes>
-      <TitledPane fx:id="tp_allg" animated="false" text="Allgemein">
+<Accordion fx:id="accordion" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="478.0" prefWidth="600.0" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.AddFilmCtrl">
+   <panes>
+      <TitledPane fx:id="tp_allg" animated="false">
+         <graphic>
+            <ButtonBar maxHeight="300.0" maxWidth="550.0" prefHeight="0.0" prefWidth="533.0" styleClass="bar">
+               <buttons>
+                  <Button fx:id="btn_rel1" minWidth="68.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Allgemein" />
+                  <Button fx:id="btn_commit1" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Speichern" />
+                  <Button fx:id="btn_detail" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Detail" />
+               </buttons>
+            </ButtonBar>
+         </graphic>
          <content>
             <FlowPane prefHeight="200.0" prefWidth="200.0">
                <children>
@@ -54,35 +64,43 @@
                      </children>
                   </VBox>
                   <TreeTableView fx:id="table_genre" prefHeight="320.0" prefWidth="204.0">
-                    <columns>
-                      <TreeTableColumn fx:id="t_genre" prefWidth="185.0" text="C1" />
-                    </columns>
+                     <columns>
+                        <TreeTableColumn fx:id="t_genre" prefWidth="185.0" text="Genre" />
+                     </columns>
                   </TreeTableView>
-                  <FlowPane prefHeight="36.0" prefWidth="568.0" styleClass="FlowPaneCenter">
-                     <children>
-                        <Button fx:id="btn_commit" mnemonicParsing="false" onAction="#commit" text="Button" />
-                     </children>
-                  </FlowPane>
                </children>
             </FlowPane>
          </content>
       </TitledPane>
-      <TitledPane fx:id="tp_mit" animated="false" text="Mitwirkende">
+      <TitledPane fx:id="tp_mit" animated="false">
          <content>
-            <FlowPane prefHeight="388.0" prefWidth="623.0" styleClass="FlowPaneCenter">
+            <VBox prefHeight="627.0" prefWidth="598.0">
                <children>
-                  <TableView fx:id="table" prefHeight="323.0" prefWidth="577.0">
+                  <TableView fx:id="table" prefHeight="386.0" prefWidth="558.0">
                      <columns>
-                        <TableColumn fx:id="t_confirm" prefWidth="61.0" text="Bestätige" />
-                        <TableColumn fx:id="t_vorname" prefWidth="147.0" text="Vorname" />
-                        <TableColumn fx:id="t_name" prefWidth="173.0" text="Name" />
-                        <TableColumn fx:id="t_rolle" prefWidth="179.0" text="Rolle" />
+                        <TableColumn fx:id="t_confirm" prefWidth="61.0" text="Bestätige">
+                           <columns>
+                              <TableColumn fx:id="t_confirm1" prefWidth="45.0" text="Upd" />
+                              <TableColumn fx:id="t_confirm2" prefWidth="43.0" text="Del" />
+                           </columns>
+                        </TableColumn>
+                        <TableColumn fx:id="t_vorname" prefWidth="123.0" text="Vorname" />
+                        <TableColumn fx:id="t_name" prefWidth="149.0" text="Name" />
+                        <TableColumn fx:id="t_rolle" prefWidth="201.0" text="Rolle" />
                      </columns>
                   </TableView>
-                  <Button fx:id="btn_addP" mnemonicParsing="false" onAction="#addP" text="Button" />
+                  <FlowPane prefHeight="6.0" prefWidth="558.0" styleClass="FlowPaneCenter" />
                </children>
-            </FlowPane>
+            </VBox>
          </content>
+         <graphic>
+            <ButtonBar maxHeight="300.0" maxWidth="550.0" prefHeight="41.0" prefWidth="336.0" styleClass="bar">
+               <buttons>
+                  <Button fx:id="btn_rel2" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="299.0" styleClass="barBut" text="Mitwirkende" />
+                  <Button fx:id="btn_addP" mnemonicParsing="false" onAction="#action" text="Person hinzufügen" />
+               </buttons>
+            </ButtonBar>
+         </graphic>
       </TitledPane>
-  </panes>
+   </panes>
 </Accordion>

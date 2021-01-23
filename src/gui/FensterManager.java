@@ -26,25 +26,26 @@ public class FensterManager {
 	}
 	
 	private static Stage primaryStage;
+	private static Stage dialog;
 	
 	/** Primary **/
-	private static Stage anmelden;
+	private  static Stage anmelden;
 	@SuppressWarnings("unused")
-	private static AnmeldeseiteCtrl anmeldenCtrl;	
+	private  static AnmeldeseiteCtrl anmeldenCtrl;	
 	
-	private static Stage hauptseite;
+	private  static Stage hauptseite;
 	@SuppressWarnings("unused")
-	private static HauptseiteCtrl hauptseiteCtrl;	
+	private  static HauptseiteCtrl hauptseiteCtrl;	
 	
 	
 	/** Other **/
-	private static Stage detail;
-	private static DetailCtrl detailCtrl;
+	private  static Stage detail;
+	private  static DetailCtrl detailCtrl;
 	
-	private static Stage addFilm;
-	private static AddFilmCtrl addFilmCtrl;
+	private  static Stage addFilm;
+	private  static AddFilmCtrl addFilmCtrl;
 	
-	private FensterManager() {
+	static {
 		
 		Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, angemeldet)->{
 			try {
@@ -60,12 +61,12 @@ public class FensterManager {
 		});
 	}
 	
-	public Stage showDetail(Film film) throws SQLException, IOException{
+	public static Stage showDetail(Film film) throws SQLException, IOException{
 		if(detail==null) {
 			detail = new Stage();
 			detail.setTitle("Filmdatenbank - Detailansicht");
 			detail.setResizable(false);
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/Detail.fxml"));
+			FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource("fxml/Detail.fxml"));
 			loader.load();
     		detailCtrl = loader.getController();
     		detail.setScene(new Scene(loader.getRoot()));
@@ -76,12 +77,15 @@ public class FensterManager {
 		return detail;
 	}
 	
-	public Stage showAddFilm(Film film) throws SQLException, IOException{
+	public static Stage showAddFilm(Film film) throws SQLException, IOException{
+		if( !(Nutzer.getNutzer().getRechte().isUpdate() && film.getId()==Nutzer.getNutzer().getId()) || !Nutzer.getNutzer().getRechte().isUpdateAll())
+			throw new SQLException("Keine Berechtigung");
+		
 		if(addFilm==null) {
 			addFilm = new Stage();
 			addFilm.setTitle("Filmdatenbank - Detailansicht");
 			addFilm.setResizable(false);
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/AddFilm.fxml"));
+			FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource("fxml/AddFilm.fxml"));
 			loader.load();
 			addFilmCtrl = loader.getController();
     		addFilm.setScene(new Scene(loader.getRoot()));
@@ -92,11 +96,11 @@ public class FensterManager {
 		return addFilm;
 	}
 	
-	public Stage showAnmelden() throws SQLException, IOException {
+	public static Stage showAnmelden() throws SQLException, IOException {
 		if(anmelden==null) {
 			anmelden = new Stage();
 			anmelden.setTitle("Filmdatenbank - Anmelden");
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/Anmeldeseite.fxml"));
+			FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource("fxml/Anmeldeseite.fxml"));
 			loader.load();
 			anmeldenCtrl = loader.getController();
 			anmelden.setScene(new Scene(loader.getRoot()));
@@ -106,11 +110,11 @@ public class FensterManager {
 		return anmelden;
 	}
 	
-	public Stage showHauptSeite() throws SQLException, IOException {
+	public static Stage showHauptSeite() throws SQLException, IOException {
 		if(hauptseite==null) {
 			hauptseite = new Stage();
 			hauptseite.setTitle("Filmdatenbank");
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/Hauptseite.fxml"));
+			FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource("fxml/Hauptseite.fxml"));
 			loader.load();
 			hauptseiteCtrl = loader.getController();
 			hauptseite.setScene(new Scene(loader.getRoot()));
@@ -120,7 +124,7 @@ public class FensterManager {
 		return hauptseite;
 	}
 	
-	public void setPrimaryStage(Stage primaryStage) {
+	public static void setPrimaryStage(Stage primaryStage) {
 		if(FensterManager.primaryStage!=null)	FensterManager.primaryStage.close();
 		FensterManager.primaryStage = primaryStage;
 		
@@ -140,8 +144,12 @@ public class FensterManager {
 		});
 	}
 	
+	public static void setDialog(Stage dialog) {
+		if(FensterManager.dialog!=null && FensterManager.dialog!=dialog)	FensterManager.dialog.close();
+		FensterManager.dialog = dialog;
+	}
 	
-	public void reset() {
+	public static void reset() {
 		if(anmelden!=null)		anmelden.close();
 		if(hauptseite!=null)	hauptseite.close();
 		if(detail!=null)		detail.close();
