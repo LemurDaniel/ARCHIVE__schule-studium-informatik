@@ -13,7 +13,9 @@ import gui.FensterManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
@@ -34,6 +36,7 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
@@ -86,9 +89,11 @@ public class DetailCtrl {
         tf_dauer.setText(film.getDauerStringProperty().get());
         tf_jahr.setText(film.getErscheinungsjahr()+""); 
         
-        if(this.film!=null)	this.film.getGenres().forEach(g->checked_genre.get(g).set(false));
+        checked_genre.forEach((k, v)->v.set(false));
         film.getGenres().forEach(g->checked_genre.get(g).set(true));
         table_genre.getSelectionModel().clearSelection();
+        t_check.setText(film.getGenresAnzahl()+"");
+        t_genre.setText("Genre ("+checked_genre.size()+")");
         
         tp_mit.setDisable( pvw.getList().size()==0 );
         tp_rez.setDisable( rvw.getList().size()==0 );
@@ -277,10 +282,8 @@ public class DetailCtrl {
         table_genre.setEditable(false);
         table_genre.setItems(FXCollections.observableArrayList(Filmverwaltung.getGenres()));
         table_genre.getSelectionModel().selectedItemProperty().addListener( (ob,ov,nv)->{
-        	if(nv!=null)
-        		ta_genre.setText(nv.getText());
-        	else
-        		ta_genre.setText(null);
+        	if(nv!=null)	ta_genre.setText(nv.getText());
+        	else			ta_genre.setText(null);
         });
         
         t_check.setCellFactory(CheckBoxTableCell.forTableColumn(t_check));
@@ -332,38 +335,38 @@ public class DetailCtrl {
         t_bwt.setCellValueFactory(		data->	data.getValue().getBewertungProperty());
         t_titel.setCellValueFactory(	data->	data.getValue().getTitelProperty());      
         
-        table1.getSelectionModel().selectedItemProperty().addListener((ob, ov, newValue)->{      	
-        	// Wenn ausgewählter Rez == Nutzerrez dann nur eine Option anzeigen
-        	Rezension r = rvw.getRezensionVonNutzer(nid);
-        	if(newValue==null || r!=null && newValue.getId()==r.getId()) {
-        		cb_r.setDisable(true);
-        		cb_r.getSelectionModel().select(1);
-        	}else {
-        		int i = cb_r.getSelectionModel().getSelectedIndex();
-            	cb_r.getItems().set(0, newValue.getVerfasser());	// Optionsname = verfasser name
-            	cb_r.getSelectionModel().select(i);	// Bei änderungen wird select reseted -> merkt sich was selected wurde
-            	cb_r.setDisable(false);
-        	}   		
-        });
-        
-        table1.setOnMouseClicked(ev->{
-        	//Double Click
-        	long now = System.currentTimeMillis();
-        	if(now-lastMouseClick < 200 && table1.getSelectionModel().getSelectedIndex()!=-1) {
-        		if(rechte.isReviewRead())	{
-        			tp_rezd.setExpanded(true);
-        			// Wenn eigene Rez ausgewähl, dann erste Option anzeigen
-        			if(table1.getSelectionModel().getSelectedItem().getId()==rvw.getRezensionVonNutzer(nid).getId())
-        				cb_r.getSelectionModel().select(1);
-        			else
-        				cb_r.getSelectionModel().select(0);
-        		}
-        	}
-        	lastMouseClick = now;
-        });
-        
-        
+        table1.getSelectionModel().selectedItemProperty().addListener(this::rezTableListener);      
+        table1.setOnMouseClicked(this::onMouseClicked);      
         btn_mod.setOnAction(this::openAddFilm);
+    }
+    private void rezTableListener(ObservableValue<? extends Rezension> ob, Rezension oldValue, Rezension newValue) {
+    	// Wenn ausgewählter Rez == Nutzerrez dann nur eine Option anzeigen
+    	Rezension r = rvw.getRezensionVonNutzer(nid);
+    	if(newValue==null || r!=null && newValue.getId()==r.getId()) {
+    		cb_r.setDisable(true);
+    		cb_r.getSelectionModel().select(1);
+    	}else {
+    		int i = cb_r.getSelectionModel().getSelectedIndex();
+        	cb_r.getItems().set(0, newValue.getVerfasser());	// Optionsname = verfasser name
+        	cb_r.getSelectionModel().select(i);	// Bei änderungen wird select reseted -> merkt sich was selected wurde
+        	cb_r.setDisable(false);
+    	}   
+    }
+    
+    private void onMouseClicked(MouseEvent event) {
+    	//Double Click
+    	long now = System.currentTimeMillis();
+    	if(now-lastMouseClick < 200 && table1.getSelectionModel().getSelectedIndex()!=-1) {
+    		if(rechte.isReviewRead())	{
+    			tp_rezd.setExpanded(true);
+    			// Wenn eigene Rez ausgewähl, dann erste Option anzeigen
+    			if(table1.getSelectionModel().getSelectedItem().getId()==rvw.getRezensionVonNutzer(nid).getId())
+    				cb_r.getSelectionModel().select(1);
+    			else
+    				cb_r.getSelectionModel().select(0);
+    		}
+    	}
+    	lastMouseClick = now;
     }
     
     private void openAddFilm(ActionEvent event) {
@@ -381,7 +384,7 @@ public class DetailCtrl {
     	if(cb_r.getSelectionModel().selectedIndexProperty().intValue()==1) {
     		// Wenn keine eigen vorhanden neue erstellen
     		angezeigt = rvw.getRezensionVonNutzer(nid);
-    		if(angezeigt==null) angezeigt = new Rezension(-1, "", "", "", nid, 0, film);		
+    		if(angezeigt==null) angezeigt = new Rezension(-1, "", "", Nutzer.getNutzer().getName(), nid, 0, film);		
     	} else 
     		angezeigt = table1.getSelectionModel().getSelectedItem();
     		

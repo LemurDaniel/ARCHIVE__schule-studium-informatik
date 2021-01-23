@@ -68,6 +68,9 @@
             <Button fx:id="btn_detail" mnemonicParsing="false" onAction="#action" text="Detailansicht" />
             <Button fx:id="btn_filter" mnemonicParsing="false" onAction="#action" text="Filter" />
             <Button fx:id="btn_refresh" mnemonicParsing="false" onAction="#action" text="Aktualisiere" />
+            <Button fx:id="btn_save" mnemonicParsing="false" onAction="#action" text="Speichern" />
+            <Button fx:id="btn_reset" mnemonicParsing="false" onAction="#action" text="Zurücksetzen" />
+            <Button fx:id="btn_liste" mnemonicParsing="false" onAction="#action" text="Listensicht" />
          </children>
       </HBox>
   </children>

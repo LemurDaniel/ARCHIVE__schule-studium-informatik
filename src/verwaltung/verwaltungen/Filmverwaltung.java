@@ -21,7 +21,7 @@ import verwaltung.entitaeten.Genre;
 
 public class Filmverwaltung extends Verwaltung<Film>{
 	
-	public static final DataFormat df = new DataFormat("filme_ids");
+	public static final DataFormat dfFilm = new DataFormat("filme_ids");
 	
 	private static Map<Integer, Genre> genreMap;
 	public static void ladeGerne(Connection con) throws SQLException {
@@ -260,6 +260,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	}
 	
 	public static void refreshAll() throws SQLException {
+		if(geladeneFilme.size()==0)	return;
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("Select * from Film join genre_film on fid=id where id in ( ");
 		
@@ -289,12 +291,12 @@ public class Filmverwaltung extends Verwaltung<Film>{
    	 	List<Integer> ids = new ArrayList<>();
    	 	filme.forEach(film->ids.add(film.getId()));
    	 	ClipboardContent content = new ClipboardContent();
-   	 	content.put(df, ids);
+   	 	content.put(dfFilm, ids);
    	 	db.setContent(content);
 	}
 	public static List<Film> kopiereAusDragbord(Dragboard db) {		
    	 	@SuppressWarnings("unchecked")
-		List<Integer> ids = (List<Integer>) db.getContent(df);
+		List<Integer> ids = (List<Integer>) db.getContent(dfFilm);
    	 	List<Film> filme = new ArrayList<>();
    	 	ids.forEach(id->filme.add(geladeneFilme.get(id)));
    	 	return filme;

@@ -23,9 +23,7 @@
             <ButtonBar maxHeight="300.0" maxWidth="550.0" prefHeight="0.0" prefWidth="533.0" styleClass="bar">
                <buttons>
                   <Label minWidth="41.0" prefHeight="21.0" text="Allgemein" />
-                  <Button fx:id="btn_rel1" minWidth="68.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="255.0" styleClass="barBut" text="Zurücksetzen" />
-                  <Button fx:id="btn_commitF" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Speichern" />
-                  <Button fx:id="btn_detail" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Detail" />
+                  <Button fx:id="btn_detail" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="343.0" text="Detail" />
                </buttons>
             </ButtonBar>
          </graphic>

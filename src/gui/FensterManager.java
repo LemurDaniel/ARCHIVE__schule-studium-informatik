@@ -163,7 +163,7 @@ public class FensterManager {
 			a.show();
 			a.setOnCloseRequest(ev2->{
 				if(a.getResult().getButtonData().equals(ButtonData.OK_DONE)){
-					DB_Manager.InstanzAbmelden();
+					if(Nutzer.getNutzer().isAngemeldet()) Nutzer.getNutzer().abmelden();
 					reset();
 					System.exit(0);
 				}

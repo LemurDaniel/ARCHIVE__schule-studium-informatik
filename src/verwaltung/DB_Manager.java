@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Rolle;
@@ -29,7 +30,7 @@ public class DB_Manager {
 	private static String user = "DanielTest";
 	private static String password = "Test";
 	
-	public static Map<String, Integer> maxSize = new HashMap<>();
+	public static Map<String, Integer> maxSize = new TreeMap<>();
 	
    static {
 		try {
@@ -38,17 +39,13 @@ public class DB_Manager {
 			System.out.println("Kein Treiber gefunden");
 			e.printStackTrace();
 		}
-	
 		
-//		try {
-//			getCon();
-//		} catch (SQLException e) {
-//			user = "student";
-//			password = "wifuser";
-//		}
-		InstanzAnmelden();
-		System.out.println(maxSize.size());
-		maxSize.forEach( (k,o)->System.out.println(k+"   "+o));
+		try (Connection con = con()){
+			getDaten(con);
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
 	}
 	
 	
@@ -57,71 +54,47 @@ public class DB_Manager {
 	public static int getApplikationsId() {
 		return ApplikationsId;
 	}
-	
-	public static void InstanzAnmelden() {
-		try(Connection con = DriverManager.getConnection(url, user, password);
-				PreparedStatement ps = con.prepareStatement("insert into instanz(angemeldet, connectionsMade) values(?, 1); select SCOPE_IDENTITY();");){
-			ps.setString(1, LocalDateTime.now().toString());
-			
-			try(ResultSet rs = ps.executeQuery();){
-				rs.next();
-				ApplikationsId = rs.getInt(1);
-				System.out.println("app  "+ApplikationsId);
-			}
-			getDaten(con);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+	protected static void setApplikationsId(int ApplikationsId) {
+		DB_Manager.ApplikationsId = ApplikationsId;
 	}
 	
-	public static void InstanzAbmelden() {
-		try(Connection con = getCon();
-				PreparedStatement ps = con.prepareStatement("Update instanz set abgemeldet=? where id=?;")){
-			
-			if(Nutzer.getNutzer().isAngemeldet()) Nutzer.getNutzer().abmelden(con);
-			ps.setString(1, LocalDateTime.now().toString());
-			ps.setInt(2, ApplikationsId);
-			ps.execute();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+	protected static Connection con() throws SQLException {
+		System.out.println("Connection: "+ ++connectionsCreated);
+		return DriverManager.getConnection(url, user, password);
 	}
+	
 
 	
 	public static Connection getCon() throws SQLException {
-		Connection con = DriverManager.getConnection(url, user, password);
-		try (PreparedStatement ps1 = con.prepareStatement("update instanz set connectionsMade=? where id=?");){	
-			
-			if(Nutzer.getNutzer().isAngemeldet() && !Nutzer.getNutzer().getRechte().isMultiLogin()) {
-				try(PreparedStatement ps2 = con.prepareStatement("Select iid from instanz_nutzer where nid=? and iid=?");){
+		if(!Nutzer.getNutzer().isAngemeldet())	throw new SQLException("Sie sind nicht angemeldet");
+		Connection con = null;	
+		try {	
+			con = con();
+			if(!Nutzer.getNutzer().getRechte().isMultiLogin()) {
+				try(PreparedStatement ps2 = con.prepareStatement("Select iid from angemeldet where nid=? and iid=?");){
 					ps2.setInt(1, Nutzer.getNutzer().getId());
 					ps2.setInt(2, ApplikationsId);
 						
 					try(ResultSet rs = ps2.executeQuery();){							
 						if(!rs.next()) {
-							Nutzer.getNutzer().abmelden();
+							Nutzer.getNutzer().abmelden(con);
 							throw new SQLException("Sie wurden von einer anderen Applikation ausgeloggt");
 						}
 					}
 				}
 			}
 			
-			ps1.setInt(1, ++connectionsCreated);
-			ps1.setInt(2, ApplikationsId);
-			ps1.executeUpdate();
-			System.out.println("Connection: "+ connectionsCreated);
 			return con;
 		} catch (SQLException e) {
-			con.close();
+			if(con!=null)	con.close();
 			throw e;
 		}
 	}
 	
 	
 	private static void getDaten(Connection con) throws SQLException {
-			
+		if(maxSize.size()>0)	return;
+		
 		try(ResultSet rs = con.getMetaData().getColumns(null, "dbo", null, null)){
 
 			while(rs.next()) {
@@ -143,6 +116,9 @@ public class DB_Manager {
 					if(col.equals("vorname"))		maxSize.put("PerVornameMax", size);
 					else if(col.equals("name"))		maxSize.put("PerNameMax", size);
 				}
+				else if(tab.equals("liste")) {
+					if(col.equals("name"))			maxSize.put("ListeNameMax", size);
+				}
 			}
 		}
 		
@@ -152,6 +128,8 @@ public class DB_Manager {
 		maxSize.put("RezInhaltMin",0);
 		
 		maxSize.put("FilmTitelMin", 10);
+		
+		maxSize.put("ListeNameMin", 2);
 		
 		maxSize.put("PasswortMax", 20);
 		maxSize.put("PasswortMin", 6);
@@ -168,6 +146,8 @@ public class DB_Manager {
 		
 		Filmverwaltung.ladeGerne(con);
 		Personenverwaltung.ladeRollen(con);
+
+		maxSize.forEach((k,v)->System.out.println(k+": "+v));
 	}
 
 	public static int get(String string) {

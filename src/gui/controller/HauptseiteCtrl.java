@@ -1,5 +1,6 @@
 package gui.controller;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -60,6 +64,15 @@ public class HauptseiteCtrl {
     
     @FXML
     private Button btn_refresh;
+    
+    @FXML
+    private Button btn_save;
+    
+    @FXML
+    private Button btn_reset;
+    
+    @FXML
+    private Button btn_liste;
 
     @FXML
     void action(ActionEvent event) {
@@ -70,6 +83,9 @@ public class HauptseiteCtrl {
     		else if(event.getSource()==btn_abmelden) 	abmelden();
     		else if(event.getSource()==btn_filter)		FensterManager.setDialog( FensterManager.getFilter(fvw) );
     		else if(event.getSource()==btn_refresh)		Filmverwaltung.refreshAll();
+    		else if(event.getSource()==btn_save)		speichern();
+    		else if(event.getSource()==btn_reset)		fvw.reset();
+    		else if(event.getSource()==btn_liste)		FensterManager.setSecondary(FensterManager.getListensicht());
     	}catch(Exception e) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle(e.getClass().getSimpleName());
@@ -88,46 +104,28 @@ public class HauptseiteCtrl {
         t_dauer.setCellValueFactory(	data->data.getValue().getDauerStringProperty());
         t_jahr.setCellValueFactory(		data->data.getValue().getErscheinungsjahrProperty());
         
-        table.setOnMouseClicked(ev->{
-        	long now = System.currentTimeMillis();
-        	if(now-lastMouseClick<200 && table.getSelectionModel().getSelectedIndex()!=-1) {
-        		try {
-					FensterManager.setDialog(FensterManager.getDetail(table.getSelectionModel().getSelectedItem(), fvw));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        	lastMouseClick = now;
-        });
-
-   
-        try {
-			fvw.test();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-       
-        
-//		filter = FensterManager.getFilter();
-//		filter.focusedProperty().addListener((ob,ov,focus)->{
-//			if(focus==false) filter.close();
-//		});
-//    	blabla.addEventHandler(MouseEvent.MOUSE_ENTERED, ev->{
-//    		Bounds d = blabla.localToScreen(blabla.getBoundsInLocal());
-//    		filter.setX( d.getMinX());
-//    		filter.setY( d.getMinY());
-//    		filter.show();
-//    	});
-
-        table.setOnDragDetected(ev->{
-        	Dragboard db = table.startDragAndDrop(TransferMode.LINK);
-        	Filmverwaltung.kopiereInDragbord(db, table.getSelectionModel().getSelectedItems());
-        });
-        
+        table.setOnMouseClicked(this::onMouseClicked);
+        table.setOnDragDetected(this::onDragDetected);      
     }
+	
+	private void onMouseClicked(MouseEvent event) {
+		long now = System.currentTimeMillis();
+    	if(now-lastMouseClick<200 && table.getSelectionModel().getSelectedIndex()!=-1) {
+    		try {
+				FensterManager.setDialog(FensterManager.getDetail(table.getSelectionModel().getSelectedItem(), fvw));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	lastMouseClick = now;
+	}
+	private void onDragDetected(MouseEvent event) {
+		Dragboard db = table.startDragAndDrop(TransferMode.LINK);
+    	Filmverwaltung.kopiereInDragbord(db, table.getSelectionModel().getSelectedItems());
+	}
     
+	
     private void detail() throws Exception {
     	Film film = table.getSelectionModel().getSelectedItem();
     	if(film == null)	throw new Exception("Es wurde kein Film ausgewählt");
@@ -144,5 +142,11 @@ public class HauptseiteCtrl {
 		FensterManager.reset();
     	Nutzer.getNutzer().abmelden();
 		FensterManager.setPrimaryStage(FensterManager.getAnmelden());
+	}
+    
+	private void speichern() throws Exception{
+		try(Connection con = DB_Manager.getCon()) {
+			fvw.save(con);
+		}
 	}
 }

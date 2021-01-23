@@ -11,8 +11,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
+import verwaltung.DB_Manager;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Stapelverarbeitung;
+import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
 
 
 public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePruefung {
@@ -83,33 +85,44 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	}
 	@Override
 	public void backupReset() {
+		System.out.println("backup "+backup.id+backup.getName());
 		id = backup.getId();
 		name.set(backup.getName());
+		
+		backup = null;
 	}
 		
+	
 	@Override
 	public void checkEingaben() throws Exception {
-		// TODO Auto-generated method stub
-		
+		StringBuilder sb = new StringBuilder();
+		if(name.get() == null)												sb.append("\n--kein name");
+		else{
+			if(name.length().intValue() < 	Listenverwaltung.getMinName())	sb.append("\n--t na");
+			if(name.length().intValue() >	Listenverwaltung.getMaxName())	sb.append("\n--t maa");
+		}
+
+		if(sb.length()>0)
+			throw new Exception("Fehler Liste: '"+name.get()+"'"+sb.toString());
 	}
 
 		
 	@Override
 	public boolean addEntitaet(Film film) {
 		System.out.println(filme.existiert(film));
-		if(filme.existiert(film))		{
-			if(delete.contains(film))	{
-				delete.remove(film);
-				filme.getObList().add(film);
-				
-				System.out.println("sssssssssssss");
-				System.out.println("add----------add");
-				add.forEach(a->System.out.println(a));
-				System.out.println("delete----------");
-				delete.forEach(a->System.out.println(a));
-			}
-			return false;
-		}
+//		if(filme.existiert(film) )		{
+//			if(delete.contains(film))	{
+//				delete.remove(film);
+//				filme.getObList().add(film);
+//				
+//				System.out.println("sssssssssssss");
+//				System.out.println("add----------add");
+//				add.forEach(a->System.out.println(a));
+//				System.out.println("delete----------");
+//				delete.forEach(a->System.out.println(a));
+//			}
+//			return false;
+//		}
 		if(!super.addEntitaet(film))		return false;
 		if(film.getId()==-1) 				filme.addEntitaet(film);
 		else 								filme.getObList().add(film);
@@ -182,4 +195,5 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		while(!delete.empty())	filme.getObList().add(delete.pop());
 		super.reset();
 	}
+	
 }

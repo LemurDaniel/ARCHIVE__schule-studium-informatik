@@ -118,11 +118,6 @@ public class AddFilmCtrl {
 	    private TabPane tab_pane;
 
 	    @FXML
-	    private Button btn_rel1;
-
-	    @FXML
-	    private Button btn_commitF;
-	    @FXML
 	    private Button btn_commitP;
 
 	    @FXML
@@ -202,15 +197,6 @@ public class AddFilmCtrl {
 		}
     }
 
-    private void resetFilm() {
-		stpv.reset();
-		if(film.getId()==-1) {
-			film = new Film(-1, 0, "", 0, 0, 0);
-			pvw = film.getPvw();
-		}
-		setDisplay();
-		setTable();
-	}
 	@FXML
     void initialize() {
         accordion.setExpandedPane(tp_allg);
@@ -362,20 +348,20 @@ public class AddFilmCtrl {
     	pmr.getUpdateProperty().set(true);
     }
     
-    private void commitFilm() throws Exception {
-  	   	  	
-    	try(Connection con = DB_Manager.getCon()){
-    		stpv.save(con);
-    		stpv.getFehlerlog().forEach(f->System.out.println(f.getMessage()));
-    	}catch(Exception e) {
-    		throw e;
-    	}  	
-    	
-		tf_titel.setDefaultValue(film.getTitel());
-		tf_dauer.setDefaultValue(film.getDauer());
-		tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
-		if(film.getId()!=-1)	tp_mit.setDisable(false);
-    }
+//    private void commitFilm() throws Exception {
+//  	   	  	
+//    	try(Connection con = DB_Manager.getCon()){
+//    		stpv.save(con);
+//    		stpv.getFehlerlog().forEach(f->System.out.println(f.getMessage()));
+//    	}catch(Exception e) {
+//    		throw e;
+//    	}  	
+//    	
+//		tf_titel.setDefaultValue(film.getTitel());
+//		tf_dauer.setDefaultValue(film.getDauer());
+//		tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
+//		if(film.getId()!=-1)	tp_mit.setDisable(false);
+//    }
     
     private void commitPersonen() throws SQLException {
     	

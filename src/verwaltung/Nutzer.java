@@ -11,6 +11,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 import exceptions.LogInException;
 import exceptions.RegisterException;
+import gui.FensterManager;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
@@ -43,19 +44,20 @@ public class Nutzer extends DB_Manager {
 	}
 	
 	public static void anmeldenKonto(String name, String passwort) throws SQLException, LogInException {	
-		try(Connection con = getCon()){
+		try(Connection con = con()){
 			anmeldenKonto(name, passwort, con);
 		}
 	}	
-	public static void anmeldenKonto(String name, String passwort, Connection con) throws SQLException, LogInException {	
+	private static void anmeldenKonto(String name, String passwort, Connection con) throws SQLException, LogInException {	
 		
 		try(Statement st = con.createStatement()){
 			
 			//Existiert Nutzer?
 			if(!nameExistiert(con, name)) throw new LogInException("Der Nutzer: '"+name+"' existiert nicht", LogInException.NO_USER);
 						
+			boolean multilogin;
 			//Stimmt das Passwort?
-			String sql =  "Select id, passwort, registrierungsDatum from nutzer where name=?";
+			String sql =  "Select nutzer.id, passwort, registrierungsDatum, multilogin from nutzer join rechte on rechte.id=rechte where name=?";
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setString(1, name);
 				try(ResultSet rs = ps.executeQuery()){
@@ -68,31 +70,38 @@ public class Nutzer extends DB_Manager {
 					Result verifyResult = BCrypt.verifyer().verify( pass.toCharArray(), pwhash.toCharArray());
 					if(!verifyResult.verified)	throw new LogInException("Das verwendete Passwort ist falsch", LogInException.WRONG_PASSWORD);
 					
-					instance.id = rs.getInt("id");
+					getNutzer().id = rs.getInt("id");
+					multilogin = rs.getBoolean("multilogin");
 				}
 			}
 			
-			// TODO
-//			//Ist bereits angemeldet?
-//			sql = "Select * from instanz_nutzer where nid=? and not iid=?";
-//			if(!instance.getRechte().isMultiLogin()) {			
-//				try(PreparedStatement ps = con.prepareStatement(sql)){
-//					ps.setInt(1, instance.getId());
-//					ps.setInt(2, getApplikationsId());
-//					try(ResultSet rs = ps.executeQuery()){
-//						if(rs.next()) throw new LogInException("Sie sind mit diesem Konto bereits in einer anderen Instanz angemeldet", LogInException.ALREADY_LOGGED_IN);		
-//					}
-//				}
-//			}
-			
-			//Anmelden
-			sql = "Insert into instanz_nutzer(nid, iid) values(?, ?);";
-			try(PreparedStatement ps = con.prepareStatement(sql)){
-				ps.setInt(1, instance.getId());
-				ps.setInt(2, getApplikationsId());
-				ps.executeUpdate();
-			}catch(Exception e){
-				e.printStackTrace();
+
+			if(!multilogin) {
+				try(PreparedStatement ps = con.prepareStatement("Select * from angemeldet where nid=?")){
+					ps.setInt(1, instance.id);
+					try(ResultSet rs = ps.executeQuery()){
+						if(rs.next()) throw new LogInException("Sie sind bereits in einer anderen Instanz angemeldet", LogInException.ALREADY_LOGGED_IN);
+					}
+				}
+				
+				int random;
+				while(true) {
+					random = (int)(Math.random()*Integer.MAX_VALUE);
+					try(PreparedStatement ps = con.prepareStatement("Select * from angemeldet where iid=?")){
+						ps.setInt(1, random);
+						try(ResultSet rs = ps.executeQuery()){
+							if(!rs.next())	break;
+						}
+					}
+				}
+				//Anmelden
+				sql = "Insert into angemeldet(nid, iid) values(?, ?);";
+				try(PreparedStatement ps = con.prepareStatement(sql)){
+					ps.setInt(1, instance.getId());
+					ps.setInt(2, random);
+					ps.executeUpdate();
+				}
+				DB_Manager.setApplikationsId(random);
 			}
 			
 			//Hole Daten	
@@ -117,7 +126,7 @@ public class Nutzer extends DB_Manager {
 			if(passwort.length() < getMinPasswort()) 		throw new RegisterException("Das Passwort muss mindestens "+getMinPasswort()+" Zeichen lang sein", RegisterException.ILLEGAL_PASSWORD);
 			if(passwort.length() > getMaxPasswort()) 		throw new RegisterException("Das Passwort darf höchstens "+getMaxPasswort()+" Zeichen lang sein", RegisterException.ILLEGAL_PASSWORD);
 		
-		try(Connection con = getCon();){
+		try(Connection con = con();){
 			
 			//Name bereits vorhanden?
 			if(nameExistiert(con, name))
@@ -153,9 +162,9 @@ public class Nutzer extends DB_Manager {
 	
 	
 	public void vonAnderenInstanzenAbmelden(String name, String passwort) throws SQLException {
-		String sql = "Delete from instanz_nutzer where nid=?;";
+		String sql = "Delete from angemeldet where nid=?;";
 	
-		try(Connection con = getCon();
+		try(Connection con = con();
 				PreparedStatement ps = con.prepareStatement(sql)){
 			ps.setInt(1, id);
 			ps.executeUpdate();
@@ -169,19 +178,20 @@ public class Nutzer extends DB_Manager {
 	}
 	
 	public void abmelden() {
-		try(Connection con = getCon()){
+		try(Connection con = con()){
 			abmelden(con);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	public void abmelden(Connection con)  {
-		String s = "Delete instanz_nutzer where nid="+id+"and iid="+getApplikationsId();
+		String s = "Delete angemeldet where nid="+id+"and iid="+getApplikationsId();
 		id = -1;
 		name = null;
 		rechte.reset();
 		angemeldet.set(false);
 		Listenverwaltung.instance().clear();
+		FensterManager.reset();
 		try(Statement st = con.createStatement()){
 			st.executeUpdate(s);
 		}catch (Exception e) {}

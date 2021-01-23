@@ -83,11 +83,13 @@ public class Film implements Backup, EingabePruefung{
 	}
 	public ReadOnlyStringProperty getBwtStringProperty() {
 		return bwt_string.getReadOnlyProperty();
-	}
-	
+	}	
 	public List<Genre> getGenres() {
 		return new ArrayList<>(genres);
 	}	
+	public int getGenresAnzahl() {
+		return genres.size();
+	}
 	public Rezensionenverwaltung getRvw() {
 		return rvw;
 	}
@@ -132,7 +134,6 @@ public class Film implements Backup, EingabePruefung{
 		genres.add(genre);
 		buildGenreString();
 	}
-
 	public void remove(Genre genre) {
 		genres.remove(genre);
 		buildGenreString();

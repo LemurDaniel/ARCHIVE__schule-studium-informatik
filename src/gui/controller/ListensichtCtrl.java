@@ -1,13 +1,12 @@
 package gui.controller;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import gui.FensterManager;
+import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -21,13 +20,10 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.util.StringConverter;
-import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -75,7 +71,7 @@ public class ListensichtCtrl {
     private Button btn_add;
     
     @FXML
-    private ImageView muelleimer;
+    private ImageView muelleimer_filme;
 
     /** Tab Mit Listen **/
     @FXML
@@ -106,6 +102,9 @@ public class ListensichtCtrl {
     private Button btn_neu;
     
     @FXML
+    private ImageView muelleimer_listen;
+    
+    @FXML
     public void action(ActionEvent event) {
     	try {
     		if(event.getSource()==btn_detail)		openDetail();
@@ -123,11 +122,8 @@ public class ListensichtCtrl {
 		if(tab_film.isSelected()) {
 			if(angezeigteListe==null)	throw new Exception("Es wurde keine Liste ausgewählt");
 			angezeigteListe.reset();
-		}
-		else
-			lvw.reset();
-		
-	//	aktualisiereAngezeigteListe(sl);
+		}else 
+			lvw.reset();		
 	}
 	private void neuListe() {
 		lvw.addEntitaet(new Liste(-1, "Neue Liste"));
@@ -162,13 +158,17 @@ public class ListensichtCtrl {
     	cb.setItems(lvw.getObList());
     	
     	table_film.setOnDragDetected(this::onDragDected);
+      	table_listen.setOnDragDetected(this::onDragDected);
     	table_film.setOnDragOver(this::onDragOverTable);
     	table_film.setOnDragDropped(this::zuListeHinzufuegen);  	
     	tFilm_titel.setCellValueFactory(data->data.getValue().getTitelProperty());
+    	//tFilm_dauer.setCellValueFactory(data->data.getValue().getDauerStringProperty());
+    	tFilm_bwt.setCellValueFactory(data->data.getValue().getBwtStringProperty());
     	
-    	muelleimer.setOnDragOver(this::onDragOverMuell);
-    	muelleimer.setOnDragDropped(this::vonListeEntfernen);
-    	
+    	muelleimer_filme.setOnDragOver(this::onDragOverMuell);
+    	muelleimer_filme.setOnDragDropped(this::onDragDroppedMuell);
+    	muelleimer_listen.setOnDragOver(this::onDragOverMuell);
+    	muelleimer_listen.setOnDragDropped(this::onDragDroppedMuell);
     	
     }
     
@@ -188,36 +188,51 @@ public class ListensichtCtrl {
     	blocked = false;
     }
    
-    private void onDragDected(MouseEvent event) {   	
-    	Dragboard db = table_film.startDragAndDrop(TransferMode.MOVE);
-    	Filmverwaltung.kopiereInDragbord(db, table_film.getSelectionModel().getSelectedItems());
+    private void onDragDected(MouseEvent event) {  
+    	if(event.getSource()==table_film) {
+    		Dragboard db = table_film.startDragAndDrop(TransferMode.MOVE);
+    		Filmverwaltung.kopiereInDragbord(db, table_film.getSelectionModel().getSelectedItems());
+    	}
+    	else if(event.getSource()==table_listen) {
+    		Dragboard db = table_listen.startDragAndDrop(TransferMode.MOVE);
+    		Listenverwaltung.kopiereInDragbord(db, table_listen.getSelectionModel().getSelectedItems());
+    	}
     } 
     private void onDragOverTable(DragEvent event) {
-    	if(!event.getDragboard().hasContent(Filmverwaltung.df)) return;   
+    	if(!event.getDragboard().hasContent(Filmverwaltung.dfFilm)) return;   
     	if(angezeigteListe!=null)	event.acceptTransferModes(TransferMode.LINK);
     }  	
-    private void onDragOverMuell(DragEvent event) {
-    	if(!event.getDragboard().hasContent(Filmverwaltung.df)) return;    		
-    	if(event.getGestureSource()==table_film)	event.acceptTransferModes(TransferMode.MOVE);
+    private void onDragOverMuell(DragEvent event) {    		
+    	if(event.getGestureSource()==table_film && event.getTarget()==muelleimer_filme && event.getDragboard().hasContent(Filmverwaltung.dfFilm))		event.acceptTransferModes(TransferMode.MOVE);
+    	else if(event.getGestureSource()==table_listen && event.getTarget()==muelleimer_listen && event.getDragboard().hasContent(Listenverwaltung.dfListe))	event.acceptTransferModes(TransferMode.MOVE);
     }   
+    private void onDragDroppedMuell(DragEvent event) {
+    	if(event.getGestureTarget()==muelleimer_filme) {
+    		Filmverwaltung.kopiereAusDragbord(event.getDragboard()).forEach(angezeigteListe::removeEntitaet);
+			event.setDropCompleted(true);
+			event.consume();
+    	}else if(event.getGestureTarget()==muelleimer_listen) {
+			lvw.kopiereAusDragbord(event.getDragboard()).forEach(lvw::removeEntitaet);
+			event.setDropCompleted(true);
+			event.consume();
+		}
+    }
     private void zuListeHinzufuegen(DragEvent event) {
     	Filmverwaltung.kopiereAusDragbord(event.getDragboard()).forEach(angezeigteListe::addEntitaet);
 		event.setDropCompleted(true);
 		event.consume();
     }
-    private void vonListeEntfernen(DragEvent event) {
-    	Filmverwaltung.kopiereAusDragbord(event.getDragboard()).forEach(angezeigteListe::removeEntitaet);
-		event.setDropCompleted(true);
-		event.consume();
-    }
     
     private void onEditCommit(CellEditEvent<Liste, String> event) {
+    	String value = event.getNewValue();
+    	value = value.length()>Listenverwaltung.getMaxName() ? value.substring(0, Listenverwaltung.getMaxName()) : value;
+    
     	Liste li = event.getRowValue();
     	if(li.getId()!=-1 && !li.hasBackup()) {
     		li.backup();
-    		lvw.addEntitaet(li);
+    		lvw.updateEntitaet(li);
+        	li.setName(value);
     	}
-    	li.setName(event.getNewValue());
     }
     
 }

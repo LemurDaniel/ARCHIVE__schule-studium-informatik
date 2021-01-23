@@ -64,6 +64,7 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends St
 	
 	@Override
 	public boolean addEntitaet(T entitaet) {
+		if(list.contains(entitaet))		  return false;
 		if(!super.addEntitaet(entitaet))  return false;
 		//Verschiebt alle Element um eine Stelle, sodass das neue Element ganz oben steht
 		if(observablelist.size()>0) {

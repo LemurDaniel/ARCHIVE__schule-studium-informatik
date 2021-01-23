@@ -4,15 +4,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;
 import verwaltung.verwaltungen.Verwaltung;
 
 public class Listenverwaltung extends Verwaltung<Liste>{
+	
+	public static final DataFormat dfListe = new DataFormat("Liste");
 	
 	private static Listenverwaltung instance;
 	public static Listenverwaltung instance() {
@@ -92,4 +99,31 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		}
 	}
 	
+	
+	public static void kopiereInDragbord(Dragboard db, List<Liste> listen) {
+   	 	List<Integer> ids = new ArrayList<>();
+   	 	listen.forEach(liste->ids.add(liste.getId()));
+   	 	ClipboardContent content = new ClipboardContent();
+   	 	content.put(dfListe, ids);
+   	 	db.setContent(content);
+	}
+	public List<Liste> kopiereAusDragbord(Dragboard db) {		
+   	 	@SuppressWarnings("unchecked")
+		List<Integer> ids = (List<Integer>) db.getContent(dfListe);
+   	 	List<Liste> listen = new ArrayList<>();
+   	 	ids.forEach(id->{
+   	 		Liste li = super.getObList().stream().filter(list->list.getId()==id).findFirst().orElse(null);
+   	 		if(li!=null)	listen.add(li);
+   	 	});
+   	 	return listen;
+	}
+	
+	
+	
+	public static int getMaxName() {
+		return DB_Manager.get("ListeNameMax");
+	}
+	public static int getMinName() {
+		return DB_Manager.get("ListeNameMin");
+	}
 }
