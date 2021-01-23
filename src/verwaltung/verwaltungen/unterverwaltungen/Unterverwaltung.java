@@ -3,11 +3,12 @@ package verwaltung.verwaltungen.unterverwaltungen;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.Entitaet;
 import verwaltung.entitaeten.Film;
 import verwaltung.verwaltungen.Verwaltung;
 
-public abstract class Unterverwaltung<T extends Entitaet> extends Verwaltung<T>{
+public abstract class Unterverwaltung<T extends Entitaet & Backup> extends Verwaltung<T>{
 	
 	private boolean isLoaded;
 	protected Film film;

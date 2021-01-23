@@ -198,16 +198,15 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	
 	@Override
 	protected void add(Person ent, Connection con) throws SQLException {
-		// TODO Auto-generated method stub		
+		throw new UnsupportedOperationException();		
 	}
 	@Override
-	protected void update(Person entAlt, Person entNeu, Connection con) throws SQLException {
-		// TODO Auto-generated method stub
-		
+	protected void update(Person per, Connection con) throws SQLException {
+		throw new UnsupportedOperationException();
 	}
 	@Override
 	protected void delete(Person ent, Connection con) throws SQLException {
-		// TODO Auto-generated method stub	
+		throw new UnsupportedOperationException();	
 	}
 
 

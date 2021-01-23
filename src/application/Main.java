@@ -1,5 +1,8 @@
 package application;
 	
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.FensterManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -12,14 +15,16 @@ public class Main extends Application {
 		FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
 		//FensterManager.getInstance().getHauptSeite().show();
 
-		FensterManager.setSecondary(FensterManager.getListensicht());
+		//FensterManager.setSecondary(FensterManager.getListensicht());
 //		Nutzer.getNutzer().anmeldenGast();
-//		Filmverwaltung fvw = new Filmverwaltung();
-//		fvw.test();
-//		Film f = fvw.getList().get(0);
-//		for(int i=0; i<1000; i++) {
-//			Film ff = fvw.addFilm(f.getTitel(), f.getGenres(), f.getDauer(), f.getErscheinungsjahr(), null);
-//			System.out.println(ff.toString()+ "-------------"+i);
+
+		
+		List<Integer> li = new ArrayList<>();
+		li.add(new Integer(1));
+		li.add(new Integer(2));
+		for(Integer i:li) {
+			li.remove(i);
+		}
 //		}
 	}
 

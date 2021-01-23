@@ -80,32 +80,28 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	}
 	
 	@Override
-	protected void update(Film alt, Film neu, Connection con) throws SQLException {
+	protected void update(Film f, Connection con) throws SQLException {
 	
 		String sql = "Update film set titel=?, dauer=?, erscheinungsjahr=? where id=?;";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
 			
 			con.setAutoCommit(false);
-			ps.setString(	1, 	neu.getTitel()				);
-			ps.setInt(		2, 	neu.getDauer()				);
-			ps.setInt(		3,	neu.getErscheinungsjahr()		);
-			ps.setInt(		4,	alt.getId()					);
+			ps.setString(	1, 	f.getTitel()				);
+			ps.setInt(		2, 	f.getDauer()				);
+			ps.setInt(		3,	f.getErscheinungsjahr()		);
+			ps.setInt(		4,	f.getId()					);
 			ps.executeUpdate();
 
-			updateGenres(con, neu.getGenres(), alt.getId());
+			updateGenres(con, f.getGenres(), f.getId());
 			con.commit();
 			con.setAutoCommit(true);
 		}
-		alt.setTitel(neu.getTitel());
-		alt.setDauer(neu.getDauer());
-		alt.setErscheinungsjahr(neu.getErscheinungsjahr());
-		alt.clearGenre();
-		neu.getGenres().forEach(g->alt.addGenre(g));		
 	}
+	
 	@Override
 	protected void delete(Film f, Connection con) {
-		// f
+		throw new UnsupportedOperationException();
 	}
 	
 	private void updateGenres(Connection con, List<Genre> genres, int fid) throws SQLException{

@@ -51,7 +51,7 @@ import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 public class AddFilmCtrl {
 
-	private Film original, temp;
+	private Film film;
 	private Personenverwaltung pvw;
 	private Filmverwaltung fvw;
 	private Liste filmliste;
@@ -77,12 +77,12 @@ public class AddFilmCtrl {
 		accordion.setExpandedPane(tp_allg);
 	    tab_pane.getSelectionModel().select(tab_allg);
 	    tab_pane.requestFocus();	
-	    this.original = film;
 
-	    temp = new Film(-1, Nutzer.getNutzer().getId(), null, 0, 0, 0);
-	    if(original==null)	pvw = temp.getPvw();
-	    else {
-	    	pvw = original.getPvw();
+	    if(film==null) {
+	    	film = new Film(-1, 0, null, 0, 0, 0);
+	    	pvw = film.getPvw();
+	    }else{
+	    	pvw = film.getPvw();
 			if(!pvw.isLoaded() || !film.getRvw().isLoaded()) {
 				try(Connection con = DB_Manager.getCon()){
 					pvw.loadIfnotLoaded(con);
@@ -91,13 +91,13 @@ public class AddFilmCtrl {
 			}
 		}
 		
+	    this.film = film;
 		setDisplay();
 		setTable();
 	}
 	
 	private void setTable() {
-		if(pvw!=null)	personen = FXCollections.observableArrayList(pvw.getPersonenMitRollen());
-		else			personen = FXCollections.observableArrayList();
+		personen = FXCollections.observableArrayList(pvw.getPersonenMitRollen());
 		
 		table.setItems(personen);
 		confirmed.clear();		
@@ -115,17 +115,17 @@ public class AddFilmCtrl {
 		tf_genre.setText(null);
 		blocked = false;
 		
-		if(original==null) {
+		if(film.getId()==-1) {
 			tf_titel.setDefaultValue(null);
 			tf_dauer.setDefaultValue(null);
 			tf_jahr.setDefaultValue(null);
 			tf_bewertung.setText(null);
 		}else {
-			tf_titel.setDefaultValue(original.getTitel());
-			tf_dauer.setDefaultValue(original.getDauer());
-			tf_jahr.setDefaultValue(original.getErscheinungsjahr());
-			tf_bewertung.setText(original.getBwtStringProperty().get());
-			original.getGenres().forEach(g->checked_genre.get(g).set(true));
+			tf_titel.setDefaultValue(film.getTitel());
+			tf_dauer.setDefaultValue(film.getDauer());
+			tf_jahr.setDefaultValue(film.getErscheinungsjahr());
+			tf_bewertung.setText(film.getBwtStringProperty().get());
+			film.getGenres().forEach(g->checked_genre.get(g).set(true));
 		}		
 		changes[0] = false;
 	}
@@ -359,17 +359,19 @@ public class AddFilmCtrl {
     		return;
     	
         checkEingaben();
-        temp.setTitel(tf_titel.getText());
-    	temp.setDauer(tf_dauer.getValue());
-    	temp.setErscheinungsjahr(tf_jahr.getValue());
-    	selected.forEach(temp::addGenre);
-    			
-    	if(original==null) {
-    		fvw.addEntitaet(temp);
-    		if(filmliste!=null) filmliste.addFilm(temp);
-    		original = temp;
-    	}else		
-    		fvw.updateEntitaet(original, temp);
+ 		film.makeBackup();
+		film.setTitel(tf_titel.getText());
+        film.setDauer(tf_dauer.getValue());
+        film.setErscheinungsjahr(tf_jahr.getValue());
+        film.clearGenre();
+        selected.forEach(film::addGenre);
+        
+    	if(film.getId()==-1) {
+    		fvw.addEntitaet(film);
+    		if(filmliste!=null) filmliste.addFilm(film);
+    		pvw = film.getPvw();
+    	}else
+    		fvw.updateEntitaet(film);
     		
     	delete.forEach(g->System.out.println(g.toString()));
     	
@@ -391,7 +393,7 @@ public class AddFilmCtrl {
     }
     
     private void detail() {
-    	if( original == null) {
+    	if( film.getId()==-1) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle("Detailansicht öffnen");
     		a.setHeaderText("Dieser Film existiert nich nicht in der Datenbank");
@@ -416,7 +418,7 @@ public class AddFilmCtrl {
     
     private void openDetail() {
     	try {
-			FensterManager.setDialog( FensterManager.getDetail(original) );
+			FensterManager.setDialog( FensterManager.getDetail(film) );
 		} catch (SQLException e) {
 			Alert a2 = new Alert(AlertType.ERROR);
 			a2.setTitle(e.getClass().getSimpleName());

@@ -211,16 +211,28 @@ public class DetailCtrl {
     @FXML
     void add_rez(ActionEvent event) {
           Alert a = new Alert(AlertType.INFORMATION);
-          boolean existiert = rvw.existiert(angezeigt.getId());
-          Rezension temp = new Rezension(-1, tf_rtitel.getText(), ta_rtext.getText(), Nutzer.getNutzer().getName(), Nutzer.getNutzer().getId(), (int)s_bwt.getValue());
-          if(existiert) {
+             
+          try {
+        	  rvw.check(tf_rtitel.getText(), ta_rtext.getText());
+          }catch(Exception e) {
+        	 a.setAlertType(AlertType.ERROR);
+         	 a.setContentText(e.getMessage());
+         	 a.show();
+         	 return; 
+          }
+          angezeigt.makeBackup();
+          angezeigt.setBewertung((int)s_bwt.getValue());
+          angezeigt.setInhalt(ta_rtext.getText());
+          angezeigt.setTitel(tf_rtitel.getText());
+          
+          if(angezeigt.getId()!=-1) {
         	  a.setTitle("Rezension - Update");
         	  a.setContentText("Rezension erfolgreich upgedatet");   
-        	  rvw.updateEntitaet(angezeigt, temp);
+        	  rvw.updateEntitaet(angezeigt);
           }else {
         	  a.setTitle("Rezension - Erstellen");
         	  a.setContentText("Rezension erfolgreich Erstellt");
-        	  rvw.addEntitaet(temp);
+        	  rvw.addEntitaet(angezeigt);
           }
           
          try(Connection con = DB_Manager.getCon()){
@@ -230,8 +242,9 @@ public class DetailCtrl {
         	 a.setContentText(e.getMessage());
         	 return;
           }
-         setRezension();
-         setEdit(false);
+         
+        setAnzeige();
+        setEdit(false);
         tf_bewertung.setText(film.getBwtStringProperty().get());
         tp_rez.setDisable(false);
         a.show();

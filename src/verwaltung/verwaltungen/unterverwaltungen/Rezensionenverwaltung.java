@@ -74,28 +74,21 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	}
 	
 	@Override
-	protected void update(Rezension alt, Rezension neu, Connection con) throws SQLException {
-//		Optional<Rezension> opt = getList().stream().filter(r->r.getId()==rid).findFirst();
-//		if(!opt.isPresent())throw new Exception("Diese Rezension existiert nicht");
-//		Rezension rez = opt.get();
-//		check(titel, inhalt);
-//			
+	protected void update(Rezension rez, Connection con) throws SQLException {
+		
 		String sql = "Update rezension set titel=?, inhalt=?, bewertung=? where id=?;";
 	
 		con.setAutoCommit(false);
 		try(PreparedStatement ps = con.prepareStatement(sql);){
-			ps.setString(1, neu.getTitel());
-			ps.setString(2, neu.getInhalt());
-			ps.setInt(3, 	neu.getBewertung());
-			ps.setInt(4, 	alt.getId());
+			ps.setString(1, rez.getTitel());
+			ps.setString(2, rez.getInhalt());
+			ps.setInt(3, 	rez.getBewertung());
+			ps.setInt(4, 	rez.getId());
 			ps.executeUpdate();
 			updateFilmBewertung(con);
 			con.commit();
 			con.setAutoCommit(true);
-			
-			alt.setTitel(neu.getTitel());
-			alt.setInhalt(neu.getInhalt());
-			alt.setBewertung(neu.getBewertung());	
+
 		}catch(SQLException e) {
 			con.rollback();
 			throw e;
@@ -104,7 +97,7 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	
 	@Override
 	protected void delete(Rezension rez, Connection con) {
-		// f
+		throw new UnsupportedOperationException();
 	}
 	
 	private void updateFilmBewertung(Connection con) throws SQLException{

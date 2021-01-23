@@ -20,8 +20,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		return instance;
 	}
 	private Listenverwaltung() {};
-	
-	
+		
 	public void listen(Connection con) throws SQLException {	
 		String sql = "Select id, name from liste where besitzer=? ";	
 		
@@ -52,6 +51,49 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		}
 	}
 	
+	@Override
+	protected void add(Liste ent, Connection con) throws SQLException {
+		String sql = "Insert liste(name, besitzer) values( ?, ?); Select SCOPE_IDENTITY();";
+		
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, ent.getName()				);
+			ps.setInt(2, 	Nutzer.getNutzer().getId()	);
+			try(ResultSet rs = ps.executeQuery()){
+				rs.next();
+				ent.setId(rs.getInt(1));
+				addObj(ent);
+			}			
+		}
+	}
+	@Override
+	protected void update(Liste alt, Liste neu, Connection con) throws SQLException {
+		
+		String sql = "Update liste set name=? where lid=?";
+		
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, neu.getName()	);
+			ps.setInt(2, 	alt.getId()		);
+			ps.executeUpdate();
+		}
+		alt.setName(neu.getName());
+	}
+	@Override
+	protected void delete(Liste ent, Connection con) throws SQLException {
+		con.setAutoCommit(false);
+		entferneFilmeVonListe(ent, ent.getList(), con);
+		
+		String sql = "Delete liste_film where lid=?; Delete liste where lid=?";
+		
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+				ps.setInt(1, ent.getId());
+				ps.setInt(2, ent.getId());
+				ps.executeUpdate();
+		}
+		con.commit();
+		con.setAutoCommit(true);
+		removeObj(ent);	
+	}
+	
 	public void filmeZuListenHinzufuegen(Map<Liste, List<Film>> li_filme, Connection con)  throws SQLException {
 		for(Liste li: li_filme.keySet())
 			filmeZuListeHinzufuegen(li, li_filme.get(li), con);
@@ -78,7 +120,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		filme.forEach(f->li.addFilm(f));
 	}
 	
-	public void entferneFilmeVonListe(Liste li, List<Film> filme, Connection con)  throws SQLException {	
+	private void entferneFilmeVonListe(Liste li, List<Film> filme, Connection con)  throws SQLException {	
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("Delete liste_film where lid=? and fid in( ");
@@ -92,38 +134,8 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		}
 		filme.forEach(f->li.removeFilm(f));
 	}
-	
-	public void listenUmbennene(Map<Liste, String> li_name, Connection con) throws SQLException {
-		for(Liste li: li_name.keySet()) {
-			listeUmbenennen(li, li_name.get(li), con);
-		}
-	}
-	
-	public void listeUmbenennen(Liste li, String name, Connection con) throws SQLException {
-		String sql = "Update liste set name=? where lid=?";
-		
-		try(PreparedStatement ps = con.prepareStatement(sql)){
-			ps.setString(1, name);
-			ps.setInt(2, li.getId());
-			ps.executeUpdate();
-		}
-		li.setName(name);
-	}
 
 	
-	public Liste listeHinzufuegen(String name, Connection con) throws SQLException {	
-		String sql = "Insert liste(name, besitzer) values( ?, ?); Select SCOPE_IDENTITY();";
-		
-		try(PreparedStatement ps = con.prepareStatement(sql)){
-			ps.setString(1, name);
-			ps.setInt(2, Nutzer.getNutzer().getId());
-			try(ResultSet rs = ps.executeQuery()){
-				Liste li = new Liste(rs.getInt(1), name);
-				addObj(li);
-				return li;
-			}			
-		}
-	}
 	public void listeEntfernen(Liste li, Connection con) throws SQLException {		
 		String sql = "Delete liste_film where lid=?; Delete liste where lid=?";
 		

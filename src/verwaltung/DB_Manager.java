@@ -181,7 +181,6 @@ public class DB_Manager {
 			while(rs.next()) 
 				rolleMap.put(rs.getInt(1), new Rolle(rs.getInt(1), rs.getString(2)));
 		}		
-		Listenverwaltung.instance().listen(con);
 	}
 
 	

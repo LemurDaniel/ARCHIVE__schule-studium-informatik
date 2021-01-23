@@ -13,8 +13,10 @@ import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 
 
-public class Film extends Entitaet  {
+public class Film extends Entitaet  implements Backup{
 
+	private Film backup;
+	
 	private int erstellerId;
 	private List<Genre> genres;
 	private ReadOnlyStringWrapper titel, dauer_string, genre_string, bwt_string;
@@ -122,6 +124,9 @@ public class Film extends Entitaet  {
 	public void addGenre(Genre genre) {
 		if(genres.contains(genre))	return;
 		genres.add(genre);
+		buildGenreString();
+	}
+	private void buildGenreString() {
 		genres.sort((o1,o2)->o1.compare(o1, o2));
 		
 		StringBuilder sb = new StringBuilder(genres.get(0).getGenre());
@@ -155,7 +160,31 @@ public class Film extends Entitaet  {
 				+ erscheinungsjahr + ", dauer=" + dauer + ", bewertung=" + bewertung + ", pvw=" + pvw + ", rvw=" + rvw
 				+ "]";
 	}
+
+
+	@Override
+	public void makeBackup() {
+		backup = new Film(getId(), erstellerId, titel.get(), dauer, erscheinungsjahr.get(), bewertung);
+		backup.genres = new ArrayList<>(genres);
+	}
+
+	@Override
+	public void reset() {
+		if(backup==null) return;
+		setBewertung(backup.bewertung);
+		setDauer(backup.dauer);
+		setTitel(backup.getTitel());
+		setErscheinungsjahr(backup.getErscheinungsjahr());
+		genres = new ArrayList<>(backup.genres);
+		buildGenreString();
+		
+		backup = null;
+	}
 	
+	@Override
+	public void deleteBackup() {
+		backup = null;
+	}
 	
 	
 }

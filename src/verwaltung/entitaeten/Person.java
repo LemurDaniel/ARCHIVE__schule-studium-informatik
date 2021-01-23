@@ -6,7 +6,7 @@ import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Person extends Entitaet{
+public class Person extends Entitaet implements Backup{
 	
 	public StringProperty vorname;
 	public StringProperty name;
@@ -80,6 +80,24 @@ public class Person extends Entitaet{
 		return list;
 	}
 	
+	
+	
+	@Override
+	public void makeBackup() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void deleteBackup() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	//Für table Einträge
 	public class PersonMitRolle {
 		private Person per;
@@ -110,6 +128,7 @@ public class Person extends Entitaet{
 			this.initialRolleAbschalten = initialRolleAbschalten;
 		}
 	}
+
 	
 
 }
