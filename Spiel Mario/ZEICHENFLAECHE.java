@@ -69,7 +69,7 @@ public class ZEICHENFLAECHE {
 		JPanel contentPane = (JPanel) fenster.getContentPane();
 		
 		malPanel = new MalPanel();
-		malPanel.setPreferredSize(new Dimension(650,350));
+		malPanel.setPreferredSize(new Dimension(10000,350));
 		contentPane.add(malPanel);
 		fenster.pack();
 		
@@ -271,6 +271,4 @@ public class ZEICHENFLAECHE {
 			
 		}
 	}
-	
-
 }

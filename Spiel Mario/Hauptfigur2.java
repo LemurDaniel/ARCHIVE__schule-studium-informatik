@@ -1,13 +1,11 @@
 
-
 public class Hauptfigur2
 {
     
     RECHTECK [] Pixel = new RECHTECK [150]; 
     private int breite = 6;
     private int x=2;
-    private int y=345;
-    private static int boden = 480;
+    private int y=315;
     Hauptfigur2 Figur2;
         
     public Hauptfigur2()
@@ -180,9 +178,4 @@ public class Hauptfigur2
              
     }
     
-     protected static int gibBoden()
-  {
-      return boden;
-    }
-    
-   }
+}

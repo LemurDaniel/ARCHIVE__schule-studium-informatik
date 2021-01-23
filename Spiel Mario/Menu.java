@@ -6,14 +6,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
              
 public class Menu extends JFrame{
-    
-    String Zustand;
-    int breite; 
-    int x;
-    int y;
-    private static int boden = 480;
-    Hauptfigur Figur;
-    Hauptfigur2 Figur2;
              
   public static void main(String[] args){
      new Menu();
@@ -33,26 +25,30 @@ public class Menu extends JFrame{
              
   private JPanel createMenuPanel() {
       
-     JPanel panel = new JPanel(new GridLayout(0, 1));  
+     JPanel panel = new JPanel(new GridLayout(0,1));  
      JButton start = new JButton("Start");
      start.addActionListener(new ActionListener() 
      {
          
          
       @Override
-        public void actionPerformed(ActionEvent e) {
-           Spiel Hauptspiel = new Spiel();
-            }
-            
-        });
+        public void actionPerformed(ActionEvent e) 
+        {
+           Hauptfigur Figur  = new Hauptfigur();
+           Hauptmap1 Map1  = new Hauptmap1();
+        }                 
+    });
         
        JButton close = new JButton("Close");
-       close.addActionListener(new ActionListener() {
+       close.addActionListener(new ActionListener() 
+       
+     {
            
         @Override
-          public void actionPerformed(ActionEvent e) {
+          public void actionPerformed(ActionEvent e) 
+          {
             System.exit(0);
-      }
+          }
       
      });
              
@@ -61,28 +57,7 @@ public class Menu extends JFrame{
      
      return panel;
   }
- 
-  
-  protected static int gibBoden()
-  {
-      return boden;
-    }
-  
-  public void bewege(double zeit)
-  {
-      if (x < Hauptfigur.gibBoden())
-      {
-          super.bewege(zeit);
-        }
-        else
-        {
-            meineHauptfigur.entferne(this);
-        }
-    }
 }
-  
-
-
 
         
           
