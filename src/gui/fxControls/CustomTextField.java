@@ -1,10 +1,7 @@
 package gui.fxControls;
 
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
-
-import com.google.common.base.Supplier;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;

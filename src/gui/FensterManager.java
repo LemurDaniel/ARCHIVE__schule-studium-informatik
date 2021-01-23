@@ -131,12 +131,13 @@ public class FensterManager {
 		if(hauptseite==null) {
 			hauptseite = new Stage();
 			hauptseite.setResizable(true);
-			hauptseite.setHeight(700);
-			hauptseite.setWidth(1400);
+//			hauptseite.setHeight(700);
+//			hauptseite.setWidth(1400);
 			hauptseite.setTitle("Filmdatenbank");
 			FXMLLoader loader = getLoader("fxml/Hauptseite.fxml");
 			hauptseiteCtrl = loader.getController();
 			hauptseite.setScene(new Scene(loader.getRoot()));
+			hauptseite.setY(420);
 		}
 		return hauptseite;
 	}

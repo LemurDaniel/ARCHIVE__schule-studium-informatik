@@ -2,9 +2,7 @@
 * {
 	-fx-font-size: 15.0px;
 } 
-.root {
 
-}
 
 .hbox_allg {
 	-fx-alignment: center ;
@@ -91,6 +89,9 @@ FlowPane > StringTextField {
 	-fx-font-weight: bolder;
 }
 
+.tc {
+	-fx-alignment: center;
+}
 
 
 
