@@ -4,10 +4,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import verwaltung.DB_Manager;
-import verwaltung.entitaeten.Backup;
-import verwaltung.entitaeten.EingabePruefung;
 import verwaltung.entitaeten.Film;
-import verwaltung.entitaeten.Id;
+import verwaltung.entitaeten.interfaces.Backup;
+import verwaltung.entitaeten.interfaces.EingabePruefung;
+import verwaltung.entitaeten.interfaces.Id;
 import verwaltung.verwaltungen.Verwaltung;
 
 public abstract class Unterverwaltung<T extends Backup & EingabePruefung & Id> extends Verwaltung<T>{

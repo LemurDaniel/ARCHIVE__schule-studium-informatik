@@ -35,10 +35,10 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import verwaltung.DB_Manager;
-import verwaltung.Nutzer;
+import verwaltung.Stapelverarbeitung;
 import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Nutzer;
 import verwaltung.verwaltungen.Filmverwaltung;
-import verwaltung.verwaltungen.Stapelverarbeitung;
 
 public class FensterManager {
 
@@ -85,6 +85,8 @@ public class FensterManager {
 	
 	
 	public static Stage getDetail(Film film, Stapelverarbeitung<Film> stpv) throws SQLException{
+		if(!Nutzer.getNutzer().getRechte().isRead())	throw new SQLException("Keine Berechtigung");
+		
 		if(detail==null) {
 			detail = new Stage();
 			detail.setTitle("Filmdatenbank - Detailansicht");
@@ -101,9 +103,9 @@ public class FensterManager {
 		if(film != null) {
 			if( !(Nutzer.getNutzer().getRechte().isUpdate() && film.getErstellerId()==Nutzer.getNutzer().getId() || Nutzer.getNutzer().getRechte().isUpdateAll())	)
 				throw new SQLException("Keine Berechtigung");
-		}else if(film == null) {
-			
-		}
+		}else if(film == null && !Nutzer.getNutzer().getRechte().isAdd())
+			throw new SQLException("Keine Berechtigung");
+
 		
 		if(addFilm==null) {
 			addFilm = new Stage();

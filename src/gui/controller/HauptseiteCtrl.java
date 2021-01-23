@@ -27,8 +27,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 import verwaltung.DB_Manager;
-import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Nutzer;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Listenverwaltung;
 
@@ -193,19 +193,6 @@ public class HauptseiteCtrl {
 	}
     
 	private void speichern() throws Exception{
-//		try(Connection con = DB_Manager.getCon()){
-//				System.out.println("Performance Test");
-//				long nano = System.nanoTime();
-//				long mili = System.currentTimeMillis();
-//
-//				fvw.save(con);
-//				
-//				nano = System.nanoTime()-nano;
-//				mili = System.currentTimeMillis()-mili;
-//				System.out.println(String.format("nano: %,d", nano));
-//				System.out.println(String.format("milli: %,d", mili));
-//		}
-		
 		if(th!=null && th.isAlive()) th.interrupt();
 		else {
 			th = new Thread(fvw);

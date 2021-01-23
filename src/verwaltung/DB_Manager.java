@@ -18,6 +18,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 import verwaltung.entitaeten.Genre;
+import verwaltung.entitaeten.Nutzer;
 import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Listenverwaltung;
@@ -38,18 +39,15 @@ public class DB_Manager {
 	public static Map<String, Integer> maxSize = new TreeMap<>();
 	
    static {
-	   System.out.println("DB");
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		} catch (ClassNotFoundException e) {
-			System.out.println("Kein Treiber gefunden");
-			e.printStackTrace();
+			System.exit(0);
 		}
 		
 		try (Connection con = con()){
 			getDaten(con);
 		}catch(Exception e) {
-			e.printStackTrace();
 			Alert a = new Alert(AlertType.ERROR);
 			a.setTitle("Verbindungsfehler");
 			a.setHeaderText("Es konnte keine Verbindung mit der Datenbank hergestellt werden");
@@ -69,7 +67,7 @@ public class DB_Manager {
 	}
 	
 	protected static Connection con() throws SQLException {
-		System.out.println("Connection: "+ ++connectionsCreated);
+		connectionsCreated++;
 		return DriverManager.getConnection(url, user, password);
 	}
 	
@@ -150,6 +148,8 @@ public class DB_Manager {
 		
 		maxSize.put("PasswortMax", 70);
 		maxSize.put("PasswortMin", 6);
+		
+		maxSize.put("Short", 44);
 		//Experimental Movies: Logistics 51420 Minuten (857h / 35d, 17h)
 		//Cinematic Movies: Resan 873 Minuten (14h, 33min)
 		maxSize.put("FilmDauerMax", 999);

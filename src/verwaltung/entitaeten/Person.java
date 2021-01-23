@@ -9,6 +9,9 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import verwaltung.entitaeten.interfaces.Backup;
+import verwaltung.entitaeten.interfaces.EingabePruefung;
+import verwaltung.entitaeten.interfaces.Id;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 

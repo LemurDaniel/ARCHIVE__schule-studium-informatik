@@ -42,15 +42,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import verwaltung.DB_Manager;
-import verwaltung.Nutzer;
-import verwaltung.Nutzer.Rechte;
+import verwaltung.Stapelverarbeitung;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
+import verwaltung.entitaeten.Nutzer;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Rezension;
 import verwaltung.entitaeten.Rolle;
+import verwaltung.entitaeten.Nutzer.Rechte;
 import verwaltung.verwaltungen.Filmverwaltung;
-import verwaltung.verwaltungen.Stapelverarbeitung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 

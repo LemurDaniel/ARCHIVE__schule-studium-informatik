@@ -42,12 +42,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import verwaltung.DB_Manager;
+import verwaltung.Stapelverarbeitung;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
-import verwaltung.verwaltungen.Stapelverarbeitung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 
@@ -66,7 +66,7 @@ public class AddFilmCtrl {
 	    tab_pane.getSelectionModel().select(tab_allg);
 	    tab_pane.requestFocus();	
 
-	    if(film==null) film = new Film(-1, -1, null, Filmverwaltung.getMinDauer(), Filmverwaltung.getMinJahr(), 0);	    	
+	    if(film==null) film = new Film(-1, -1, null, 120, 2000, 0);	   
 	    pvw = film.getPvw();
 	    
 		if(film.getId()!=-1 && (!pvw.isGeladen() || !film.getRvw().isGeladen())) {
@@ -230,9 +230,9 @@ public class AddFilmCtrl {
         t_genre.setCellValueFactory(data->new SimpleStringProperty( data.getValue().getGenre() ));
 
         
-        checked_genre.forEach((k,v)->v.addListener(this::aktualisierGenre));
-        
-        
+        checked_genre.values().forEach(v->v.addListener(this::aktualisierGenre));
+
+            
         /** Table Mitwirkende **/
         table.setEditable(true);
         t_name.setCellValueFactory(		data->data.getValue().getNameProperty()				);
@@ -252,9 +252,9 @@ public class AddFilmCtrl {
         t_weiteres.setOnEditCommit(this::onEditCommit);
         t_rolle.setOnEditCommit(this::onEditCommit);      
         
-        tf_dauer.textProperty().addListener(this::changeListener);
-        tf_jahr.textProperty().addListener(this::changeListener);
-        tf_titel.textProperty().addListener(this::changeListener);    
+        tf_dauer.textProperty().addListener((ob,ov,nv)->aktualisiereFilm(tf_dauer));
+        tf_jahr.textProperty().addListener((ob,ov,nv)->aktualisiereFilm(tf_jahr));
+        tf_titel.textProperty().addListener((ob,ov,nv)->aktualisiereFilm(tf_titel));    
         
         table.setOnDragDetected(this::onDragDetected);
         muell.setOnDragOver(this::onDragOver);
@@ -283,9 +283,21 @@ public class AddFilmCtrl {
 	
     private void aktualisierGenre( ObservableValue<? extends Boolean> ob, Boolean ov, Boolean nv) {
     	if(blocked)	return;
+    	Genre g = checked_genre.inverse().get(ob);
+    	if(g==Genre.getKurzfilm()) {
+    		if(nv.booleanValue()==true && film.getDauer()>44) {
+    			((BooleanProperty)ob).set(false);
+    			return;
+    		}
+    		else if(nv.booleanValue()==false && film.getDauer()<45) {
+    			((BooleanProperty)ob).set(true);
+    			return;
+    		}
+    	}
+    	
     	backupfilm();
    
-    	Genre g = checked_genre.inverse().get(ob);
+    	if(nv.booleanValue()==true && selected.contains(g))	return;
     	if(nv.booleanValue()==true) {
     		selected.add(g);
     		film.addGenre(g);
@@ -317,13 +329,17 @@ public class AddFilmCtrl {
     	}
     }
     
-    private void changeListener( ObservableValue<? extends String> ob, String ov, String nv) {
+    private void aktualisiereFilm(TextField tf) {
     	if(blocked)	return;
-    	
+
     	backupfilm();   	
-		if(tf_titel.getText()!=null)	film.setTitel( tf_titel.getText() );
-		if(tf_dauer.getValue()!=null)	film.setDauer( tf_dauer.getValue() );
-		if(tf_jahr.getValue()!=null)	film.setErscheinungsjahr(tf_jahr.getValue());
+		if(tf==tf_titel && tf_titel.getText()!=null)		film.setTitel( tf_titel.getText() );
+		else if(tf==tf_jahr && tf_jahr.getValue()!=null)	film.setErscheinungsjahr(tf_jahr.getValue());
+		else if(tf==tf_dauer && tf_dauer.getValue()!=null)	{
+			film.setDauer( tf_dauer.getValue() );
+			if(film.getDauer()<45)	checked_genre.get(Genre.getKurzfilm()).set(true);
+			else					checked_genre.get(Genre.getKurzfilm()).set(false);
+		}
     }
     
     private void onEditCommit( CellEditEvent<Person, ?> data ) {
@@ -365,33 +381,9 @@ public class AddFilmCtrl {
      		added = true;
      	}    
     }
-    
-//    private void commitFilm() throws Exception {
-//  	   	  	
-//    	try(Connection con = DB_Manager.getCon()){
-//    		stpv.save(con);
-//    		stpv.getFehlerlog().forEach(f->System.out.println(f.getMessage()));
-//    	}catch(Exception e) {
-//    		throw e;
-//    	}  	
-//    	
-//		tf_titel.setDefaultValue(film.getTitel());
-//		tf_dauer.setDefaultValue(film.getDauer());
-//		tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
-//		if(film.getId()!=-1)	tp_mit.setDisable(false);
-//    }
-    
-    private void commitPersonen() throws Exception{
-    		
-		try(Connection con = DB_Manager.getCon()){
-    		pvw.save(con);
-		}
-    }
-    
+
     
     private void openDetail() {
-//    	fvw.reset();
-//    	pvw.reset();
     	try {
 			FensterManager.setDialog( FensterManager.getDetail(film, stpv) );
 		} catch (SQLException e) {

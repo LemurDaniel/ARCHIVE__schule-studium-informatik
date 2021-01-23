@@ -14,9 +14,9 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
-import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;
+import verwaltung.entitaeten.Nutzer;
 
 public class Listenverwaltung extends Verwaltung<Liste>{
 	

@@ -1,4 +1,4 @@
-package verwaltung;
+package verwaltung.entitaeten;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +17,7 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.concurrent.Task;
 import javafx.scene.paint.Color;
+import verwaltung.DB_Manager;
 import verwaltung.verwaltungen.Listenverwaltung;
 
 public class Nutzer extends DB_Manager {
@@ -40,8 +41,6 @@ public class Nutzer extends DB_Manager {
 		id = rs.getInt("id");
 		name = rs.getString("name");
 		rechte.setRechte(rs.getString("berechtigung"), rs.getBoolean("read"), rs.getBoolean("add"), rs.getBoolean("update"), rs.getBoolean("updateAll"), rs.getBoolean("multiLogin"), rs.getBoolean("reviewRead"), rs.getBoolean("reviewWrite"), rs.getBoolean("reviewWriteAll"));
-	
-		System.out.println(rechte.toString());
 	}
 	
 	public static void anmeldenGast() throws SQLException, LogInException {

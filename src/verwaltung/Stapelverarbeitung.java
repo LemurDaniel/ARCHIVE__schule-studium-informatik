@@ -1,4 +1,4 @@
-package verwaltung.verwaltungen;
+package verwaltung;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,10 +8,9 @@ import java.util.Stack;
 
 import gui.FensterManager;
 import javafx.scene.paint.Color;
-import verwaltung.DB_Manager;
-import verwaltung.entitaeten.Backup;
-import verwaltung.entitaeten.EingabePruefung;
-import verwaltung.entitaeten.Id;
+import verwaltung.entitaeten.interfaces.Backup;
+import verwaltung.entitaeten.interfaces.EingabePruefung;
+import verwaltung.entitaeten.interfaces.Id;
 
 public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 
@@ -40,11 +39,11 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		else							add.push(entitaet);
 		
 		
-		System.out.println("add----------add");
-		add.forEach(a->System.out.println(a));
-		System.out.println("delete----------");
-		delete.forEach(a->System.out.println(a));
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//		System.out.println("add----------add");
+//		add.forEach(a->System.out.println(a));
+//		System.out.println("delete----------");
+//		delete.forEach(a->System.out.println(a));
+//		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		return true;
 	}
 
@@ -53,26 +52,26 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		if(add.contains(entitaet))	add.remove(entitaet);
 		else						delete.push(entitaet);
 		
-		System.out.println("delete----------delete");
-		delete.forEach(a->System.out.println(a));
-		System.out.println("add----------");
-		add.forEach(a->System.out.println(a));
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//		System.out.println("delete----------delete");
+//		delete.forEach(a->System.out.println(a));
+//		System.out.println("add----------");
+//		add.forEach(a->System.out.println(a));
+//		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		return true;
 	}
 	public boolean updateEntitaet(T entitaet) {
 		if(entitaet==null  || add.contains(entitaet) || update.contains(entitaet))	return false;
 		update.push(entitaet);
 		
-		System.out.println(this.getClass().getSimpleName());
-		
-		System.out.println("update----------add");
-		update.forEach(a->System.out.println(a));
-		System.out.println("delete----------");
-		delete.forEach(a->System.out.println(a));
-		System.out.println("add----------add");
-		add.forEach(a->System.out.println(a));
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//		System.out.println(this.getClass().getSimpleName());
+//		
+//		System.out.println("update----------add");
+//		update.forEach(a->System.out.println(a));
+//		System.out.println("delete----------");
+//		delete.forEach(a->System.out.println(a));
+//		System.out.println("add----------add");
+//		add.forEach(a->System.out.println(a));
+//		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		return true;
 	}
 	

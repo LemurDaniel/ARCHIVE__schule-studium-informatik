@@ -15,10 +15,10 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import verwaltung.DB_Manager;
-import verwaltung.entitaeten.Backup;
-import verwaltung.entitaeten.EingabePruefung;
-import verwaltung.entitaeten.Id;
+import verwaltung.Stapelverarbeitung;
+import verwaltung.entitaeten.interfaces.Backup;
+import verwaltung.entitaeten.interfaces.EingabePruefung;
+import verwaltung.entitaeten.interfaces.Id;
 
 public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> extends Stapelverarbeitung<T>{
 	

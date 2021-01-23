@@ -22,7 +22,7 @@ import javafx.scene.control.TextFormatter;
 
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import verwaltung.Nutzer;
+import verwaltung.entitaeten.Nutzer;
 
 public class AnmeldeseiteCtrl {
 	

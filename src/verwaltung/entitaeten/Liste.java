@@ -17,9 +17,12 @@ import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import verwaltung.DB_Manager;
+import verwaltung.Stapelverarbeitung;
+import verwaltung.entitaeten.interfaces.Backup;
+import verwaltung.entitaeten.interfaces.EingabePruefung;
+import verwaltung.entitaeten.interfaces.Id;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Listenverwaltung;
-import verwaltung.verwaltungen.Stapelverarbeitung;
 
 
 public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePruefung, Id {
@@ -119,7 +122,6 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	public void backupReset() {
 		if(backup==null)	return;
 		
-		System.out.println("backup "+backup.id+backup.getName());
 		id = backup.getId();
 		name.set(backup.getName());
 		

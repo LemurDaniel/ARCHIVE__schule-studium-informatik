@@ -63,32 +63,5 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
-	public static class t extends DB_Manager{
 		
-		public static void t() throws SQLException {
-			List<String> genre = new ArrayList<>();
-			try(Connection con = con()){
-				try(PreparedStatement ps = con.prepareStatement("Select * from genre")){
-					try(ResultSet rs = ps.executeQuery()){
-						while(rs.next()) genre.add(rs.getString("genre"));
-					}
-				}
-			}
-			
-			genre.sort(String::compareTo);
-			genre.forEach(s->System.out.println(s));
-		
-		
-		try(Connection con = con()){
-			try(PreparedStatement ps = con.prepareStatement("Select * from nutzer")){
-				try(ResultSet rs = ps.executeQuery()){
-					while(rs.next()) System.out.println(rs.getString("passwort"));
-				}
-			}
-		}
-		}
-	}
-
-	
 }

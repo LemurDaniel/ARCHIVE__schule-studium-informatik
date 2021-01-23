@@ -1,7 +1,9 @@
 package verwaltung.entitaeten;
 
 
-public class Genre {
+public class Genre { 
+	
+	private static Genre kurzfilm;
 	
 	private int id;
 	private String genre, text;
@@ -10,6 +12,7 @@ public class Genre {
 		this.id = id;
 		this.genre = genre;
 		this.text = text;
+		if(genre.toLowerCase().equals("kurzfilm")) kurzfilm = this;
 	}
 
 	public String getGenre() {
@@ -23,5 +26,7 @@ public class Genre {
 		return id;
 	}
 
-
+	public static Genre getKurzfilm() {
+		return kurzfilm;
+	}
 }

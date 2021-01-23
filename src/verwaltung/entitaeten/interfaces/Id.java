@@ -1,4 +1,4 @@
-package verwaltung.entitaeten;
+package verwaltung.entitaeten.interfaces;
 
 public interface Id {
 	

@@ -141,20 +141,6 @@ public class ListensichtCtrl {
     	th = new Thread(lvw);
     	th.start();
 
-//		try(Connection con = DB_Manager.getCon()){
-//			System.out.println("Performance Test");
-//			long nano = System.nanoTime();
-//			long mili = System.currentTimeMillis();
-//
-//			lvw.save(con);
-//			lvw.getFehlerlog().forEach(fehler->System.out.println(fehler));
-//			lvw.getLog().forEach(fehler->System.out.println(fehler));
-//			
-//			nano = System.nanoTime()-nano;
-//			mili = System.currentTimeMillis()-mili;
-//			System.out.println(String.format("nano: %,d", nano));
-//			System.out.println(String.format("milli: %,d", mili));
-//		}
 	}
 
     

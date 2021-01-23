@@ -16,10 +16,10 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
-import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Liste;
+import verwaltung.entitaeten.Nutzer;
 
 public class Filmverwaltung extends Verwaltung<Film>{
 	
@@ -50,8 +50,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 	
 	public void generiereFilme(ResultSet rs) throws SQLException {	
-		long milli = System.currentTimeMillis();
-		
 		int lastId = -1, idNow;
 		Film current = null;
 		while(rs.next()) {
@@ -64,8 +62,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			}
 			current.addGenre( genreMap.get(rs.getInt("gid")) );	
 		}
-		
-		System.out.println(System.currentTimeMillis()-milli+"milli");
 	}
 	
 	public void test() throws SQLException{
@@ -158,8 +154,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 	public void filter(String titel, Float bwtMax, Float bwtMin, Integer dauerMax, Integer dauerMin, Integer jahrMax,
 			Integer jahrMin, List<Genre> genre, boolean and, List<String> tags, int anzahl) throws SQLException {
-		
-		System.out.println(titel);
 
 		if(bwtMax==null)	bwtMax=10f;
 		if(bwtMin==null)	bwtMin=0f;	else bwtMin-=0.01f;
@@ -218,9 +212,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		sb.append(") as filtered ");
 		sb.append("join genre_film on genre_film.fid=filtered.fid ");
 		sb.append("order by id ");
-		
-		System.out.println(sb.toString());
-		
+
 		try(Connection con = DB_Manager.getCon()){
 			try(PreparedStatement ps = con.prepareStatement(sb.toString())){
 				int count=0;
@@ -276,8 +268,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	@Override
 	public void clear() {
 		getList().forEach(this::removeObj);;
-//		referenziert.forEach((k,v)->System.out.println(k+"  "+v));
-//		geladeneFilme.forEach((k,v)->System.out.println(k+"  "+v));
 	}
 	
 	
@@ -298,7 +288,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 		sb.append("order by id");
 		
-		System.out.println(sb.toString());
 		try(Connection con = DB_Manager.getCon();
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(sb.toString())){
@@ -372,6 +361,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	public static int getMaxErgebnisse() {
 		return DB_Manager.get("ErgebnisseMax");
 	}
-
+	public static int getMaxShort() {
+		return DB_Manager.get("Short");
+	}
 
 }
