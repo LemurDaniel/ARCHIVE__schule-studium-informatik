@@ -58,7 +58,7 @@ public class DB_Manager {
 		DB_Manager.ApplikationsId = ApplikationsId;
 	}
 	
-	protected static Connection con() throws SQLException {
+	public static Connection con() throws SQLException {
 		System.out.println("Connection: "+ ++connectionsCreated);
 		return DriverManager.getConnection(url, user, password);
 	}

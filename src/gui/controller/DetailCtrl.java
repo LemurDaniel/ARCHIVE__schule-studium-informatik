@@ -73,7 +73,7 @@ public class DetailCtrl {
         
 		rvw = film.getRvw();
 		pvw = film.getPvw();
-		if(!rvw.isLoaded() || !pvw.isLoaded()) {
+		if(film.getId()!=-1 && (!rvw.isLoaded() || !pvw.isLoaded())) {
 			try(Connection con = DB_Manager.getCon()){
 				rvw.load(con);
 				pvw.load(con);

@@ -56,9 +56,9 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				if(geladeneFilme.containsKey(idNow))	current = geladeneFilme.get(idNow).aktualisiere(rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
 				else 									current = new Film(idNow, rs.getInt("ersteller"), rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
 				addObj(current);
+				getObList().add(current);
 				lastId = idNow;
 			}
-			System.out.println( rs.getInt("gid"));
 			current.addGenre( genreMap.get(rs.getInt("gid")) );	
 		}
 	}
@@ -221,7 +221,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				System.out.println(con.getAutoCommit());
 				System.out.println(ps.getConnection());
 				try(ResultSet rs = ps.executeQuery()){
-					clear();
+					super.clear();
 					generiereFilme(rs);
 				}
 			}

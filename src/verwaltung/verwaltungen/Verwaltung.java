@@ -3,7 +3,9 @@ package verwaltung.verwaltungen;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -19,12 +21,12 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends St
 	
 
 	/** VAR */
-	private List<T> list; 	
+	private Set<T> list; 	
 	private ObservableList<T> observablelist;
 	private ReadOnlyIntegerWrapper size;
 	
 	protected Verwaltung() {
-		list = new ArrayList<T>();
+		list = new HashSet<>();
 		observablelist = FXCollections.observableArrayList();
 		size = new ReadOnlyIntegerWrapper(0);
 		observablelist.addListener( (ListChangeListener<T>)change-> size.set(observablelist.size() ));
@@ -39,15 +41,14 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends St
 	public boolean existiert(T entitaet) {
 		return list.contains(entitaet);
 	}
-	
-	
+
 	public void addObj(T obj) {
-		if(!list.contains(obj))				list.add(obj);
-		if(!observablelist.contains(obj)) 	observablelist.add(obj);
+		list.add(obj);
+	//	if(!observablelist.contains(obj)) 	observablelist.add(obj);
 	}
 	public void removeObj(T obj) {
 		list.remove(obj);
-		observablelist.remove(obj);
+	//	observablelist.remove(obj);
 	}
 	public void clear() {
 		list.clear();
@@ -62,20 +63,25 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends St
 		return fehlerlog;
 	}
 	
-	@Override
 	public boolean addEntitaet(T entitaet) {
+		System.out.println("Performance Test");
+		long nano = System.nanoTime();
+		long mili = System.currentTimeMillis();
+//		System.out.println(String.format("nano: %,d", nano));
+//		System.out.println(String.format("milli: %,d", mili));
+		boolean t = addEntitaetTest(entitaet);
+		nano = System.nanoTime()-nano;
+		mili = System.currentTimeMillis()-mili;
+		System.out.println(String.format("nano: %,d", nano));
+		System.out.println(String.format("milli: %,d", mili));
+		return t;
+	}
+	
+	//@Override
+	public boolean addEntitaetTest(T entitaet) {
 		if(list.contains(entitaet))		  return false;
 		if(!super.addEntitaet(entitaet))  return false;
-		//Verschiebt alle Element um eine Stelle, sodass das neue Element ganz oben steht
-		if(observablelist.size()>0) {
-			T temp = null;
-			for(int i=0;i<observablelist.size(); i++) {
-				temp = observablelist.get(i);
-				observablelist.set(i, entitaet);
-				entitaet = temp;
-			}
-		}
-		observablelist.add(entitaet);
+		observablelist.add(0, entitaet);
 		return true;
 	}
 	@Override

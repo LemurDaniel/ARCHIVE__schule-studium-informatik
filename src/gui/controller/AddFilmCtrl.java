@@ -61,16 +61,13 @@ public class AddFilmCtrl {
 	    tab_pane.getSelectionModel().select(tab_allg);
 	    tab_pane.requestFocus();	
 
-	    if(film==null) {
-	    	film = new Film(-1, 0, null, 0, 0, 0);
-	    	pvw = film.getPvw();
-	    }else{
-	    	pvw = film.getPvw();
-			if(!pvw.isLoaded() || !film.getRvw().isLoaded()) {
-				try(Connection con = DB_Manager.getCon()){
+	    if(film==null) film = new Film(-1, 0, null, 0, 0, 0);	    	
+	    pvw = film.getPvw();
+	    
+		if(film.getId()!=-1 && (!pvw.isLoaded() || !film.getRvw().isLoaded())) {
+			try(Connection con = DB_Manager.getCon()){
 					pvw.loadIfnotLoaded(con);
-					film.getRvw().loadIfnotLoaded(con);
-				}
+					film.getRvw().loadIfnotLoaded(con);			
 			}
 		}
 		
