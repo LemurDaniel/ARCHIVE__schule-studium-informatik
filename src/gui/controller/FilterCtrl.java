@@ -20,6 +20,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
+import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.verwaltungen.Filmverwaltung;
 
@@ -88,8 +89,8 @@ public class FilterCtrl {
     	
     	
     	
-    	tf_dauerMin = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
-    	tf_dauerMax = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
+    	tf_dauerMin = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer());
+    	tf_dauerMax = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer());
     	tf_dauerMin.setPromptText("Laufzeit Minimum");
     	tf_dauerMax.setPromptText("Laufzeit Maximum");
     	tf_dauerMin.getStyleClass().add("tf_kurz");
@@ -98,6 +99,15 @@ public class FilterCtrl {
     	tf_dauerMax.setMinSupplier( ()->tf_dauerMin.getValue() );
     	tf_dauerMin.setMaxSupplier( ()->tf_dauerMax.getValue() );
     	
+    	tf_dauerMax.setTextFunction((val)->{
+    		if(val>60) return Film.getGenaueZeit(val);
+    		else return val+" Minuten";
+    	});
+    	tf_dauerMin.setTextFunction((val)->{
+    		if(val>60) return Film.getGenaueZeit(val);
+    		else return val+" Minuten";
+    	});
+
     	hb_dauer.getChildren().add(tf_dauerMin);
     	hb_dauer.getChildren().add(new Label("bis"));
     	hb_dauer.getChildren().add(tf_dauerMax);

@@ -12,8 +12,6 @@ import exceptions.LogInException;
 import exceptions.RegisterException;
 import gui.FensterManager;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
 import verwaltung.verwaltungen.Listenverwaltung;

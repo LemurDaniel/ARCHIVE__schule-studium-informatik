@@ -1,5 +1,6 @@
 package gui.fxControls;
 
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import com.google.common.base.Supplier;
@@ -15,8 +16,6 @@ public abstract class CustomTextField<T> extends TextField{
 	
 	protected boolean formatText;
 	private int maxlen;
-	
-	
 	
 	public CustomTextField(int maxlen) {
 		this.maxlen = maxlen;
@@ -53,6 +52,7 @@ public abstract class CustomTextField<T> extends TextField{
 		if(defaultSupplier!=null)	return defaultSupplier.get();
 		return defaultValue;
 	}
+	
 	
 	abstract protected void pruefe();
 	

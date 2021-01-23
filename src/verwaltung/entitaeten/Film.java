@@ -119,7 +119,8 @@ public class Film implements Backup, EingabePruefung, Id{
 	}
 	public void setDauer(int dauer) {
 		this.dauer = dauer;
-		dauer_string.set(dauer+" Minuten "+getGenaueZeit(dauer));
+		if(dauer<61) dauer_string.set(dauer+" Minuten");
+		else 		 dauer_string.set( String.format("%d Minuten ( %s )", dauer, getGenaueZeit(dauer)) );
 	}
 	public void setErscheinungsjahr(int erscheinungsjahr) {
 		this.erscheinungsjahr.set(erscheinungsjahr);
@@ -176,7 +177,7 @@ public class Film implements Backup, EingabePruefung, Id{
 		int h =  min/60%24;
 		min = min%60;
 		String zeit = "";
-		if(d>0 || h>0)	zeit = "("+ (d>0? " "+d+"d ":" ")+h+"h "+min+"min )";
+		zeit = (d>0? d+"d ":"") + (h>0? h+"h ":"") + (min>0? min+"min":"");
 		return zeit;
 	}
 

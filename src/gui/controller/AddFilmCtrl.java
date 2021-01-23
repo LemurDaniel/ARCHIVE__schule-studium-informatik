@@ -208,7 +208,7 @@ public class AddFilmCtrl {
         
         tf_dauer = new IntegerMinMaxTextField(0, Filmverwaltung.getMaxDauer());
         tf_jahr = new IntegerMinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
-        tf_dauer.setTailSupplier( ()->" Minuten "+Film.getGenaueZeit(tf_dauer.getValue())	);
+        tf_dauer.setTextFunction( (val)-> val+" Minuten"+ (val<61? "":" ( "+Film.getGenaueZeit(val)+" )")  );
         hb_dauer.getChildren().add(tf_dauer);
         hb_jahr.getChildren().add(tf_jahr);
              

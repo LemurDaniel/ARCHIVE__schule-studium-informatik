@@ -1,5 +1,6 @@
 package gui.fxControls;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javafx.scene.control.TextFormatter.Change;
@@ -10,8 +11,8 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	private T min, max;
 	private Supplier<T> minSupplier, maxSupplier;
 	
-	private String tail;
-	private Supplier<String> tailSupplier;
+	private String tail;	
+	protected Function<T, String> textFunction;
 	
 	protected MinMaxTextField(T min, T max, int length) {
 		this(min, max, "", length);
@@ -21,8 +22,8 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 		super(length);
 		this.min = min;
 		this.max = max;
-		this.tail = tail;
-
+		this.tail = tail==null? "":tail;
+	
 		focusedProperty().addListener((ob,ov,focus)->{
 			if(focus==true)	setText( value+"" );	
 		});		
@@ -48,10 +49,9 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	public void setMaxSupplier(Supplier<T> maxSupplier) {
 		this.maxSupplier = maxSupplier;
 	}
-	public void setTailSupplier(Supplier<String> tailSupplier) {
-		this.tailSupplier = tailSupplier;
+	public void setTextFunction(Function<T, String> function) {
+		textFunction = function;
 	}
-	
 	
 	
 	private void setTextToValue() {		
@@ -62,8 +62,8 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 		boolean temp = formatText;
 		formatText = false;
 		
-		if(tailSupplier!=null)	tail=tailSupplier.get();
-		setText(value+tail);
+		if(textFunction==null)	setText(value+tail);
+		else					setText(textFunction.apply(value));
 		selectPositionCaret(getLength());
 		
 		formatText = temp;
@@ -80,8 +80,7 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 		setTextToValue();
 	}	
 	
-	
-	
+		
 	@Override
 	public void setDefaultValue(T defaultValue) {
 		defaultValue = defaultValue!=null ? pruefeMinMax(getMin(), getMax(), defaultValue) : defaultValue;
@@ -96,16 +95,12 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	
 	
 	protected T getMin() {
-		T min = null;
-		if(minSupplier!=null)	min = minSupplier.get();
-		if(min!=null)			return min;
-		else					return this.min;
+		T min = minSupplier==null? null:minSupplier.get();
+		return min==null? this.min:min;
 	}
 	protected T getMax() {
-		T max = null;
-		if(maxSupplier!=null)	max = maxSupplier.get();
-		if(max!=null)			return max;
-		else					return this.max;	
+		T max = maxSupplier==null? null:maxSupplier.get();
+		return max==null? this.max:max;
 	}
 	public T getValue() {
 		return value;

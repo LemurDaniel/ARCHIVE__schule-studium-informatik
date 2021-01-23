@@ -136,7 +136,9 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		}
 		
 		update.forEach(	item->	item.backupReset());
-		clear();
+		delete.clear();
+		add.clear();
+		update.clear();
 		FensterManager.logErreignis("\nAlle ungespeicherten Änderungen wurden zurückgesetzt");
 	}
 	
