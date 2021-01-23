@@ -63,7 +63,6 @@ public class AddFilmCtrl {
 	private boolean[] changes = {false, false};
 	
 	public void setFilm(Film film) throws SQLException{
-		System.out.println(film);
 		if(this.film!=null && this.film.equals(film))	
 			return;
 			
@@ -71,7 +70,8 @@ public class AddFilmCtrl {
 		if(film!=null) {
 			pvw = film.getPvw();
 			pvw.load();
-		}
+		}else
+			pvw = null;
 		setDisplay();
 		setTable();
 	}
@@ -237,7 +237,7 @@ public class AddFilmCtrl {
         tf_dauer.focusedProperty().addListener((ob,ov,newVal)->{
         	if(newVal==false && tf_dauer.getLength()>0)
         		tf_dauer.setText(tf_dauer.getText()+" Minuten");
-        	else
+        	else if(tf_dauer.getLength()>0)
         		tf_dauer.setText(tf_dauer.getText().replaceAll("[^0-9]", ""));
         });
         

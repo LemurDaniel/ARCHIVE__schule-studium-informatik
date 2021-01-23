@@ -13,20 +13,24 @@ public class Person {
 	public StringProperty name;
 	public List<String> rolle;   
 	
+	public Person(int id, String vorname, String name){
+		this(id, vorname, name, null);
+	}
+	
 	public Person(int id, String vorname, String name, String rolle){
 		this.id = id;
 		this.vorname = new SimpleStringProperty(vorname);
 		this.name = new SimpleStringProperty(name);
 		this.rolle = new ArrayList<>();
-		this.rolle.add(rolle);
+		this.addRolle(rolle);
 	}
 	
-	public Person(int id, String vorname, String name, List<String> rolle){
-		this.id = id;
-		this.vorname = new SimpleStringProperty(vorname);
-		this.name = new SimpleStringProperty(name);
-		this.rolle = rolle;
-	}
+//	public Person(int id, String vorname, String name, List<String> rolle){
+//		this.id = id;
+//		this.vorname = new SimpleStringProperty(vorname);
+//		this.name = new SimpleStringProperty(name);
+//		this.rolle = rolle;
+//	}
 	
 	public String getVorname() {
 		return vorname.get();
@@ -47,14 +51,21 @@ public class Person {
 	}
 	
 	public void addRolle(String rolle) {
+		if(rolle==null)return;
 		this.rolle.add(rolle);
 	}
 	public void removeRolle(String rolle) {
 		this.rolle.remove(rolle);
 	}
+	public void addRollen(List<String> rollen) {
+		if(rollen==null)return;
+		rollen.forEach(r->rolle.add(r));
+	}
 	
 	public Person getCopy() {
-		return new Person(id,vorname.get(),name.get(),rolle);
+		Person p = new Person(id,vorname.get(),name.get());
+		p.addRollen(rolle);
+		return p;
 	}
 
 	public List<String> getRollen() {

@@ -92,7 +92,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			ps.setString(	1, 	titel				);
 			ps.setInt(		2, 	dauer				);
 			ps.setInt(		3,	erscheinungsjahr	);
-			ps.setFloat(	4, 	0					);
+			ps.setFloat(	4, 	0.0f					);
 			ps.setInt(		5,  Nutzer.getNutzer().getId()	);
 			ResultSet rs = ps.executeQuery();
 			rs.next();

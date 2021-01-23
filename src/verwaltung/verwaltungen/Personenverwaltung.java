@@ -104,7 +104,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 						int id = rs.getInt(1);
 						original = list.stream().filter(per->per.getId()==id).findFirst().orElse(null);
 						if(original==null) {
-							original = new Person(id, rs.getString(2), rs.getString(3), person.getRollen());
+							original = new Person(id, person.getVorname(), person.getName());
 							list.add(original);
 						}
 					}
@@ -118,7 +118,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 						ps.setString(2, person.getName());
 						rs = ps.executeQuery();
 						rs.next();
-						original = new Person(rs.getInt(1), person.getVorname(), person.getName(), person.getRollen());
+						original = new Person(rs.getInt(1), person.getVorname(), person.getName());
 						list.add(original);	
 					}else {
 						//Updaten
@@ -172,6 +172,10 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					ps.setInt(3, rolleId);
 					ps.executeUpdate();
 					pmr.getPerson().removeRolle(pmr.getRolle().get());
+
+					if(pmr.getPerson().getRollen().size()==0) {
+						list.remove( list.stream().filter(per->per.getId()==pmr.getPerson().getId()).findFirst().orElse(null) );
+					}
 				}				
 			}
 		}
