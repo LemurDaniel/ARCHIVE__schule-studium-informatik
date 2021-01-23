@@ -41,6 +41,7 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 		return change;
 	}
 		
+	
 	public void setMinSupplier(Supplier<T> minSupplier) {
 		this.minSupplier = minSupplier;
 	}
@@ -50,6 +51,8 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	public void setTailSupplier(Supplier<String> tailSupplier) {
 		this.tailSupplier = tailSupplier;
 	}
+	
+	
 	
 	private void setTextToValue() {		
 		if(value==null) {
@@ -67,22 +70,30 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	}
 	
 	
+	
 	@Override
 	protected void pruefe() {	
 		try {
 			value = parseTextAufValue(getText());	
 			if(value!=null)	value = pruefeMinMax(getMin(), getMax(), value);
 		}catch(NumberFormatException nfe) {
-			value = defaultValue;
+			value = getDefaultValue();
 		}
 		setTextToValue();
 	}	
 	@Override
 	public void setDefaultValue(T defaultValue) {
-		this.defaultValue = defaultValue!=null ? pruefeMinMax(getMin(), getMax(), defaultValue) : defaultValue;
-		value = this.defaultValue;
+		defaultValue = defaultValue!=null ? pruefeMinMax(getMin(), getMax(), defaultValue) : defaultValue;
+		super.setDefaultValue(defaultValue);
+		value = defaultValue;
 		setTextToValue();
 	}
+	@Override
+	protected T getDefaultValue(){
+		return pruefeMinMax(getMin(), getMax(), super.getDefaultValue());
+	}
+	
+	
 	
 	protected T getMin() {
 		if(minSupplier!=null && minSupplier.get()!=null) return minSupplier.get();	
@@ -93,9 +104,13 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 		return max;
 	}
 	
+	
+	
 	abstract protected T pruefeMinMax(T min, T max, T wert);
 	abstract protected T parseTextAufValue(String text) throws NumberFormatException;
 
+	
+	
 	public T getValue() {
 		return value;
 	}

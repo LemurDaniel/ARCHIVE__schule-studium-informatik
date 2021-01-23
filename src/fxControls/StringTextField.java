@@ -7,18 +7,12 @@ public class StringTextField extends CustomTextField<String>{
 	}
 
 	@Override
-	protected void pruefe() {		
+	protected void pruefe() {			
 		if(getText()==null || getText().length()==0) {
+			String defaultValue = getDefaultValue();
 			setText( defaultValue==null? null:defaultValue.toString() );
-			selectPositionCaret(getLength());
+			selectPositionCaret(getLength());	
 		}
-	}
-
-	@Override
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
-		setText( defaultValue==null? null:defaultValue.toString() );
-		selectPositionCaret(getLength());	
 	}
 
 }

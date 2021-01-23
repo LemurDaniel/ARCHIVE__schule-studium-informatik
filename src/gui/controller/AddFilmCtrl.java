@@ -61,8 +61,6 @@ public class AddFilmCtrl {
 	private List<Genre> selected = new ArrayList<>();
 	private boolean blocked;
 	
-	// 0 - update 1 - delete
-	private ObservableList<PersonMitRolle> personen;
 	private boolean[] changes = {false, false};
 	
 	public void setFvw(Filmverwaltung fvw) {
@@ -96,10 +94,7 @@ public class AddFilmCtrl {
 	}
 	
 	private void setTable() {
-		personen = FXCollections.observableArrayList(pvw.getPersonenMitRollen());
-		
-		table.setItems(personen);	
-		
+		table.setItems(pvw.getPersonenMitRollen());			
 		changes[1] = false;
 	}
 	
@@ -118,9 +113,9 @@ public class AddFilmCtrl {
 			tf_jahr.setDefaultValue(null);
 			tf_bewertung.setText(null);
 		}else {
-			tf_titel.setDefaultValue(film.getTitel());
-			tf_dauer.setDefaultValue(film.getDauer());
-			tf_jahr.setDefaultValue(film.getErscheinungsjahr());
+			tf_titel.setDefaultSupplier(	()->film.getTitel() 			);
+			tf_dauer.setDefaultSupplier(	()->film.getDauer()				);
+			tf_jahr.setDefaultSupplier(		()->film.getErscheinungsjahr()	);
 			tf_bewertung.setText(film.getBwtStringProperty().get());
 			film.getGenres().forEach(g->checked_genre.get(g).set(true));
 		}		
@@ -343,7 +338,7 @@ public class AddFilmCtrl {
     private void addPerson() {
     	PersonMitRolle per = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0)).getPersonenMitRolle().get(0);
     	pvw.addEntitaet(per.getPerson());
-    	personen.add(per);
+    //	personen.add(per);
     	per.getUpdateProperty().set(true);
     	changes[1] = true;
     }
@@ -351,8 +346,8 @@ public class AddFilmCtrl {
     private void commit() throws Exception {
     	System.out.println(changes[0]+"  "+changes[1]);
     	
-		FilteredList<PersonMitRolle> update = personen.filtered(item->item.getUpdateProperty().get() && item.getPerson().getId()!=-1);
-    	FilteredList<PersonMitRolle> delete = personen.filtered(item->item.getDeleteProperty().get() && !item.getUpdateProperty().get());
+		FilteredList<PersonMitRolle> update = pvw.getPersonenMitRollen().filtered(item->item.getUpdateProperty().get() && item.getPerson().getId()!=-1);
+    	FilteredList<PersonMitRolle> delete = pvw.getPersonenMitRollen().filtered(item->item.getDeleteProperty().get() && !item.getUpdateProperty().get());
     	if(!changes[0] && !changes[1] && delete.size()==0 && update.size()==0)
     		return;
     	
@@ -384,11 +379,12 @@ public class AddFilmCtrl {
     		pvw.save(con);
     	}catch(Exception e) {
     		//fvw.reset();
+    		//pvw.reset();
     		throw e;
-    	}
-    			
-    	setDisplay();
-    	setTable();
+    	}  			
+    	//setDisplay();
+    	changes[1] = false;
+    	changes[0] = false;
     }
     
     private void checkEingaben() throws Exception {
