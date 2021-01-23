@@ -1,0 +1,443 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{711B7698-3B0C-436B-98F5-770ACE79AE0C}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Gehirn</RootNamespace>
+    <AssemblyName>Gehirn</AssemblyName>
+    <DefaultLanguage>de-DE</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
+    <PackageCertificateKeyFile>Gehirn_TemporaryKey.pfx</PackageCertificateKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Code\Counter.cs" />
+    <Compile Include="Code\Nutzer.cs" />
+    <Compile Include="Code\Sounddesign.cs" />
+    <Compile Include="Code\Spiele\BuchstabenSalat.cs" />
+    <Compile Include="Code\Spiele\ButtonPresser.cs" />
+    <Compile Include="Code\Spiele\Concentrate.cs" />
+    <Compile Include="Code\Spiele\FarbeGleichWort.cs" />
+    <Compile Include="Code\Spiele\KopfRechnen.cs" />
+    <Compile Include="Code\Spiele\Memorize.cs" />
+    <Compile Include="Code\Spiele\Schiebepuzzle.cs" />
+    <Compile Include="Code\Spiele\Spiele.cs" />
+    <Compile Include="Code\Spiele\WechselGeld.cs" />
+    <Compile Include="Code\SpielHighscores.cs" />
+    <Compile Include="Code\StorageAccountManager.cs" />
+    <Compile Include="Pages\AnmeldeSeite.xaml.cs">
+      <DependentUpon>AnmeldeSeite.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controller\BuchstabenController.xaml.cs">
+      <DependentUpon>BuchstabenController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controller\ConcentrateController.xaml.cs">
+      <DependentUpon>ConcentrateController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controller\FarbeGleichWortController.xaml.cs">
+      <DependentUpon>FarbeGleichWortController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controller\KopfrechnenController.xaml.cs">
+      <DependentUpon>KopfrechnenController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controller\MemorizeController.xaml.cs">
+      <DependentUpon>MemorizeController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controller\SchiebepuzzleController.xaml.cs">
+      <DependentUpon>SchiebepuzzleController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controller\SpielController.cs" />
+    <Compile Include="Pages\Controller\WechselGeldController.xaml.cs">
+      <DependentUpon>WechselGeldController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Controller\WechselGeldEingabe.xaml.cs">
+      <DependentUpon>WechselGeldEingabe.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Credits.xaml.cs">
+      <DependentUpon>Credits.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ResourceDictionaries\ColorButton.cs" />
+    <Compile Include="Pages\SchiebePuzzleOptions.xaml.cs">
+      <DependentUpon>SchiebePuzzleOptions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SpieleHub.xaml.cs">
+      <DependentUpon>SpieleHub.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Spielende.xaml.cs">
+      <DependentUpon>Spielende.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SpielSeite.xaml.cs">
+      <DependentUpon>SpielSeite.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <None Include="Abgabe\Hinweise.pdf" />
+    <None Include="Abgabe\Landau Daniel 150523 - Gehirnjoggin.pdf" />
+    <None Include="Abgabe\Landau Daniel 150523 - GehirnjoggingApp Versicherungsvermerk.pdf" />
+    <None Include="Abgabe\Landau Daniel 150523 - Lastenheft Gehirnjogging.pdf" />
+    <None Include="Gehirn_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Abgabe\SQLQuery Datenbank Gehirnjogging.sql" />
+    <Content Include="Abgabe\Textdateien\Code\Counter.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Nutzer.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Sounddesign.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\BuchstabenSalat.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\ButtonPresser.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\Concentrate.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\FarbeGleichWort.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\KopfRechnen.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\Memorize.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\Schiebepuzzle.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\Spiele.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\WechselGeld.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\Spiele\Worte.txt" />
+    <Content Include="Abgabe\Textdateien\Code\SpielHighscores.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Code\StorageAccountManager.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\AnmeldeSeite.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\AnmeldeSeite.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\BuchstabenController.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\BuchstabenController.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\ConcentrateController.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\ConcentrateController.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\FarbeGleichWortController.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\FarbeGleichWortController.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\KopfrechnenController.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\KopfrechnenController.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\MemorizeController.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\MemorizeController.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\SchiebepuzzleController.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\SchiebepuzzleController.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\SpielController.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\WechselGeldController.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\WechselGeldController.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\WechselGeldEingabe.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Controller\WechselGeldEingabe.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Credits.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Credits.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\ResourceDictionaries\ColorBrushes.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\ResourceDictionaries\ColorButton.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\ResourceDictionaries\IconButton.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\ResourceDictionaries\MainButton.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\ResourceDictionaries\PasswortBox.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\ResourceDictionaries\TextBox.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\ResourceDictionaries\ToggleButton.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\SchiebePuzzleOptions.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\SchiebePuzzleOptions.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\SpieleHub.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\SpieleHub.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Spielende.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\Spielende.xaml.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\SpielSeite.xaml.cs.txt" />
+    <Content Include="Abgabe\Textdateien\Pages\SpielSeite.xaml.txt" />
+    <Content Include="Code\Spiele\Worte.txt" />
+    <Content Include="Pages\AssetBilder\100E.png" />
+    <Content Include="Pages\AssetBilder\10c.png" />
+    <Content Include="Pages\AssetBilder\10E.png" />
+    <Content Include="Pages\AssetBilder\1c.png" />
+    <Content Include="Pages\AssetBilder\1e.png" />
+    <Content Include="Pages\AssetBilder\20c.png" />
+    <Content Include="Pages\AssetBilder\20E.png" />
+    <Content Include="Pages\AssetBilder\2c.png" />
+    <Content Include="Pages\AssetBilder\2e.png" />
+    <Content Include="Pages\AssetBilder\50c.png" />
+    <Content Include="Pages\AssetBilder\50E.png" />
+    <Content Include="Pages\AssetBilder\5c.png" />
+    <Content Include="Pages\AssetBilder\5E.png" />
+    <Content Include="Pages\AssetBilder\accept-circular-button-outline-green.png" />
+    <Content Include="Pages\AssetBilder\accept-circular-button-outline-white.png" />
+    <Content Include="Pages\AssetBilder\accept-circular-button-outline.png" />
+    <Content Include="Pages\AssetBilder\add-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\add-white.png" />
+    <Content Include="Pages\AssetBilder\add.png" />
+    <Content Include="Pages\AssetBilder\BuchstabenSalatBackground.jpg" />
+    <Content Include="Pages\AssetBilder\cancel-button-red.png" />
+    <Content Include="Pages\AssetBilder\cancel-button-white.png" />
+    <Content Include="Pages\AssetBilder\cancel-button.png" />
+    <Content Include="Pages\AssetBilder\creative-commons-logo-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\creative-commons-logo-white.png" />
+    <Content Include="Pages\AssetBilder\Credits.txt" />
+    <Content Include="Pages\AssetBilder\FarbeGWortBackground.png" />
+    <Content Include="Pages\AssetBilder\information-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\information-white.png" />
+    <Content Include="Pages\AssetBilder\information.png" />
+    <Content Include="Pages\AssetBilder\KopfrechnenBackground.jpg" />
+    <Content Include="Pages\AssetBilder\left-arrow-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\left-arrow-white.png" />
+    <Content Include="Pages\AssetBilder\logout-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\logout-white.png" />
+    <Content Include="Pages\AssetBilder\menu-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\menu-white.png" />
+    <Content Include="Pages\AssetBilder\menu.png" />
+    <Content Include="Pages\AssetBilder\minus-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\minus-white.png" />
+    <Content Include="Pages\AssetBilder\minus.png" />
+    <Content Include="Pages\AssetBilder\move-to-next-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\move-to-next-white.png" />
+    <Content Include="Pages\AssetBilder\move-to-next.png" />
+    <Content Include="Pages\AssetBilder\redo-arrow-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\redo-arrow-white.png" />
+    <Content Include="Pages\AssetBilder\SchiebepuzzleBackground.png" />
+    <Content Include="Pages\AssetBilder\Tiledbackground1.png" />
+    <Content Include="Pages\AssetBilder\Tiledbackground1Small.png" />
+    <Content Include="Pages\AssetBilder\volume-Off-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\volume-Off-white.png" />
+    <Content Include="Pages\AssetBilder\volume-On-mainBlue.png" />
+    <Content Include="Pages\AssetBilder\volume-On-white.png" />
+    <Content Include="Pages\AssetBilder\WechselgeldBackground.png" />
+    <Content Include="Properties\Default.rd.xml" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Puzzlebilder\Leer.txt" />
+    <Content Include="Sounds\Credits.txt" />
+    <Content Include="Sounds\FreeSounds\Ambient1.wav" />
+    <Content Include="Sounds\FreeSounds\Ambient2.wav" />
+    <Content Include="Sounds\FreeSounds\Ambient3.wav" />
+    <Content Include="Sounds\FreeSounds\button-1.wav" />
+    <Content Include="Sounds\FreeSounds\button-2.wav" />
+    <Content Include="Sounds\FreeSounds\CashRegister.wav" />
+    <Content Include="Sounds\FreeSounds\Coin.wav" />
+    <Content Include="Sounds\FreeSounds\GameEnd.wav" />
+    <Content Include="Sounds\FreeSounds\GameStart.wav" />
+    <Content Include="Sounds\FreeSounds\ListSelect-1.wav" />
+    <Content Include="Sounds\FreeSounds\Money.wav" />
+    <Content Include="Sounds\FreeSounds\PuttingDown.wav" />
+    <Content Include="Sounds\FreeSounds\PuzzleTileBlock.wav" />
+    <Content Include="Sounds\FreeSounds\PuzzleTilePush.wav" />
+    <Content Include="Sounds\FreeSounds\record.wav" />
+    <Content Include="Sounds\FreeSounds\recordBig.wav" />
+    <Content Include="Sounds\FreeSounds\Right.wav" />
+    <Content Include="Sounds\FreeSounds\Woosh.wav" />
+    <Content Include="Sounds\FreeSounds\WooshSmall.wav" />
+    <Content Include="Sounds\FreeSounds\Wrong1.wav" />
+    <Content Include="Sounds\FreeSounds\Wrong2.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="Pages\AnmeldeSeite.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Controller\BuchstabenController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Controller\ConcentrateController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Controller\FarbeGleichWortController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Controller\KopfrechnenController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Controller\MemorizeController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Controller\SchiebepuzzleController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Controller\WechselGeldController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Controller\WechselGeldEingabe.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Credits.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ResourceDictionaries\ColorBrushes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ResourceDictionaries\IconButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ResourceDictionaries\MainButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ResourceDictionaries\PasswortBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ResourceDictionaries\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ResourceDictionaries\ToggleButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SchiebePuzzleOptions.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SpieleHub.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Spielende.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SpielSeite.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Storage.Blob">
+      <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.7</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sounds\FreeMusicArchive\" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
