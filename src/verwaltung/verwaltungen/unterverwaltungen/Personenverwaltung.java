@@ -18,26 +18,13 @@ import verwaltung.entitaeten.Person.PersonMitRolle;
 
 public class Personenverwaltung extends Unterverwaltung<Person>{
 
-	private static Map<String, Integer> rollen;
 	public static ObservableList<String> getRollen() {
-		if(rollen == null) {
-			rollen = new HashMap<>();
-			try(Connection con = getCon();
-					Statement st = con.createStatement();
-						ResultSet rs = st.executeQuery("Select id, rolle from rolle")){
-				while(rs.next()) 
-					rollen.put(rs.getString(2), rs.getInt(1));
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-		
-		ObservableList<String> oblist = FXCollections.observableArrayList();
-		rollen.forEach( (k, v)-> oblist.add(k) );
-		return oblist;
+		ObservableList<String> rlist = FXCollections.observableArrayList();
+		rolleMap.forEach((k, v)->rlist.add(v));
+		return FXCollections.observableArrayList(rlist);
 	}
 	
-	Personenverwaltung(Film film) {
+	public Personenverwaltung(Film film) {
 		super(film);
 		
 //		ArrayList<String> r = new ArrayList<>();
@@ -50,7 +37,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	
 	@Override
-	void load(Connection con) throws SQLException {
+	public void load(Connection con) throws SQLException {
 		super.load(con);
 		String sql = "Select pid, vorname, name, rolle from person "
 					+"inner join film_person_rolle on pid = person.id "
@@ -72,16 +59,14 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		}
 	}
 	
-	
-	public void addOrUpdate(List<PersonMitRolle> pmrlist) throws Exception {
-		if(film == null) throw new Exception("No Film");
+	public void addOrUpdate(List<PersonMitRolle> pmrlist, Connection conect) throws SQLException {
 		if(pmrlist.size()==0)	return;
 		
 //		for(PersonMitRolle pmr: pmrlist)
 //			System.out.print(pmr.getRolle().get());
 		
 		
-		try(Connection con = getCon();){
+		try(Connection con = conect!=null? conect:getCon();){
 			con.setAutoCommit(false);
 			
 			//Working Copy for AddFilm , Actual object
@@ -140,8 +125,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					}				
 				}
 
-				
-				Integer rolleId = rollen.get(pmr.getRolle().get());
+				Integer rolleId = rolleMap.inverse().get(pmr.getRolle().get());
 				
 				if(rolleId!=null) {
 					//Kombination schon vorhanden?
@@ -169,13 +153,13 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		}
 	}
 	
-	public void delete(List<PersonMitRolle> pmrlist) throws SQLException {
+	public void delete(List<PersonMitRolle> pmrlist, Connection conect) throws SQLException {
 		if(pmrlist.size()==0)	return;
 		
-		try(Connection con = getCon()){
+		try(Connection con = conect!=null? conect:getCon()){
 		
 			for(PersonMitRolle pmr: pmrlist) {			
-				Integer rolleId = rollen.get(pmr.getRolle().get());				
+				Integer rolleId = rolleMap.inverse().get(pmr.getRolle().get());				
 				if(rolleId!=null) {
 					try (PreparedStatement ps = con.prepareStatement("Delete film_person_rolle where fid=? and pid=? and rid=?");){
 						ps.setInt(1, film.getId());
@@ -207,6 +191,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	public static int getMaxVorname() {
 		return maxSize.get("PerVorname");
 	}
+
 
 }
 	

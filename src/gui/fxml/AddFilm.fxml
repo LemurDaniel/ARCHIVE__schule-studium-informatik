@@ -43,21 +43,13 @@
                                     <TextField fx:id="tf_genre" promptText="Genre" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="239.0" styleClass="hbox_allg">
-                                 <children>
-                                    <TextField fx:id="tf_dauer" promptText="Laufzeit" />
-                                 </children>
-                              </HBox>
+                              <HBox fx:id="hb_dauer" prefHeight="100.0" prefWidth="239.0" styleClass="hbox_allg" />
                               <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
                                  <children>
                                     <TextField fx:id="tf_bewertung" maxWidth="280.0" prefWidth="280.0" promptText="Bewertung" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
-                                 <children>
-                                    <TextField fx:id="tf_jahr" maxWidth="267.0" prefWidth="267.0" promptText="Erscheinungsjahr" />
-                                 </children>
-                              </HBox>
+                              <HBox fx:id="hb_jahr" prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg" />
                            </children>
                         </VBox>
                      </content>

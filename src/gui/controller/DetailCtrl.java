@@ -1,6 +1,7 @@
 package gui.controller;
 
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.input.KeyEvent;
+import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.Nutzer.Rechte;
 import verwaltung.entitaeten.Film;
@@ -37,7 +39,6 @@ import verwaltung.entitaeten.Rezension;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
-import verwaltung.verwaltungen.unterverwaltungen.VerwaltungenWrapper;
 
 public class DetailCtrl {
 
@@ -61,10 +62,14 @@ public class DetailCtrl {
 		if(this.film!=null && this.film.equals(film))
 			return;
         
-		VerwaltungenWrapper vw = film.getUnterverwaltungen();
-		vw.loadIfnotLoaded();
-		rvw = vw.getRvw();
-		pvw = vw.getPvw();
+		rvw = film.getRvw();
+		pvw = film.getPvw();
+		if(!rvw.isLoaded() || !pvw.isLoaded()) {
+			try(Connection con = DB_Manager.getCon()){
+				rvw.load(con);
+				pvw.load(con);
+			}
+		}
 		
         table.setItems(FXCollections.observableArrayList(pvw.getPersonenMitRollen()));
         table1.setItems(rvw.getList());

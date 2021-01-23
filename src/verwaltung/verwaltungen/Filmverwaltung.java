@@ -1,10 +1,12 @@
 package verwaltung.verwaltungen;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,25 +24,10 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		return instance;
 	}
 
-	private static Map<Integer, Genre> gMap;
-	private static List<Genre> genre;	
 	public static List<Genre> getGenres(){
-		if(gMap == null) {
-			gMap = new HashMap<>();
-			genre = new ArrayList<>();
-			try(Connection con = getCon();
-					Statement st = con.createStatement();
-						ResultSet rs = st.executeQuery("Select id, genre, text from genre")){	
-				while(rs.next()) {
-					Genre g = new Genre(rs.getInt("id"), rs.getString("genre"), rs.getString("text"));
-					gMap.put(g.getId(), g);
-					genre.add(g);
-				}				
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-		return genre;
+		List<Genre> g = new ArrayList<>();
+		genre.forEach((k, v)->g.add(v));
+		return g;
 	}
 	
 	private Filmverwaltung() {
@@ -63,16 +50,16 @@ public class Filmverwaltung extends Verwaltung<Film>{
 					lastId = idNow;
 				}
 				if(rs.getObject("gid")!=null)
-					current.addGenre( gMap.get(rs.getInt("gid")) );	
+					current.addGenre( genre.get(rs.getInt("gid")) );	
 			}
 		}
 	}
 	
-	public Film addFilm(String titel, List<Genre> genres, int dauer, int erscheinungsjahr) throws SQLException {
+	public Film addFilm(String titel, List<Genre> genres, int dauer, int erscheinungsjahr, Connection connect) throws SQLException {
 		
 		String sql = "Insert into film(titel, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?); Select SCOPE_IDENTITY()";
 		
-		try(Connection con = getCon();
+		try(Connection con = connect!=null ? connect:getCon();
 				PreparedStatement ps = con.prepareStatement(sql)){
 			
 			con.setAutoCommit(false);
@@ -95,11 +82,11 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		}
 	}
 
-	public void updateFilm(String titel, List<Genre> genres, int dauer, int erscheinungsjahr, Film film) throws SQLException {
+	public void updateFilm(String titel, List<Genre> genres, int dauer, int erscheinungsjahr, Film film, Connection connect) throws SQLException {
 	
 		String sql = "Update film set titel=?, dauer=?, erscheinungsjahr=? where id=?;";
 		
-		try(Connection con = getCon();
+		try(Connection con = connect!=null ? connect:getCon();
 				PreparedStatement ps = con.prepareStatement(sql)){
 			
 			con.setAutoCommit(false);
@@ -128,6 +115,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				try(PreparedStatement ps2 = con.prepareStatement(sql2)){
 					ps2.setInt(1, g.getId());
 					ps2.setInt(2, fid);
+					ps2.executeUpdate();
+					System.out.println(g.getId()+"   "+fid);
 				}
 			}			
 		}
@@ -135,5 +124,15 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 	public static int getMaxTitel() {
 		return maxSize.get("filmTitel");
+	}
+
+	public static int getMaxDauer() {
+		return 999;
+	}
+	public static int getMinJahr() {
+		return 1878;
+	}
+	public static int getMaxJahr() {
+		return LocalDate.now().getYear();
 	}
 }

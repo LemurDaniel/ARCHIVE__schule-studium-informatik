@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
@@ -44,16 +45,19 @@ public class FensterManager {
 	
 	private  static Stage addFilm;
 	private  static AddFilmCtrl addFilmCtrl;
+		
+	private  static Stage filter;
+	private  static AddFilmCtrl filterCtrl;
 	
 	static {
 		
 		Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, angemeldet)->{
 			try {
 				if(angemeldet) 
-					setPrimaryStage(showHauptSeite());
+					setPrimaryStage(getHauptSeite());
 				else {
 					reset();
-					setPrimaryStage(showAnmelden());
+					setPrimaryStage(getAnmelden());
 				}
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -61,13 +65,12 @@ public class FensterManager {
 		});
 	}
 	
-	public static Stage showDetail(Film film) throws SQLException, IOException{
+	public static Stage getDetail(Film film) throws SQLException{
 		if(detail==null) {
 			detail = new Stage();
 			detail.setTitle("Filmdatenbank - Detailansicht");
 			detail.setResizable(false);
-			FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource("fxml/Detail.fxml"));
-			loader.load();
+			FXMLLoader loader = getLoader("fxml/Detail.fxml");
     		detailCtrl = loader.getController();
     		detail.setScene(new Scene(loader.getRoot()));
 		}
@@ -75,7 +78,7 @@ public class FensterManager {
 		return detail;
 	}
 	
-	public static Stage showAddFilm(Film film) throws SQLException, IOException{
+	public static Stage getAddFilm(Film film) throws SQLException{
 		if(film != null) {
 			if( !(Nutzer.getNutzer().getRechte().isUpdate() && film.getErstellerId()==Nutzer.getNutzer().getId() || Nutzer.getNutzer().getRechte().isUpdateAll())	)
 				throw new SQLException("Keine Berechtigung");
@@ -87,8 +90,7 @@ public class FensterManager {
 			addFilm = new Stage();
 			addFilm.setTitle("Filmdatenbank - Detailansicht");
 			addFilm.setResizable(false);
-			FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource("fxml/AddFilm.fxml"));
-			loader.load();
+			FXMLLoader loader = getLoader("fxml/AddFilm.fxml");
 			addFilmCtrl = loader.getController();
     		addFilm.setScene(new Scene(loader.getRoot()));
 		}
@@ -96,28 +98,46 @@ public class FensterManager {
 		return addFilm;
 	}
 	
-	public static Stage showAnmelden() throws SQLException, IOException {
+	public static Stage getAnmelden() {
 		if(anmelden==null) {
 			anmelden = new Stage();
 			anmelden.setTitle("Filmdatenbank - Anmelden");
-			FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource("fxml/Anmeldeseite.fxml"));
-			loader.load();
+			FXMLLoader loader = getLoader("fxml/Anmeldeseite.fxml");
 			anmeldenCtrl = loader.getController();
 			anmelden.setScene(new Scene(loader.getRoot()));
 		}
 		return anmelden;
 	}
 	
-	public static Stage showHauptSeite() throws SQLException, IOException {
+	public static Stage getHauptSeite() {
 		if(hauptseite==null) {
 			hauptseite = new Stage();
 			hauptseite.setTitle("Filmdatenbank");
-			FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource("fxml/Hauptseite.fxml"));
-			loader.load();
+			FXMLLoader loader = getLoader("fxml/Hauptseite.fxml");
 			hauptseiteCtrl = loader.getController();
 			hauptseite.setScene(new Scene(loader.getRoot()));
 		}
 		return hauptseite;
+	}
+	
+	private static FXMLLoader getLoader(String source) {
+		FXMLLoader loader = new FXMLLoader(FensterManager.class.getResource(source));
+		try {
+			loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return loader;
+	}
+	
+	public static Stage getFilter() {
+		if(filter==null) {
+			filter = new Stage(StageStyle.DECORATED);
+			filter.setTitle("Filmdatenbank - Filter");
+			FXMLLoader loader = getLoader("fxml/Filter.fxml");
+			filter.setScene(new Scene(loader.getRoot()));
+		}
+		return filter;
 	}
 	
 	public static void setPrimaryStage(Stage stage) {

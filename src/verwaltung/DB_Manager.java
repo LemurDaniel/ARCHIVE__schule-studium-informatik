@@ -5,18 +5,33 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+import verwaltung.entitaeten.Genre;
+
 
 public class DB_Manager {
 	
+	
+//	private static String url = "jdbc:sqlserver://testdaniel001.database.windows.net:1433;databaseName=FilmDB";
+//	private static String user = "demolandau";
+//	private static String password = "bj14zC2O4zHg9Rtr7yUj";
 	
 	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=FilmDB";
 	private static String user = "DanielTest";
 	private static String password = "Test";
 	
-	protected static Map<String, Integer> maxSize = new HashMap<>();
+	public static Map<String, Integer> maxSize = new HashMap<>();
+	protected static Map<Integer, Genre> genre;
+	protected static BiMap<Integer, String> rolleMap;
 	
    static {
 		try {
@@ -56,7 +71,7 @@ public class DB_Manager {
 				ApplikationsId = rs.getInt(1);
 				System.out.println("app  "+ApplikationsId);
 			}
-			metaDaten(con);
+			getDaten(con);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -83,7 +98,7 @@ public class DB_Manager {
 	}
 
 	
-	protected static Connection getCon() throws SQLException {
+	public static Connection getCon() throws SQLException {
 		Connection con = DriverManager.getConnection(url, user, password);
 		try (PreparedStatement ps1 = con.prepareStatement("update instanz set connectionsMade=? where id=?");){	
 			
@@ -113,7 +128,7 @@ public class DB_Manager {
 	}
 	
 	
-	private static void metaDaten(Connection con) throws SQLException {
+	private static void getDaten(Connection con) throws SQLException {
 			
 		try(ResultSet rs = con.getMetaData().getColumns(null, "dbo", null, null)){
 
@@ -132,12 +147,27 @@ public class DB_Manager {
 				}
 				else if(tab.equals("film")) {
 					if(col.equals("titel")) 		maxSize.put("filmTitel", size);
+					if(col.equals("dauer")) 		maxSize.put("filmDauer", size);
 				}
 				else if(tab.equals("person")) {
 					if(col.equals("vorname"))		maxSize.put("PerVorname", size);
 					else if(col.equals("name"))		maxSize.put("PerName", size);
 				}
 			}
+		}
+		
+		genre = new HashMap<>();
+		try(Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery("Select id, genre, text from genre")){
+			while(rs.next()) 
+				genre.put(rs.getInt(1), new Genre(rs.getInt(1), rs.getString(2), rs.getString(3)));
+		}
+		
+		rolleMap = HashBiMap.create();
+		try(Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery("Select id, rolle from rolle")){
+			while(rs.next()) 
+				rolleMap.put(rs.getInt(1), rs.getString(2));
 		}
 	}
 

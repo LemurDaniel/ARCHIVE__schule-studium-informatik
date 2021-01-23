@@ -10,16 +10,32 @@
 .hbox_allg {
 	-fx-alignment: center ;
 	-fx-padding: 0 20 0 20;
+
+	-fx-min-height: 50.0;
 }
 
 .hbox_allg > * {
 	-fx-alignment: center;
-	-fx-min-width: 0.0;
-	-fx-min-height: 0.0;
+	-fx-min-width: 60;
+	-fx-min-height: 31;
+	
 	-fx-max-height: 31;
 	-fx-max-width: 420;
+}
+
+.hbox_allg > TextField {	
 	-fx-pref-height: 31;
-	-fx-pref-width: 420;
+	-fx-pref-width: 420;	
+}
+
+.hbox_allg > MinMaxTextField {
+	-fx-pref-height: 31;
+	-fx-pref-width: 180;	
+}
+
+.hbox_allg > Button {
+	-fx-pref-height: 31;
+	-fx-pref-width: 120;	
 }
 
 VBox {
@@ -27,6 +43,12 @@ VBox {
 }
 
 HBox {
+	-fx-alignment: center ;
+	-fx-padding: 2.5 0 2.5 0;
+}
+
+HBox > TextField{
+	-fx-alignment: center;
 	-fx-padding: 2.5 0 2.5 0;
 }
 

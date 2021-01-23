@@ -24,13 +24,6 @@ public class Person extends Entitaet{
 		this.addRolle(rolle);
 	}
 	
-//	public Person(int id, String vorname, String name, List<String> rolle){
-//		this.id = id;
-//		this.vorname = new SimpleStringProperty(vorname);
-//		this.name = new SimpleStringProperty(name);
-//		this.rolle = rolle;
-//	}
-	
 	public String getVorname() {
 		return vorname.get();
 	}
@@ -87,6 +80,7 @@ public class Person extends Entitaet{
 		return list;
 	}
 	
+	//Für table Einträge
 	public class PersonMitRolle {
 		private Person per;
 		private StringProperty rolle;

@@ -11,7 +11,7 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
-import verwaltung.verwaltungen.unterverwaltungen.VerwaltungenWrapper;
+
 
 public class Film extends Entitaet {
 	
@@ -21,7 +21,8 @@ public class Film extends Entitaet {
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
 	private ReadOnlyFloatWrapper bewertung;
 	
-	private VerwaltungenWrapper unterverwaltungen;
+	private Personenverwaltung pvw;
+	private Rezensionenverwaltung rvw;
 //	public Film(int id, int erstellerId, String titel, int dauer, int erscheinungsjahr, float bewertung) {
 //		this(id, erstellerId, titel, null, dauer, erscheinungsjahr, bewertung);
 //	}
@@ -37,7 +38,8 @@ public class Film extends Entitaet {
 		this.bewertung = new ReadOnlyFloatWrapper(bewertung);
 		genre_string = new ReadOnlyStringWrapper("");
 		genres = new ArrayList<>();
-		unterverwaltungen = new VerwaltungenWrapper(this);
+		rvw = new Rezensionenverwaltung(this);
+		pvw = new Personenverwaltung(this);
 	}
 	
 	
@@ -79,8 +81,11 @@ public class Film extends Entitaet {
 		return new ArrayList<>(genres);
 	}
 	
-	public VerwaltungenWrapper getUnterverwaltungen() {
-		return unterverwaltungen;
+	public Rezensionenverwaltung getRvw() {
+		return rvw;
+	}
+	public Personenverwaltung getPvw() {
+		return pvw;
 	}
 	
 	

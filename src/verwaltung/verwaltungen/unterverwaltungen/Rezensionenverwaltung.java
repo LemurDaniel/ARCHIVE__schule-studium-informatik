@@ -12,12 +12,12 @@ import verwaltung.entitaeten.Rezension;
 
 public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 
-	Rezensionenverwaltung(Film film) {
+	public Rezensionenverwaltung(Film film) {
 		super(film);
 	}
 	
 	@Override
-	void load(Connection con) throws SQLException {
+	public void load(Connection con) throws SQLException {
 		super.load(con);
 		String sql = "Select rezension.id, titel, inhalt, name, verfasser, bewertung from rezension "
 						+"inner join nutzer on verfasser = nutzer.id "

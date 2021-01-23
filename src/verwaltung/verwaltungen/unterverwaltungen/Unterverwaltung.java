@@ -21,18 +21,21 @@ public abstract class Unterverwaltung<T extends Entitaet> extends Verwaltung<T>{
 			load(con);
 		}
 	}	
-	void load(Connection con) throws SQLException {
+	public void loadIfnotLoaded() throws SQLException {
+		if(!isLoaded) load();
+	}
+	public void load(Connection con) throws SQLException {
 		if(isLoaded) list.clear();
 		isLoaded = true;
 	}
-	void loadIfnotLoaded(Connection con) throws SQLException {
+	public void loadIfnotLoaded(Connection con) throws SQLException {
 		if(!isLoaded) load(con);
 	}
 	void clear() {
 		list.clear();
 		isLoaded = false;
 	}
-	boolean isLoaded() {
+	public boolean isLoaded() {
 		return isLoaded;
 	}
 }

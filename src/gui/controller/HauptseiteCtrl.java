@@ -7,11 +7,17 @@ import java.time.LocalTime;
 import gui.FensterManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -19,36 +25,41 @@ import verwaltung.verwaltungen.Filmverwaltung;
 public class HauptseiteCtrl {
 	
 	private long lastMouseClick = 0;
+	private Stage filter;
 
-    @FXML // fx:id="table"
-    private TableView<Film> table; // Value injected by FXMLLoader
+    @FXML
+    private Button blabla;
+	
+	
+    @FXML
+    private TableView<Film> table; 
 
-    @FXML // fx:id="t_Titel"
-    private TableColumn<Film, String> t_Titel; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<Film, String> t_Titel; 
 
-    @FXML // fx:id="t_genre"
-    private TableColumn<Film, String> t_genre; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<Film, String> t_genre; 
 
-    @FXML // fx:id="t_bewertung"
-    private TableColumn<Film, Number> t_bewertung; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<Film, Number> t_bewertung; 
 
-    @FXML // fx:id="t_dauer"
-    private TableColumn<Film, String>t_dauer; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<Film, String>t_dauer; 
 
-    @FXML // fx:id="t_jahr"
-    private TableColumn<Film, Number> t_jahr; // Value injected by FXMLLoader
+    @FXML
+    private TableColumn<Film, Number> t_jahr; 
 
-    @FXML // fx:id="btn_add"
-    private Button btn_add; // Value injected by FXMLLoader
+    @FXML
+    private Button btn_add; 
 
-    @FXML // fx:id="btn_update"
-    private Button btn_update; // Value injected by FXMLLoader
+    @FXML
+    private Button btn_update; 
 
-    @FXML // fx:id="btn_detail"
-    private Button btn_detail; // Value injected by FXMLLoader
+    @FXML
+    private Button btn_detail; 
     
-    @FXML // fx:id="btn"
-    private Button btn_abmelden; // Value injected by FXMLLoader
+    @FXML
+    private Button btn_abmelden; 
 
     @FXML
     void action(ActionEvent event) {
@@ -57,6 +68,7 @@ public class HauptseiteCtrl {
     		else if(event.getSource()==btn_update)		updateFilm();
     		else if(event.getSource()==btn_detail)		detail();
     		else if(event.getSource()==btn_abmelden) 	Nutzer.getNutzer().abmelden();
+    		else if(event.getSource()==blabla)			filter();
     	}catch(Exception e) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle(e.getClass().getSimpleName());
@@ -66,19 +78,8 @@ public class HauptseiteCtrl {
     	}
     }
 
-
-    @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize() {
-        assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        assert t_Titel != null : "fx:id=\"t_Titel\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        assert t_genre != null : "fx:id=\"t_genre\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        assert t_bewertung != null : "fx:id=\"t_bewertung\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        assert t_dauer != null : "fx:id=\"t_dauer\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        assert t_jahr != null : "fx:id=\"t_jahr\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        assert btn_add != null : "fx:id=\"btn_add\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        assert btn_update != null : "fx:id=\"btn_update\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        assert btn_detail != null : "fx:id=\"btn_detail\" was not injected: check your FXML file 'Hauptseite.fxml'.";
-        
+    @FXML
+    void initialize() {  
         table.setItems(Filmverwaltung.instance().getList());
         t_Titel.setCellValueFactory(	data->data.getValue().getTitelProperty());
         t_genre.setCellValueFactory(	data->data.getValue().getGenreStringProperty());
@@ -95,40 +96,47 @@ public class HauptseiteCtrl {
         	long now = System.currentTimeMillis();
         	if(now-lastMouseClick<200 && table.getSelectionModel().getSelectedIndex()!=-1) {
         		try {
-					FensterManager.setDialog(FensterManager.showDetail(table.getSelectionModel().getSelectedItem()));
+					FensterManager.setDialog(FensterManager.getDetail(table.getSelectionModel().getSelectedItem()));
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}
         	lastMouseClick = now;
         });
-        try {
-			Filmverwaltung.instance().test();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+//		filter = FensterManager.getFilter();
+//		filter.focusedProperty().addListener((ob,ov,focus)->{
+//			if(focus==false) filter.close();
+//		});
+//    	blabla.addEventHandler(MouseEvent.MOUSE_ENTERED, ev->{
+//    		Bounds d = blabla.localToScreen(blabla.getBoundsInLocal());
+//    		filter.setX( d.getMinX());
+//    		filter.setY( d.getMinY());
+//    		filter.show();
+//    	});
+
     }
     
     private void detail() throws Exception {
     	Film film = table.getSelectionModel().getSelectedItem();
     	if(film == null)	
     		throw new Exception("Es wurde kein Film ausgewählt");
-		FensterManager.setDialog( FensterManager.showDetail(film) );
+		FensterManager.setDialog( FensterManager.getDetail(film) );
     }
 
     private void updateFilm() throws Exception {
     	Film film = table.getSelectionModel().getSelectedItem();
     	if(film == null)	
     		throw new Exception("Es wurde kein Film ausgewählt");
-    	FensterManager.setDialog( FensterManager.showAddFilm(film) );
+    	FensterManager.setDialog( FensterManager.getAddFilm(film) );
     }
     
     private void addFilm() throws SQLException, IOException {
-    	FensterManager.setDialog( FensterManager.showAddFilm(null) );
+    	FensterManager.setDialog( FensterManager.getAddFilm(null) );
+    }
+    
+    private void filter() {
+    	FensterManager.setDialog( FensterManager.getFilter() );
     }
 }

@@ -66,6 +66,7 @@
             <Button fx:id="btn_add" mnemonicParsing="false" onAction="#action" text="Hinzufügen" />
             <Button fx:id="btn_update" mnemonicParsing="false" onAction="#action" text="Modifizieren" />
             <Button fx:id="btn_detail" mnemonicParsing="false" onAction="#action" text="Detailansicht" />
+            <Button fx:id="blabla" mnemonicParsing="false" onAction="#action" text="Button" />
          </children>
       </HBox>
   </children>

@@ -1,16 +1,19 @@
 package gui.controller;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import fxControls.MinMaxTextField;
 import gui.FensterManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -31,11 +34,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Person;
@@ -67,8 +73,8 @@ public class AddFilmCtrl {
 			
 		this.film = film;		
 		if(film!=null) {
-			pvw = film.getUnterverwaltungen().getPvw();
-			pvw.load();
+			pvw = film.getPvw();
+			pvw.loadIfnotLoaded();
 		}else
 			pvw = null;
 	        	
@@ -122,6 +128,7 @@ public class AddFilmCtrl {
 	    @FXML
 	    private TitledPane tp_allg;
 	    
+	    /** Allg */
 	    @FXML
 	    private Tab tab_allg;
 	    
@@ -144,12 +151,13 @@ public class AddFilmCtrl {
 	    private TextField tf_genre;
 
 	    @FXML
-	    private TextField tf_dauer;
-
-	    @FXML
 	    private TextField tf_bewertung;
-
+	    
 	    @FXML
+	    private HBox hb_dauer;
+	    @FXML
+	    private HBox hb_jahr;
+	    private TextField tf_dauer;
 	    private TextField tf_jahr;
 
 	    @FXML
@@ -164,6 +172,7 @@ public class AddFilmCtrl {
 	    @FXML
 	    private TextArea ta_genre;
 
+	    /** Mitwirkende **/
 	    @FXML
 	    private TitledPane tp_mit;
 
@@ -209,37 +218,47 @@ public class AddFilmCtrl {
     void initialize() {
         accordion.setExpandedPane(tp_allg);
         
-        tf_titel.addEventFilter(KeyEvent.KEY_TYPED, ev->{
-        	if(tf_titel.getLength() >= Filmverwaltung.getMaxTitel()) ev.consume();
-        });
+        tf_titel.setTextFormatter(new TextFormatter<>( (UnaryOperator<TextFormatter.Change>) change-> {
+        	int maxlen = Filmverwaltung.getMaxTitel();
+			if(change.getControlNewText().length()>=maxlen) {
+				int z = maxlen - (change.getControlNewText().length() - change.getText().length());
+				change.setText( change.getText().substring(0, z) );
+			}
+			return change;	
+        }));
         
-        tf_jahr.addEventFilter(KeyEvent.KEY_TYPED, ev->{
-        	if( !Character.isDigit(ev.getCharacter().charAt(0)) )	ev.consume();
-        	if(tf_jahr.getLength() >= 4) ev.consume();
-        });
+        tf_dauer = new MinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
+        tf_jahr = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
+        hb_dauer.getChildren().add(tf_dauer);
+        hb_jahr.getChildren().add(tf_jahr);
         
-        tf_dauer.addEventFilter(KeyEvent.KEY_TYPED, ev->{
-        	if( !Character.isDigit(ev.getCharacter().charAt(0)) || tf_dauer.getLength() >= 3) {
-        		ev.consume();
-        		return;
-        	}
-        });     
-        tf_dauer.focusedProperty().addListener((ob,ov,newVal)->{
-        	if(newVal==false && tf_dauer.getLength()>0)
-        		tf_dauer.setText(tf_dauer.getText()+" Minuten");
-        	else if(tf_dauer.getLength()>0)
-        		tf_dauer.setText(tf_dauer.getText().replaceAll("[^0-9]", ""));
-        });
-       
-        //The Horse In Motion (1878)
-        tf_jahr.focusedProperty().addListener((ob,ov,newVal)->{
-        	if(newVal == true || tf_jahr.getLength()==0) return;
-        	int jahr = Integer.parseInt(tf_jahr.getText());
-        	if(jahr < 1878 || jahr > LocalDate.now().getYear())	{
-        		tf_jahr.setText(null);
-        	}
-        });
-        
+//        tf_jahr.addEventFilter(KeyEvent.KEY_TYPED, ev->{
+//        	if( !Character.isDigit(ev.getCharacter().charAt(0)) )	ev.consume();
+//        	if(tf_jahr.getLength() >= 4) ev.consume();
+//        });
+//        
+//        tf_dauer.addEventFilter(KeyEvent.KEY_TYPED, ev->{
+//        	if( !Character.isDigit(ev.getCharacter().charAt(0)) || tf_dauer.getLength() >= 3) {
+//        		ev.consume();
+//        		return;
+//        	}
+//        });     
+//        tf_dauer.focusedProperty().addListener((ob,ov,newVal)->{
+//        	if(newVal==false && tf_dauer.getLength()>0)
+//        		tf_dauer.setText(tf_dauer.getText()+" Minuten");
+//        	else if(tf_dauer.getLength()>0)
+//        		tf_dauer.setText(tf_dauer.getText().replaceAll("[^0-9]", ""));
+//        });
+//       
+//        //The Horse In Motion (1878)
+//        tf_jahr.focusedProperty().addListener((ob,ov,newVal)->{
+//        	if(newVal == true || tf_jahr.getLength()==0) return;
+//        	int jahr = Integer.parseInt(tf_jahr.getText());
+//        	if(jahr < 1878 || jahr > LocalDate.now().getYear())	{
+//        		tf_jahr.setText(null);
+//        	}
+//        });
+//        
         tf_bewertung.setDisable(true);
         tf_genre.setEditable(false);
         ta_genre.setWrapText(true);
@@ -332,7 +351,12 @@ public class AddFilmCtrl {
     private void commit() {
     	System.out.println(changes[0]+"  "+changes[1]);
     	
-    	try {
+		FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
+    	FilteredList<PersonMitRolle> delete = personen.filtered(per->confirmed.get(per)[1].get());
+    	if(!changes[0]&& !changes[1] && delete.size()==0)
+    		return;
+    	
+    	try(Connection con = DB_Manager.getCon()) {
     		//Wenn Fildaten geändert
     		if(changes[0]) {
             	checkEingaben();
@@ -340,17 +364,15 @@ public class AddFilmCtrl {
     			int jahr = Integer.parseInt(tf_jahr.getText());
     			//Wenn kein Film vorhanden
     			if(film==null) {
-    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), selected, dauer, jahr );
-    				pvw = film.getUnterverwaltungen().getPvw();
+    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), selected, dauer, jahr, con );
+    				pvw = film.getPvw();
     			}else		
-    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), selected, dauer, jahr, film);
+    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), selected, dauer, jahr, film, con);
     		}
     		
-    		
-    		FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
-        	FilteredList<PersonMitRolle> delete = personen.filtered(per->confirmed.get(per)[1].get());
-        	pvw.addOrUpdate(update.subList(0, update.size()));
-			pvw.delete(delete.subList(0, delete.size()));
+    		if(changes[1])
+    			pvw.addOrUpdate(update, con);
+        	pvw.delete(delete, con);
     		
 		} catch (Exception e) {
 			Alert a = new Alert(AlertType.ERROR);
@@ -389,8 +411,8 @@ public class AddFilmCtrl {
     
     private void openDetail() {
     	try {
-			FensterManager.setDialog( FensterManager.showDetail(film) );
-		} catch (SQLException | IOException e) {
+			FensterManager.setDialog( FensterManager.getDetail(film) );
+		} catch (SQLException e) {
 			Alert a2 = new Alert(AlertType.ERROR);
 			a2.setTitle(e.getClass().getSimpleName());
 			a2.setContentText(e.getMessage());
