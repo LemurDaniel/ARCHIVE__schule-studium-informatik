@@ -1,4 +1,4 @@
-package Verwaltungen.verwaltungen;
+package verwaltung.verwaltungen;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import Verwaltungen.Unterverwaltung;
-import Verwaltungen.entitaeten.Film;
-import Verwaltungen.entitaeten.Person;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
+import verwaltung.Unterverwaltung;
+import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Person;
 
 public class Personenverwaltung extends Unterverwaltung<Person>{
 

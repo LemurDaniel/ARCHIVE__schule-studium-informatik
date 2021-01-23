@@ -3,13 +3,6 @@ package gui.controller;
 
 import java.sql.SQLException;
 
-import Verwaltungen.entitaeten.Film;
-import Verwaltungen.entitaeten.Nutzer;
-import Verwaltungen.entitaeten.Person;
-import Verwaltungen.entitaeten.Rezension;
-import Verwaltungen.entitaeten.Nutzer.Rechte;
-import Verwaltungen.verwaltungen.Personenverwaltung;
-import Verwaltungen.verwaltungen.Rezensionenverwaltung;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -25,6 +19,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyEvent;
+import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Nutzer;
+import verwaltung.entitaeten.Nutzer.Rechte;
+import verwaltung.entitaeten.Person;
+import verwaltung.entitaeten.Rezension;
+import verwaltung.verwaltungen.Personenverwaltung;
+import verwaltung.verwaltungen.Rezensionenverwaltung;
 
 public class DetailCtrl {
 
@@ -56,7 +58,9 @@ public class DetailCtrl {
         
         accordion.setExpandedPane(tp_allg);
         
+        setEdit(false);
 		cb_r.setDisable(true);
+		displayRezension();			//Wenn Film gewechselt display aktualisieren 
 		// Wenn keine Rechte zum schreiben einer Review und keine bereits geschreiben vorhanden
         if(!rechte.isReviewWrite() && rvw.getRezensionVonNutzer(nid)==null)
         	cb_r.getSelectionModel().select(0);
@@ -140,6 +144,9 @@ public class DetailCtrl {
     @FXML // fx:id="btn_r"
     private Button btn_r; // Value injected by 
     
+    @FXML // fx:id="lbl_r"
+    private Label lbl_r; // Value injected by FXMLLoader
+    
     @FXML
     void add_rez(ActionEvent event) {
           Alert a = new Alert(AlertType.INFORMATION);
@@ -155,6 +162,7 @@ public class DetailCtrl {
           try {
         	if(exists)	rvw.updateRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), displayed.getId());
         	else		rvw.addRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), nid);
+        	displayRezension();
           	setEdit(false);
             tf_bewertung.setText(film.getBewertung().get()+"");
           }catch(Exception e) {
@@ -189,7 +197,8 @@ public class DetailCtrl {
         assert s_bwt != null : "fx:id=\"s_bwt\" was not injected: check your FXML file 'Detail.fxml'.";
         assert ta_rtext != null : "fx:id=\"ta_rtext\" was not injected: check your FXML file 'Detail.fxml'.";
         assert btn_r != null : "fx:id=\"btn_r\" was not injected: check your FXML file 'Detail.fxml'.";
-       
+        assert lbl_r != null : "fx:id=\"lbl_r\" was not injected: check your FXML file 'Detail.fxml'.";
+        
         /** Rechte **/
         if(!rechte.isReviewRead()) tp_rezd.setDisable(true);
         
@@ -220,6 +229,8 @@ public class DetailCtrl {
         cb_r.getItems().add("Nutzer - "+Nutzer.getNutzer().getName());
         cb_r.getSelectionModel().selectedIndexProperty().addListener((ob, ov, nv)->displayRezension()); 
         
+
+        ta_rtext.setWrapText(true);       
         ta_rtext.setPromptText("Rezension hier einfügen");
         tf_rtitel.setPromptText("Titel hier einfügen");
         s_bwt.setMax(10);
@@ -235,6 +246,15 @@ public class DetailCtrl {
         	setEdit(tbtn_r.isSelected());
         });
   
+        tf_rtitel.addEventFilter(KeyEvent.KEY_TYPED, ef->{
+        	if(tf_rtitel.getLength() >= rvw.getMaxTitel()) ef.consume();
+        });
+        ta_rtext.addEventFilter(KeyEvent.KEY_TYPED, ef->{
+        	System.out.println("test");
+        	if(ta_rtext.getLength() >= rvw.getMaxInhalt()) ef.consume();
+        	lbl_r.setText(rvw.getMaxInhalt()-ta_rtext.getLength()+"");
+        });
+        
         /**  **/
         
         t_vorname.setCellValueFactory(data->data.getValue().vorname);
@@ -265,7 +285,7 @@ public class DetailCtrl {
         	if(now-lastMouseClick < 200 && table1.getSelectionModel().getSelectedIndex()!=-1) {
         		if(rechte.isReviewRead())	{
         			tp_rezd.setExpanded(true);
-        			// Wenn eigene Rez ausgewähl, dann nur eine Option anzeigen
+        			// Wenn eigene Rez ausgewähl, dann erste Option anzeigen
         			if(table1.getSelectionModel().getSelectedItem().getId()==rvw.getRezensionVonNutzer(nid).getId())
         				cb_r.getSelectionModel().select(1);
         			else
@@ -313,7 +333,7 @@ public class DetailCtrl {
     	ta_rtext.setText(displayed.getInhalt().get());
     	tf_rtitel.setText(displayed.getTitel().get());
     	s_bwt.setValue(displayed.getBewertung().get());
-
+    	lbl_r.setText(rvw.getMaxInhalt()-ta_rtext.getLength()+"");
     }
     
     

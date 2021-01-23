@@ -1,10 +1,9 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
 * {
 	-fx-font-size: 15.0px;
 } 
 Accordion {
-	-fx-pref-height: 420.0px ;
+	-fx-pref-height: 440.0px ;
 	-fx-pref-width: 600.0px ;
 }
 
@@ -13,7 +12,7 @@ Accordion {
 	-fx-padding: 0 0 0 20;
 }
 
-.hbox_allg TextField {
+.hbox_allg > TextField {
 	-fx-min-width: 0.0;
 	-fx-min-height: 0.0;
 	-fx-max-height: 31;
@@ -32,9 +31,33 @@ Accordion {
 	-fx-pref-height: 31;
 }
 
-TextField {
-	-fx-padding: 10.0;
+VBox {
+	-fx-padding: 20 20 10 20;
 }
+
+HBox {
+	-fx-padding: 2.5 0 2.5 0;
+}
+
+ScrollPane {
+	-fx-hbar-policy: never ;
+	-fx-vbar-policy: as-needed ;
+}
+	
+.FlowPaneRight {
+	-fx-alignment: center-right ;
+	-fx-padding: 0 0 0 5;
+}
+.FlowPaneLeft {
+	-fx-alignment: center-left ;
+	-fx-padding: 0 5 0 0;
+}
+
+
+
+
+
+
 
 
 

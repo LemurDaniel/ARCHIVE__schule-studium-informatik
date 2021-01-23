@@ -1,10 +1,10 @@
-$count = 4
+$count = 6
 while ($count -lt 84) {
-    $path = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\WIF 3 - ProjektFilmDB\Backup History"
+    $path = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\WIF 3 - ProjektFilmDB\Backup History\"
     $version_path = $path+$count.ToString()
     $src = $version_path+"\Filmdatenbank\"
 
-    $dest = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\"
+    $dest = "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\"
 
     $dst1 = $dest+"src"
 
@@ -15,9 +15,7 @@ while ($count -lt 84) {
 
     ls $src | Copy-Item -Recurse -Destination $dest 
 
-    Remove-Item -Path $version_path -Force -Recurse
-
-    cd "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\"
+    cd "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\"
 
     git add -A
 

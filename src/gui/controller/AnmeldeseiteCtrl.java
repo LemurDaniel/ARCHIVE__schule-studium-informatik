@@ -4,7 +4,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import Verwaltungen.entitaeten.Nutzer;
+
 import exceptions.LogInException;
 import exceptions.RegisterException;
 import javafx.collections.FXCollections;
@@ -12,10 +12,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
+import verwaltung.entitaeten.Nutzer;
 
 public class AnmeldeseiteCtrl {
 
@@ -81,6 +83,7 @@ public class AnmeldeseiteCtrl {
     		a.show();
 		}
     }
+    
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
@@ -126,6 +129,18 @@ public class AnmeldeseiteCtrl {
         }); 
         
         cbox.getSelectionModel().select(0);
+     
+        tf_name.addEventFilter(KeyEvent.KEY_TYPED, this::typed);
+        tf_pwd.addEventFilter(KeyEvent.KEY_TYPED, this::typed);
+        tf_pwd2.addEventFilter(KeyEvent.KEY_TYPED, this::typed);
+    }
+    
+    void typed(KeyEvent event) {
+    	if(event.getSource().equals(tf_name)) {
+    		if(tf_name.getLength() >= Nutzer.getNutzer().getMaxName())	 event.consume();
+    	} else {
+    		if( ((TextField)event.getSource()).getLength() >= Nutzer.getNutzer().getMaxPasswort() ) event.consume();
+    	}
     }
     
 }

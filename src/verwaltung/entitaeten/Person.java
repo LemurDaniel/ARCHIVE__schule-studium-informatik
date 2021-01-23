@@ -1,4 +1,4 @@
-package Verwaltungen.entitaeten;
+package verwaltung.entitaeten;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

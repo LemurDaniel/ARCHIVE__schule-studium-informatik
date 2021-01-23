@@ -1,8 +1,8 @@
-package Verwaltungen;
+package verwaltung;
 
 import java.sql.SQLException;
 
-import Verwaltungen.entitaeten.Film;
+import verwaltung.entitaeten.Film;
 
 public abstract class Unterverwaltung<T> extends Verwaltung<T>{
 	

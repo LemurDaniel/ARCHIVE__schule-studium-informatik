@@ -1,4 +1,4 @@
-package Verwaltungen.entitaeten;
+package verwaltung.entitaeten;
 
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;

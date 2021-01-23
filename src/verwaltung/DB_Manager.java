@@ -1,4 +1,4 @@
-package Verwaltungen;
+package verwaltung;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,10 +6,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
-import Verwaltungen.entitaeten.Nutzer;
+import verwaltung.entitaeten.Nutzer;
 
 public class DB_Manager {
+	
+	
+	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=TEST";
+	private static String user = "DanielTest";
+	private static String password = "Test";
+	
+	protected static Map<String, Integer> maxSize = new HashMap<>();
 	
    static {
 		try {
@@ -18,6 +27,18 @@ public class DB_Manager {
 			System.out.println("Kein Treiber gefunden");
 			e.printStackTrace();
 		}
+		
+		
+//		try {
+//			getCon();
+//		} catch (SQLException e) {
+//			user = "student";
+//			password = "wifuser";
+//		}
+		InstanzAnmelden();
+		metaDaten();
+		System.out.println(maxSize.size());
+		maxSize.forEach( (k,o)->System.out.println(k+"   "+o));
 	}
 	
 	
@@ -63,7 +84,8 @@ public class DB_Manager {
 
 	
 	protected static Connection getCon() throws SQLException {
-		try(Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=TEST", "Daniel_Test", "Test");) {	
+		Connection con = DriverManager.getConnection(url, user, password);
+		try {	
 			
 			if(Nutzer.getNutzer().isAngemeldet()) {
 				if(!Nutzer.getNutzer().getRechte().isMultiLogin()) {
@@ -79,12 +101,37 @@ public class DB_Manager {
 				}
 			}
 
-			System.out.println(++connectionsCreated);
-			return DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=TEST", "Daniel_Test", "Test");
+			System.out.println("Connection: "+ ++connectionsCreated);
+			return con;
 		} catch (SQLException e) {
+			con.close();
 			throw e;
 		}
 	}
 	
+	
+	private static void metaDaten() {
+		try(Connection con = getCon()){
+			ResultSet rs = con.getMetaData().getColumns(null, "dbo", null, null);
 
+			while(rs.next()) {
+				String col = rs.getString("COLUMN_NAME");
+				String tab = rs.getString("TABLE_NAME");
+				int size = rs.getInt("COLUMN_SIZE");
+				
+				if(tab.equals("Nutzer")) {
+					if(col.equals("name")) 			maxSize.put("name", size);
+					else if(col.equals("passwort")) maxSize.put("passwort", size);
+				}
+				else if(tab.equals("rezensionen")) {
+					if(col.equals("titel")			&& tab.equals("rezensionen")) maxSize.put("rezTitel", size);
+					else if(col.equals("inhalt")	&& tab.equals("rezensionen")) maxSize.put("rezInhalt", size);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 }

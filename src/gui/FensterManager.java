@@ -3,9 +3,6 @@ package gui;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import Verwaltungen.DB_Manager;
-import Verwaltungen.entitaeten.Film;
-import Verwaltungen.entitaeten.Nutzer;
 import gui.controller.AnmeldeseiteCtrl;
 import gui.controller.DetailCtrl;
 import gui.controller.HauptseiteCtrl;
@@ -15,6 +12,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.stage.Stage;
+import verwaltung.DB_Manager;
+import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Nutzer;
 
 public class FensterManager {
 
@@ -60,6 +60,7 @@ public class FensterManager {
 		if(detail==null) {
 			detail = new Stage();
 			detail.setTitle("Filmdatenbank - Detailansicht");
+			detail.setResizable(false);
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/Detail.fxml"));
 			loader.load();
     		detailCtrl = loader.getController();

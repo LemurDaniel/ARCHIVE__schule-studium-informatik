@@ -1,11 +1,11 @@
-package Verwaltungen.verwaltungen;
+package verwaltung.verwaltungen;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import Verwaltungen.Verwaltung;
-import Verwaltungen.entitaeten.Film;
+import verwaltung.Verwaltung;
+import verwaltung.entitaeten.Film;
 
 public class Filmverwaltung extends Verwaltung<Film>{
 	

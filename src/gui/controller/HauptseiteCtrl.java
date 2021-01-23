@@ -1,16 +1,7 @@
 package gui.controller;
 
-/**
- * Sample Skeleton for 'Hauptseite.fxml' Controller Class
- */
-
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 
-import Verwaltungen.entitaeten.Film;
-import Verwaltungen.entitaeten.Nutzer;
-import Verwaltungen.verwaltungen.Filmverwaltung;
 import gui.FensterManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Nutzer;
+import verwaltung.verwaltungen.Filmverwaltung;
 
 public class HauptseiteCtrl {
 	

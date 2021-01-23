@@ -1,4 +1,4 @@
-package Verwaltungen.verwaltungen;
+package verwaltung.verwaltungen;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import Verwaltungen.Unterverwaltung;
-import Verwaltungen.entitaeten.Film;
-import Verwaltungen.entitaeten.Rezension;
+import verwaltung.Unterverwaltung;
+import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Rezension;
 
 public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 
@@ -103,4 +103,10 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		if(inhalt.length()<20) throw new Exception("Der Inhalt muss mindestens 20 Zeichen lang sein.");
 	}
 	
+	public int getMaxTitel() {
+		return maxSize.get("rezTitel");
+	}
+	public int getMaxInhalt() {
+		return maxSize.get("rezInhalt");
+	}
 }

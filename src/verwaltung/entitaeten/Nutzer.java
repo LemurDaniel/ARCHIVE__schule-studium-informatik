@@ -1,15 +1,15 @@
-package Verwaltungen.entitaeten;
+package verwaltung.entitaeten;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import Verwaltungen.DB_Manager;
 import exceptions.LogInException;
 import exceptions.RegisterException;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
+import verwaltung.DB_Manager;
 
 public class Nutzer extends DB_Manager {
 	
@@ -123,6 +123,13 @@ public class Nutzer extends DB_Manager {
 		return angemeldet.getReadOnlyProperty();
 	}
 	
+	public int getMaxName() {
+		return maxSize.get("name");
+	}
+	public int getMaxPasswort() {
+		return maxSize.get("passwort");
+	}
+	
 	public class Rechte {
 		private String berechtigung;
 		private boolean read;
@@ -197,5 +204,19 @@ public class Nutzer extends DB_Manager {
 
 		
 	}
+	
+	
+//	public void test() throws SQLException {
+//		try(Connection con = getCon()){
+//			ResultSet rs = con.getMetaData().getColumns(null, "dbo", null, "name");
+//			while(rs.next()) {
+//				if(rs.getString("COLUMN_NAME").equals("name")) System.out.println();
+//				for(int i = rs.getMetaData().getColumnCount(); i>0; i--) {
+//					System.out.println(rs.getMetaData().getColumnName(i));
+//					System.out.println(rs.getObject(i));
+//				}
+//			}
+//		}
+//	}
 
 }

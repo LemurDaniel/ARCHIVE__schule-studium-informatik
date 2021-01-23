@@ -1,16 +1,16 @@
-package Verwaltungen.entitaeten;
+package verwaltung.entitaeten;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import Verwaltungen.verwaltungen.Personenverwaltung;
-import Verwaltungen.verwaltungen.Rezensionenverwaltung;
 import javafx.beans.property.ReadOnlyFloatProperty;
 import javafx.beans.property.ReadOnlyFloatWrapper;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import verwaltung.verwaltungen.Personenverwaltung;
+import verwaltung.verwaltungen.Rezensionenverwaltung;
 
 public class Film {
 	
