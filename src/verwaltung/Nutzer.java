@@ -56,7 +56,6 @@ public class Nutzer extends DB_Manager {
 	}	
 	private static void anmeldenKonto(String name, String passwort, Connection con) throws SQLException, LogInException {	
 		if(logingIn)	return;
-		logingIn = true;
 		
 		try(Statement st = con.createStatement()){			
 			//Existiert Nutzer?
@@ -64,14 +63,14 @@ public class Nutzer extends DB_Manager {
 						
 			boolean multilogin;
 			//Stimmt das Passwort?
-			String sql =  "Select nutzer.id, passwort, registrierungsDatum, multilogin from nutzer join rechte on rechte.id=rechte where name=?";
+			String sql =  "Select nutzer.id, passwort, multilogin from nutzer join rechte on rechte.id=rechte where name=?";
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setString(1, name);
 				try(ResultSet rs = ps.executeQuery()){
 					rs.next();
 					
 					String pwhash = rs.getString("passwort");
-					String pass = (passwort+name+rs.getString("registrierungsDatum"));
+					String pass = (passwort+name);
 					if(pass.length()>71) pass = pass.substring(0,71);
 					
 					Result verifyResult = BCrypt.verifyer().verify( pass.toCharArray(), pwhash.toCharArray());
@@ -122,7 +121,9 @@ public class Nutzer extends DB_Manager {
 					instance.setNutzer(rs);
 				}
 			}	
+			
 			instance.angemeldet.set(true);
+			logingIn = true;
 			Thread th = new Thread(()->{
 				try (Connection conn = DB_Manager.con()){
 					Listenverwaltung.instance().ladeListen(conn);
@@ -133,7 +134,7 @@ public class Nutzer extends DB_Manager {
 						logingIn = false;
 					});
 				} catch (SQLException e) {
-					e.printStackTrace();
+					logingIn = false;
 				}
 			});
 			th.start();
@@ -153,17 +154,14 @@ public class Nutzer extends DB_Manager {
 				throw new RegisterException("Der Name: '"+name+"' existiert bereits", RegisterException.NAME_EXISTS);
 			
 			//Anlegen
-			String regDat = LocalDateTime.now().toString();
-			if(regDat.length()>27) regDat = regDat.substring(0, 27);
-			regDat = regDat.replaceFirst("T", " ");
-			String pass =  passwort+name+regDat;
+			String pass =  passwort+name;
 			if(pass.length()>71) pass = pass.substring(0, 71);
-			String hashedPw = BCrypt.withDefaults().hashToString(10, pass.toCharArray());		
-			String sql = "insert into nutzer(name, passwort, rechte, registrierungsDatum) values(?, ?, 1, ?);";
+			String hashedPw = BCrypt.withDefaults().hashToString(10, pass.toCharArray());	
+			
+			String sql = "insert into nutzer(name, passwort, rechte) values(?, ?, 1);";
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setString(1, name);
 				ps.setString(2, hashedPw);
-				ps.setString(3, regDat);
 				ps.executeUpdate();
 			}			
 			FensterManager.logErreignis("\nDas Konto "+name+" wurde erfolgreich erstellt", Color.GREEN);

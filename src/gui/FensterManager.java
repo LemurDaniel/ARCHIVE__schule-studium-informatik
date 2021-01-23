@@ -245,14 +245,16 @@ public class FensterManager {
 	}
 	
 	public static void logErreignis(String text, Color color) {
-		if(statusmeldung==null)	showStatusmeldung();
 		Text t = new Text(text+"\n");
 		t.setFill(color);
+		
 		if(Platform.isFxApplicationThread()) {
+			if(statusmeldung==null)	showStatusmeldung();
 			statusTA.getChildren().add(t);	
 			if(statusTA.getChildren().size()>=1000)	statusTA.getChildren().remove(0);
 		}else {
 			Platform.runLater(()->{
+				if(statusmeldung==null)	showStatusmeldung();
 				statusTA.getChildren().add(t);	
 				if(statusTA.getChildren().size()>=1000)	statusTA.getChildren().remove(0);
 			});	

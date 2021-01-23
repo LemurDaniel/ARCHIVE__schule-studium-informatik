@@ -27,11 +27,7 @@ public class Genre implements Comparator<Genre> {
 
 	@Override
 	public int compare(Genre o1, Genre o2) {
-		if(o1.getId()>o2.getId())
-			return 1;
-		else if(o1.getId()<o2.getId())
-			return -1;
-		return 0;
+		return o1.genre.compareTo(o2.genre);
 	}
 
 }

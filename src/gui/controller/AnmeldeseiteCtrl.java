@@ -43,6 +43,8 @@ public class AnmeldeseiteCtrl {
     @FXML
     private Button btn;  
     
+    private String name = "";
+    
     @FXML
     void btnAction(ActionEvent event) {
     	int i = cbox.getSelectionModel().getSelectedIndex();
@@ -87,6 +89,7 @@ public class AnmeldeseiteCtrl {
         
         cbox.getSelectionModel().selectedIndexProperty().addListener( (ob, oldV, newV) -> {      	
         	if(newV.intValue()==0) {
+        		name = tf_name.getText()==null? "":tf_name.getText();
         		tf_name.setText("Gast");
         		tf_name.setEditable(false);
         		vb.getChildren().remove(tf_pwd);
@@ -95,7 +98,7 @@ public class AnmeldeseiteCtrl {
                 FensterManager.getAnmelden().setHeight(200);
         	}else
         	if(newV.intValue()==1) {
-        		if(oldV.intValue()==0)tf_name.setText("");
+        		if(oldV.intValue()==0)tf_name.setText(name);
         		tf_name.setEditable(true);
         		if(!vb.getChildren().contains(tf_pwd)) vb.getChildren().add(2, tf_pwd);
         		vb.getChildren().remove(tf_pwd2);
@@ -104,7 +107,7 @@ public class AnmeldeseiteCtrl {
         	}
         	else
         	if(newV.intValue()==2) {
-        		if(oldV.intValue()==0)tf_name.setText("");
+        		if(oldV.intValue()==0)tf_name.setText(name);
         		tf_name.setEditable(true);
         		if(!vb.getChildren().contains(tf_pwd)) 	vb.getChildren().add(2, tf_pwd);
         		if(!vb.getChildren().contains(tf_pwd2)) vb.getChildren().add(3, tf_pwd2);

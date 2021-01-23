@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import gui.FensterManager;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Rolle;
@@ -25,13 +27,13 @@ import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 public class DB_Manager {
 	
 //	private static String url = "jdbc:sqlserver://testserverdaniel.database.windows.net:1433;database=FilmDB;user=daniel@testserverdaniel;password={`nfTV|H_y7~PUNh\\\"'*\\\\}\\\\tbyqObcN|8Y]O$lq3Q`Vvt7U5uSNG]_j>vo@RQ<g)\\\"?};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
-	private static String url = "jdbc:sqlserver://testserverdaniel.database.windows.net:1433;databaseName=FilmDB";
-	private static String user = "daniel";
-	private static String password = "`nfTV|H_y7~PUNh\"'*\\}\\tbyqObcN|8Y]O$lq3Q`Vvt7U5uSNG]_j>vo@RQ<g)\"?";
+//	private static String url = "jdbc:sqlserver://testserverdaniel.database.windows.net:1433;databaseName=FilmDB";
+//	private static String user = "daniel";
+//	private static String password = "`nfTV|H_y7~PUNh\"'*\\}\\tbyqObcN|8Y]O$lq3Q`Vvt7U5uSNG]_j>vo@RQ<g)\"?";
 	
-//	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=FilmDB";
-//	private static String user = "DanielTest";
-//	private static String password = "Test";
+	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=FilmDB";
+	private static String user = "DanielTest";
+	private static String password = "Test";
 	
 	public static Map<String, Integer> maxSize = new TreeMap<>();
 	
@@ -48,7 +50,11 @@ public class DB_Manager {
 			getDaten(con);
 		}catch(Exception e) {
 			e.printStackTrace();
-			System.exit(0);
+			Alert a = new Alert(AlertType.ERROR);
+			a.setTitle("Verbindungsfehler");
+			a.setHeaderText("Es konnte keine Verbindung mit der Datenbank hergestellt werden");
+			a.setContentText(e.getMessage());
+			a.show();
 		}
 	}
 	

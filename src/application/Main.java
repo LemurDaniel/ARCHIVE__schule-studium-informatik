@@ -4,9 +4,12 @@ package application;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-
-
+import java.util.ArrayList;
+import java.util.List;
 
 import gui.FensterManager;
 import javafx.application.Application;
@@ -47,22 +50,40 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception{
 			
 		instance = this;		
-		
-		Stage g = new Stage();
-		g.setScene( new Scene( FXMLLoader.load(getClass().getResource("../sudoku/Test.fxml"))));
-		FensterManager.setSecondary( g);
-		
-		//FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
-		//FensterManager.getHauptSeite().show();
 
-		//FensterManager.setSecondary(FensterManager.getListensicht());
-//		Nutzer.getNutzer().anmeldenGast();
+		FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
+
 	}
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
+	public static class t extends DB_Manager{
+		
+		public static void t() throws SQLException {
+			List<String> genre = new ArrayList<>();
+			try(Connection con = con()){
+				try(PreparedStatement ps = con.prepareStatement("Select * from genre")){
+					try(ResultSet rs = ps.executeQuery()){
+						while(rs.next()) genre.add(rs.getString("genre"));
+					}
+				}
+			}
+			
+			genre.sort(String::compareTo);
+			genre.forEach(s->System.out.println(s));
+		
+		
+		try(Connection con = con()){
+			try(PreparedStatement ps = con.prepareStatement("Select * from nutzer")){
+				try(ResultSet rs = ps.executeQuery()){
+					while(rs.next()) System.out.println(rs.getString("passwort"));
+				}
+			}
+		}
+		}
+	}
 
 	
 }
