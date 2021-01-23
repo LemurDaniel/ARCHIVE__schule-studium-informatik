@@ -29,7 +29,8 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	
 	public static ObservableList<Rolle> getRollen() {
 		ObservableList<Rolle> r = FXCollections.observableArrayList(rolleMap.values());
-		r.sort((o1, o2)->o1.getRolle().compareTo(o2.getRolle()));
+	//	r.sort((o1, o2)->o1.getRolle().compareTo(o2.getRolle()));
+		r.sort((o1,o2)->Integer.compare(o1.getId(), o2.getId()));
 		return r;
 	}
 	

@@ -86,7 +86,7 @@ public class AnmeldeseiteCtrl {
         cbox.getItems().add("Nutzer");
         cbox.getItems().add("Registrieren");
         cbox.getItems().add("Daniel");
-        cbox.getItems().add("Unlimited");
+        cbox.getItems().add("Alle Rechte");
         
         cbox.getSelectionModel().selectedIndexProperty().addListener(this::auswahl);    
         cbox.getSelectionModel().select(0);
