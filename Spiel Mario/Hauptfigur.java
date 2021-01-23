@@ -8,7 +8,7 @@ public class Hauptfigur
     private int y=345;
     Hauptfigur Figur;
         
-    public Hauptfigur()
+    public void erstelleHauptfigur()
     {
         
       Pixel[0]= new RECHTECK(x,y,breite,breite,"braun"); //1 Reihe von unten des linken Fußes 1 Pixel von links aus gezählt
@@ -178,5 +178,4 @@ public class Hauptfigur
              
     }
     
-    
-   }
+}

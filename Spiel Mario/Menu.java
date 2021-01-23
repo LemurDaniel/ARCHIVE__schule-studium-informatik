@@ -33,7 +33,7 @@ public class Menu extends JFrame{
          
       @Override
         public void actionPerformed(ActionEvent e) {
-           Spiel Hauptspiel = new Spiel();
+           //start das Spiel
             }
             
         });

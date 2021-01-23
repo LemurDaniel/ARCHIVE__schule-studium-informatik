@@ -1,7 +1,7 @@
 $dest = "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\Spiel Mario\"
 $src = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\Java10c Projekte\PROJEKT - Mario\Spiel Mario - "
-$count = 2
-$target_count = 3
+$count = 3
+$target_count = 23
 
 cd "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming"
 
