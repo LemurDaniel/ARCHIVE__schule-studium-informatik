@@ -117,6 +117,7 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 			}
 			while(!delete.empty()) {
 				T ent = delete.pop();
+				if(!list.contains(ent)) continue;
 				try {
 					delete(ent, con);
 					con.commit();

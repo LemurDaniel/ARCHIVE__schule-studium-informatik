@@ -50,7 +50,6 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		String sql = "Insert into rezension(titel, inhalt, bewertung, verfasser, filmid) values(?, ?, ?, ?, ?); "
 					+ "Select SCOPE_IDENTITY()";
 		
-		con.setAutoCommit(false);
 		try(PreparedStatement ps = con.prepareStatement(sql)){
 			ps.setString(1, rez.getTitel());
 			ps.setString(2, rez.getInhalt());
@@ -62,15 +61,9 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 				rs.next();
 				rez.setId(rs.getInt(1));
 			}
-			updateFilmBewertung(con);
-			con.commit();
-			con.setAutoCommit(true);
-			
-			addObj(rez);
-		}catch(SQLException e) {
-			con.rollback();
-			throw e;
 		}
+		updateFilmBewertung(con);			
+		addObj(rez);
 	}
 	
 	@Override
@@ -78,7 +71,6 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		
 		String sql = "Update rezension set titel=?, inhalt=?, bewertung=? where id=?;";
 	
-		con.setAutoCommit(false);
 		try(PreparedStatement ps = con.prepareStatement(sql);){
 			ps.setString(1, rez.getTitel());
 			ps.setString(2, rez.getInhalt());
@@ -86,12 +78,6 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 			ps.setInt(4, 	rez.getId());
 			ps.executeUpdate();
 			updateFilmBewertung(con);
-			con.commit();
-			con.setAutoCommit(true);
-
-		}catch(SQLException e) {
-			con.rollback();
-			throw e;
 		}
 	}
 	
@@ -101,10 +87,11 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	}
 	
 	private void updateFilmBewertung(Connection con) throws SQLException{
-		System.out.println("test");
+
 		String sql = "Update film set bewertung = (Select AVG( CAST(bewertung AS decimal(3,1)) ) from rezension where filmid = ?)"
 					+ "where film.id = ?; "
 					+ "Select film.bewertung from film where film.id=?";
+		
 		try(PreparedStatement ps = con.prepareStatement(sql);){
 			ps.setInt(1	, film.getId());
 			ps.setInt(2, film.getId());

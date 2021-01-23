@@ -75,7 +75,7 @@ public class DetailCtrl {
 			}
 		}
 		
-        table.setItems(FXCollections.observableArrayList(pvw.getPersonenMitRollen()));
+        table.setItems(pvw.getPersonenMitRollen());
         table1.setItems(rvw.getObList());
 		
         tf_titel.setText(film.getTitel());
@@ -244,8 +244,7 @@ public class DetailCtrl {
         	 rvw.reset();
         	 return;
           }
-         
-        setAnzeige();
+
         setEdit(false);
         tf_bewertung.setText(film.getBwtStringProperty().get());
         tp_rez.setDisable(false);
@@ -401,7 +400,7 @@ public class DetailCtrl {
     private void setAnzeige() {
     	if(angezeigt == null) setRezension();
     	ta_rtext.setText(angezeigt.getInhalt());
-    	tf_rtitel.setDefaultValue(angezeigt.getTitel());
+    	tf_rtitel.setDefaultSupplier(()->angezeigt.getTitel());
     	s_bwt.setValue(angezeigt.getBewertung());
     	setEdit(false);
     }

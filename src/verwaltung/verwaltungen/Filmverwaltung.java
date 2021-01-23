@@ -59,7 +59,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		String sql = "Insert into film(titel, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?); Select SCOPE_IDENTITY()";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){			
-			con.setAutoCommit(false);	
 			
 			ps.setString(	1, 	f.getTitel()				);
 			ps.setInt(		2, 	f.getDauer()				);
@@ -73,8 +72,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			}
 
 			updateGenres(con, f.getGenres(), f.getId());
-			con.commit();
-			con.setAutoCommit(true);
 		}		
 		addObj(f);	
 	}
@@ -94,8 +91,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			ps.executeUpdate();
 
 			updateGenres(con, f.getGenres(), f.getId());
-			con.commit();
-			con.setAutoCommit(true);
 		}
 	}
 	
