@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
+import at.favre.lib.crypto.bcrypt.LongPasswordStrategies;
 import exceptions.LogInException;
 import exceptions.RegisterException;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -60,8 +61,9 @@ public class Nutzer extends DB_Manager {
 				try(ResultSet rs = ps.executeQuery()){
 					rs.next();
 					String pwhash = rs.getString(1);
-					String regDat = rs.getString(2);
-					Result verifyResult = BCrypt.verifyer().verify( (passwort+name+regDat).toCharArray(), pwhash.toCharArray());
+					String pass = (passwort+name+ rs.getString(2));
+					if(pass.length()>71) pass = pass.substring(0,71);
+					Result verifyResult = BCrypt.verifyer().verify( pass.toCharArray(), pwhash.toCharArray());
 					if(!verifyResult.verified)
 						throw new LogInException("Das verwendete Passwort ist falsch", LogInException.WRONG_PASSWORD);
 				}
@@ -119,8 +121,9 @@ public class Nutzer extends DB_Manager {
 			String regDat = LocalDateTime.now().toString();
 			if(regDat.length()>27) regDat = regDat.substring(0, 27);
 			regDat = regDat.replaceFirst("T", " ");
-			String hashedPw = BCrypt.withDefaults().hashToString(10, (passwort+name+regDat).toCharArray());
-			
+			String pass =  passwort+name+regDat;
+			if(pass.length()>71) pass = pass.substring(0, 71);
+			String hashedPw = BCrypt.withDefaults().hashToString(10, pass.toCharArray());		
 			String sql = "insert into nutzer(name, passwort, rechte, registrierungsDatum) values(?, ?, 1, ?);";
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setString(1, name);

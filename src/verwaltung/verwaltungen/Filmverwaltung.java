@@ -77,6 +77,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 
 			updateGenres(con, genres, f.getId());
 			con.commit();
+			genres.forEach(g->f.addGenre(g));
 			list.add(f);
 			return f;
 		}
@@ -125,7 +126,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	public void filter(String titel, Integer bwtMax, Integer bwtMin, Integer dauerMax, Integer dauerMin, Integer jahrMax,
 			Integer jahrMin, List<Genre> genre, boolean and, List<String> tags, int anzahl) throws SQLException {
 		
-		
+		System.out.println(titel);
+
 		if(bwtMax==null)	bwtMax=10;
 		if(bwtMin==null)	bwtMin=0;
 		if(dauerMax==null)  dauerMax=getMaxDauer();
@@ -148,9 +150,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			sb.append("join ");
 				sb.append("(Select fid from (Select * from genre_film where gid in ( ");			// In( ?, ... ) kurz für multiple Or
 				for(int i=0; i<genre.size(); i++) 
-					sb.append(" ?" + (i==genre.size()-1 ? ") ":", ") );
-				sb.append(") as g ");
-				sb.append("group by fid ");	
+					sb.append("?" + (i==genre.size()-1 ? ")) as g group by fid ":", ") );
 				if(and) sb.append("Having count(g.gid)=? ");
 				sb.append(") as fmg ");
 			sb.append("on fmg.fid = film.id ");
@@ -207,7 +207,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	public static int getMaxTitel() {
 		return maxSize.get("FilmTitel");
 	}
-
 	public static int getMaxDauer() {
 		return maxSize.get("FilmDauer");
 	}
@@ -216,5 +215,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	}
 	public static int getMaxJahr() {
 		return maxSize.get("MaxJahr");
+	}
+	public static int getMaxGenre() {
+		return maxSize.get("Genre");
 	}
 }

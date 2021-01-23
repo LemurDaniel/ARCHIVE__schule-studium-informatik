@@ -74,8 +74,8 @@ public class FensterManager {
 		
 		if(addFilm==null) {
 			addFilm = new Stage();
-			addFilm.setTitle("Filmdatenbank - Detailansicht");
 			addFilm.setResizable(false);
+			addFilm.setTitle("Filmdatenbank - Detailansicht");
 			FXMLLoader loader = getLoader("fxml/AddFilm.fxml");
 			addFilmCtrl = loader.getController();
     		addFilm.setScene(new Scene(loader.getRoot()));
@@ -87,6 +87,7 @@ public class FensterManager {
 	public static Stage getAnmelden() {
 		if(anmelden==null) {
 			anmelden = new Stage();
+			anmelden.setResizable(false);
 			anmelden.setTitle("Filmdatenbank - Anmelden");
 			FXMLLoader loader = getLoader("fxml/Anmeldeseite.fxml");
 			anmeldenCtrl = loader.getController();
@@ -98,6 +99,7 @@ public class FensterManager {
 	public static Stage getHauptSeite() {
 		if(hauptseite==null) {
 			hauptseite = new Stage();
+			hauptseite.setResizable(false);
 			hauptseite.setTitle("Filmdatenbank");
 			FXMLLoader loader = getLoader("fxml/Hauptseite.fxml");
 			hauptseiteCtrl = loader.getController();
@@ -119,6 +121,7 @@ public class FensterManager {
 	public static Stage getFilter() {
 		if(filter==null) {
 			filter = new Stage(StageStyle.DECORATED);
+			filter.setResizable(false);
 			filter.setTitle("Filmdatenbank - Filter");
 			FXMLLoader loader = getLoader("fxml/Filter.fxml");
 			filter.setScene(new Scene(loader.getRoot()));

@@ -21,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -73,7 +74,12 @@ public class AddFilmCtrl {
 		this.film = film;		
 		if(film!=null) {
 			pvw = film.getPvw();
-			pvw.loadIfnotLoaded();
+			if(!pvw.isLoaded() || !film.getRvw().isLoaded()) {
+				try(Connection con = DB_Manager.getCon()){
+					pvw.loadIfnotLoaded(con);
+					film.getRvw().loadIfnotLoaded(con);
+				}
+			}
 		}else
 			pvw = null;
 	        	
@@ -110,8 +116,8 @@ public class AddFilmCtrl {
 			tf_bewertung.setText(null);
 		}else {
 			tf_titel.setText(film.getTitel());
-			tf_dauer.setText(film.getDauer()+" Minuten");
-			tf_jahr.setText(film.getErscheinungsjahr()+"");
+			tf_dauer.setDefVal(film.getDauer());
+			tf_jahr.setDefVal(film.getErscheinungsjahr());
 			tf_bewertung.setText(film.getBewertung()+"");
 			tf_genre.setText(null);
 			film.getGenres().forEach(g->checked_genre.get(g).set(true));
@@ -225,9 +231,15 @@ public class AddFilmCtrl {
 			}
 			return change;	
         }));
+        tf_titel.focusedProperty().addListener((ob,ov,focused)->{
+        	if(!focused && film!=null && (tf_titel.getText()==null || tf_titel.getText().length()==0) )
+        		tf_titel.setText(film.getTitel());
+        });
         
         tf_dauer = new MinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
         tf_jahr = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
+        tf_dauer.setPromptText("Laufzeit");
+        tf_jahr.setPromptText("Erscheinungsjahr");
         hb_dauer.getChildren().add(tf_dauer);
         hb_jahr.getChildren().add(tf_jahr);
 
@@ -252,24 +264,30 @@ public class AddFilmCtrl {
         t_check.setCellValueFactory(data->checked_genre.get(data.getValue()));
         t_genre.setCellValueFactory(data->new SimpleStringProperty( data.getValue().getGenre() ));
 
-        // Beim abhaken -> Genre Textfeld aktualisieren
+        /** Beim abhaken -> Genre Textfeld aktualisieren **/
         checked_genre.forEach((k,v)->v.addListener((ob,ov,nv)->{
         	if(blocked) return;
-        	if(nv.booleanValue()==true)
-        		selected.add(checked_genre.inverse().get(ob));
-        	else
-        		selected.remove(checked_genre.inverse().get(ob));
+        	if(nv.booleanValue()==true) selected.add(checked_genre.inverse().get(ob));
+        	else						selected.remove(checked_genre.inverse().get(ob));
+        	
+        	t_check.setText(Filmverwaltung.getMaxGenre()-selected.size()+"");
+        	if(selected.size()>Filmverwaltung.getMaxGenre()) {
+        		checked_genre.get(selected.get(0)).set(false);
+        		return;
+        	}
         	
         	tf_genre.setText(null);
         	if(selected.size()==0)
         		return;
-        	selected.sort((o1, o2)-> o1.compare(o1, o2));
-        	StringBuilder sb = new StringBuilder(selected.get(0).getGenre());
-        	for(int i=1; i<selected.size(); i++)
-        		sb.append( ", "+selected.get(i).getGenre() );
+        	
+        	List<Genre> sorted = new ArrayList<>(selected);
+        	sorted.sort((o1,o2)->o1.compare(o1, o2));
+        	StringBuilder sb = new StringBuilder(sorted.get(0).getGenre());
+        	for(int i=1; i<sorted.size(); i++)
+        		sb.append( ", "+sorted.get(i).getGenre() );
         	tf_genre.setText(sb.toString());
+        	tf_genre.selectPositionCaret(sb.toString().length());	//Bei zu viel Text verschiebt sich der Text ohne dass nach rechts
         }));
-        
         
         
         /** Table Mitwirkende **/
@@ -297,7 +315,6 @@ public class AddFilmCtrl {
 		};
         t_rolle.setCellFactory(ComboBoxTableCell.forTableColumn(stconv, Personenverwaltung.getRollen()));
         
-        Personenverwaltung.getRollen().forEach(a->System.out.println(a.getRolle()));
         
         /**Changes**/
         t_vorname.setOnEditCommit(	data->{
@@ -318,7 +335,6 @@ public class AddFilmCtrl {
         	data.getRowValue().setRolle(data.getNewValue());
         	changes[1]=true;
         });
-        //t_confirm.setOnEditCommit <- funkt nicht mit checkbox
         
         tf_bewertung.textProperty().addListener((ob,ov,nv)-> changes[0]=true);
         tf_dauer.textProperty().addListener(	(ob,ov,nv)-> changes[0]=true);

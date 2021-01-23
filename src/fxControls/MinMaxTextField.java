@@ -63,7 +63,7 @@ public class MinMaxTextField extends TextField{
 			return;
 		}
 			
-		value = Integer.parseInt( getText() );
+		value = Integer.parseInt( getText().replaceAll(schwanz, "") );
 		int min = this.min;
 		int max = this.max;
 		

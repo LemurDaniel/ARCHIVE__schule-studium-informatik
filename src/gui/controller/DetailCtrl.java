@@ -106,7 +106,6 @@ public class DetailCtrl {
 		rechte = Nutzer.getNutzer().getRechte();
     	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
     	tp_rezd.setDisable( !rechte.isReviewRead() );
-    	if(!rechte.isReviewWrite()) cb_r.getSelectionModel().select(0);
 //    });
 	}
     /** Allgemein **/

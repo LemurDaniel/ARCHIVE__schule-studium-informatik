@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
+import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Rezension;
 
@@ -46,9 +47,7 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		check(titel, inhalt);
 		
 		String sql = "Insert into rezension(titel, inhalt, bewertung, verfasser, filmid) values(?, ?, ?, ?, ?); "
-					+ "Select rezension.id, name from nutzer " 
-					+ "join rezension on verfasser = nutzer.id "
-					+ "where rezension.id = SCOPE_IDENTITY();";
+					+ "Select SCOPE_IDENTITY()";
 		
 		try(Connection con = getCon();
 				PreparedStatement ps = con.prepareStatement(sql);){
@@ -58,8 +57,9 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 			ps.setInt(4, nid);
 			ps.setInt(5, film.getId());
 			
-			try(ResultSet rs = ps.executeQuery();){			
-				list.add(new Rezension(rs.getInt(1), titel, inhalt, rs.getString(2), nid, bewertung));
+			try(ResultSet rs = ps.executeQuery();){	
+				rs.next();
+				list.add(new Rezension(rs.getInt(1), titel, inhalt, Nutzer.getNutzer().getName(), nid, bewertung));
 			}
 			updateFilmBewertung(con);
 		}

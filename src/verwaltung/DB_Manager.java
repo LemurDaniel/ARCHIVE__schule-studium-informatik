@@ -156,6 +156,7 @@ public class DB_Manager {
 		maxSize.put("FilmDauer", 999);
 		maxSize.put("MinJahr", 1878);
 		maxSize.put("MaxJahr", LocalDate.now().getYear());
+		maxSize.put("Genre", 5);
 		
 		genre = new HashMap<>();
 		try(Statement st = con.createStatement();
