@@ -129,7 +129,9 @@ public class FensterManager {
 	public static Stage getHauptSeite() {
 		if(hauptseite==null) {
 			hauptseite = new Stage();
-			hauptseite.setResizable(false);
+			hauptseite.setResizable(true);
+			hauptseite.setHeight(700);
+			hauptseite.setWidth(1400);
 			hauptseite.setTitle("Filmdatenbank");
 			FXMLLoader loader = getLoader("fxml/Hauptseite.fxml");
 			hauptseiteCtrl = loader.getController();

@@ -130,16 +130,11 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 	}
 	
 	public void reset() {
-		if(!hatAuftraege()) {
-			FensterManager.logErreignis("\nEs sind keine Änderungen vorhanden");
-			return;
-		}
-		
+		if(!hatAuftraege())	return;
 		update.forEach(	item->	item.backupReset());
 		delete.clear();
 		add.clear();
 		update.clear();
-		FensterManager.logErreignis("\nAlle ungespeicherten Änderungen wurden zurückgesetzt");
 	}
 	
 	interface methode<T> {

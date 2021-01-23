@@ -82,7 +82,7 @@ public class DetailCtrl {
 		}
 		
         table.setItems(pvw.getList());
-        table1.setItems(rvw.getList());
+        table1.setItems(rvw.getObList());
 		
         tf_titel.setText(film.getTitel());
         tf_genre.setText(film.getGenreStringProperty().get());
@@ -267,6 +267,7 @@ public class DetailCtrl {
          return;
        }
 
+        if(rvw.hatAuftraege()) return;
        setEdit(false);
        tf_bewertung.setText(film.getBwtStringProperty().get());
        setRezension();
@@ -348,7 +349,6 @@ public class DetailCtrl {
         
         lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()+"");
         ta_rtext.setWrapText(true);       
-        ta_rtext.setPromptText("Rezension hier einfügen");
         ta_rtext.setTextFormatter(new TextFormatter<>( (UnaryOperator<Change>) change->{
         	change = CustomTextField.getMaxLenFilter(Rezensionenverwaltung.getMaxInhalt()).apply(change);		//Maximale TextArea-Länge einhalten
         	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-change.getControlNewText().length()+"");			//Label mit noch verfügbaren Zeichen
@@ -441,6 +441,8 @@ public class DetailCtrl {
     	ta_rtext.setText(angezeigt.getInhalt());
     	tf_rtitel.setDefaultValue(angezeigt.getTitel());
     	s_bwt.setValue(angezeigt.getBewertung());
+    	if(angezeigt.getVerfasserId()!=Nutzer.getNutzer().getId())	ta_rtext.setPromptText("");
+    	else														ta_rtext.setPromptText("Rezensionsinhalt verfassen");
     	setEdit(false);
     }
    

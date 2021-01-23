@@ -79,7 +79,7 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 		}catch(NumberFormatException nfe) {
 			newV = getDefaultValue();
 		}
-		if(!value.equals(newV)) {
+		if( (value==null && newV!=value) || (value!=null && !value.equals(newV)) ) {
 			value = newV;
 			if(valueChanged!=null) valueChanged.accept(this, value);
 		}

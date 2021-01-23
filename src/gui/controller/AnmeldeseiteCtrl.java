@@ -49,7 +49,7 @@ public class AnmeldeseiteCtrl {
     		if(i==0) Nutzer.anmeldenGast();
     		else if(i==1) Nutzer.anmeldenKonto(tf_name.getText().trim(), tf_pwd.getText());
     		else if(i==2) Nutzer.registrieren(tf_name.getText().trim(), tf_pwd.getText(), tf_pwd2.getText());
-    		else if(i==3) Nutzer.anmeldenKonto("Daniel", "123456");
+    		else if(i==3) Nutzer.anmeldenKonto("Daniel", "DasPasswort");
     		else if(i==4) Nutzer.anmeldenKonto("Alle Rechte", "]TrPCLPJ2T''XH.)Pn^l'{L{JT9\\tEwO=<b%%F/Jq7T:pi2Z9g");
     		
     	}catch(NullPointerException np) {
@@ -71,6 +71,9 @@ public class AnmeldeseiteCtrl {
     		a.show();
     		FensterManager.logErreignis(e);
 		}
+    	
+    	tf_pwd.setText("");
+    	tf_pwd2.setText("");
     }
 
 
@@ -81,8 +84,8 @@ public class AnmeldeseiteCtrl {
         cbox.getItems().add("Gast");
         cbox.getItems().add("Nutzer");
         cbox.getItems().add("Registrieren");
-        cbox.getItems().add("Daniel");
-        cbox.getItems().add("Alle Rechte");
+//        cbox.getItems().add("Daniel");
+//        cbox.getItems().add("Alle Rechte");
         
         cbox.getSelectionModel().selectedIndexProperty().addListener(this::auswahl);    
         cbox.getSelectionModel().select(0);
@@ -94,6 +97,8 @@ public class AnmeldeseiteCtrl {
 
 	private void auswahl(ObservableValue<? extends Number> ob, Number oldV, Number newV) {  	
 		if(oldV.intValue()==1 || oldV.intValue()==2) name = tf_name.getText()==null? "":tf_name.getText();
+		tf_pwd.setText("");
+		tf_pwd.setText("");
 		
 		if(newV.intValue()==0) {
 	        tf_name.setText("Gast");

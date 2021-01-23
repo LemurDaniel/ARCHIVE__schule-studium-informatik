@@ -160,11 +160,11 @@ public class FilterCtrl {
     	hb_anzahl.getChildren().add(new Label());
     	hb_anzahl.getChildren().add(cb_genreVerkuepfung);
     	
-    	btn_reset.setOnAction(this::reset);
-    	btn_filter.setOnAction(this::abfrage);
+    	btn_reset.setOnAction(ev->reset());
+    	btn_filter.setOnAction(ev->abfrage());
     }
 
-    private void reset(ActionEvent event) {
+    public void reset() {
     	tf_titel.setText(null);
 		tf_bwtMax.setText(null);
 		tf_bwtMin.setText(null);
@@ -177,7 +177,7 @@ public class FilterCtrl {
 		cb_genreVerkuepfung.setSelected(true);
     }
     
-    private void abfrage(ActionEvent event) {
+    private void abfrage() {
     	if(fvw.hatAuftraege()) {
     		Alert a = new Alert(AlertType.CONFIRMATION);
     		a.setTitle("Filtern");

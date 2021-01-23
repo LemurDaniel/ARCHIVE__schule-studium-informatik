@@ -90,7 +90,7 @@ public class HauptseiteCtrl {
     		else if(event.getSource()==btn_filter)		FensterManager.setDialog( FensterManager.getFilter(fvw) );
     		else if(event.getSource()==btn_refresh)		Filmverwaltung.refreshAll();
     		else if(event.getSource()==btn_save)		speichern();
-    		else if(event.getSource()==btn_reset)		fvw.reset();
+    		else if(event.getSource()==btn_reset)		reset();
     		else if(event.getSource()==btn_liste)		FensterManager.setSecondary(FensterManager.getListensicht());
     		else if(event.getSource()==btn_status)		FensterManager.showStatusmeldung();
     		else if(event.getSource()==btn_credits)		FensterManager.showCredits();
@@ -99,11 +99,9 @@ public class HauptseiteCtrl {
     		a.setTitle(e.getClass().getSimpleName());
     		a.setContentText(e.getMessage());
     		a.show();
-    		e.printStackTrace();
     	}
     }
     
-
 	@FXML
     void initialize() {  
 		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -161,10 +159,18 @@ public class HauptseiteCtrl {
 	}
     
 	private void speichern() throws Exception{
+		if(!fvw.hatAuftraege())	return;
 		if(th!=null && th.isAlive()) th.interrupt();
 		else {
 			th = new Thread(fvw);
 			th.start();
 		}
 	}
+	
+	private void reset() {
+		fvw.reset();
+		FensterManager.logErreignis("\nAlle ungespeicherten Änderungen wurden zurückgesetzt");
+	}
+    
+
 }

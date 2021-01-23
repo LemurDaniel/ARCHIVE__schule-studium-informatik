@@ -385,10 +385,10 @@ public class AddFilmCtrl {
     private void addPerson() {
     	Person per = new Person(-1, "Neue Person", "Neue Person", null, Personenverwaltung.getRollen().get(0));
     	pvw.addEntitaet(per);
-    	if(film.getId()!=-1 && added==false)	{
-     		stpv.updateEntitaet(film);
-     		added = true;
-     	}    
+    	if(added) return;
+    	if(film.getId()!=-1)	stpv.updateEntitaet(film);
+    	else					stpv.addEntitaet(film);
+     	added = true;   
     }
 
     

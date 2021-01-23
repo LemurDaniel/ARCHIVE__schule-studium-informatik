@@ -119,7 +119,6 @@ public class ListensichtCtrl {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setContentText(e.getMessage());
     		a.show();
-    		e.printStackTrace();
     	}
     }
     private void save() throws SQLException {
@@ -141,6 +140,7 @@ public class ListensichtCtrl {
 			angezeigteListe.reset();
 		}else 
 			lvw.reset();		
+		FensterManager.logErreignis("\nAlle ungespeicherten Änderungen wurden zurückgesetzt");
 	}
 	private void neuListe() {
 		lvw.addEntitaet(new Liste(-1, "Neue Liste"));
@@ -165,14 +165,14 @@ public class ListensichtCtrl {
 		btn_save.setText("Start/Stop");
 		table_listen.setEditable(true);
     	table_listen.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-    	table_listen.getSelectionModel().selectedItemProperty().addListener((ob,ov,liste)->aktualisiereAngezeigteListe(table_listen.getSelectionModel()));
+    	table_listen.getSelectionModel().selectedItemProperty().addListener((ob,ov,liste)->aktualisiereAngezeigteListe(table_listen.getSelectionModel().getSelectedItem()));
     	table_listen.setItems(lvw.getObList());
     	tListe_name.setCellValueFactory(data->data.getValue().getNameProperty());
     	tListe_name.setCellFactory(TextFieldTableCell.forTableColumn());
     	tListe_name.setOnEditCommit(this::onEditCommit);
     	tListe_size.setCellValueFactory(data->data.getValue().getGroeßeProperty());
     	
-     	cb.getSelectionModel().selectedItemProperty().addListener((ob,ov,liste)->aktualisiereAngezeigteListe(cb.getSelectionModel()));
+     	cb.getSelectionModel().selectedItemProperty().addListener((ob,ov,liste)->aktualisiereAngezeigteListe(cb.getSelectionModel().getSelectedItem()));
     	cb.setItems(lvw.getObList());
     	
     	table_film.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -194,17 +194,18 @@ public class ListensichtCtrl {
     	
     }
     
-    private void aktualisiereAngezeigteListe(SelectionModel<Liste> sl) {
+    private void aktualisiereAngezeigteListe(Liste selected) {
     	if(blocked)	return;
       	blocked = true;
-    	angezeigteListe = sl.getSelectedItem();
+    	angezeigteListe = selected;
       	if(angezeigteListe==null) {
     		table_film.setItems(null);
-    		if(cb.getSelectionModel()!=sl) 				cb.getSelectionModel().clearSelection();
-    		if(table_listen.getSelectionModel()!=sl) 	table_listen.getSelectionModel().clearSelection();
+    		cb.getSelectionModel().clearSelection();
+    		table_listen.getSelectionModel().clearSelection();
     	}else { 	
-    		if(cb.getSelectionModel()!=sl) 				cb.getSelectionModel().select(sl.getSelectedItem());
-    		if(table_listen.getSelectionModel()!=sl) 	table_listen.getSelectionModel().select(sl.getSelectedItem());
+    		cb.getSelectionModel().select(angezeigteListe);
+    		table_listen.getSelectionModel().clearSelection();
+    		table_listen.getSelectionModel().select(angezeigteListe);
     		table_film.setItems(angezeigteListe.getObList());
     	}
     	blocked = false;
