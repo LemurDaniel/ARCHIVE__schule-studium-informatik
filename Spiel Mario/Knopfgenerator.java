@@ -54,9 +54,6 @@ public class Knopfgenerator
                     fenster.gibFrame().getContentPane().add(knopf);
                  break;
                  
-                
-      
-                 
                  default:
                     fenster.steuerungOst.add(knopf);
                  break;
@@ -77,12 +74,9 @@ public class Knopfgenerator
             switch (Befehl)
             {
                 case "Start":
-                    //Hauptfigur Figur  = new Hauptfigur();
-                    //Hauptmap1 Map1  = new Hauptmap1();
-                    //Map1.Bewegenstart();
+                    Hauptfigur Figur  = new Hauptfigur();
+                    Hauptmap1 Map1  = new Hauptmap1();
                     //System.out.println("Hallo");
-                    DemoThread Thread = new DemoThread();
-                    Thread.run();
                 break;
                 
                 case "Settings":
@@ -97,17 +91,6 @@ public class Knopfgenerator
                 case "End":                    
                     //System.exit (0);                
                 break;
-                
-                 case "Jump":
-                   
-                 break;
-                 
-                 case "Walk":
-
-                 break;
-                 
-                 case "Stop":
-                    
                 
                 default: System.exit (0);
             }
