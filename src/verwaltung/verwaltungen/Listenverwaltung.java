@@ -35,6 +35,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 				}
 			}
 		}	
+		if(super.list.size()==0)return;
 		FensterManager.logErreignis("Es wurden insgesamt "+getObList().size()+ (getObList().size()==1?" Liste":" Listen")+" geladen", Color.GREEN);
 	}
 		

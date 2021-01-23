@@ -87,7 +87,7 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		aktualisiereGroeﬂe();
 	}
 	public void removeEntitaeten(List<Film> filmListe) {
-		filmListe.stream().filter(film->filme.getObList().contains(film) && super.removeEntitaet(film)).forEach(filme.getObList()::remove);
+		filmListe.stream().filter(film->filme.getObList().contains(film) && super.removeEntitaet(film)).forEach(f->filme.getObList().remove(f));
 		Listenverwaltung.instance().updateEntitaet(this);
 		aktualisiereGroeﬂe();
 	}

@@ -235,6 +235,7 @@ public class FensterManager {
 		if(dialog!=null)			dialog.close();
 		if(credits!=null)			credits.close();
 		if(statusmeldung!=null)		statusTA.getChildren().clear();
+		if(filterCtrl!=null) 		filterCtrl.reset();
 		detail = null;
 	}
 	
