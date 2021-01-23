@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 import exceptions.LogInException;
 import exceptions.RegisterException;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -24,6 +27,8 @@ public class Nutzer extends DB_Manager {
 	private Rechte rechte = new Rechte();
 	private ReadOnlyBooleanWrapper angemeldet = new ReadOnlyBooleanWrapper(false);
 
+	private Nutzer() {};
+	
 	private void setNutzer(ResultSet rs) throws SQLException{
 		id = rs.getInt("id");
 		name = rs.getString("name");
@@ -33,7 +38,7 @@ public class Nutzer extends DB_Manager {
 	}
 	
 	public static void anmeldenGast() throws SQLException, LogInException {
-		anmeldenKonto("Gast", "Gast");
+		anmeldenKonto("Gast", "NurEinGast");
 	}
 	
 	public static void anmeldenKonto(String name, String passwort) throws LogInException, SQLException {
@@ -48,25 +53,37 @@ public class Nutzer extends DB_Manager {
 			//Existiert Nutzer?
 			if(!nameExists(con, name)) throw new LogInException("Der Nutzer: '"+name+"' existiert nicht", LogInException.NO_USER);
 						
-			Nutzer ntz;
 			//Stimmt das Passwort?
-			String sql =  "Select nutzer.id, name, rechte.* from Nutzer "
-								+ "inner join rechte on nutzer.rechte=rechte.id where name=? and passwort=?"; 
+			String sql =  "Select passwort, registrierungsDatum from nutzer where name=?";
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setString(1, name);
-				ps.setString(2, passwort);
 				try(ResultSet rs = ps.executeQuery()){
-					if(!rs.next()) throw new LogInException("Das verwendete Passwort ist falsch", LogInException.WRONG_PASSWORD);			
-					ntz = getNutzer();
-					ntz.setNutzer(rs);
+					rs.next();
+					String pwhash = rs.getString(1);
+					String regDat = rs.getString(2);
+					Result verifyResult = BCrypt.verifyer().verify( (passwort+name+regDat).toCharArray(), pwhash.toCharArray());
+					if(!verifyResult.verified)
+						throw new LogInException("Das verwendete Passwort ist falsch", LogInException.WRONG_PASSWORD);
+				}
+			}
+			
+			//Hole Daten	
+			instance = new Nutzer();	
+			sql =  "Select nutzer.id, name, rechte.* from Nutzer "
+								+ "inner join rechte on nutzer.rechte=rechte.id where name=?"; 
+			try(PreparedStatement ps = con.prepareStatement(sql)){
+				ps.setString(1, name);
+				try(ResultSet rs = ps.executeQuery()){
+					rs.next();
+					instance.setNutzer(rs);
 				}
 			}
 
 			//Ist er bereits angemeldet
 			sql = "Select * from instanz_nutzer where nid=? and not iid=?";
-			if(!ntz.getRechte().isMultiLogin()) {			
+			if(!instance.getRechte().isMultiLogin()) {			
 				try(PreparedStatement ps = con.prepareStatement(sql)){
-					ps.setInt(1, ntz.getId());
+					ps.setInt(1, instance.getId());
 					ps.setInt(2, getApplikationsId());
 					try(ResultSet rs = ps.executeQuery()){
 						if(rs.next()) throw new LogInException("Sie sind mit diesem Konto bereits in einer anderen Instanz angemeldet", LogInException.ALREADY_LOGGED_IN);		
@@ -77,32 +94,38 @@ public class Nutzer extends DB_Manager {
 			//Anmelden
 			sql = "Insert into instanz_nutzer(nid, iid) values(?, ?);";
 			try(PreparedStatement ps = con.prepareStatement(sql)){
-				ps.setInt(1, ntz.getId());
+				ps.setInt(1, instance.getId());
 				ps.setInt(2, getApplikationsId());
 				ps.executeUpdate();
 			}
 			
-			ntz.angemeldet.set(true);
+			instance.angemeldet.set(true);
 		}
 	}
 	
 	public static void registrieren(String name, String passwort, String passwort1) throws SQLException, RegisterException, LogInException {	
-			if(name.length()<3) throw new RegisterException("Der Name muss mindestens 3 Zeichen lang sein", RegisterException.ILLEGAL_NAME);
-			if(!passwort.equals(passwort1)) throw new RegisterException("Das Passwort muss mindestens 6 Zeichen lang sein", RegisterException.NON_MATCHING_PASSWORDS);
-			if(passwort.length() < 6) throw new RegisterException("Das Passwort muss mindestens 6 Zeichen lang sein", RegisterException.ILLEGAL_PASSWORD);
+			if(name.length()<3) 							throw new RegisterException("Der Name muss mindestens 3 Zeichen lang sein", RegisterException.ILLEGAL_NAME);
+			if(!passwort.equals(passwort1)) 				throw new RegisterException("Die Passwörter stimmen nicht überein", RegisterException.NON_MATCHING_PASSWORDS);
+			if(passwort.length() < getMinPasswort()) 		throw new RegisterException("Das Passwort muss mindestens "+getMinPasswort()+" Zeichen lang sein", RegisterException.ILLEGAL_PASSWORD);
+			if(passwort.length() > getMaxPasswort()) 		throw new RegisterException("Das Passwort darf höchstens "+getMaxPasswort()+" Zeichen lang sein", RegisterException.ILLEGAL_PASSWORD);
 		
 		try(Connection con = getCon();){
 			
 			//Name bereits vorhanden?
-			if(nameExists(con, name))
-				throw new RegisterException("Der Name: '"+name+"' existiert bereits", RegisterException.NAME_EXISTS);
+//			if(nameExists(con, name))
+//				throw new RegisterException("Der Name: '"+name+"' existiert bereits", RegisterException.NAME_EXISTS);
 			
 			//Anlegen
-			String sql = "insert into nutzer(name, passwort, rechte) values(?, ?, ?);";
+			String regDat = LocalDateTime.now().toString();
+			if(regDat.length()>27) regDat = regDat.substring(0, 27);
+			regDat = regDat.replaceFirst("T", " ");
+			String hashedPw = BCrypt.withDefaults().hashToString(10, (passwort+name+regDat).toCharArray());
+			
+			String sql = "insert into nutzer(name, passwort, rechte, registrierungsDatum) values(?, ?, 1, ?);";
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setString(1, name);
-				ps.setString(2, passwort);
-				ps.setInt(3, 1);
+				ps.setString(2, hashedPw);
+				ps.setString(3, regDat);
 				ps.executeUpdate();
 			}			
 			anmeldenKonto(name, passwort, con);
@@ -134,16 +157,17 @@ public class Nutzer extends DB_Manager {
 		angemeldet.set(true);
 	}
 	
-	public void abmelden() throws SQLException {
+	public void abmelden()  {
 		String s = "Delete instanz_nutzer where nid="+id+"and iid="+getApplikationsId();
 		id = -1;
 		name = null;
 		rechte.reset();
 		angemeldet.set(false);
+		instance = null;
 		try(Connection con = getCon();
 				Statement st = con.createStatement()){
 			st.executeUpdate(s);
-		}
+		}catch (Exception e) {}
 
 	}
 	
@@ -165,10 +189,13 @@ public class Nutzer extends DB_Manager {
 	}
 	 
 	public static int getMaxName() {
-		return maxSize.get("name");
+		return maxSize.get("Name");
 	}
 	public static int getMaxPasswort() {
-		return maxSize.get("passwort");
+		return maxSize.get("PasswortMax");
+	}
+	public static int getMinPasswort() {
+		return maxSize.get("PasswortMin");
 	}
 	
 	public class Rechte {

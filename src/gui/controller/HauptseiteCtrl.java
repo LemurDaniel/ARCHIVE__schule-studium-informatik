@@ -2,22 +2,15 @@ package gui.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalTime;
 
 import gui.FensterManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -25,7 +18,6 @@ import verwaltung.verwaltungen.Filmverwaltung;
 public class HauptseiteCtrl {
 	
 	private long lastMouseClick = 0;
-	private Stage filter;
 
     @FXML
     private Button blabla;
@@ -67,7 +59,7 @@ public class HauptseiteCtrl {
     		if(event.getSource()==btn_add)				addFilm();
     		else if(event.getSource()==btn_update)		updateFilm();
     		else if(event.getSource()==btn_detail)		detail();
-    		else if(event.getSource()==btn_abmelden) 	Nutzer.getNutzer().abmelden();
+    		else if(event.getSource()==btn_abmelden) 	abmelden();
     		else if(event.getSource()==blabla)			filter();
     	}catch(Exception e) {
     		Alert a = new Alert(AlertType.ERROR);
@@ -78,7 +70,7 @@ public class HauptseiteCtrl {
     	}
     }
 
-    @FXML
+	@FXML
     void initialize() {  
         table.setItems(Filmverwaltung.instance().getList());
         t_Titel.setCellValueFactory(	data->data.getValue().getTitelProperty());
@@ -105,6 +97,15 @@ public class HauptseiteCtrl {
         	lastMouseClick = now;
         });
 
+   
+        try {
+			Filmverwaltung.instance().test();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+        
 //		filter = FensterManager.getFilter();
 //		filter.focusedProperty().addListener((ob,ov,focus)->{
 //			if(focus==false) filter.close();
@@ -139,4 +140,9 @@ public class HauptseiteCtrl {
     private void filter() {
     	FensterManager.setDialog( FensterManager.getFilter() );
     }
+    
+    private void abmelden()  {
+    	Nutzer.getNutzer().abmelden();
+		FensterManager.setPrimaryStage(FensterManager.getAnmelden());
+	}
 }

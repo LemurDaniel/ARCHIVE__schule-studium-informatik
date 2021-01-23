@@ -15,6 +15,7 @@
       </HBox>
       <HBox fx:id="hb_bwt" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
       <HBox fx:id="hb_dauer" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
+      <HBox fx:id="hb_jahr" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
       <HBox fx:id="hb_genre" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
       <HBox prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg">
          <children>

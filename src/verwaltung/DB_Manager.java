@@ -6,10 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.BiMap;
@@ -138,16 +137,14 @@ public class DB_Manager {
 				int size = rs.getInt("COLUMN_SIZE");
 				
 				if(tab.equals("nutzer")) {
-					if(col.equals("name")) 			maxSize.put("name", size);
-					else if(col.equals("passwort")) maxSize.put("passwort", size);
+					if(col.equals("name")) 			maxSize.put("Name", size);
 				}
 				else if(tab.equals("rezension")) {
-					if(col.equals("titel") ) 		maxSize.put("rezTitel", size);
-					else if(col.equals("inhalt") ) 	maxSize.put("rezInhalt", size);
+					if(col.equals("titel") ) 		maxSize.put("RezTitel", size);
+					else if(col.equals("inhalt") ) 	maxSize.put("RezInhalt", size);
 				}
 				else if(tab.equals("film")) {
-					if(col.equals("titel")) 		maxSize.put("filmTitel", size);
-					if(col.equals("dauer")) 		maxSize.put("filmDauer", size);
+					if(col.equals("titel")) 		maxSize.put("FilmTitel", size);
 				}
 				else if(tab.equals("person")) {
 					if(col.equals("vorname"))		maxSize.put("PerVorname", size);
@@ -155,6 +152,12 @@ public class DB_Manager {
 				}
 			}
 		}
+		
+		maxSize.put("PasswortMax", 20);
+		maxSize.put("PasswortMin", 6);
+		maxSize.put("FilmDauer", 999);
+		maxSize.put("MinJahr", 1878);
+		maxSize.put("MaxJahr", LocalDate.now().getYear());
 		
 		genre = new HashMap<>();
 		try(Statement st = con.createStatement();

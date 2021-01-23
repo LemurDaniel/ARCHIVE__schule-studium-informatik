@@ -29,8 +29,13 @@ public class MinMaxTextField extends TextField{
 		});
 		
 		setTextFormatter(new TextFormatter<>( (UnaryOperator<TextFormatter.Change>) change->{
-			if(formatText)
-				change.setText( change.getText().replaceAll("[^0-9]",	""));
+			if(!formatText) return change;
+			change.setText( change.getText().replaceAll("[^0-9]",	""));
+			// Mögliche NumberFormatException wenn nach Integer geparster Text größer als 9 Zeichen ist.
+			if(change.getControlNewText().length()>=9) {
+				int z =  9 - (change.getControlNewText().length() - change.getText().length());
+				change.setText( change.getText().substring(0, z) );
+			}
     		return change;
     	}));
 	}
@@ -50,7 +55,7 @@ public class MinMaxTextField extends TextField{
 			return;
 		}
 			
-		value = Integer.parseInt( getText().substring(0,  getText().length()>10? 10:getText().length()) );
+		value = Integer.parseInt( getText() );
 		int min = this.min;
 		int max = this.max;
 		

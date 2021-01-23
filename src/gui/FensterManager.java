@@ -25,6 +25,7 @@ public class FensterManager {
 		if(instance==null) instance = new FensterManager();
 		return instance;
 	}
+	private FensterManager() {};
 	
 	private static Stage primaryStage;
 	private static Stage dialog;
@@ -47,23 +48,8 @@ public class FensterManager {
 	private  static AddFilmCtrl addFilmCtrl;
 		
 	private  static Stage filter;
+	@SuppressWarnings("unused")
 	private  static AddFilmCtrl filterCtrl;
-	
-	static {
-		
-		Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, angemeldet)->{
-			try {
-				if(angemeldet) 
-					setPrimaryStage(getHauptSeite());
-				else {
-					reset();
-					setPrimaryStage(getAnmelden());
-				}
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-		});
-	}
 	
 	public static Stage getDetail(Film film) throws SQLException{
 		if(detail==null) {

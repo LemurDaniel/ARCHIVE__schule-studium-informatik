@@ -1,9 +1,11 @@
 package gui.controller;
 
 import java.sql.SQLException;
+import java.util.function.UnaryOperator;
 
 import exceptions.LogInException;
 import exceptions.RegisterException;
+import gui.FensterManager;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.control.TextFormatter;
 import verwaltung.Nutzer;
 
 public class AnmeldeseiteCtrl {
@@ -38,11 +40,13 @@ public class AnmeldeseiteCtrl {
     	int i = cbox.getSelectionModel().getSelectedIndex();
     	try{
     		if(i==0) Nutzer.anmeldenGast();
-    		else if(i==1) Nutzer.anmeldenKonto(tf_name.getText(), tf_pwd.getText());
-    		else if(i==2) Nutzer.registrieren(tf_name.getText(), tf_pwd.getText(), tf_pwd2.getText());
+    		else if(i==1) Nutzer.anmeldenKonto(tf_name.getText().trim(), tf_pwd.getText());
+    		else if(i==2) Nutzer.registrieren(tf_name.getText().trim(), tf_pwd.getText(), tf_pwd2.getText());
     		else if(i==3) Nutzer.anmeldenKonto("Daniel", "123456");
-    		else if(i==4) Nutzer.anmeldenKonto("Unlimited", "rfgh");
-    	
+    		else if(i==4) Nutzer.anmeldenKonto("Unlimited", "123456");
+    		
+        	if(Nutzer.getNutzer().isAngemeldet())
+        		FensterManager.setPrimaryStage( FensterManager.getHauptSeite() );
     	}catch(LogInException | RegisterException e) {
     	
     		Alert a = new Alert(AlertType.ERROR);
@@ -62,6 +66,8 @@ public class AnmeldeseiteCtrl {
     					if(a.getResult().getButtonData().equals(ButtonData.OK_DONE)) {
     						try {
     							Nutzer.getNutzer().vonAnderenInstanzenAbmelden();
+    							if(Nutzer.getNutzer().isAngemeldet())
+    								FensterManager.setPrimaryStage(FensterManager.getHauptSeite());
     						} catch (SQLException e1) {}
     					}
     				});
@@ -74,17 +80,10 @@ public class AnmeldeseiteCtrl {
     		a.show();
 		}
     }
-    
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+
+	@FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert cbox != null : "fx:id=\"cbox\" was not injected: check your FXML file 'Anmeldeseite.fxml'.";
-        assert tf_name != null : "fx:id=\"tf_name\" was not injected: check your FXML file 'Anmeldeseite.fxml'.";
-        assert tf_pwd != null : "fx:id=\"tf_pwd\" was not injected: check your FXML file 'Anmeldeseite.fxml'.";
-        assert tf_pwd2 != null : "fx:id=\"tf_pwd2\" was not injected: check your FXML file 'Anmeldeseite.fxml'.";
-        assert btn != null : "fx:id=\"btn\" was not injected: check your FXML file 'Anmeldeseite.fxml'.";
-        
-
 
         cbox.setItems(FXCollections.observableArrayList());
         cbox.getItems().add("Gast");
@@ -121,17 +120,25 @@ public class AnmeldeseiteCtrl {
         
         cbox.getSelectionModel().select(0);
      
-        tf_name.addEventFilter(KeyEvent.KEY_TYPED, this::typed);
-        tf_pwd.addEventFilter(KeyEvent.KEY_TYPED, this::typed);
-        tf_pwd2.addEventFilter(KeyEvent.KEY_TYPED, this::typed);
+        UnaryOperator<TextFormatter.Change> checkText = change->{
+        	int maxlen = Nutzer.getMaxPasswort();
+			if(change.getControlNewText().length()>=maxlen) {
+				int z = maxlen - (change.getControlNewText().length() - change.getText().length());
+				change.setText( change.getText().substring(0, z) );
+			}
+			return change;	
+        };
+        
+        tf_pwd.setTextFormatter(new TextFormatter<>(checkText));
+        tf_pwd2.setTextFormatter(new TextFormatter<>(checkText));
+        tf_name.setTextFormatter(new TextFormatter<>( (UnaryOperator<TextFormatter.Change>) change-> {
+        	int maxlen = Nutzer.getMaxName();
+			if(change.getControlNewText().length()>=maxlen) {
+				int z = maxlen - (change.getControlNewText().length() - change.getText().length());
+				change.setText( change.getText().substring(0, z) );
+			}
+			return change;	
+        }));
     }
-    
-    void typed(KeyEvent event) {
-    	if(event.getSource().equals(tf_name)) {
-			if(tf_name.getLength() >= Nutzer.getMaxName())	 event.consume();
-    	} else {
-			if( ((TextField)event.getSource()).getLength() >= Nutzer.getMaxPasswort() ) event.consume();
-    	}
-    }
-    
+
 }

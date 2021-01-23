@@ -1,9 +1,7 @@
 package gui.controller;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +37,6 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
@@ -157,8 +154,8 @@ public class AddFilmCtrl {
 	    private HBox hb_dauer;
 	    @FXML
 	    private HBox hb_jahr;
-	    private TextField tf_dauer;
-	    private TextField tf_jahr;
+	    private MinMaxTextField tf_dauer;
+	    private MinMaxTextField tf_jahr;
 
 	    @FXML
 	    private TableView<Genre> table_genre;
@@ -360,14 +357,12 @@ public class AddFilmCtrl {
     		//Wenn Fildaten geändert
     		if(changes[0]) {
             	checkEingaben();
-    			int dauer = Integer.parseInt(tf_dauer.getText().replaceAll("[^0-9]", ""));
-    			int jahr = Integer.parseInt(tf_jahr.getText());
     			//Wenn kein Film vorhanden
     			if(film==null) {
-    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), selected, dauer, jahr, con );
+    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), selected, tf_dauer.getValue(), tf_jahr.getValue(), con );
     				pvw = film.getPvw();
     			}else		
-    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), selected, dauer, jahr, film, con);
+    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), selected, tf_dauer.getValue(),  tf_jahr.getValue(), film, con);
     		}
     		
     		if(changes[1])
@@ -389,8 +384,8 @@ public class AddFilmCtrl {
     private void checkEingaben() throws Exception {
     	// TODO Auto-generated method stub
     	if(tf_titel.getLength() < 10)	throw new Exception("Titel zu kurz");
-    	if(tf_jahr.getLength() != 4)	throw new Exception("Geben sie ein gültiges jahr ein");
-    	if(tf_dauer.getLength() == 0)   throw new Exception("dauer");
+    	if(tf_jahr.getValue()==null)	throw new Exception("Geben sie ein gültiges jahr ein");
+    	if(tf_dauer.getValue()==null)   throw new Exception("dauer");
     	if(selected.size()==0) throw new Exception("Kein Genre");
     }
     

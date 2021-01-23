@@ -1,16 +1,12 @@
 package verwaltung.verwaltungen;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
@@ -123,16 +119,16 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	}
 	
 	public static int getMaxTitel() {
-		return maxSize.get("filmTitel");
+		return maxSize.get("FilmTitel");
 	}
 
 	public static int getMaxDauer() {
-		return 999;
+		return maxSize.get("FilmDauer");
 	}
 	public static int getMinJahr() {
-		return 1878;
+		return maxSize.get("MinJahr");
 	}
 	public static int getMaxJahr() {
-		return LocalDate.now().getYear();
+		return maxSize.get("MaxJahr");
 	}
 }
