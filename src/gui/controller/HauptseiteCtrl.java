@@ -1,6 +1,5 @@
 package gui.controller;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,6 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import verwaltung.Nutzer;
-import verwaltung.entitaeten.Entitaet;
 import verwaltung.entitaeten.Film;
 import verwaltung.verwaltungen.Filmverwaltung;
 
@@ -96,7 +94,7 @@ public class HauptseiteCtrl {
         	long now = System.currentTimeMillis();
         	if(now-lastMouseClick<200 && table.getSelectionModel().getSelectedIndex()!=-1) {
         		try {
-					FensterManager.setDialog(FensterManager.getDetail(table.getSelectionModel().getSelectedItem()));
+					FensterManager.setDialog(FensterManager.getDetail(table.getSelectionModel().getSelectedItem(), fvw));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -140,7 +138,7 @@ public class HauptseiteCtrl {
     private void detail() throws Exception {
     	Film film = table.getSelectionModel().getSelectedItem();
     	if(film == null)	throw new Exception("Es wurde kein Film ausgewählt");
-		FensterManager.setDialog( FensterManager.getDetail(film) );
+		FensterManager.setDialog( FensterManager.getDetail(film, fvw) );
     }
 
     private void updateFilm() throws Exception {

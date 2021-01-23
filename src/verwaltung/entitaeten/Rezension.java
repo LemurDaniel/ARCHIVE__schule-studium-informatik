@@ -6,11 +6,11 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 
-public class Rezension extends Entitaet implements Backup, EingabePruefung{
+public class Rezension implements Backup, EingabePruefung{
 	
 	private Rezension backup;
 	
-	private int verfasserId;
+	private int id, verfasserId;
 	private String inhalt;
 	private ReadOnlyStringWrapper titel, verfasser;
 	private ReadOnlyIntegerWrapper bewertung;
@@ -18,7 +18,7 @@ public class Rezension extends Entitaet implements Backup, EingabePruefung{
 	private Film film;
 	
 	public Rezension(int id, String titel, String inhalt, String verfasser, int verfasserId, int bewertung, Film film) {
-		super(id);
+		this.id = id;
 		this.verfasserId = verfasserId;
 		this.titel = new ReadOnlyStringWrapper(titel);
 		this.inhalt = inhalt;
@@ -27,7 +27,9 @@ public class Rezension extends Entitaet implements Backup, EingabePruefung{
 		this.film = film;
 		setBewertung(bewertung);
 	}
-	
+	public int getId() {
+		return id;
+	}
 	public String getTitel() {
 		return titel.get();
 	}
@@ -55,7 +57,9 @@ public class Rezension extends Entitaet implements Backup, EingabePruefung{
 		return verfasserId;
 	}
 	
-	
+	public void setId(int id) {
+		this.id = id;
+	}
 	public void setTitel(String titel) {
 		this.titel.set(titel);
 	}

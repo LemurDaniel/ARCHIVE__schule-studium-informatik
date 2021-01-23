@@ -1,10 +1,8 @@
 package verwaltung.entitaeten;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -14,11 +12,11 @@ import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 
 
-public class Film extends Entitaet  implements Backup, EingabePruefung{
+public class Film implements Backup, EingabePruefung{
 
 	private Film backup;
 	
-	private int erstellerId;
+	private int id, erstellerId;
 	private List<Genre> genres;
 	private ReadOnlyStringWrapper titel, dauer_string, genre_string, bwt_string;
 	private ReadOnlyIntegerWrapper erscheinungsjahr;
@@ -32,7 +30,7 @@ public class Film extends Entitaet  implements Backup, EingabePruefung{
 //	}
 	
 	public Film(int id, int erstellerId, String titel, int dauer, int erscheinungsjahr, float bewertung) {
-		super(id);
+		this.id = id;
 		this.erstellerId = erstellerId;
 		this.titel = new ReadOnlyStringWrapper(titel);
 		this.dauer = dauer;		
@@ -50,8 +48,11 @@ public class Film extends Entitaet  implements Backup, EingabePruefung{
 		rvw = new Rezensionenverwaltung(this);
 		pvw = new Personenverwaltung(this);
 	}
+
 	
-	
+	public int getId() {
+		return id;
+	}
 	public int getErstellerId() {
 		return erstellerId;
 	}
@@ -97,7 +98,9 @@ public class Film extends Entitaet  implements Backup, EingabePruefung{
 	
 	
 	
-	
+	public void setId(int id) {
+		this.id = id;
+	}
 	public void setBewertung(float bewertung) {
 		this.bewertung = bewertung;
 		bwt_string.set(bewertung+" Sterne");
@@ -187,7 +190,7 @@ public class Film extends Entitaet  implements Backup, EingabePruefung{
 	public void makeBackup() {
 		if(backup!=null)	return;
 		
-		backup = new Film(getId(), erstellerId, titel.get(), dauer, erscheinungsjahr.get(), bewertung);
+		backup = new Film(id, erstellerId, titel.get(), dauer, erscheinungsjahr.get(), bewertung);
 		backup.genres = new ArrayList<>(genres);
 	}
 

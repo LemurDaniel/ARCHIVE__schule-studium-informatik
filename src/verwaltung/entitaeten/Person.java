@@ -1,19 +1,18 @@
 package verwaltung.entitaeten;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Person extends Entitaet implements Backup, EingabePruefung{
+public class Person implements Backup, EingabePruefung{
 	
 	private Person backup;
 	
+	public int id;
 	public StringProperty vorname;
 	public StringProperty name;
 	private List<PersonMitRolle> pmrlist;
@@ -23,13 +22,16 @@ public class Person extends Entitaet implements Backup, EingabePruefung{
 	}
 	
 	public Person(int id, String vorname, String name, Rolle rolle){
-		super(id);
+		this.id = id;
 		this.vorname = new SimpleStringProperty(vorname);
 		this.name = new SimpleStringProperty(name);
 		pmrlist = new ArrayList<>();
 		this.addRolle(rolle);
 	}
 	
+	public int getId() {
+		return id;
+	}
 	public String getVorname() {
 		return vorname.get();
 	}
@@ -45,6 +47,9 @@ public class Person extends Entitaet implements Backup, EingabePruefung{
 		return name;
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
 	public void setVorname(String vorname) {
 		this.vorname.set(vorname);
 	}
@@ -93,7 +98,7 @@ public class Person extends Entitaet implements Backup, EingabePruefung{
 	public void reset() {
 		if(backup==null)	return;
 		
-		setId(backup.getId());
+		id = backup.id;
 		vorname.set(backup.getVorname());
 		name.set(backup.getName());
 		pmrlist = backup.pmrlist;

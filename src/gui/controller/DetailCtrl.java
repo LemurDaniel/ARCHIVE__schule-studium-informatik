@@ -49,6 +49,7 @@ import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 public class DetailCtrl {
 
 	private Film film;
+	private Filmverwaltung fvw;
 	private int nid= Nutzer.getNutzer().getId();
 	private Rechte rechte = Nutzer.getNutzer().getRechte();
 	
@@ -60,7 +61,7 @@ public class DetailCtrl {
 	
 	private long lastMouseClick;
 
-	public void setFilm(Film film) throws SQLException {
+	public void setFilm(Film film, Filmverwaltung fvw) throws SQLException {
         accordion.setExpandedPane(tp_allg);
         tab_pane.getSelectionModel().select(tab_allg);
         tab_pane.requestFocus();
@@ -98,6 +99,7 @@ public class DetailCtrl {
         else																	cb_r.getSelectionModel().select(1);
         
         this.film = film;
+        this.fvw = fvw;
 	}
 
 	public void aktualisiereNutzer() {
@@ -115,6 +117,9 @@ public class DetailCtrl {
 	
     @FXML
     private TitledPane tp_allg;  
+    
+    @FXML
+    private Button btn_mod;
     
     @FXML
     private Tab tab_allg;
@@ -354,6 +359,19 @@ public class DetailCtrl {
         	}
         	lastMouseClick = now;
         });
+        
+        
+        btn_mod.setOnAction(this::openAddFilm);
+    }
+    
+    private void openAddFilm(ActionEvent event) {
+    	try {
+			FensterManager.setDialog(FensterManager.getAddFilm(film, fvw, null));
+		} catch (SQLException e) {
+			Alert a = new Alert(AlertType.ERROR);
+			a.setContentText(e.getMessage());
+			a.show();
+		}
     }
    
     // Zu anzeigende Rezension auswählen

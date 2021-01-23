@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
-import verwaltung.entitaeten.Entitaet;
 import verwaltung.entitaeten.Film;
 import verwaltung.verwaltungen.Verwaltung;
 

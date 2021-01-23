@@ -3,12 +3,9 @@ package verwaltung.verwaltungen.unterverwaltungen;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Optional;
 
-import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Rezension;
 

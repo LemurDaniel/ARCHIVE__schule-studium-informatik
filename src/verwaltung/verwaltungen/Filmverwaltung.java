@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.net.httpserver.Authenticator.Success;
-
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
@@ -60,31 +58,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				generiereFilme(rs);
 			}		
 	}
-	
-	@Override
-	protected void onAdd(Film f, Connection con) throws SQLException{
-		super.onAdd(f, con);
-		f.getPvw().save(con);
-		if(f.getPvw().getFehlerlog().size()>0) {
-			f.getPvw().fehlerlog.forEach(fehler->super.fehlerlog.add(fehler));
-			f.getPvw().fehlerlog.clear();
-		}
-	}
-	@Override
-	protected void onUpdate(Film f, Connection con) throws SQLException{
-		super.onAdd(f, con);
-		f.getPvw().save(con);
-		if(f.getPvw().getFehlerlog().size()>0) {
-			f.getPvw().fehlerlog.forEach(fehler->super.fehlerlog.add(fehler));
-			f.getPvw().fehlerlog.clear();
-		}
-	}
-	@Override
-	public void reset() {
-		super.reset();
-		getList().forEach(film->film.getPvw().reset());
-	}
-
 	
 	@Override
 	protected void add(Film f, Connection con) throws SQLException {

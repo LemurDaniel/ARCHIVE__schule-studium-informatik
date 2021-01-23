@@ -24,7 +24,7 @@
                <buttons>
                   <Label minWidth="41.0" prefHeight="21.0" text="Allgemein" />
                   <Button fx:id="btn_rel1" minWidth="68.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="255.0" styleClass="barBut" text="Zurücksetzen" />
-                  <Button fx:id="btn_commit1" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Speichern" />
+                  <Button fx:id="btn_commitF" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Speichern" />
                   <Button fx:id="btn_detail" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Detail" />
                </buttons>
             </ButtonBar>
@@ -109,7 +109,8 @@
                <buttons>
                   <Label prefHeight="21.0" prefWidth="305.0" text="Mitwirkende" />
                   <Button fx:id="btn_rel2" minWidth="0.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="516.0" styleClass="barBut" text="Zurücksetzten" />
-                  <Button fx:id="btn_addP" mnemonicParsing="false" onAction="#action" styleClass="barBut" text="Person hinzufügen" />
+                  <Button fx:id="btn_commitP" minWidth="36.0" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="412.0" styleClass="barBut" text="Speichern" />
+                  <Button fx:id="btn_addP" mnemonicParsing="false" onAction="#action" styleClass="barBut" text="Neu" />
                </buttons>
             </ButtonBar>
          </graphic>

@@ -3,16 +3,21 @@ package verwaltung.entitaeten;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 
-public class Rolle extends Entitaet {
+public class Rolle  {
 	
+	private int id;
 	private String rolle;
 	
 	public Rolle(int id, String rolle) {
-		super(id);
+		this.id = id;
 		this.rolle = rolle;
 	}
 	public String getRolle() {
 		return rolle;
+	}
+	
+	public int getId() {
+		return id;
 	}
 	
 	public ObservableValue<Rolle> getObservable(){

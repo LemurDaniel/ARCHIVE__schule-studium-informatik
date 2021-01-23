@@ -3,14 +3,12 @@ package verwaltung.entitaeten;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.collections.ObservableList;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.Verwaltung;
 
-public class Liste extends Verwaltung<Film> implements Backup{
+public class Liste extends Verwaltung<Film> implements Backup, EingabePruefung{
 	
 	private int id;
 	private String name;
@@ -94,6 +92,12 @@ public class Liste extends Verwaltung<Film> implements Backup{
 
 	@Override
 	protected void delete(Film ent, Connection con) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void checkEingaben() throws Exception {
 		// TODO Auto-generated method stub
 		
 	}

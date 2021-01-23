@@ -3,9 +3,7 @@ package verwaltung.verwaltungen;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -15,9 +13,6 @@ import javafx.collections.ObservableList;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
-import verwaltung.entitaeten.Entitaet;
-import verwaltung.entitaeten.Person;
-import verwaltung.entitaeten.Person.PersonMitRolle;
 
 public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB_Manager{
 	
@@ -82,7 +77,7 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 		if(add.contains(entitaet))	return;
 		add.push(entitaet);
 		
-		//Verschiebt alle Element, sodass dass neu Element ganz oben steht
+		//Verschiebt alle Element, sodass dass neues Element ganz oben steht
 		T temp = null;
 		if(observablelist.size()>0) {
 			for(int i=0;i<observablelist.size(); i++) {
@@ -91,8 +86,6 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 				entitaet = temp;
 			}
 		}
-		
-		observablelist.forEach(f->System.out.println(f));
 		observablelist.add(entitaet);
 	}
 	public void removeEntitaet(T entitaet) {
@@ -103,6 +96,7 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 	public void updateEntitaet(T entitaet) {
 		if(entitaet==null  || !list.contains(entitaet))	return;
 		update.push(entitaet);
+		System.out.println(entitaet);
 	}
 	
 	
@@ -127,7 +121,7 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 				onUpdate(ent, con);
 			}
 			while(!delete.empty()) {
-				T ent = update.pop();
+				T ent = delete.pop();
 				if(!list.contains(ent))	continue;
 				onDelete(ent, con);
 			}
@@ -135,9 +129,6 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 			deleteErr.forEach(delete::push);
 			updateErr.forEach(update::push);
 			addErr.forEach(add::push);
-			
-			System.out.println("ttttttttttttttt");
-			add.forEach(l->System.out.println(l));
 			
 			deleteErr.clear();
 			updateErr.clear();
@@ -195,12 +186,11 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 	
 	public void reset() {
 		update.forEach(	item->	item.reset());
+		add.forEach(observablelist::remove);
+		delete.forEach(observablelist::add);
 		add.clear();
 		delete.clear();
 		update.clear();
-		
-		observablelist.clear();
-		list.forEach(observablelist::add);	
 	}
 	
 	protected abstract void add(T ent, Connection con)					throws SQLException;

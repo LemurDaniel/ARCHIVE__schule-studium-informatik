@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,7 +34,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	private void aktualisierePmrliste() {
 		pmrliste.clear();
-		getObList().forEach(per->pmrliste.addAll(per.getPersonenMitRolle()));
+		getList().forEach(per->pmrliste.addAll(per.getPersonenMitRolle()));
 	}
 	
 	@Override
@@ -47,11 +45,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					pmrliste.add(item);	
 		});
 	}	
-	@Override
-	public void save(Connection con) throws SQLException {
-		super.save(con);
-		aktualisierePmrliste();
-	}
+
 	@Override
 	public void reset() {
 		super.reset();
@@ -61,7 +55,6 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			item.getUpdateProperty().set(false);
 		});
 	}
-	
 	
 	@Override
 	public void load(Connection con) throws SQLException {
@@ -197,9 +190,6 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			pmr.getDeleteProperty().set(false);
 			per.removePMR(pmr);
 		}
-		
-		if(per.getPersonenMitRolle().size()==0)
-			removeObj(per);
 	}
 
 

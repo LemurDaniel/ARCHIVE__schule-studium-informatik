@@ -68,7 +68,7 @@ public class FensterManager {
 	}
 	
 	
-	public static Stage getDetail(Film film) throws SQLException{
+	public static Stage getDetail(Film film, Filmverwaltung fvw) throws SQLException{
 		if(detail==null) {
 			detail = new Stage();
 			detail.setTitle("Filmdatenbank - Detailansicht");
@@ -77,7 +77,7 @@ public class FensterManager {
     		detailCtrl = loader.getController();
     		detail.setScene(new Scene(loader.getRoot()));
 		}
-		detailCtrl.setFilm(film);
+		detailCtrl.setFilm(film, fvw);
 		return detail;
 	}
 	
@@ -97,9 +97,7 @@ public class FensterManager {
 			addFilmCtrl = loader.getController();
     		addFilm.setScene(new Scene(loader.getRoot()));
 		}
-		addFilmCtrl.setFilm(film);
-		addFilmCtrl.setFvw(fvw);
-		addFilmCtrl.setFilmliste(filmliste);
+		addFilmCtrl.setFilm(film, fvw);
 		return addFilm;
 	}
 	

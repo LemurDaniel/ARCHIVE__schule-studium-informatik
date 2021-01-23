@@ -2,11 +2,7 @@ package gui.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Observable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -19,10 +15,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -43,10 +36,8 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import verwaltung.DB_Manager;
-import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
-import verwaltung.entitaeten.Liste;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.entitaeten.Rolle;
@@ -59,21 +50,12 @@ public class AddFilmCtrl {
 	private Film film;
 	private Personenverwaltung pvw;
 	private Filmverwaltung fvw;
-	private Liste filmliste;
-	
 
 	private BiMap<Genre, BooleanProperty> checked_genre = HashBiMap.create();
 	private List<Genre> selected;
 	private boolean blocked;
 	
-	public void setFvw(Filmverwaltung fvw) {
-		this.fvw = fvw;
-	}
-	public void setFilmliste(Liste filmliste) {
-		this.filmliste = filmliste;
-	}
-	
-	public void setFilm(Film film) throws SQLException{
+	public void setFilm(Film film, Filmverwaltung fvw) throws SQLException{
 		accordion.setExpandedPane(tp_allg);
 	    tab_pane.getSelectionModel().select(tab_allg);
 	    tab_pane.requestFocus();	
@@ -92,12 +74,14 @@ public class AddFilmCtrl {
 		}
 		
 	    this.film = film;
+	    this.fvw = fvw;
 		setDisplay();
 		setTable();
 	}
 	
 	private void setTable() {
-		table.setItems(pvw.getPersonenMitRollen());			
+		tp_mit.setDisable(film.getId()==-1);
+		table.setItems(pvw.getPersonenMitRollen());	
 	}
 	
 	private void setDisplay() {
@@ -110,17 +94,11 @@ public class AddFilmCtrl {
 		tf_genre.setText(film.getGenreStringProperty().get());
 		t_check.setText(Filmverwaltung.getMaxGenre()-selected.size()+"");
 		
-		if(film.getId()==-1) {
-			tf_titel.setDefaultValue(null);
-			tf_dauer.setDefaultValue(null);
-			tf_jahr.setDefaultValue(null);
-			tf_bewertung.setText(null);
-		}else {
-			tf_titel.setDefaultValue(film.getTitel());
-			tf_dauer.setDefaultValue(film.getDauer());
-			tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
-			tf_bewertung.setText(film.getBwtStringProperty().get());
-		}	
+		tf_titel.setDefaultValue(film.getTitel());
+		tf_dauer.setDefaultValue(film.getDauer());
+		tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
+		tf_bewertung.setText(film.getBwtStringProperty().get());
+
 		blocked = false;
 	}
 	
@@ -142,7 +120,9 @@ public class AddFilmCtrl {
 	    private Button btn_rel1;
 
 	    @FXML
-	    private Button btn_commit1;
+	    private Button btn_commitF;
+	    @FXML
+	    private Button btn_commitP;
 
 	    @FXML
 	    private Button btn_detail;
@@ -212,9 +192,10 @@ public class AddFilmCtrl {
     	try {
     		if(event.getSource()==btn_rel1)			resetFilm();
     		else if(event.getSource()==btn_rel2) 	pvw.reset();
-    		else if(event.getSource()==btn_commit1)	commit();
+    		else if(event.getSource()==btn_commitF)	commitFilm();
+    		else if(event.getSource()==btn_commitP)	commitPersonen();
     		else if(event.getSource()==btn_addP)	addPerson();
-    		else if(event.getSource()==btn_detail)	detail();
+    		else if(event.getSource()==btn_detail)	openDetail();
     	}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -351,7 +332,7 @@ public class AddFilmCtrl {
     
     private void onEditCommit( CellEditEvent<PersonMitRolle, ?> data ) {
      	PersonMitRolle pmr = data.getRowValue();
-       	pmr.makeBackup();
+       	pmr.getPerson().makeBackup();
      	
        	if(data.getTableColumn()==t_rolle){
        		if(pmr.getPerson().existiert((Rolle) data.getNewValue())) {
@@ -364,7 +345,6 @@ public class AddFilmCtrl {
        	
     	if(pmr.getPerson().getId()!=-1 && pmr.getUpdateProperty().get()==false)	{
         	pvw.updateEntitaet(pmr.getPerson());
-        	backupfilm();
         	pmr.getUpdateProperty().set(true);
     	}
        	
@@ -384,86 +364,42 @@ public class AddFilmCtrl {
 
     private void addPerson() {
     	PersonMitRolle pmr = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0) ).getPersonenMitRolle().get(0);
-    	backupfilm();
     	pvw.addEntitaet(pmr.getPerson());
     	pmr.getUpdateProperty().set(true);
     }
     
-    private void commit() throws Exception {
-  	
-    	FilteredList<PersonMitRolle> delete = pvw.getPersonenMitRollen().filtered(item->item.getDeleteProperty().get() && !item.getUpdateProperty().get());
-    	if(!pvw.hatAuftraege() && !fvw.hatAuftraege() && delete.size()==0)
-    		return;
-    	
-//        checkEingaben();
-// 		film.makeBackup();
-//		film.setTitel(tf_titel.getText());
-//        film.setDauer(tf_dauer.getValue());
-//        film.setErscheinungsjahr(tf_jahr.getValue());
-//        film.clearGenre();
-//        selected.forEach(film::addGenre);
-        
-//    	if(film.getId()==-1) {
-//    		fvw.addEntitaet(film);
-//    		if(filmliste!=null) filmliste.addFilm(film);		//TODO save FIlmlisten filmverwaltung
-//    	}else
-//    		fvw.updateEntitaet(film);
-    	
-    	delete.forEach(item->pvw.removeEntitaet(item.getPerson()));
-    	
+    private void commitFilm() throws Exception {
+  	   	  	
     	try(Connection con = DB_Manager.getCon()){
     		fvw.save(con);
     		fvw.getFehlerlog().forEach(f->System.out.println(f.getMessage()));
     	}catch(Exception e) {
-    		//fvw.reset();
-    		//pvw.reset();
     		throw e;
     	}  	
     	
 		tf_titel.setDefaultValue(film.getTitel());
 		tf_dauer.setDefaultValue(film.getDauer());
 		tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
+		if(film.getId()!=-1)	tp_mit.setDisable(false);
     }
     
-    	// TODO Check Eingaben
-    private void checkEingaben()  {
-    	try {
-    		film.checkEingaben();
-    	} catch(Exception e) {
-    		Alert a = new Alert(AlertType.ERROR);
-    		a.setContentText(e.getMessage());
-    	}
-    }
-    
-    private void detail() {
-    	if( film.getId()==-1) {
-    		Alert a = new Alert(AlertType.ERROR);
-    		a.setTitle("Detailansicht öffnen");
-    		a.setHeaderText("Dieser Film existiert nich nicht in der Datenbank");
-    		a.setContentText("Bitte Speichern sie vorher den Film ab");
-    		a.show();
-    		return;
-    	}
+    private void commitPersonen() throws SQLException {
     	
-    	if(pvw.hatAuftraege() || fvw.hatAuftraege()) {
-    		Alert a = new Alert(AlertType.CONFIRMATION);
-    		a.setTitle("Detailansicht öffnen");
-    		a.setHeaderText("Es sind nicht gespeicherte Änderungen vorhanden");
-    		a.setContentText("Nicht gespeicherte Änderungen gehen möglicherweise verloren. Möchten sie trotzdem zur Detailansicht wechseln?");
-    		a.show();
-    		a.setOnCloseRequest(ev->{
-    			if(a.getResult().getButtonData().equals(ButtonData.OK_DONE)) 
-    				openDetail();
-    		});
-    	}else
-    		openDetail();
+    	pvw.getPersonenMitRollen().filtered(pmr->pmr.getDeleteProperty().get()==true).forEach(pmr-> pvw.removeEntitaet(pmr.getPerson()));
+    	
+		try(Connection con = DB_Manager.getCon()){
+    		pvw.save(con);
+    		pvw.getFehlerlog().forEach(p->System.out.println(p.getMessage()));
+    		pvw.reset();
+		}
     }
+    
     
     private void openDetail() {
 //    	fvw.reset();
 //    	pvw.reset();
     	try {
-			FensterManager.setDialog( FensterManager.getDetail(film) );
+			FensterManager.setDialog( FensterManager.getDetail(film, fvw) );
 		} catch (SQLException e) {
 			Alert a2 = new Alert(AlertType.ERROR);
 			a2.setTitle(e.getClass().getSimpleName());

@@ -13,7 +13,6 @@ import java.util.Map;
 
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Rolle;
-import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
 
 
 public class DB_Manager {
