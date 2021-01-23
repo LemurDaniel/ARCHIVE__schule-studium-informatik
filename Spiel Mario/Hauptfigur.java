@@ -26,8 +26,8 @@ public class Hauptfigur
     private String Knoepfe[] =    {"rechtsLaufen","rechtsLaufenStop","linksLaufen"  ,"linksLaufenStop"  ,"Springen","SpringenStop"}; // Mögliche Knöpfe
     private String Knopfnamen[] = {"Laufen"     ,"LaufenStop"      ,"zurueckLaufen","zurueckLaufenStop","Springen","SpringenStop"}; // Namen der Knöpfe unter jeweilgen Knopf gelistet
     
-    private static String SF[] = {"Mario"      , "Mario-2"      , "Mario-3"      , "Mario-4"      , "Luigi"       , "Luigi-2"      , "Luigi-3"      , "Luigi-4"      , "Wario"       , "Wario-2"      , "Wario-3"      , "Wario-4"      , "Waluigi"       , "Waluigi-2"      , "Waluigi-3"      , "Waluigi-4"      ,"Mario mit Yoshi"        ,"Yoshi"        ,"Bowser"        ,"Bowser Jr."           ,"Knochen Bowser"        ,"Koopa"        ,"Knochentrocken"        ,"DonkeyKong"        ,"Donkey mit Diddy"        ,"Cranky Kong"        ,"Big Bob omb"        ,"König Buu Huu"         ,"Kettenhund"}; //array mit Namen aller im Spiel zu verfügung stehenden Spielfiguren
-    private String path[]   = {"pic/Mario.png","pic/Mario2.png","pic/Mario3.png","pic/Mario4.png","pic/Luigi.png","pic/Luigi2.png","pic/Luigi3.png","pic/Luigi4.png","pic/Wario.png","pic/Wario2.png","pic/Wario3.png","pic/Wario4.png","pic/WaLuigi.png","pic/WaLuigi2.png","pic/WaLuigi3.png","pic/WaLuigi4.png","pic/Mario_mit_Yoshi.png","pic/Yoshi.png","pic/Bowser.png","pic/Bowser_Junior.png","pic/Knochen_Bowser.png","pic/Koopa.png","pic/Knochentrocken.png","pic/DonkeyKong.png","pic/Donkey_mit_Diddy.png","pic/Cranky_Kong.png","pic/Big_Bob_omb.png","pic/Koenig_Buu_Huu.png","pic/Kettenhund.png"};  //array mit Pfaden zu den jeweiligen Bildern der Spielfiguren
+    private static String SF[] = {"Mario"      , "Mario-2"      , "Mario-3"      , "Mario-4"      , "Luigi"       , "Luigi-2"      , "Luigi-3"      , "Luigi-4"      , "Wario"       , "Wario-2"      , "Wario-3"      , "Wario-4"      , "Waluigi"       , "Waluigi-2"      , "Waluigi-3"      , "Waluigi-4"      , "Mario mit Yoshi"       , "Yoshi"       , "Bowser"       , "Bowser Jr."          , "Knochen Bowser"       , "Koopa"       , "Knochentrocken"       , "DonkeyKong"       , "Donkey mit Diddy"       , "Cranky Kong"       , "Diddy Kong"       , "Dixie Kong"       , "Big Bob omb"       , "König Buu Huu"        , "Kettenhund"}; //array mit Namen aller im Spiel zu verfügung stehenden Spielfiguren
+    private String path[]   = {"pic/Mario.png","pic/Mario2.png","pic/Mario3.png","pic/Mario4.png","pic/Luigi.png","pic/Luigi2.png","pic/Luigi3.png","pic/Luigi4.png","pic/Wario.png","pic/Wario2.png","pic/Wario3.png","pic/Wario4.png","pic/WaLuigi.png","pic/WaLuigi2.png","pic/WaLuigi3.png","pic/WaLuigi4.png","pic/Mario_mit_Yoshi.png","pic/Yoshi.png","pic/Bowser.png","pic/Bowser_Junior.png","pic/Knochen_Bowser.png","pic/Koopa.png","pic/Knochentrocken.png","pic/DonkeyKong.png","pic/Donkey_mit_Diddy.png","pic/Cranky_Kong.png","pic/Diddy_Kong.png","pic/Dixie_Kong.png","pic/Big_Bob_omb.png","pic/Koenig_Buu_Huu.png","pic/Kettenhund.png"};  //array mit Pfaden zu den jeweiligen Bildern der Spielfiguren
                                    // Hinzufügen von Spielfiguren und zuweisen Namen in dieser Klasse
     private Timer Lauftimer;
     private Timer Springhochtimer;
@@ -36,7 +36,10 @@ public class Hauptfigur
     public Hauptfigur()
     {
         this(posx, posy, SF[0]);
-        ZEICHENFENSTER.gibFenster().setzeSichtbar(true);
+        for(int i=0;i<Knoepfe.length;i++){ // Zeichen aller vorhandenen knöpfe
+             erstelleKnopf(Knoepfe[i]);
+        }
+        ZEICHENFENSTER.gibFenster().setzeSichtbar(true); //Setzen des Zeichenfenster auf Sichtbar
     }
     
     public Hauptfigur(String Spielfigur)
