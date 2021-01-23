@@ -97,9 +97,7 @@ public class Hauptmap1
         
         int newposx= vx * zeit;   
         x=x+newposx;
-        System.out.print(x);
-        System.out.print(", ");
-        if(x==Kartenende){Bewegenstop();}
+        if(x>=Kartenende){Bewegenstop();}
             for(int i=0;i<=11;i++){
             Block[i].bewegex(newposx,"links");
             Gras[i].bewegex(newposx,"links");

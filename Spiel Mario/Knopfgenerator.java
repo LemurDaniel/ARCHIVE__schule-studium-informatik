@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
 /**
  * Diese Klasse stellt die Möglichkeit zur Verfügung in das Zeichenfenster Buttons aufzunehmen Knopfgenerator.
  * 
@@ -12,10 +13,11 @@ public class Knopfgenerator
         private JButton knopf;  // Instanzvariable fuer einen JButton
         private ZEICHENFENSTER fenster; // Instanzvariable fuer den Zeiger zum aktuellen Zeichenfenster
         public String Befehl; // Instanzvariable zum auswaehlen fuer den Befehl beim Klicken;
+        Hauptfigur Figur = new Hauptfigur();
         
         Knopfgenerator()
         {
-            this("Abbruch");
+            this("Start");
         }
         
         Knopfgenerator(String Beschriftung)
@@ -54,6 +56,9 @@ public class Knopfgenerator
                     fenster.gibFrame().getContentPane().add(knopf);
                  break;
                  
+                
+      
+                 
                  default:
                     fenster.steuerungOst.add(knopf);
                  break;
@@ -74,9 +79,11 @@ public class Knopfgenerator
             switch (Befehl)
             {
                 case "Start":
-                    Hauptfigur Figur  = new Hauptfigur();
-                    Hauptmap1 Map1  = new Hauptmap1();
-                    //System.out.println("Hallo");
+                    //Hauptfigur Figur  = new Hauptfigur();
+                    //Hauptmap1 Map1  = new Hauptmap1();
+                    //Map1.Bewegenstart();
+                    DemoThread Thread = new DemoThread();
+                    Thread.run2();
                 break;
                 
                 case "Settings":
@@ -89,8 +96,24 @@ public class Knopfgenerator
                 break;
                 
                 case "End":                    
-                    //System.exit (0);                
+                    System.exit (0);                
                 break;
+                
+                 case "Jump":
+                   Hauptfigur Figur1  = new Hauptfigur();
+                   //Figur.springhoch();
+                 break;
+                 
+                 case "Walk":
+                  
+                 break;
+                 
+                 case "Stop":
+                   Hauptfigur Figur3  = new Hauptfigur();
+                   Figur3.LaufenStop();
+                   Figur3.SpringenStop();    
+                 break;  
+                   
                 
                 default: System.exit (0);
             }

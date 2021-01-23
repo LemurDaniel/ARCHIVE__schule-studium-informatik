@@ -13,6 +13,11 @@ public class Start
     private Knopfgenerator kn2 = new Knopfgenerator("Credits","rechts","Credits");
     private Knopfgenerator kn3 = new Knopfgenerator("End","rechts","abbruch");
     
+    private Knopfgenerator kn4 = new Knopfgenerator("Walk","unten","Walk");
+    private Knopfgenerator kn5 = new Knopfgenerator("Jump","unten","Jump");
+    private Knopfgenerator kn6 = new Knopfgenerator("Stop","unten","Stop");
+   
+    
     public Start()
     {
         

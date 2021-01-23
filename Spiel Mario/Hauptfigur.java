@@ -1,5 +1,6 @@
 import javax.swing.Timer;
 import java.awt.event.*;
+
 public class Hauptfigur
 {
     
@@ -234,10 +235,13 @@ public class Hauptfigur
       public void lauf(int zeit, int Geschwindigkeit){
         int vx=Geschwindigkeit;
         
-        int newposx = vx * zeit;   
+        int newposx = vx * zeit;
+        
+        //if( myKey == KeyEvent.VK_RIGHT)
             for(int i=0;i<=143;i++){
             Pixel[i].bewegex(newposx,"rechts");
             }
+            
   
 
     }
