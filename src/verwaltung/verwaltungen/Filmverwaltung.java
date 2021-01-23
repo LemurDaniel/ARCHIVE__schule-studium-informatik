@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.ObservableList;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
@@ -29,26 +30,30 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	private Filmverwaltung() {
 		getGenres();
 	}
-
+	private void generateFilm(ResultSet rs) throws SQLException {
+		list.clear();
+		
+		int lastId = -1, idNow;
+		Film current = null;
+		while(rs.next()) {
+			idNow = rs.getInt("id");
+			if(lastId!=idNow) {
+				current = new Film(idNow, rs.getInt("ersteller"), rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
+				list.add(current);
+				lastId = idNow;
+			}
+			if(rs.getObject("gid")!=null)
+				current.addGenre( genre.get(rs.getInt("gid")) );	
+		}
+	}
+	
 	public void test() throws SQLException{
 		String sql = "select * from film left join genre_film on fid = film.id order by film.id";
 		try(Connection con = getCon();
 				Statement st = con.createStatement();
 					ResultSet rs = con.createStatement().executeQuery(sql)){
-			
-			int lastId = -1, idNow;
-			Film current = null;
-			while(rs.next()) {
-				idNow = rs.getInt("id");
-				if(lastId!=idNow) {
-					current = new Film(idNow, rs.getInt("ersteller"), rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
-					list.add(current);
-					lastId = idNow;
-				}
-				if(rs.getObject("gid")!=null)
-					current.addGenre( genre.get(rs.getInt("gid")) );	
-			}
-		}
+				generateFilm(rs);
+			}		
 	}
 	
 	public Film addFilm(String titel, List<Genre> genres, int dauer, int erscheinungsjahr, Connection connect) throws SQLException {
@@ -117,6 +122,87 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			}			
 		}
 	}
+	
+	public void filter(String titel, Integer bwtMax, Integer bwtMin, Integer dauerMax, Integer dauerMin, Integer jahrMax,
+			Integer jahrMin, List<Genre> genre, boolean and, List<String> tags, int anzahl) throws SQLException {
+		
+		
+		if(bwtMax==null)	bwtMax=10;
+		if(bwtMin==null)	bwtMin=0;
+		if(dauerMax==null)  dauerMax=getMaxDauer();
+		if(dauerMin==null) 	dauerMin=0;
+		if(jahrMax==null)	jahrMax=getMaxJahr();
+		if(jahrMin==null)	jahrMin=getMinJahr();
+		if(tags==null)		tags=new ArrayList<>();
+		if(genre==null)		genre=new ArrayList<>();
+		
+		StringBuilder sb = new StringBuilder();
+
+//		sb.append("Select * from film join "
+//					+"(Select fid from (Select * from genre_film where gid in(75, 72)) as g "
+//					+"group by fid Having count(g.gid)=2) as fmg "
+//				+ "on fmg.fid = film.id ");
+		
+		sb.append("Select Top (?) * from film ");
+		
+		if(genre.size()!=0) {		
+			sb.append("join ");
+				sb.append("(Select fid from (Select * from genre_film where gid in ( ");			// In( ?, ... ) kurz für multiple Or
+				for(int i=0; i<genre.size(); i++) 
+					sb.append(" ?" + (i==genre.size()-1 ? ") ":", ") );
+				sb.append(") as g ");
+				sb.append("group by fid Having count(g.gid)=?) as fmg ");	
+			sb.append("on fmg.fid = film.id ");
+		}
+		
+		sb.append("join genre_film on film.id=genre_film.fid ");
+		sb.append("join genre on genre_film.gid=genre.id ");
+		sb.append("where ");
+		
+		if(titel!=null)
+			sb.append("titel Like ? ");
+		sb.append("and bewertung between ? and ? ");
+		sb.append("and dauer between ? and ? ");
+		sb.append("and erscheinungsjahr between ? and ? ");
+		
+		if(tags.size()!=0) {
+			sb.append("and ( ");
+			for(int i=0; i<tags.size(); i++) 
+				sb.append("titel Like ? "+ (i==tags.size()-1 ? ") ":"or ") );
+		}
+		sb.append("order by film.id ");
+		
+		System.out.println(sb.toString());
+		
+		try(Connection con = getCon()){
+			try(PreparedStatement ps = con.prepareStatement(sb.toString())){
+				int count=0;
+				ps.setInt(++count, anzahl);
+				if(genre.size()!=0) {
+					for(Genre g:genre)	ps.setInt(++count, g.getId());
+					if(and)	ps.setInt(++count, genre.size());
+					else	ps.setInt(++count, 1);
+				}
+				
+				if(titel!=null) ps.setString(++count, titel+"%");
+				ps.setInt(++count, bwtMin);
+				ps.setInt(++count, bwtMax);
+				ps.setInt(++count, dauerMin);
+				ps.setInt(++count, dauerMax);
+				ps.setInt(++count, jahrMin);
+				ps.setInt(++count, jahrMax);
+				for(String s:tags)
+					ps.setString(++count, "%"+s+"%");
+				
+				try(ResultSet rs = ps.executeQuery()){
+					generateFilm(rs);
+				}
+			}
+		}
+	}
+	
+	
+	
 	
 	public static int getMaxTitel() {
 		return maxSize.get("FilmTitel");

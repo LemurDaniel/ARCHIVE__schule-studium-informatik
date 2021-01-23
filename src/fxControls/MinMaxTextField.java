@@ -9,16 +9,17 @@ public class MinMaxTextField extends TextField{
 	
 	private int min, max;
 	private MinMaxTextField mintf, maxtf;
-	private Integer value;
+	private Integer value, defVal;
 	private String schwanz;
 	private boolean formatText;
 	
 	public MinMaxTextField(int min, int max, String schwanz) {
-		super("");
+		super();
 		this.min = min;
 		this.max = max;
 		this.schwanz = schwanz;
-		value = null;	
+		value = null;
+		defVal = null;
 		
 		focusedProperty().addListener((ob,ov,focus)->{
 			formatText = focus;
@@ -46,12 +47,19 @@ public class MinMaxTextField extends TextField{
 	public void setMaxtf(MinMaxTextField maxtf) {
 		this.maxtf = maxtf;
 	}
+	public void setDefVal(Integer defVal) {
+		if(defVal>max)		defVal=max;
+		else if(defVal<min)	defVal=min;
+		this.defVal = defVal;
+		pruefe();
+	}
 	
 	
 	private void pruefe() {
 
 		if(getText()==null || getText().length()==0) {
-			value = null;
+			value = defVal;
+			if(value!=null) setText(defVal+schwanz);
 			return;
 		}
 			

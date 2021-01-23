@@ -1,13 +1,17 @@
 package gui.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 import org.controlsfx.control.CheckComboBox;
 
 import fxControls.MinMaxTextField;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -34,6 +38,9 @@ public class FilterCtrl {
     private HBox hb_genre;
     
     @FXML
+    private HBox hb_anzahl;
+    
+    @FXML
     private TextField tf_tags;
 
     @FXML
@@ -42,9 +49,12 @@ public class FilterCtrl {
     @FXML
     private Button btn_reset;
     
+    
+    private CheckBox cb_genreVerkuepfung;  
     private MinMaxTextField tf_bwtMin, tf_bwtMax;
     private MinMaxTextField tf_dauerMin, tf_dauerMax;
     private MinMaxTextField tf_jahrMin, tf_jahrMax;
+    private MinMaxTextField tf_anzahl;
     private CheckComboBox<Genre> cb_genre;
 
     @FXML
@@ -72,6 +82,7 @@ public class FilterCtrl {
     	hb_bwt.getChildren().add(tf_bwtMax);
     	
     	
+    	
     	tf_dauerMin = new MinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
     	tf_dauerMax = new MinMaxTextField(0, Filmverwaltung.getMaxDauer(), " Minuten");
     	tf_dauerMin.setPromptText("Laufzeit Minimum");
@@ -83,6 +94,7 @@ public class FilterCtrl {
     	hb_dauer.getChildren().add(tf_dauerMin);
     	hb_dauer.getChildren().add(new Label("bis"));
     	hb_dauer.getChildren().add(tf_dauerMax);
+    	
     	
     	
     	tf_jahrMin = new MinMaxTextField(Filmverwaltung.getMinJahr(), Filmverwaltung.getMaxJahr(), "");
@@ -98,6 +110,7 @@ public class FilterCtrl {
     	hb_jahr.getChildren().add(tf_jahrMax);
     	
     	
+    	
     	cb_genre = new CheckComboBox<>( FXCollections.observableArrayList(Filmverwaltung.getGenres()) );
     	cb_genre.setConverter( new StringConverter<Genre>() {
 			@Override
@@ -109,16 +122,57 @@ public class FilterCtrl {
 		});
     	hb_genre.getChildren().add(cb_genre);
     	  	
-    	btn_reset.setOnAction(ev->{
-    		tf_titel.setText(null);
-    		tf_bwtMax.setText(null);
-    		tf_bwtMin.setText(null);
-    		tf_dauerMax.setText(null);
-    		tf_dauerMin.setText(null);
-    		tf_jahrMax.setText(null);
-        	tf_jahrMin.setText(null);
-    		tf_tags.setText(null);
-    		cb_genre.getCheckModel().clearChecks();
+    	
+    	cb_genreVerkuepfung = new CheckBox();
+    	cb_genreVerkuepfung.selectedProperty().addListener((ob,ov,checked)->{
+    		if(checked)
+    			cb_genreVerkuepfung.setText("Genre:  UND");
+    		else
+    			cb_genreVerkuepfung.setText("Genre:  ODER");
     	});
+    	cb_genreVerkuepfung.setSelected(true);
+    	
+    	
+    	
+    	tf_anzahl = new MinMaxTextField(100, 1000, " Ergebnisse");
+    	tf_anzahl.setDefVal(100);
+    	hb_anzahl.getChildren().add(tf_anzahl);
+    	hb_anzahl.getChildren().add(new Label());
+    	hb_anzahl.getChildren().add(cb_genreVerkuepfung);
+    	
+    	btn_reset.setOnAction(this::reset);
+    	btn_filter.setOnAction(this::filter);
+    }
+
+    private void reset(ActionEvent event) {
+    	tf_titel.setText(null);
+		tf_bwtMax.setText(null);
+		tf_bwtMin.setText(null);
+		tf_dauerMax.setText(null);
+		tf_dauerMin.setText(null);
+		tf_jahrMax.setText(null);
+    	tf_jahrMin.setText(null);
+		tf_tags.setText(null);
+		cb_genre.getCheckModel().clearChecks();
+		cb_genreVerkuepfung.setSelected(true);
+    }
+    
+    private void filter(ActionEvent event) {
+    	Filmverwaltung fvw = Filmverwaltung.instance();
+    	String[] sarr = tf_tags.getText().split(",");
+    	List<String> tags = new ArrayList<>();
+    	
+    	for(int i=0; i<sarr.length; i++) {
+    		sarr[i] = sarr[i].trim();
+    		if(sarr[i].length()!=0)
+    			tags.add(sarr[i]);
+    	}
+
+    	try {
+    		fvw.filter(tf_titel.getText().trim(), tf_bwtMax.getValue(), tf_bwtMin.getValue(), tf_dauerMax.getValue(), tf_dauerMin.getValue(), 
+    					tf_jahrMax.getValue(), tf_jahrMin.getValue(), cb_genre.getCheckModel().getCheckedItems(), cb_genreVerkuepfung.isSelected(), tags, tf_anzahl.getValue());
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
     }
 }

@@ -11,6 +11,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 import exceptions.LogInException;
 import exceptions.RegisterException;
+import gui.FensterManager;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 
@@ -68,7 +69,7 @@ public class Nutzer extends DB_Manager {
 			}
 			
 			//Hole Daten	
-			instance = new Nutzer();	
+			instance = getNutzer();	
 			sql =  "Select nutzer.id, name, rechte.* from Nutzer "
 								+ "inner join rechte on nutzer.rechte=rechte.id where name=?"; 
 			try(PreparedStatement ps = con.prepareStatement(sql)){
@@ -163,7 +164,6 @@ public class Nutzer extends DB_Manager {
 		name = null;
 		rechte.reset();
 		angemeldet.set(false);
-		instance = null;
 		try(Connection con = getCon();
 				Statement st = con.createStatement()){
 			st.executeUpdate(s);

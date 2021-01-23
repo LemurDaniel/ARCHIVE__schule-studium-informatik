@@ -142,7 +142,8 @@ public class HauptseiteCtrl {
     }
     
     private void abmelden()  {
-    	Nutzer.getNutzer().abmelden();
+		FensterManager.reset();
 		FensterManager.setPrimaryStage(FensterManager.getAnmelden());
+    	Nutzer.getNutzer().abmelden();
 	}
 }

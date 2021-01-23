@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="600.0" styleClass="root" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.FilterCtrl">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="549.0" prefWidth="600.0" styleClass="root" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.FilterCtrl">
    <children>
       <HBox prefHeight="74.0" prefWidth="560.0" styleClass="hbox_allg">
          <children>
@@ -22,6 +22,7 @@
             <TextField fx:id="tf_tags" promptText="Stichwörter, ..." />
          </children>
       </HBox>
+      <HBox fx:id="hb_anzahl" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
       <HBox fx:id="hb" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg">
          <children>
             <Button fx:id="btn_filter" mnemonicParsing="false" prefHeight="31.0" prefWidth="83.0" text="Filtere">

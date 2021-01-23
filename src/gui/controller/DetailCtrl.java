@@ -58,7 +58,8 @@ public class DetailCtrl {
         accordion.setExpandedPane(tp_allg);
         tab_pane.getSelectionModel().select(tab_allg);
         tab_pane.requestFocus();
-		
+        aktualisiereRechte();
+        
 		if(this.film!=null && this.film.equals(film))
 			return;
         
@@ -100,6 +101,14 @@ public class DetailCtrl {
         this.film = film;
 	}
 
+	private void aktualisiereRechte() {
+		nid = Nutzer.getNutzer().getId();
+		rechte = Nutzer.getNutzer().getRechte();
+    	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
+    	tp_rezd.setDisable( !rechte.isReviewRead() );
+    	if(!rechte.isReviewWrite()) cb_r.getSelectionModel().select(0);
+//    });
+	}
     /** Allgemein **/
     @FXML
     private Accordion accordion;  
@@ -226,16 +235,6 @@ public class DetailCtrl {
     
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        
-        /** Rechte **/
-        tp_rezd.setDisable(!rechte.isReviewRead());
-        
-//        Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, nv)->{
-//        	nid = Nutzer.getNutzer().getId();
-//        	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
-//        	tp_rezd.setDisable( !rechte.isReviewRead() );
-//        	if(!rechte.isReviewWrite()) cb_r.getSelectionModel().select(0);
-//        });
         
         // Wenn nicht review Write -> keine eigene Review auswählbar
         cb_r.disabledProperty().addListener((ob, ov, nv)->{
