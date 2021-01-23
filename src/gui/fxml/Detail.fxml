@@ -24,31 +24,26 @@
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
                      <children>
-                        <Label prefHeight="41.0" prefWidth="122.0" text="Titel" />
                         <TextField fx:id="tf_titel" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
                      <children>
-                        <Label text="Genre" />
                         <TextField fx:id="tf_genre" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
                      <children>
-                        <Label text="Dauer" />
                         <TextField fx:id="tf_dauer" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
                      <children>
-                        <Label text="Bewertung" />
                         <TextField fx:id="tf_bewertung" />
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox_allg">
+                  <HBox prefHeight="100.0" prefWidth="425.0" styleClass="hbox_allg">
                      <children>
-                        <Label text="Erscheinungsjahr" />
                         <TextField fx:id="tf_jahr" prefWidth="176.0" />
                      </children>
                   </HBox>

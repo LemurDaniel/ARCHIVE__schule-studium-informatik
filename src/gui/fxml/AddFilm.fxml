@@ -69,7 +69,7 @@
                            <children>
                               <TreeTableView fx:id="table_genre" prefHeight="290.0" prefWidth="236.0">
                                  <columns>
-                                    <TreeTableColumn fx:id="t_genre" prefWidth="530.0" text="Genre" />
+                                    <TreeTableColumn fx:id="t_genre" prefWidth="530.0" sortable="false" text="Genre" />
                                  </columns>
                               </TreeTableView>
                            </children>

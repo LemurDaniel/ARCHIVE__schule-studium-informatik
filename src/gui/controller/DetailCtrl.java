@@ -51,7 +51,7 @@ public class DetailCtrl {
         table1.setItems(rvw.getList());
 		
         tf_titel.setText(film.getTitel());
-        tf_genre.setText(film.getGenre().getGenre());
+        tf_genre.setText(film.getGenreStringProperty().get());
         tf_bewertung.setText(film.getBewertung()+"");
         tf_dauer.setText(film.getDauer()+" Minuten");
         tf_jahr.setText(film.getErscheinungsjahr()+""); 

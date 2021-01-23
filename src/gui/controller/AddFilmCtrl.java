@@ -3,7 +3,9 @@ package gui.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import gui.FensterManager;
@@ -15,6 +17,8 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.transformation.FilteredList;
@@ -25,6 +29,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -35,7 +40,9 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Nutzer;
@@ -48,6 +55,7 @@ public class AddFilmCtrl {
 
 	private Film film;
 	private Personenverwaltung pvw;
+	private Map<Genre, TreeItem<Genre>> genreMap;
 	
 	// 0 - update 1 - delete
 	private ObservableMap<PersonMitRolle, BooleanProperty[]> confirmed;
@@ -63,8 +71,8 @@ public class AddFilmCtrl {
 		if(film!=null) {
 			pvw = film.getPvw();
 			pvw.load();
-			setDisplay();
 		}
+		setDisplay();
 		setTable();
 	}
 	
@@ -86,6 +94,7 @@ public class AddFilmCtrl {
 	
 	private void setDisplay() {
 		changes[0] = false;
+		table_genre.getSelectionModel().clearSelection();
 		
 		if(film == null) {
 			tf_titel.setText(null);
@@ -96,7 +105,12 @@ public class AddFilmCtrl {
 			tf_titel.setText(film.getTitel());
 			tf_dauer.setText(film.getDauer()+" Minuten");
 			tf_jahr.setText(film.getErscheinungsjahr()+"");
-			tf_genre.setText(film.getGenre().getGenre());
+			tf_genre.setText(film.getGenreStringProperty().get());
+			
+			if(film.getGenre()==null)	return;
+			film.getGenre().forEach(g->{
+				table_genre.getSelectionModel().select(genreMap.get(g));
+			});
 		}
 	}
 	
@@ -236,31 +250,37 @@ public class AddFilmCtrl {
         	}
         });
         
-        
+
         tf_bewertung.setDisable(true);
         tf_genre.setEditable(false);
         
         table_genre.setShowRoot(false);
         table_genre.setRoot(new TreeItem<Genre>(new Genre(-1, "")));
+        table_genre.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         t_genre.setText("Genre");
-        
-        Filmverwaltung.getGenres().stream().forEach( g->{
-        	TreeItem<Genre> item = new TreeItem<>(g);
-        	table_genre.getRoot().getChildren().add(item);  	
-        	if(g.getSubGenre()!=null)
-        		g.getSubGenre().stream().forEach( sg->item.getChildren().add(new TreeItem<Genre>(sg))	);
+        t_genre.setCellValueFactory(data-> new SimpleStringProperty(data.getValue().getValue().getGenre()) );       
+
+        genreMap = new HashMap<>();
+        for(Genre g: Filmverwaltung.getGenres()) {
+            TreeItem<Genre> item = new TreeItem<>(g);
+            table_genre.getRoot().getChildren().add(item);  
+            genreMap.put(g, item);
+            
+            if(g.getSubGenre()!=null) {
+            	for(Genre sg: g.getSubGenre()) {
+            		TreeItem<Genre> itemChild = new TreeItem<>(sg);
+                	item.getChildren().add( itemChild);
+                	genreMap.put(sg, itemChild);
+            	}
+            }
+        }
+
+        table_genre.setOnMouseReleased(ev->checkGenre());
+        table_genre.setOnKeyReleased(kev->{
+        	if(kev.getCode().equals(KeyCode.SHIFT))
+        		table_genre.getSelectionModel().clearSelection();
         });
-        t_genre.setCellValueFactory(data-> new SimpleStringProperty(data.getValue().getValue().getGenre()) );
-        
-        table_genre.getSelectionModel().selectedItemProperty().addListener((ob, ov, newVal)->{
-        	if(newVal!=null) {
-        		tf_genre.setText(newVal.getValue().getGenre());
-        		t_genre.setText(newVal.getValue().getGenre());
-        	}else {
-        		t_genre.setText("Genre");
-        		tf_genre.setText(null);
-        	}
-        });
+
         
         /** Mitwirkende **/
         table.setEditable(true);
@@ -305,13 +325,16 @@ public class AddFilmCtrl {
     		if(changes[0]) {
     			int dauer = Integer.parseInt(tf_dauer.getText().replaceAll("[^0-9]", ""));
     			int jahr = Integer.parseInt(tf_jahr.getText());
-    			Genre genre = table_genre.getSelectionModel().getSelectedItem().getValue();
+    			List<Genre> genres = new ArrayList<>();
+    			table_genre.getSelectionModel().getSelectedItems().forEach(item-> genres.add(item.getValue()) );
+    			
+    			genres.forEach(g->System.out.println(g.getGenre()));
     			//Wenn kein Film vorhanden
     			if(film==null) {
-    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), genre, dauer, jahr );
+    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), genres, dauer, jahr );
     				pvw = new Personenverwaltung(film);
     			}else		
-    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), genre, dauer, jahr, film);
+    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), genres, dauer, jahr, film);
     		}
     		
         	FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
@@ -335,7 +358,7 @@ public class AddFilmCtrl {
     	if(tf_titel.getLength() < 10)	throw new Exception("Titel zu kurz");
     	if(tf_jahr.getLength() != 4)	throw new Exception("Geben sie ein gültiges jahr ein");
     	if(tf_dauer.getLength() == 0)   throw new Exception("dauer");
-    	if(table_genre.getSelectionModel().getSelectedItem()==null) throw new Exception("Gein Genre");
+    	if(table_genre.getSelectionModel().getSelectedItems().size()==0) throw new Exception("Kein Genre");
     }
     
     private void detail() {
@@ -363,6 +386,34 @@ public class AddFilmCtrl {
 			a2.show();
 			e.printStackTrace();
 		}
+    }
+    
+    //Deselect Parents and Generere String für Genre TextField
+    private void checkGenre() {
+    	List<TreeItem<Genre>> remove = new ArrayList<>();
+    	table_genre.getSelectionModel().getSelectedItems().forEach(item->{
+    		if(item.getParent()!=null)	remove.add(item.getParent());
+    	});
+    	
+    	List<TreeItem<Genre>> list2 = new ArrayList<>();
+    	table_genre.getSelectionModel().getSelectedItems().forEach(item->{
+    		if(!remove.stream().anyMatch(rItem->rItem==item)) {
+    			list2.add(item);
+    			table_genre.getSelectionModel().select(item);
+    		}
+    	});
+
+    	table_genre.getSelectionModel().clearSelection();
+    	if(list2.size()==0) {
+			tf_genre.setText(null);
+			return;
+		}
+		tf_genre.setText(list2.get(0).getValue().getGenre());
+		table_genre.getSelectionModel().select( list2.get(0) );
+        for(int i=1; i<list2.size(); i++) {
+        	tf_genre.setText( tf_genre.getText()+", "+list2.get(i).getValue().getGenre());
+        	table_genre.getSelectionModel().select( list2.get(i) );
+        }
     }
     	
     

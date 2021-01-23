@@ -1,5 +1,8 @@
 package verwaltung.entitaeten;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.beans.property.ReadOnlyFloatProperty;
 import javafx.beans.property.ReadOnlyFloatWrapper;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -12,23 +15,28 @@ import verwaltung.verwaltungen.Rezensionenverwaltung;
 public class Film {
 	
 	private int id, erstellerId;
-	private Genre genre;
-	private ReadOnlyStringWrapper titel, dauer_string;
+	private List<Genre> genre;
+	private ReadOnlyStringWrapper titel, dauer_string, genre_string;
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
 	private ReadOnlyFloatWrapper bewertung;
 	
 	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
 	
-	public Film(int id, int erstellerId, String titel, Genre genre, int dauer, int erscheinungsjahr, float bewertung) {
+//	public Film(int id, int erstellerId, String titel, int dauer, int erscheinungsjahr, float bewertung) {
+//		this(id, erstellerId, titel, null, dauer, erscheinungsjahr, bewertung);
+//	}
+	
+	public Film(int id, int erstellerId, String titel, int dauer, int erscheinungsjahr, float bewertung) {
 		this.id = id;
 		this.erstellerId = erstellerId;
 		this.titel = new ReadOnlyStringWrapper(titel);
-		this.genre = genre;
+		//this.genre = genre;
 		this.dauer = new ReadOnlyIntegerWrapper(dauer);
 		this.dauer_string = new ReadOnlyStringWrapper(dauer+" Minuten");
 		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);
 		this.bewertung = new ReadOnlyFloatWrapper(bewertung);
+		genre_string = new ReadOnlyStringWrapper("");
 	}
 	
 	
@@ -66,7 +74,10 @@ public class Film {
 	public ReadOnlyStringProperty getDauerProperty() {
 		return dauer_string.getReadOnlyProperty();
 	}
-	public Genre getGenre() {
+	public ReadOnlyStringProperty getGenreStringProperty() {
+	return genre_string.getReadOnlyProperty();
+}
+	public List<Genre> getGenre() {
 		return genre;
 	}
 	
@@ -95,7 +106,20 @@ public class Film {
 	public void setErscheinungsjahr(int jahr) {
 		this.erscheinungsjahr.set(jahr);
 	}
-	public void setGenre(Genre genre) {
-		this.genre = genre;
+	public void addGenre(Genre genre) {
+		if(this.genre == null) this.genre = new ArrayList<>();
+		this.genre.add(genre);
+
+		if(genre_string.get().length()==0)
+			genre_string.set(genre.getGenre());
+		else
+			genre_string.set(genre_string.get()+", "+genre.getGenre());
+	}
+
+	public void clearGenre() {
+		if(genre==null)
+			return;
+		genre.clear();
+		genre_string.set("");
 	}
 }
