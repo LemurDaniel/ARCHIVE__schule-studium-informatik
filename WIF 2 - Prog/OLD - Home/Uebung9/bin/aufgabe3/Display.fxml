@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="234.0" prefWidth="300.0" stylesheets="@Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aufgabe3.DisplayController">
+   <children>
+      <TextField fx:id="tfBez" alignment="CENTER" editable="false" layoutX="32.0" layoutY="52.0" prefHeight="25.0" prefWidth="231.0" promptText="Bezeichnung:Aktion" text="sss" />
+      <TextField fx:id="tfWink" alignment="CENTER" editable="false" layoutX="95.0" layoutY="172.0" prefHeight="25.0" prefWidth="106.0" promptText="Winkel" />
+      <Slider fx:id="slider" layoutX="34.0" layoutY="89.0" minorTickCount="10" prefHeight="76.0" prefWidth="231.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+      <Label fx:id="lblFehler" layoutX="34.0" layoutY="17.0" prefHeight="25.0" prefWidth="231.0" />
+   </children>
+</Pane>

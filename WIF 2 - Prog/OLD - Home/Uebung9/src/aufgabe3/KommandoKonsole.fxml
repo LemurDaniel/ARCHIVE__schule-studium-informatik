@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aufgabe3.KommandoKonsoleController">
+   <children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="mFileNew" mnemonicParsing="false" onAction="#file" text="new" />
+                  <MenuItem fx:id="mFileOpen" mnemonicParsing="false" onAction="#file" text="open" />
+                  <MenuItem fx:id="mFileSave" mnemonicParsing="false" onAction="#file" text="save" />
+                  <MenuItem fx:id="mFileRename" mnemonicParsing="false" onAction="#file" text="rename" />
+                  <MenuItem fx:id="mFileDefault" mnemonicParsing="false" onAction="#file" text="Standard Teile" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Pane fx:id="pane" prefHeight="372.0" prefWidth="600.0" stylesheets="@Main.css">
+         <children>
+            <ScrollPane layoutX="68.0" layoutY="77.0" prefHeight="209.0" prefWidth="200.0">
+               <content>
+                  <ListView fx:id="list" editable="true" prefHeight="200.0" prefWidth="197.0" />
+               </content>
+            </ScrollPane>
+            <Button fx:id="btnDel" layoutX="68.0" layoutY="52.0" mnemonicParsing="false" onAction="#btn" prefHeight="25.0" prefWidth="200.0" text="Löschen" />
+            <Button fx:id="btnAdd" layoutX="79.0" layoutY="300.0" mnemonicParsing="false" onAction="#btn" prefHeight="25.0" prefWidth="461.0" text="Neues Körperteil hizufügen" />
+            <Button fx:id="btnCom" layoutX="310.0" layoutY="182.0" mnemonicParsing="false" onAction="#btn" prefHeight="25.0" prefWidth="227.0" text="Kommando Geben" />
+            <Label layoutX="300.0" layoutY="65.0" prefHeight="25.0" prefWidth="69.0" text="Winkel:" />
+            <TextField fx:id="tfWinkel" layoutX="369.0" layoutY="65.0" prefHeight="25.0" prefWidth="149.0" />
+            <RadioButton layoutX="322.0" layoutY="129.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="absolut">
+               <toggleGroup>
+                  <ToggleGroup fx:id="bt1" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="rRelativ" layoutX="322.0" layoutY="104.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" selected="true" text="relativ" toggleGroup="$bt1" />
+            <Label fx:id="lblFehler" layoutX="40.0" layoutY="14.0" prefHeight="25.0" prefWidth="532.0" />
+            <Label fx:id="lblTeile" layoutX="310.0" layoutY="230.0" prefHeight="25.0" prefWidth="227.0" text="0/" />
+         </children>
+      </Pane>
+   </children>
+</VBox>

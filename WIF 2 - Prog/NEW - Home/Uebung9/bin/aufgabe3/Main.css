@@ -1,0 +1,10 @@
+
+
+* {
+	-fx-font: bold normal 13 "system";
+}
+
+.label#lblFehler {
+	-fx-text-fill: red;
+}
+

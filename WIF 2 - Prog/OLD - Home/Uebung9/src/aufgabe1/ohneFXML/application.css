@@ -1,0 +1,22 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.label {
+	-fx-font-size: 13;
+	-fx-font-weight: bold;
+	-fx-text-fill: red;
+}	
+
+.label#test {
+	-fx-font-size: 13;
+	-fx-font-weight: bold;
+	-fx-text-fill: blue;
+}	
+
+.button {
+	-fx-font-size: 13;
+	-fx-font-weight: bold;
+}
+
+.button:pressed {
+	-fx-background-color: red;
+}
