@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import gui.controller.AddFilmCtrl;
 import gui.controller.AnmeldeseiteCtrl;
 import gui.controller.DetailCtrl;
 import gui.controller.HauptseiteCtrl;
@@ -40,6 +41,9 @@ public class FensterManager {
 	private static Stage detail;
 	private static DetailCtrl detailCtrl;
 	
+	private static Stage addFilm;
+	private static AddFilmCtrl addFilmCtrl;
+	
 	private FensterManager() {
 		
 		Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, angemeldet)->{
@@ -51,7 +55,7 @@ public class FensterManager {
 					setPrimaryStage(showAnmelden());
 				}
 			}catch(Exception e) {
-				
+				e.printStackTrace();
 			}
 		});
 	}
@@ -70,6 +74,22 @@ public class FensterManager {
 		if(!detail.isShowing())	detail.show();
 		detail.requestFocus();
 		return detail;
+	}
+	
+	public Stage showAddFilm() throws SQLException, IOException{
+		if(addFilm==null) {
+			addFilm = new Stage();
+			addFilm.setTitle("Filmdatenbank - Detailansicht");
+			addFilm.setResizable(false);
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/AddFilm.fxml"));
+			loader.load();
+			addFilmCtrl = loader.getController();
+    		addFilm.setScene(new Scene(loader.getRoot()));
+		}
+		addFilmCtrl.setFilm(null);
+		if(!addFilm.isShowing())	addFilm.show();
+		addFilm.requestFocus();
+		return addFilm;
 	}
 	
 	public Stage showAnmelden() throws SQLException, IOException {

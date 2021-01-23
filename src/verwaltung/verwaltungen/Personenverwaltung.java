@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import verwaltung.Unterverwaltung;
 import verwaltung.entitaeten.Film;
@@ -14,18 +15,21 @@ import verwaltung.entitaeten.Person;
 
 public class Personenverwaltung extends Unterverwaltung<Person>{
 
-	private static Map<Integer, String> rollen;
-	public static ObservableMap<Integer, String> getRollen() {
+	public static Map<String, Integer> rollen;
+	public static ObservableList<String> getRollen() {
 		if(rollen == null) {
 			rollen = new HashMap<>();
 			try(Connection con = getCon();){
 				ResultSet rs = con.createStatement().executeQuery("Select id, rolle from rollen");
-				while(rs.next()) rollen.put(rs.getInt(1), rs.getString(2));
+				while(rs.next()) rollen.put(rs.getString(2), rs.getInt(1));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
-		return FXCollections.observableMap(rollen);
+
+		ObservableList<String> oblist = FXCollections.observableArrayList();
+		rollen.forEach( (k, v)-> oblist.add(k) );
+		return oblist;
 	}
 	
 	
@@ -46,5 +50,8 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		}
 	}
 	
-
+	
+	public void addOrUpdate() {
+		
+	}
 }

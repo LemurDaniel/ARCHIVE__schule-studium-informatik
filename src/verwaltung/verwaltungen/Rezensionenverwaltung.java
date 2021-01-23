@@ -100,13 +100,13 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	
 	public void check(String titel, String inhalt) throws Exception{
 		if(titel.length()<10) throw new Exception("Der Titel muss mindestens 10 Zeichen lang sein.");
-		if(inhalt.length()<20) throw new Exception("Der Inhalt muss mindestens 20 Zeichen lang sein.");
+		//if(inhalt.length()<20) throw new Exception("Der Inhalt muss mindestens 20 Zeichen lang sein.");
 	}
 	
-	public int getMaxTitel() {
+	public static int getMaxTitel() {
 		return maxSize.get("rezTitel");
 	}
-	public int getMaxInhalt() {
+	public static int getMaxInhalt() {
 		return maxSize.get("rezInhalt");
 	}
 }

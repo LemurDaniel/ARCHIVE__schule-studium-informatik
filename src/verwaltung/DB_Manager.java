@@ -124,8 +124,11 @@ public class DB_Manager {
 					else if(col.equals("passwort")) maxSize.put("passwort", size);
 				}
 				else if(tab.equals("rezensionen")) {
-					if(col.equals("titel")			&& tab.equals("rezensionen")) maxSize.put("rezTitel", size);
-					else if(col.equals("inhalt")	&& tab.equals("rezensionen")) maxSize.put("rezInhalt", size);
+					if(col.equals("titel") ) 		maxSize.put("rezTitel", size);
+					else if(col.equals("inhalt") ) 	maxSize.put("rezInhalt", size);
+				}
+				else if(tab.equals("filme")) {
+					if(col.equals("titel")) 		maxSize.put("filmTitel", size);
 				}
 			}
 		} catch (SQLException e) {

@@ -122,11 +122,11 @@ public class Nutzer extends DB_Manager {
 	public ReadOnlyBooleanProperty angemeldetProperty() {
 		return angemeldet.getReadOnlyProperty();
 	}
-	
-	public int getMaxName() {
+	 
+	public static int getMaxName() {
 		return maxSize.get("name");
 	}
-	public int getMaxPasswort() {
+	public static int getMaxPasswort() {
 		return maxSize.get("passwort");
 	}
 	

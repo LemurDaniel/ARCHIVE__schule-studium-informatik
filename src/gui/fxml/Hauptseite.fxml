@@ -62,6 +62,7 @@
       </TableView>
       <HBox prefHeight="80.0" prefWidth="1721.0">
          <children>
+            <Button fx:id="btn" mnemonicParsing="false" text="Button" />
             <Button fx:id="btn_add" mnemonicParsing="false" onAction="#add" text="Hinzufügen" />
             <Button fx:id="btn_update" mnemonicParsing="false" onAction="#update" text="Modifizieren" />
             <Button fx:id="btn_detail" mnemonicParsing="false" onAction="#detail" text="Detailansicht" />

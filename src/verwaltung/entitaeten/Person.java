@@ -17,4 +17,19 @@ public class Person {
 		this.name = new SimpleStringProperty(name);
 		this.rolle = new SimpleStringProperty(rolle);
 	}
+	
+	public StringProperty getVorname() {
+		return vorname;
+	}
+
+	public StringProperty getName() {
+		return name;
+	}
+
+	public StringProperty getRolle() {
+		return rolle;
+	}
+	public int getId() {
+		return id;
+	}
 }

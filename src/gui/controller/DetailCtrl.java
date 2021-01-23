@@ -53,7 +53,7 @@ public class DetailCtrl {
         tf_titel.setText(film.getTitel().get());
         tf_genre.setText(film.getGenre().get());
         tf_bewertung.setText(film.getBewertung().get()+"");
-        tf_dauer.setText(film.getDauer().get()+"");
+        tf_dauer.setText(film.getDauer().get()+" Minuten");
         tf_jahr.setText(film.getErscheinungsjahr().get()+""); 
         
         accordion.setExpandedPane(tp_allg);
@@ -223,6 +223,12 @@ public class DetailCtrl {
 
         /** Rechte **/
         
+        tf_titel.setEditable(false);
+        tf_bewertung.setEditable(false);
+        tf_dauer.setEditable(false);
+        tf_genre.setEditable(false);
+        tf_jahr.setEditable(false);
+        
         /** Reze Detail **/
         cb_r.setItems(FXCollections.observableArrayList());
         cb_r.getItems().add("Rezensions-Verfasser"); // Nur ein Platzhalter
@@ -246,13 +252,13 @@ public class DetailCtrl {
         	setEdit(tbtn_r.isSelected());
         });
   
-        tf_rtitel.addEventFilter(KeyEvent.KEY_TYPED, ef->{
-        	if(tf_rtitel.getLength() >= rvw.getMaxTitel()) ef.consume();
+        tf_rtitel.addEventFilter(KeyEvent.KEY_TYPED, ev->{
+        	if(tf_rtitel.getLength() >= Rezensionenverwaltung.getMaxTitel()) ev.consume();
         });
-        ta_rtext.addEventFilter(KeyEvent.KEY_TYPED, ef->{
+        ta_rtext.addEventFilter(KeyEvent.KEY_TYPED, ev->{
         	System.out.println("test");
-        	if(ta_rtext.getLength() >= rvw.getMaxInhalt()) ef.consume();
-        	lbl_r.setText(rvw.getMaxInhalt()-ta_rtext.getLength()+"");
+        	if(ta_rtext.getLength() >= Rezensionenverwaltung.getMaxInhalt()) ev.consume();
+        	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-ta_rtext.getLength()+"");
         });
         
         /**  **/
@@ -333,7 +339,7 @@ public class DetailCtrl {
     	ta_rtext.setText(displayed.getInhalt().get());
     	tf_rtitel.setText(displayed.getTitel().get());
     	s_bwt.setValue(displayed.getBewertung().get());
-    	lbl_r.setText(rvw.getMaxInhalt()-ta_rtext.getLength()+"");
+    	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-ta_rtext.getLength()+"");
     }
     
     

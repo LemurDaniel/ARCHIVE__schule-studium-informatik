@@ -15,25 +15,24 @@ import verwaltung.verwaltungen.Rezensionenverwaltung;
 public class Film {
 	
 	private int id;
-	private ReadOnlyStringWrapper titel, genre;
+	private Genre genre;
+	private ReadOnlyStringWrapper titel, genre_prop;
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
 	private ReadOnlyFloatWrapper bewertung;
 	
 	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
 	
-	public Film(int id, String titel, String genre, int dauer, int erscheinungsjahr, float bewertung) {
+	public Film(int id, String titel, Genre genre, int dauer, int erscheinungsjahr, float bewertung) {
 		this.id = id;
 		this.titel = new ReadOnlyStringWrapper(titel);
-		this.genre = new ReadOnlyStringWrapper(genre);
+		this.genre = genre;
+		this.genre_prop = new ReadOnlyStringWrapper(genre.getGenre());
 		this.dauer = new ReadOnlyIntegerWrapper(dauer);
 		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);
 		this.bewertung = new ReadOnlyFloatWrapper(bewertung);
 	}
 	
-	public Film(ResultSet rs) throws SQLException {
-		this(rs.getInt("id"), rs.getString("titel"), rs.getString("genre"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
-	}
 	
 	public int getId() {
 		return id;
@@ -42,7 +41,7 @@ public class Film {
 		return titel;
 	}
 	public ReadOnlyStringProperty getGenre() {
-		return genre.getReadOnlyProperty();
+		return genre_prop.getReadOnlyProperty();
 	}
 	public ReadOnlyIntegerProperty getDauer() {
 		return dauer.getReadOnlyProperty();

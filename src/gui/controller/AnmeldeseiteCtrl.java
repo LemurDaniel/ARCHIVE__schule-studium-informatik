@@ -137,9 +137,9 @@ public class AnmeldeseiteCtrl {
     
     void typed(KeyEvent event) {
     	if(event.getSource().equals(tf_name)) {
-    		if(tf_name.getLength() >= Nutzer.getNutzer().getMaxName())	 event.consume();
+			if(tf_name.getLength() >= Nutzer.getMaxName())	 event.consume();
     	} else {
-    		if( ((TextField)event.getSource()).getLength() >= Nutzer.getNutzer().getMaxPasswort() ) event.consume();
+			if( ((TextField)event.getSource()).getLength() >= Nutzer.getMaxPasswort() ) event.consume();
     	}
     }
     

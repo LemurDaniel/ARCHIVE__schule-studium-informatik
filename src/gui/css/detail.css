@@ -2,7 +2,7 @@
 * {
 	-fx-font-size: 15.0px;
 } 
-Accordion {
+.root {
 	-fx-pref-height: 440.0px ;
 	-fx-pref-width: 600.0px ;
 }
@@ -52,6 +52,12 @@ ScrollPane {
 	-fx-alignment: center-left ;
 	-fx-padding: 0 5 0 0;
 }
+.FlowPaneCenter {
+	-fx-alignment: center ;
+	-fx-padding: 0 5 0 0;
+}
+
+
 
 
 

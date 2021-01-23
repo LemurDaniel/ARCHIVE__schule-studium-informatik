@@ -1,5 +1,6 @@
 package gui.controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import gui.FensterManager;
@@ -8,9 +9,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.Callback;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Nutzer;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -45,6 +48,10 @@ public class HauptseiteCtrl {
 
     @FXML // fx:id="btn_detail"
     private Button btn_detail; // Value injected by FXMLLoader
+    
+
+    @FXML // fx:id="btn"
+    private Button btn; // Value injected by FXMLLoader
 
     @FXML
     void add(ActionEvent event) {
@@ -99,6 +106,8 @@ public class HauptseiteCtrl {
         t_jahr.setCellValueFactory(data->data.getValue().getErscheinungsjahr());
         t_Titel.setCellFactory(TextFieldTableCell.forTableColumn());
         
+
+        
         table.getSelectionModel().selectedItemProperty().addListener((ob, oldV, newV) ->{
         	System.out.println(table.getSelectionModel().getSelectedItem());
         });
@@ -113,6 +122,15 @@ public class HauptseiteCtrl {
         });
        
         btn_add.setOnAction(ev->{
+        	try {
+				FensterManager.getInstance().showAddFilm();
+			} catch (SQLException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        });
+        
+        btn.setOnAction(ev->{
         	try {
 				Nutzer.getNutzer().abmelden();
 			} catch (SQLException e) {
