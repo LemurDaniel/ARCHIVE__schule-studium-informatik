@@ -73,7 +73,7 @@ public class DetailCtrl {
 		}
 		
         table.setItems(FXCollections.observableArrayList(pvw.getPersonenMitRollen()));
-        table1.setItems(rvw.getList());
+        table1.setItems(rvw.getObList());
 		
         tf_titel.setText(film.getTitel());
         tf_genre.setText(film.getGenreStringProperty().get());

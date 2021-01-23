@@ -25,14 +25,15 @@ public abstract class Unterverwaltung<T extends Entitaet> extends Verwaltung<T>{
 		if(!isLoaded) load();
 	}
 	public void load(Connection con) throws SQLException {
-		if(isLoaded) list.clear();
+		if(isLoaded) clear();
 		isLoaded = true;
 	}
 	public void loadIfnotLoaded(Connection con) throws SQLException {
 		if(!isLoaded) load(con);
 	}
-	void clear() {
-		list.clear();
+	@Override
+	public void clear() {
+		super.clear();
 		isLoaded = false;
 	}
 	public boolean isLoaded() {

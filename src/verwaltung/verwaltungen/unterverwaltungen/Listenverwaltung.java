@@ -30,7 +30,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setInt(1, Nutzer.getNutzer().getId());
 				try(ResultSet rs = ps.executeQuery()){
-					while(rs.next())	list.add(new Liste(rs.getInt(1), rs.getString(2)));
+					while(rs.next())	addObj(new Liste(rs.getInt(1), rs.getString(2)));
 				}
 			}
 			
@@ -39,7 +39,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 					+ "join film_genre on film_genre.fid=film.id "
 					+ "join liste_film on liste_film.fid=film.id "
 					+ "where lid=?";
-			for(Liste li:list) {
+			for(Liste li:getList()) {
 				try(PreparedStatement ps = con.prepareStatement(sql)){
 					ps.setInt(1, li.getId());
 					try(ResultSet rs = ps.executeQuery()){
@@ -121,7 +121,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 				ps.setInt(2, Nutzer.getNutzer().getId());
 				try(ResultSet rs = ps.executeQuery()){
 					Liste li = new Liste(rs.getInt(1), name);
-					list.add(li);
+					addObj(li);
 					return li;
 				}
 			}
@@ -135,7 +135,7 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 				ps.setInt(2, li.getId());
 				ps.executeUpdate();
 			}
-			list.remove(li);
+			removeObj(li);
 		}
 	}
 

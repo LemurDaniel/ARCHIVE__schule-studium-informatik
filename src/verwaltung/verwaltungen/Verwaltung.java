@@ -13,31 +13,32 @@ public abstract class Verwaltung <T extends Entitaet> extends DB_Manager{
 
 	/** VAR */
 	private ObservableList<T> liste;
-	protected List<T> list; 
+	private List<T> list; 
 	
 	@SuppressWarnings("serial")
 	protected Verwaltung() {
-			list = new ArrayList<T>() {
-				@Override
-				public boolean add(T obj) {
-					super.add(obj);
-					liste.add(obj);
-					return true;
-				}
-				
-				@Override
-				public void clear() {
-					super.clear();
-					liste.clear();
-				}
-			};
+			list = new ArrayList<T>();
 			liste = FXCollections.observableArrayList(list);
 	}
 	
-	public ObservableList<T> getList(){
+	public ObservableList<T> getObList(){
 		//return FXCollections.unmodifiableObservableList(list);
 		return liste;
 	}
-
 	
+	public void addObj(T obj) {
+		list.add(obj);
+		liste.add(obj);
+	}
+	public void removeObj(T obj) {
+		list.remove(obj);
+		liste.remove(obj);
+	}
+	public void clear() {
+		list.clear();
+		liste.clear();
+	}
+	public List<T> getList() {
+		return new ArrayList<>(list);
+	}
 }

@@ -108,6 +108,7 @@ public class Film extends Entitaet {
 	}
 	
 	public void addGenre(Genre genre) {
+		if(genres.contains(genre))	return;
 		genres.add(genre);
 		genres.sort((o1,o2)->o1.compare(o1, o2));
 		
@@ -133,4 +134,16 @@ public class Film extends Entitaet {
 		if(d>0 || h>0)	zeit = "("+ (d>0? " "+d+"d ":" ")+h+"h "+min+"min )";
 		return zeit;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Film [erstellerId=" + erstellerId + ", genres=" + genres + ", titel=" + titel + ", dauer_string="
+				+ dauer_string + ", genre_string=" + genre_string + ", bwt_string=" + bwt_string + ", erscheinungsjahr="
+				+ erscheinungsjahr + ", dauer=" + dauer + ", bewertung=" + bewertung + ", pvw=" + pvw + ", rvw=" + rvw
+				+ "]";
+	}
+	
+	
+	
 }

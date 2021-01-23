@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import gui.controller.AddFilmCtrl;
 import gui.controller.AnmeldeseiteCtrl;
 import gui.controller.DetailCtrl;
+import gui.controller.FilterCtrl;
 import gui.controller.HauptseiteCtrl;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,6 +18,7 @@ import javafx.stage.StageStyle;
 import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
+import verwaltung.verwaltungen.Filmverwaltung;
 
 public class FensterManager {
 
@@ -49,7 +51,7 @@ public class FensterManager {
 		
 	private  static Stage filter;
 	@SuppressWarnings("unused")
-	private  static AddFilmCtrl filterCtrl;
+	private  static FilterCtrl filterCtrl;
 	
 	public static Stage getDetail(Film film) throws SQLException{
 		if(detail==null) {
@@ -64,7 +66,7 @@ public class FensterManager {
 		return detail;
 	}
 	
-	public static Stage getAddFilm(Film film) throws SQLException{
+	public static Stage getAddFilm(Film film, Filmverwaltung fvw) throws SQLException{
 		if(film != null) {
 			if( !(Nutzer.getNutzer().getRechte().isUpdate() && film.getErstellerId()==Nutzer.getNutzer().getId() || Nutzer.getNutzer().getRechte().isUpdateAll())	)
 				throw new SQLException("Keine Berechtigung");
@@ -81,6 +83,7 @@ public class FensterManager {
     		addFilm.setScene(new Scene(loader.getRoot()));
 		}
 		addFilmCtrl.setFilm(film);
+		addFilmCtrl.setFvw(fvw);
 		return addFilm;
 	}
 	
@@ -118,14 +121,16 @@ public class FensterManager {
 		return loader;
 	}
 	
-	public static Stage getFilter() {
+	public static Stage getFilter(Filmverwaltung fvw) {
 		if(filter==null) {
 			filter = new Stage(StageStyle.DECORATED);
 			filter.setResizable(false);
 			filter.setTitle("Filmdatenbank - Filter");
 			FXMLLoader loader = getLoader("fxml/Filter.fxml");
+			filterCtrl = loader.getController();
 			filter.setScene(new Scene(loader.getRoot()));
 		}
+		filterCtrl.setFvw(fvw);
 		return filter;
 	}
 	

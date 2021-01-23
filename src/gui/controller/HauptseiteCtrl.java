@@ -18,6 +18,7 @@ import verwaltung.verwaltungen.Filmverwaltung;
 public class HauptseiteCtrl {
 	
 	private long lastMouseClick = 0;
+	private Filmverwaltung fvw = new Filmverwaltung();
 
     @FXML
     private Button blabla;
@@ -72,7 +73,7 @@ public class HauptseiteCtrl {
 
 	@FXML
     void initialize() {  
-        table.setItems(Filmverwaltung.instance().getList());
+        table.setItems(fvw.getObList());
         t_Titel.setCellValueFactory(	data->data.getValue().getTitelProperty());
         t_genre.setCellValueFactory(	data->data.getValue().getGenreStringProperty());
         t_bewertung.setCellValueFactory(data->data.getValue().getBwtStringProperty());
@@ -99,7 +100,7 @@ public class HauptseiteCtrl {
 
    
         try {
-			Filmverwaltung.instance().test();
+			fvw.test();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,15 +131,15 @@ public class HauptseiteCtrl {
     	Film film = table.getSelectionModel().getSelectedItem();
     	if(film == null)	
     		throw new Exception("Es wurde kein Film ausgewählt");
-    	FensterManager.setDialog( FensterManager.getAddFilm(film) );
+    	FensterManager.setDialog( FensterManager.getAddFilm(film, fvw) );
     }
     
     private void addFilm() throws SQLException, IOException {
-    	FensterManager.setDialog( FensterManager.getAddFilm(null) );
+    	FensterManager.setDialog( FensterManager.getAddFilm(null, fvw) );
     }
     
     private void filter() {
-    	FensterManager.setDialog( FensterManager.getFilter() );
+    	FensterManager.setDialog( FensterManager.getFilter(fvw) );
     }
     
     private void abmelden()  {

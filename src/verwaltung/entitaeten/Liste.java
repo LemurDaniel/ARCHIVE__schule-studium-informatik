@@ -12,11 +12,12 @@ import verwaltung.verwaltungen.Filmverwaltung;
 public class Liste extends Entitaet{
 	
 	private String name;
-	private List<Film> list;
+	private Filmverwaltung filme;
 	
 	public Liste(int id, String name) {
 		super(id);
 		this.name = name;
+		filme = new Filmverwaltung();
 	}
 	
 	
@@ -28,21 +29,21 @@ public class Liste extends Entitaet{
 	}
 	
 	public void addFilme(ResultSet rs) throws SQLException {
-		Filmverwaltung.generateFilm(rs, list);
+		filme.generateFilm(rs);
 	}
 	public void addFilm(Film film) {
-		list.add(film);
+		filme.addObj(film);
 	}
 	public void removeFilm(Film film) {
-		list.remove(film);
+		filme.removeObj(film);
 	}
 	
-	public ObservableList<Film> getFilme() {
-		return FXCollections.observableArrayList(list);
+	public ObservableList<Film> getObList() {
+		return filme.getObList();
 	}
-	
-	public void bla() {
-		System.out.println("name");
-		list.forEach(a->System.out.println(a.toString()));
+	public List<Film> getList() {
+		return filme.getList();
 	}
+
+
 }

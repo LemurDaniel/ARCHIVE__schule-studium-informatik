@@ -49,11 +49,11 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			while(rs.next()) {
 				if(person == null || person.getId() != rs.getInt(1)) {
 					person = new Person(rs.getInt(1), rs.getString(2), rs.getString(3));
-					list.add(person);
+					addObj(person);
 				}
 				person.addRolle(rolleMap.get(rs.getInt("rid")));
 			}
-			list.forEach(p->System.out.println(p+ "  "+p.getId()));
+			getList().forEach(p->System.out.println(p+ "  "+p.getId()));
 		}
 	}
 	
@@ -88,10 +88,10 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 						try(ResultSet rs = ps.executeQuery()){
 							if(rs.next()) {
 								int id = rs.getInt(1);
-								original = list.stream().filter(per->per.getId()==id).findFirst().orElse(null);
+								original = getList().stream().filter(per->per.getId()==id).findFirst().orElse(null);
 								if(original==null) {
 									original = new Person(id, person.getVorname(), person.getName());
-									list.add(original);
+									addObj(original);
 								}
 							}
 						}
@@ -106,7 +106,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 								rs.next();
 								con.commit();
 								original = new Person(rs.getInt(1), person.getVorname(), person.getName());
-								list.add(original);	
+								addObj(original);	
 							}
 						}
 					}else {
@@ -166,7 +166,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 				}
 
 				if(pmr.getPerson().getRollen().size()==0) {
-					list.remove( list.stream().filter(per->per.getId()==pmr.getPerson().getId()).findFirst().orElse(null) );
+					removeObj( getList().stream().filter(per->per.getId()==pmr.getPerson().getId()).findFirst().orElse(null) );
 				}							
 			}		
 		}
@@ -175,7 +175,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	
 	public List<PersonMitRolle> getPersonenMitRollen(){
 		List<PersonMitRolle> pml = new ArrayList<>();
-		list.forEach(per->pml.addAll(per.getCopy().getPersonenMitRolle()));
+		getList().forEach(per->pml.addAll(per.getCopy().getPersonenMitRolle()));
 		return pml;
 	}
 	

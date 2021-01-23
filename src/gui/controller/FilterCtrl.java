@@ -23,6 +23,11 @@ import verwaltung.verwaltungen.Filmverwaltung;
 
 public class FilterCtrl {
 
+	private Filmverwaltung fvw;
+	public void setFvw(Filmverwaltung fvw) {
+		this.fvw = fvw;
+	}
+	
     @FXML
     private HBox hb_titel;
 
@@ -161,7 +166,6 @@ public class FilterCtrl {
     }
     
     private void filter(ActionEvent event) {
-    	Filmverwaltung fvw = Filmverwaltung.instance();
 		List<String> tags = new ArrayList<>();
 		
     	if(tf_tags.getText()!=null && tf_tags.getText().length()!=0) {

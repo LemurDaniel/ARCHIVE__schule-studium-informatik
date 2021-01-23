@@ -54,6 +54,7 @@ public class AddFilmCtrl {
 
 	private Film film;
 	private Personenverwaltung pvw;
+	private Filmverwaltung fvw;
 	
 	// 0 - update 1 - delete
 	private BiMap<Genre, BooleanProperty> checked_genre = HashBiMap.create();
@@ -63,6 +64,10 @@ public class AddFilmCtrl {
 	private Map<PersonMitRolle, BooleanProperty[]> confirmed = new HashMap<>();
 	private ObservableList<PersonMitRolle> personen;
 	private boolean[] changes = {false, false};
+	
+	public void setFvw(Filmverwaltung fvw) {
+		this.fvw = fvw;
+	}
 	
 	public void setFilm(Film film) throws SQLException{
 		 accordion.setExpandedPane(tp_allg);
@@ -355,14 +360,13 @@ public class AddFilmCtrl {
             	checkEingaben();
     			//Wenn kein Film vorhanden
     			if(film==null) {
-    				film = Filmverwaltung.instance().addFilm(tf_titel.getText(), selected, tf_dauer.getValue(), tf_jahr.getValue(), con );
+    				film = fvw.addFilm(tf_titel.getText(), selected, tf_dauer.getValue(), tf_jahr.getValue(), con );
     				pvw = film.getPvw();
     			}else		
-    				Filmverwaltung.instance().updateFilm(tf_titel.getText(), selected, tf_dauer.getValue(),  tf_jahr.getValue(), film, con);
+    				fvw.updateFilm(tf_titel.getText(), selected, tf_dauer.getValue(),  tf_jahr.getValue(), film, con);
     		}
     		
-    		if(changes[1])
-    			pvw.addOrUpdate(update, con);
+    		if(changes[1])	pvw.addOrUpdate(update, con);
         	pvw.delete(delete, con);
     		
 		} catch (Exception e) {

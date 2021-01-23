@@ -27,21 +27,21 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		try(Statement st = con.createStatement();
 				ResultSet rs = st.executeQuery(sql);){
 			while(rs.next())
-				list.add(new Rezension(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6)));	
+				addObj(new Rezension(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6)));	
 		}
 	}
 
 	
 	public boolean exists(int rid) {
-		return list.stream().anyMatch(r->r.getId()==rid);
+		return getList().stream().anyMatch(r->r.getId()==rid);
 	}
 	public Rezension getRezensionVonNutzer(int nid) {
-		  return list.stream().filter(rz->rz.getVerfasserId()==nid).findFirst().orElse(null);
+		  return getList().stream().filter(rz->rz.getVerfasserId()==nid).findFirst().orElse(null);
 	}
 	
 	
 	public void addRezension(String titel, String inhalt, int bewertung, int nid) throws Exception {
-		if(list.stream().anyMatch(rez->rez.getVerfasserId()==nid))
+		if(getList().stream().anyMatch(rez->rez.getVerfasserId()==nid))
 			throw new Exception("Es existiert bereits eine Rezension mit dieser BenutzerId");
 
 		check(titel, inhalt);
@@ -59,14 +59,14 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 			
 			try(ResultSet rs = ps.executeQuery();){	
 				rs.next();
-				list.add(new Rezension(rs.getInt(1), titel, inhalt, Nutzer.getNutzer().getName(), nid, bewertung));
+				addObj(new Rezension(rs.getInt(1), titel, inhalt, Nutzer.getNutzer().getName(), nid, bewertung));
 			}
 			updateFilmBewertung(con);
 		}
 	}
 	
 	public void updateRezension(String titel, String inhalt, int bewertung, int rid) throws Exception {
-		Optional<Rezension> opt = list.stream().filter(r->r.getId()==rid).findFirst();
+		Optional<Rezension> opt = getList().stream().filter(r->r.getId()==rid).findFirst();
 		if(!opt.isPresent())
 			throw new Exception("Diese Rezension existiert nicht");
 		Rezension rez = opt.get();
