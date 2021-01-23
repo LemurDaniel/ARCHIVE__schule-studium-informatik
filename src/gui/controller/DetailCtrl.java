@@ -43,13 +43,14 @@ import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.entitaeten.Rezension;
 import verwaltung.verwaltungen.Filmverwaltung;
+import verwaltung.verwaltungen.Stapelverarbeitung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 
 public class DetailCtrl {
 
 	private Film film;
-	private Filmverwaltung fvw;
+	private Stapelverarbeitung<Film> stpv;
 	private int nid= Nutzer.getNutzer().getId();
 	private Rechte rechte = Nutzer.getNutzer().getRechte();
 	
@@ -61,7 +62,7 @@ public class DetailCtrl {
 	
 	private long lastMouseClick;
 
-	public void setFilm(Film film, Filmverwaltung fvw) throws SQLException {
+	public void setFilm(Film film, Stapelverarbeitung<Film> stpv) throws SQLException {
         accordion.setExpandedPane(tp_allg);
         tab_pane.getSelectionModel().select(tab_allg);
         tab_pane.requestFocus();
@@ -99,7 +100,7 @@ public class DetailCtrl {
         else																	cb_r.getSelectionModel().select(1);
         
         this.film = film;
-        this.fvw = fvw;
+        this.stpv = stpv;
 	}
 
 	public void aktualisiereNutzer() {
@@ -217,10 +218,11 @@ public class DetailCtrl {
     void add_rez(ActionEvent event) {
           Alert a = new Alert(AlertType.INFORMATION);
              
-          angezeigt.makeBackup();
+          angezeigt.backup();
           angezeigt.setBewertung((int)s_bwt.getValue());
           angezeigt.setInhalt(ta_rtext.getText());
           angezeigt.setTitel(tf_rtitel.getText());
+          System.out.println(angezeigt.getInhalt());
           
           if(angezeigt.getId()!=-1) {
         	  a.setTitle("Rezension - Update");
@@ -366,7 +368,7 @@ public class DetailCtrl {
     
     private void openAddFilm(ActionEvent event) {
     	try {
-			FensterManager.setDialog(FensterManager.getAddFilm(film, fvw, null));
+			FensterManager.setDialog(FensterManager.getAddFilm(film, stpv));
 		} catch (SQLException e) {
 			Alert a = new Alert(AlertType.ERROR);
 			a.setContentText(e.getMessage());

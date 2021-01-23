@@ -13,9 +13,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 		FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
-		//FensterManager.getInstance().getHauptSeite().show();
+		//FensterManager.getHauptSeite().show();
 
-		//FensterManager.setSecondary(FensterManager.getListensicht());
+		FensterManager.setSecondary(FensterManager.getListensicht());
 //		Nutzer.getNutzer().anmeldenGast();
 
 	}

@@ -10,16 +10,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 
 public class Filmverwaltung extends Verwaltung<Film>{
 	
+	public static final DataFormat df = new DataFormat("filme_ids");
+	
+	private static Map<Integer, Genre> genreMap;
+	public static void ladeGerne(Connection con) throws SQLException {
+		genreMap = new HashMap<>();
+		try(Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery("Select id, genre, text from genre")){
+			while(rs.next()) 
+				genreMap.put(rs.getInt(1), new Genre(rs.getInt(1), rs.getString(2), rs.getString(3)));
+		}
+	}
 	public static List<Genre> getGenres(){
-		List<Genre> g = new ArrayList<>();
-		genre.forEach((k, v)->g.add(v));
-		return g;
+		return new ArrayList<>(genreMap.values());
 	}
 	
 	
@@ -45,14 +59,14 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				lastId = idNow;
 			}
 			System.out.println( rs.getInt("gid"));
-			current.addGenre( genre.get(rs.getInt("gid")) );	
+			current.addGenre( genreMap.get(rs.getInt("gid")) );	
 		}
 	}
 	
 	public void test() throws SQLException{
 	//	filter(null, 10f, 9f, null, null, null, null, null, true, null, 10);
 		String sql = "select Top (10) * from film left join genre_film on fid = film.id order by film.id";
-		try(Connection con = getCon();
+		try(Connection con = DB_Manager.getCon();
 				Statement st = con.createStatement();
 					ResultSet rs = con.createStatement().executeQuery(sql)){
 				generiereFilme(rs);
@@ -186,7 +200,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		
 		System.out.println(sb.toString());
 		
-		try(Connection con = getCon()){
+		try(Connection con = DB_Manager.getCon()){
 			try(PreparedStatement ps = con.prepareStatement(sb.toString())){
 				int count=0;
 				ps.setInt(++count, anzahl);
@@ -255,7 +269,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		sb.append("order by id");
 		
 		System.out.println(sb.toString());
-		try(Connection con = getCon();
+		try(Connection con = DB_Manager.getCon();
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(sb.toString())){
 			
@@ -264,46 +278,69 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			while(rs.next()) {
 				idNow = rs.getInt("id");
 				if(current.getId()!=idNow) 	current = geladeneFilme.get(idNow).aktualisiere(rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
-				current.addGenre( genre.get(rs.getInt("gid")) );	
+				current.addGenre( genreMap.get(rs.getInt("gid")) );	
 			}
 		}
 		//fvws.forEach(fvw->fvw.reset());
 	}	
 	
 	
+	public static void kopiereInDragbord(Dragboard db, List<Film> filme) {
+   	 	List<Integer> ids = new ArrayList<>();
+   	 	filme.forEach(film->ids.add(film.getId()));
+   	 	ClipboardContent content = new ClipboardContent();
+   	 	content.put(df, ids);
+   	 	db.setContent(content);
+	}
+	public static List<Film> kopiereAusDragbord(Dragboard db) {		
+   	 	@SuppressWarnings("unchecked")
+		List<Integer> ids = (List<Integer>) db.getContent(df);
+   	 	List<Film> filme = new ArrayList<>();
+   	 	ids.forEach(id->filme.add(geladeneFilme.get(id)));
+   	 	return filme;
+	}
+	
+	
+	
+	
+	public static boolean existiertGlobal(Film f) {
+		return geladeneFilme.get(f.getId())==f;
+	}	
 	public static Film getFilmById(int id) {
 		return geladeneFilme.get(id);
 	}
 	
+	
 	public static int getMinTitel() {
-		return maxSize.get("FilmTitelMin");
+		return DB_Manager.get("FilmTitelMin");
 	}
 	public static int getMaxTitel() {
-		return maxSize.get("FilmTitelMax");
+		return DB_Manager.get("FilmTitelMax");
 	}
 	public static int getMinDauer() {
-		return maxSize.get("FilmDauerMin");
+		return DB_Manager.get("FilmDauerMin");
 	}
 	public static int getMaxDauer() {
-		return maxSize.get("FilmDauerMax");
+		return DB_Manager.get("FilmDauerMax");
 	}
 	public static int getMinJahr() {
-		return maxSize.get("JahrMin");
+		return DB_Manager.get("JahrMin");
 	}
 	public static int getMaxJahr() {
-		return maxSize.get("JahrMax");
+		return DB_Manager.get("JahrMax");
 	}
 	public static int getMinGenre() {
-		return maxSize.get("GenreMin");
+		return DB_Manager.get("GenreMin");
 	}
 	public static int getMaxGenre() {
-		return maxSize.get("GenreMax");
+		return DB_Manager.get("GenreMax");
 	}
 	public static int getMinErgebnisse() {
-		return maxSize.get("ErgebnisseMin");
+		return DB_Manager.get("ErgebnisseMin");
 	}
 	public static int getMaxErgebnisse() {
-		return maxSize.get("ErgebnisseMax");
+		return DB_Manager.get("ErgebnisseMax");
 	}
+
 
 }

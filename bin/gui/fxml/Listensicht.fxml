@@ -10,10 +10,12 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.ListensichtCtrl">
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="600.0" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.ListensichtCtrl">
    <content>
       <TabPane fx:id="tab_pane" prefHeight="99.0" prefWidth="598.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>
@@ -39,17 +41,22 @@
                         </TableView>
                         <HBox prefHeight="100.0" prefWidth="200.0" styleClass="bar">
                            <children>
-                              <Button fx:id="btn_detail" mnemonicParsing="false" prefHeight="31.0" prefWidth="129.0" styleClass="barBut" text="Detail">
+                              <ImageView fx:id="muelleimer" fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../Neue%20Bitmap.bmp" />
+                                 </image>
+                              </ImageView>
+                              <Button fx:id="btn_detail" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="129.0" styleClass="barBut" text="Detail">
                                  <HBox.margin>
                                     <Insets left="20.0" right="20.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="btn_update" mnemonicParsing="false" prefHeight="31.0" prefWidth="145.0" styleClass="barBut" text="Modifiziere">
+                              <Button fx:id="btn_update" mnemonicParsing="false" onAction="#action" prefHeight="31.0" prefWidth="145.0" styleClass="barBut" text="Modifiziere">
                                  <HBox.margin>
                                     <Insets left="20.0" right="20.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="btn_add" mnemonicParsing="false" prefHeight="31.0" styleClass="barBut" text="Neuer Film">
+                              <Button fx:id="btn_add" mnemonicParsing="false" onAction="#action" prefHeight="31.0" styleClass="barBut" text="Neuer Film">
                                  <HBox.margin>
                                     <Insets left="20.0" right="20.0" />
                                  </HBox.margin>
@@ -87,9 +94,9 @@
       <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="bar">
         <buttons>
             <Label prefHeight="21.0" prefWidth="226.0" styleClass="bar" text="Listensicht" />
-          <Button fx:id="btn_rel" mnemonicParsing="false" text="Zurücksetzen" />
-            <Button fx:id="btn_save" mnemonicParsing="false" text="Speichern" />
-            <Button fx:id="btn_neu" mnemonicParsing="false" text="Neue Liste" />
+          <Button fx:id="btn_rel" mnemonicParsing="false" onAction="#action" text="Zurücksetzen" />
+            <Button fx:id="btn_save" mnemonicParsing="false" onAction="#action" text="Speichern" />
+            <Button fx:id="btn_neu" mnemonicParsing="false" onAction="#action" text="Neue Liste" />
         </buttons>
       </ButtonBar>
    </graphic>

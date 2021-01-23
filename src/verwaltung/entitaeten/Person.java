@@ -87,22 +87,22 @@ public class Person implements Backup, EingabePruefung{
 	
 	
 	@Override
-	public void makeBackup() {
+	public void backup() {
 		if(backup!=null)	return;
 		
 		backup = new Person(getId(), vorname.get(), name.get());
 		backup.pmrlist = new ArrayList<>(pmrlist);
-		backup.pmrlist.forEach(pmr->pmr.makeBackup());
+		backup.pmrlist.forEach(pmr->pmr.backup());
 	}
 	@Override
-	public void reset() {
+	public void backupReset() {
 		if(backup==null)	return;
 		
 		id = backup.id;
 		vorname.set(backup.getVorname());
 		name.set(backup.getName());
 		pmrlist = backup.pmrlist;
-		pmrlist.forEach(pmr->pmr.reset());
+		pmrlist.forEach(pmr->pmr.backupReset());
 		
 		backup = null;
 	}
@@ -174,7 +174,7 @@ public class Person implements Backup, EingabePruefung{
 
 		
 		@Override
-		public void makeBackup() {
+		public void backup() {
 			if(backup!=null)	return;
 			
 			backup = new PersonMitRolle(rolle, per);
@@ -183,7 +183,7 @@ public class Person implements Backup, EingabePruefung{
 			backup.update.set(update.get());
 		}
 		@Override
-		public void reset() {
+		public void backupReset() {
 			if(backup==null)	return;
 			
 			rolle = backup.rolle;

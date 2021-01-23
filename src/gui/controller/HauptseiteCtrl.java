@@ -22,8 +22,6 @@ import verwaltung.verwaltungen.Filmverwaltung;
 
 public class HauptseiteCtrl {
 	
-	public static final DataFormat df = new DataFormat("filme_ids");
-	
 	private long lastMouseClick = 0;
 	private Filmverwaltung fvw = new Filmverwaltung();
 
@@ -66,7 +64,7 @@ public class HauptseiteCtrl {
     @FXML
     void action(ActionEvent event) {
     	try {
-    		if(event.getSource()==btn_add)				FensterManager.setDialog( FensterManager.getAddFilm(null, fvw, null) );
+    		if(event.getSource()==btn_add)				FensterManager.setDialog( FensterManager.getAddFilm(null, fvw) );
     		else if(event.getSource()==btn_update)		updateFilm();
     		else if(event.getSource()==btn_detail)		detail();
     		else if(event.getSource()==btn_abmelden) 	abmelden();
@@ -125,12 +123,7 @@ public class HauptseiteCtrl {
 
         table.setOnDragDetected(ev->{
         	Dragboard db = table.startDragAndDrop(TransferMode.LINK);
-
-        	 List<Integer> ids = new ArrayList<>();
-        	 table.getSelectionModel().getSelectedItems().forEach(f->ids.add(f.getId()));
-        	 ClipboardContent content = new ClipboardContent();
-        	 content.put(df, ids);
-        	db.setContent(content);
+        	Filmverwaltung.kopiereInDragbord(db, table.getSelectionModel().getSelectedItems());
         });
         
     }
@@ -144,7 +137,7 @@ public class HauptseiteCtrl {
     private void updateFilm() throws Exception {
     	Film film = table.getSelectionModel().getSelectedItem();
     	if(film == null)	throw new Exception("Es wurde kein Film ausgewählt");
-    	FensterManager.setDialog( FensterManager.getAddFilm(film, fvw, null) );
+    	FensterManager.setDialog( FensterManager.getAddFilm(film, fvw) );
     }
 
     private void abmelden()  {

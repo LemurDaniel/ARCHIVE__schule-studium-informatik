@@ -9,22 +9,17 @@ import java.util.Stack;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
 
-public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB_Manager{
+public abstract class Verwaltung <T extends Backup & EingabePruefung> extends Stapelverarbeitung<T>{
 	
 
 	/** VAR */
-	private Stack<T> delete, add, update;
-	private List<T> deleteErr, addErr, updateErr;
-	
-	protected List<Exception>	fehlerlog;
-	
-	private List<T> list; 
-	
+	private List<T> list; 	
 	private ObservableList<T> observablelist;
 	private ReadOnlyIntegerWrapper size;
 	
@@ -32,39 +27,34 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 		list = new ArrayList<T>();
 		observablelist = FXCollections.observableArrayList();
 		size = new ReadOnlyIntegerWrapper(0);
-		
-		delete = new Stack<>();
-		add = new Stack<>();
-		update = new  Stack<>();
-		
-		deleteErr	= new ArrayList<>();
-		addErr		= new ArrayList<>();
-		updateErr	= new ArrayList<>();
-		fehlerlog   = new ArrayList<>();
+		observablelist.addListener( (ListChangeListener<T>)change-> size.set(observablelist.size() ));
 	}
 	
 	public ObservableList<T> getObList(){
 		return observablelist;
 	}
-	public ReadOnlyIntegerProperty getSize() {
+	public ReadOnlyIntegerProperty getSizeProperty() {
 		return size.getReadOnlyProperty();
 	}
+	public boolean existiert(T entitaet) {
+		return list.contains(entitaet);
+	}
+	
 	
 	public void addObj(T obj) {
 		if(!list.contains(obj))				list.add(obj);
 		if(!observablelist.contains(obj)) 	observablelist.add(obj);
-		size.set(list.size());
 	}
 	public void removeObj(T obj) {
 		list.remove(obj);
 		observablelist.remove(obj);
-		size.set(list.size());
 	}
 	public void clear() {
 		list.clear();
 		observablelist.clear();
-		size.set(list.size());
+		reset();
 	}
+		
 	public List<T> getList() {
 		return new ArrayList<>(list);
 	}
@@ -72,14 +62,12 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 		return fehlerlog;
 	}
 	
-	
-	public void addEntitaet(T entitaet) {
-		if(add.contains(entitaet))	return;
-		add.push(entitaet);
-		
-		//Verschiebt alle Element, sodass dass neues Element ganz oben steht
-		T temp = null;
+	@Override
+	public boolean addEntitaet(T entitaet) {
+		if(!super.addEntitaet(entitaet))  return false;
+		//Verschiebt alle Element um eine Stelle, sodass das neue Element ganz oben steht
 		if(observablelist.size()>0) {
+			T temp = null;
 			for(int i=0;i<observablelist.size(); i++) {
 				temp = observablelist.get(i);
 				observablelist.set(i, entitaet);
@@ -87,110 +75,59 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB
 			}
 		}
 		observablelist.add(entitaet);
+		return true;
 	}
-	public void removeEntitaet(T entitaet) {
-		if(delete.contains(entitaet))	return;
-		delete.push(entitaet);
+	@Override
+	public boolean removeEntitaet(T entitaet) {
+		if(!super.removeEntitaet(entitaet))		return false;
 		observablelist.remove(entitaet);
+		return true;
 	}
-	public void updateEntitaet(T entitaet) {
-		if(entitaet==null  || !list.contains(entitaet))	return;
-		update.push(entitaet);
-		System.out.println(entitaet);
-	}
-	
-	
-	public boolean hatAuftraege() {
-		return add.size()!=0 || update.size()!=0 || delete.size()!=0;
+	@Override
+	public boolean updateEntitaet(T entitaet) {
+		if(!list.contains(entitaet))		return false;
+		return super.updateEntitaet(entitaet);
 	}
 	
 	
 	
 	
-	public void save(Connection con) throws SQLException {
-		if(!hatAuftraege())		return;
-		
-		fehlerlog.clear();
-		
-		try {
-			con.setAutoCommit(false);
-			while(!add.empty()) onAdd(add.pop(), con);
-			while(!update.empty()) {
-				T ent = update.pop();
-				if(!ent.hasBackup())	continue;
-				onUpdate(ent, con);
-			}
-			while(!delete.empty()) {
-				T ent = delete.pop();
-				if(!list.contains(ent))	continue;
-				onDelete(ent, con);
-			}
-		}finally {
-			deleteErr.forEach(delete::push);
-			updateErr.forEach(update::push);
-			addErr.forEach(add::push);
-			
-			deleteErr.clear();
-			updateErr.clear();
-			addErr.clear();
-		}
+	@Override
+	protected void onAdd(T ent, Connection con) throws Exception {
+		ent.checkEingaben();
+		add(ent, con);
 	}
-	
-	protected void onAdd(T ent, Connection con) throws SQLException {
-		try {
-			ent.checkEingaben();
-			add(ent, con);
-			con.commit();
-			addObj(ent);
-		}catch (SQLException e1) {
-			con.rollback();
-			addErr.add(ent);
-			fehlerlog.add(e1);
-		}catch(Exception e) {
-			e.printStackTrace();
-			addErr.add(ent);
-			fehlerlog.add(e);
-		}
+	@Override
+	protected void onUpdate(T ent, Connection con) throws Exception  {
+		if(!ent.hasBackup())	return;
+		ent.checkEingaben();
+		update(ent, con);
 	}
-	protected void onUpdate(T ent, Connection con) throws SQLException  {
-		try {
-			ent.checkEingaben();
-			update(ent, con);
-			con.commit();
-			ent.deleteBackup();
-		}catch (SQLException e1) {
-			con.rollback();
-			updateErr.add(ent);
-			fehlerlog.add(e1);
-		}catch(Exception e) {
-			updateErr.add(ent);
-			fehlerlog.add(e);
-		}
-	}
-	protected void onDelete(T ent, Connection con) throws SQLException  {
-		try {
-			delete(ent, con);
-			con.commit();
-		}catch (SQLException e1) {
-			con.rollback();
-			deleteErr.add(ent);
-			fehlerlog.add(e1);
-		}catch(Exception e) {
-			deleteErr.add(ent);
-			fehlerlog.add(e);
-		}
+	@Override
+	protected void onDelete(T ent, Connection con) throws Exception  {
+		delete(ent, con);
 	}
 	
 	
+	@Override
+	protected void onAddSucess(T ent) {
+		addObj(ent);
+	}
+	@Override
+	protected void onUpdateSucess(T ent) {
+		ent.deleteBackup();
+	}
+	@Override
+	protected void onDeleteSucess(T ent) {
+		removeObj(ent);
+	}
 
 	
+	@Override
 	public void reset() {
-		update.forEach(	item->	item.reset());
 		add.forEach(observablelist::remove);
 		delete.forEach(observablelist::add);
-		add.clear();
-		delete.clear();
-		update.clear();
+		super.reset();
 	}
 	
 	protected abstract void add(T ent, Connection con)					throws SQLException;

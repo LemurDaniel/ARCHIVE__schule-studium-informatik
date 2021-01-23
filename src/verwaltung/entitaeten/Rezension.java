@@ -73,16 +73,17 @@ public class Rezension implements Backup, EingabePruefung{
 	}
 
 	@Override
-	public void makeBackup() {
+	public void backup() {
 		if(backup!=null)	return;
 		
 		backup = new Rezension(getId(), titel.get(), inhalt, verfasser.get(), verfasserId, bewertung.get(), film);
 	}
 
 	@Override
-	public void reset() {
+	public void backupReset() {
 		if(backup==null)	return;
 		
+		id = backup.id;
 		inhalt = backup.inhalt;
 		titel.set(backup.getTitel());
 		bewertung.set(backup.getBewertung());
@@ -106,7 +107,7 @@ public class Rezension implements Backup, EingabePruefung{
 		if(titel.length().intValue()> Rezensionenverwaltung.getMaxTitel())	sb.append("\n--Titel zu lang");
 		if(titel.length().intValue()< Rezensionenverwaltung.getMinTitel())	sb.append("\n--Titel zu kurz");
 		if(inhalt.length()> Rezensionenverwaltung.getMaxInhalt())			sb.append("\n--inhalt zu lang");
-		if(inhalt.length()> Rezensionenverwaltung.getMinInhalt())			sb.append("\n--inhalt zu kurz");
+		if(inhalt.length()< Rezensionenverwaltung.getMinInhalt())			sb.append("\n--inhalt zu kurz");
 		if(sb.length()>0)
 			throw new Exception("Fehler Rezension '"+titel.get()+"' zu Film: '"+film.getTitel()+"' "+sb.toString());
 	}

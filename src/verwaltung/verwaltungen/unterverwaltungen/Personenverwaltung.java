@@ -5,9 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
@@ -15,11 +18,21 @@ import verwaltung.entitaeten.Rolle;
 
 public class Personenverwaltung extends Unterverwaltung<Person>{
 
-	public static ObservableList<Rolle> getRollen() {
-		ObservableList<Rolle> rlist = FXCollections.observableArrayList();
-		rolleMap.forEach((k,v)->rlist.add(v));
-		return rlist;
+	private static Map<Integer, Rolle> rolleMap;
+	public static void ladeRollen(Connection con) throws SQLException{
+		rolleMap =  new HashMap<>();
+		try(Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery("Select id, rolle from rolle")){
+			while(rs.next()) 
+				rolleMap.put(rs.getInt(1), new Rolle(rs.getInt(1), rs.getString(2)));
+		}	
 	}
+	
+	public static ObservableList<Rolle> getRollen() {
+		return FXCollections.observableArrayList(rolleMap.values());
+	}
+	
+	
 	
 	/**  **/
 	public ObservableList<PersonMitRolle> pmrliste;
@@ -28,6 +41,8 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		super(film);
 		pmrliste = FXCollections.observableArrayList();
 	}
+	
+	
 	
 	public ObservableList<PersonMitRolle> getPersonenMitRollen(){
 		return pmrliste;
@@ -38,14 +53,14 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	
 	@Override
-	public void addEntitaet(Person per) {
-		super.addEntitaet(per);
+	public boolean addEntitaet(Person per) {
+		if(!super.addEntitaet(per)) return false;
 		per.getPersonenMitRolle().forEach(item->{
 			if(!pmrliste.contains(item)	)	
 					pmrliste.add(item);	
 		});
+		return true;
 	}	
-
 	@Override
 	public void reset() {
 		super.reset();
@@ -195,10 +210,10 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 
 	
 	public static int getMaxName() {
-		return maxSize.get("PerNameMax");
+		return DB_Manager.get("PerNameMax");
 	}
 	public static int getMaxVorname() {
-		return maxSize.get("PerVornameMax");
+		return DB_Manager.get("PerVornameMax");
 	}
 }
 	

@@ -21,14 +21,10 @@ import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;
 import verwaltung.verwaltungen.Filmverwaltung;
+import verwaltung.verwaltungen.Stapelverarbeitung;
 
 public class FensterManager {
 
-	private static FensterManager instance;
-	public static FensterManager getInstance() {
-		if(instance==null) instance = new FensterManager();
-		return instance;
-	}
 	private FensterManager() {};
 	
 	private static Stage primaryStage;
@@ -68,7 +64,7 @@ public class FensterManager {
 	}
 	
 	
-	public static Stage getDetail(Film film, Filmverwaltung fvw) throws SQLException{
+	public static Stage getDetail(Film film, Stapelverarbeitung<Film> stpv) throws SQLException{
 		if(detail==null) {
 			detail = new Stage();
 			detail.setTitle("Filmdatenbank - Detailansicht");
@@ -77,11 +73,11 @@ public class FensterManager {
     		detailCtrl = loader.getController();
     		detail.setScene(new Scene(loader.getRoot()));
 		}
-		detailCtrl.setFilm(film, fvw);
+		detailCtrl.setFilm(film, stpv);
 		return detail;
 	}
 	
-	public static Stage getAddFilm(Film film, Filmverwaltung fvw, Liste filmliste) throws SQLException{
+	public static Stage getAddFilm(Film film, Stapelverarbeitung<Film> stpv) throws SQLException{
 		if(film != null) {
 			if( !(Nutzer.getNutzer().getRechte().isUpdate() && film.getErstellerId()==Nutzer.getNutzer().getId() || Nutzer.getNutzer().getRechte().isUpdateAll())	)
 				throw new SQLException("Keine Berechtigung");
@@ -97,7 +93,7 @@ public class FensterManager {
 			addFilmCtrl = loader.getController();
     		addFilm.setScene(new Scene(loader.getRoot()));
 		}
-		addFilmCtrl.setFilm(film, fvw);
+		addFilmCtrl.setFilm(film, stpv);
 		return addFilm;
 	}
 	

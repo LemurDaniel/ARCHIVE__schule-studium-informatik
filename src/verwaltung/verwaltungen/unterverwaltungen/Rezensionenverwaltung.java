@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Rezension;
 
@@ -101,17 +102,17 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	
 	
 	public static int getMaxTitel() {
-		return maxSize.get("RezTitelMax");
+		return DB_Manager.get("RezTitelMax");
 	}
 	public static int getMaxInhalt() {
-		return maxSize.get("RezInhaltMax");
+		return DB_Manager.get("RezInhaltMax");
 	}
 
 	public static int getMinTitel() {
-		return maxSize.get("RezTitelMin");
+		return DB_Manager.get("RezTitelMin");
 	}
 	public static int getMinInhalt() {
-		return maxSize.get("RezInhaltMin");
+		return DB_Manager.get("RezInhaltMin");
 	}
 
 }

@@ -42,6 +42,7 @@ import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
+import verwaltung.verwaltungen.Stapelverarbeitung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 
@@ -49,13 +50,13 @@ public class AddFilmCtrl {
 
 	private Film film;
 	private Personenverwaltung pvw;
-	private Filmverwaltung fvw;
+	private Stapelverarbeitung<Film> stpv;
 
 	private BiMap<Genre, BooleanProperty> checked_genre = HashBiMap.create();
 	private List<Genre> selected;
 	private boolean blocked;
 	
-	public void setFilm(Film film, Filmverwaltung fvw) throws SQLException{
+	public void setFilm(Film film, Stapelverarbeitung<Film> stpv) throws SQLException{
 		accordion.setExpandedPane(tp_allg);
 	    tab_pane.getSelectionModel().select(tab_allg);
 	    tab_pane.requestFocus();	
@@ -74,7 +75,7 @@ public class AddFilmCtrl {
 		}
 		
 	    this.film = film;
-	    this.fvw = fvw;
+	    this.stpv = stpv;
 		setDisplay();
 		setTable();
 	}
@@ -190,9 +191,9 @@ public class AddFilmCtrl {
     @FXML
     void action(ActionEvent event) {
     	try {
-    		if(event.getSource()==btn_rel1)			resetFilm();
-    		else if(event.getSource()==btn_rel2) 	pvw.reset();
-    		else if(event.getSource()==btn_commitF)	commitFilm();
+    	//	if(event.getSource()==btn_rel1)			resetFilm();
+    		if(event.getSource()==btn_rel2) 	pvw.reset();
+    		//else if(event.getSource()==btn_commitF)	commitFilm();
     		else if(event.getSource()==btn_commitP)	commitPersonen();
     		else if(event.getSource()==btn_addP)	addPerson();
     		else if(event.getSource()==btn_detail)	openDetail();
@@ -202,7 +203,7 @@ public class AddFilmCtrl {
     }
 
     private void resetFilm() {
-		fvw.reset();
+		stpv.reset();
 		if(film.getId()==-1) {
 			film = new Film(-1, 0, "", 0, 0, 0);
 			pvw = film.getPvw();
@@ -265,15 +266,7 @@ public class AddFilmCtrl {
         t_confirm1.setEditable(false);
         
         //Konvertiere Rolle zu String für t_rolle spalte
-        StringConverter<Rolle> stconv = new StringConverter<Rolle>() {
-			@Override
-			public String toString(Rolle object) {
-				return object.getRolle();
-			}
-			@Override
-			public Rolle fromString(String string) {return null;}
-		};
-        t_rolle.setCellFactory(ComboBoxTableCell.forTableColumn(stconv, Personenverwaltung.getRollen()));
+        t_rolle.setCellFactory(ComboBoxTableCell.forTableColumn(Personenverwaltung.getRollen()));
         
         
         /**Changes**/
@@ -313,11 +306,12 @@ public class AddFilmCtrl {
     }
     
     private void backupfilm() {
+    	System.out.println(film.getId());
     	if(film.getId()==-1) 
-        	fvw.addEntitaet(film);
+        	stpv.addEntitaet(film);
     	else	if(!film.hasBackup()) {
-    		film.makeBackup();
-    		fvw.updateEntitaet(film);
+    		film.backup();
+    		stpv.updateEntitaet(film);
     	}
     }
     
@@ -332,7 +326,7 @@ public class AddFilmCtrl {
     
     private void onEditCommit( CellEditEvent<PersonMitRolle, ?> data ) {
      	PersonMitRolle pmr = data.getRowValue();
-       	pmr.getPerson().makeBackup();
+       	pmr.getPerson().backup();
      	
        	if(data.getTableColumn()==t_rolle){
        		if(pmr.getPerson().existiert((Rolle) data.getNewValue())) {
@@ -371,8 +365,8 @@ public class AddFilmCtrl {
     private void commitFilm() throws Exception {
   	   	  	
     	try(Connection con = DB_Manager.getCon()){
-    		fvw.save(con);
-    		fvw.getFehlerlog().forEach(f->System.out.println(f.getMessage()));
+    		stpv.save(con);
+    		stpv.getFehlerlog().forEach(f->System.out.println(f.getMessage()));
     	}catch(Exception e) {
     		throw e;
     	}  	
@@ -399,7 +393,7 @@ public class AddFilmCtrl {
 //    	fvw.reset();
 //    	pvw.reset();
     	try {
-			FensterManager.setDialog( FensterManager.getDetail(film, fvw) );
+			FensterManager.setDialog( FensterManager.getDetail(film, stpv) );
 		} catch (SQLException e) {
 			Alert a2 = new Alert(AlertType.ERROR);
 			a2.setTitle(e.getClass().getSimpleName());

@@ -45,14 +45,13 @@ public class AnmeldeseiteCtrl {
     		else if(i==3) Nutzer.anmeldenKonto("Daniel", "123456");
     		else if(i==4) Nutzer.anmeldenKonto("Unlimited", "123456");
     		
-        	if(Nutzer.getNutzer().isAngemeldet())
-        		FensterManager.setPrimaryStage( FensterManager.getHauptSeite() );
+        	if(Nutzer.getNutzer().isAngemeldet())	FensterManager.setPrimaryStage( FensterManager.getHauptSeite() );
     	}catch(LogInException | RegisterException e) { 	
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle(e.getTitle());
     		a.setContentText(e.getMessage());
-    		if(e.isTyp(LogInException.ALREADY_LOGGED_IN))	a.setOnCloseRequest(ev->trozdemAnmelden());
     		a.show();
+    		if(e.isTyp(LogInException.ALREADY_LOGGED_IN))	a.setOnCloseRequest(ev->trozdemAnmelden());
     		
     	} catch (SQLException e) {
     		Alert a = new Alert(AlertType.ERROR);
@@ -114,7 +113,7 @@ public class AnmeldeseiteCtrl {
 		b.setOnCloseRequest(evb->{
 			if(b.getResult().getButtonData().equals(ButtonData.OK_DONE)) {
 				try {
-					Nutzer.getNutzer().vonAnderenInstanzenAbmelden();
+					Nutzer.getNutzer().vonAnderenInstanzenAbmelden("Daniel", "123456");
 					if(Nutzer.getNutzer().isAngemeldet())	FensterManager.setPrimaryStage(FensterManager.getHauptSeite());
 				} 
 				catch (SQLException e1) {}

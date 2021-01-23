@@ -13,6 +13,7 @@ import exceptions.LogInException;
 import exceptions.RegisterException;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
+import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
 
 public class Nutzer extends DB_Manager {
 	
@@ -41,31 +42,57 @@ public class Nutzer extends DB_Manager {
 		anmeldenKonto("Gast", "NurEinGast");
 	}
 	
-	public static void anmeldenKonto(String name, String passwort) throws LogInException, SQLException {
-		anmeldenKonto(name, passwort, null);
-	}
-	
-	private static void anmeldenKonto(String name, String passwort, Connection connection) throws SQLException, LogInException {	
+	public static void anmeldenKonto(String name, String passwort) throws SQLException, LogInException {	
+		try(Connection con = getCon()){
+			anmeldenKonto(name, passwort, con);
+		}
+	}	
+	public static void anmeldenKonto(String name, String passwort, Connection con) throws SQLException, LogInException {	
 		
-		try(Connection con = connection!=null ? connection:getCon();
-				Statement st = con.createStatement()){
+		try(Statement st = con.createStatement()){
 			
 			//Existiert Nutzer?
 			if(!nameExistiert(con, name)) throw new LogInException("Der Nutzer: '"+name+"' existiert nicht", LogInException.NO_USER);
 						
 			//Stimmt das Passwort?
-			String sql =  "Select passwort, registrierungsDatum from nutzer where name=?";
+			String sql =  "Select id, passwort, registrierungsDatum from nutzer where name=?";
 			try(PreparedStatement ps = con.prepareStatement(sql)){
 				ps.setString(1, name);
 				try(ResultSet rs = ps.executeQuery()){
 					rs.next();
-					String pwhash = rs.getString(1);
-					String pass = (passwort+name+ rs.getString(2));
+					
+					String pwhash = rs.getString("passwort");
+					String pass = (passwort+name+rs.getString("registrierungsDatum"));
 					if(pass.length()>71) pass = pass.substring(0,71);
+					
 					Result verifyResult = BCrypt.verifyer().verify( pass.toCharArray(), pwhash.toCharArray());
-					if(!verifyResult.verified)
-						throw new LogInException("Das verwendete Passwort ist falsch", LogInException.WRONG_PASSWORD);
+					if(!verifyResult.verified)	throw new LogInException("Das verwendete Passwort ist falsch", LogInException.WRONG_PASSWORD);
+					
+					instance.id = rs.getInt("id");
 				}
+			}
+			
+			// TODO
+//			//Ist bereits angemeldet?
+//			sql = "Select * from instanz_nutzer where nid=? and not iid=?";
+//			if(!instance.getRechte().isMultiLogin()) {			
+//				try(PreparedStatement ps = con.prepareStatement(sql)){
+//					ps.setInt(1, instance.getId());
+//					ps.setInt(2, getApplikationsId());
+//					try(ResultSet rs = ps.executeQuery()){
+//						if(rs.next()) throw new LogInException("Sie sind mit diesem Konto bereits in einer anderen Instanz angemeldet", LogInException.ALREADY_LOGGED_IN);		
+//					}
+//				}
+//			}
+			
+			//Anmelden
+			sql = "Insert into instanz_nutzer(nid, iid) values(?, ?);";
+			try(PreparedStatement ps = con.prepareStatement(sql)){
+				ps.setInt(1, instance.getId());
+				ps.setInt(2, getApplikationsId());
+				ps.executeUpdate();
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 			
 			//Hole Daten	
@@ -79,27 +106,7 @@ public class Nutzer extends DB_Manager {
 					instance.setNutzer(rs);
 				}
 			}
-
-			//Ist bereits angemeldet?
-			sql = "Select * from instanz_nutzer where nid=? and not iid=?";
-			if(!instance.getRechte().isMultiLogin()) {			
-				try(PreparedStatement ps = con.prepareStatement(sql)){
-					ps.setInt(1, instance.getId());
-					ps.setInt(2, getApplikationsId());
-					try(ResultSet rs = ps.executeQuery()){
-						if(rs.next()) throw new LogInException("Sie sind mit diesem Konto bereits in einer anderen Instanz angemeldet", LogInException.ALREADY_LOGGED_IN);		
-					}
-				}
-			}
-			
-			//Anmelden
-			sql = "Insert into instanz_nutzer(nid, iid) values(?, ?);";
-			try(PreparedStatement ps = con.prepareStatement(sql)){
-				ps.setInt(1, instance.getId());
-				ps.setInt(2, getApplikationsId());
-				ps.executeUpdate();
-			}
-			
+			Listenverwaltung.instance().ladeListen(con);			
 			instance.angemeldet.set(true);
 		}
 	}
@@ -145,28 +152,37 @@ public class Nutzer extends DB_Manager {
 	}
 	
 	
-	public void vonAnderenInstanzenAbmelden() throws SQLException {
-		String sql = "Delete from instanz_nutzer where nid=?;"
-					+"Insert into instanz_nutzer(nid, iid) values(?, ?);";
-		
+	public void vonAnderenInstanzenAbmelden(String name, String passwort) throws SQLException {
+		String sql = "Delete from instanz_nutzer where nid=?;";
+	
 		try(Connection con = getCon();
 				PreparedStatement ps = con.prepareStatement(sql)){
 			ps.setInt(1, id);
-			ps.setInt(2, id);
-			ps.setInt(3, getApplikationsId());
 			ps.executeUpdate();
+			
+			try {
+				anmeldenKonto(name, passwort, con);
+			} catch (LogInException e) {
+				e.printStackTrace();
+			}
 		}
-		angemeldet.set(true);
 	}
 	
-	public void abmelden()  {
+	public void abmelden() {
+		try(Connection con = getCon()){
+			abmelden(con);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public void abmelden(Connection con)  {
 		String s = "Delete instanz_nutzer where nid="+id+"and iid="+getApplikationsId();
 		id = -1;
 		name = null;
 		rechte.reset();
 		angemeldet.set(false);
-		try(Connection con = getCon();
-				Statement st = con.createStatement()){
+		Listenverwaltung.instance().clear();
+		try(Statement st = con.createStatement()){
 			st.executeUpdate(s);
 		}catch (Exception e) {}
 

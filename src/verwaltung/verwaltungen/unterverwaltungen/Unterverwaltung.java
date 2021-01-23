@@ -3,6 +3,7 @@ package verwaltung.verwaltungen.unterverwaltungen;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
 import verwaltung.entitaeten.Film;
@@ -18,7 +19,7 @@ public abstract class Unterverwaltung<T extends Backup & EingabePruefung> extend
 	}
 	
 	public void load() throws SQLException{
-		try(Connection con = getCon()){
+		try(Connection con = DB_Manager.getCon()){
 			load(con);
 		}
 	}	

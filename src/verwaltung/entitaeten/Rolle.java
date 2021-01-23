@@ -29,4 +29,9 @@ public class Rolle  {
 		};
 		return ob;
 	}
+	
+	@Override
+	public String toString() {
+		return rolle;
+	}
 }

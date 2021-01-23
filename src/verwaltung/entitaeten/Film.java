@@ -187,7 +187,7 @@ public class Film implements Backup, EingabePruefung{
 	
 
 	@Override
-	public void makeBackup() {
+	public void backup() {
 		if(backup!=null)	return;
 		
 		backup = new Film(id, erstellerId, titel.get(), dauer, erscheinungsjahr.get(), bewertung);
@@ -195,9 +195,10 @@ public class Film implements Backup, EingabePruefung{
 	}
 
 	@Override
-	public void reset() {
+	public void backupReset() {
 		if(backup==null) return;
 		
+		id = backup.id;
 		setBewertung(backup.bewertung);
 		setDauer(backup.dauer);
 		setTitel(backup.getTitel());

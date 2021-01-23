@@ -13,6 +13,9 @@ import java.util.Map;
 
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Rolle;
+import verwaltung.verwaltungen.Filmverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
+import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 
 public class DB_Manager {
@@ -27,8 +30,6 @@ public class DB_Manager {
 	private static String password = "Test";
 	
 	public static Map<String, Integer> maxSize = new HashMap<>();
-	protected static Map<Integer, Genre> genre;
-	protected static Map<Integer, Rolle> rolleMap;
 	
    static {
 		try {
@@ -51,8 +52,7 @@ public class DB_Manager {
 	}
 	
 	
-	private static int connectionsCreated = 0;
-	
+	private static int connectionsCreated = 0;	
 	private static int ApplikationsId;
 	public static int getApplikationsId() {
 		return ApplikationsId;
@@ -76,15 +76,10 @@ public class DB_Manager {
 	}
 	
 	public static void InstanzAbmelden() {
-			try {
-				if(Nutzer.getNutzer().isAngemeldet()) Nutzer.getNutzer().abmelden();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
 		try(Connection con = getCon();
-				PreparedStatement ps = con.prepareStatement("Update instanz set abgemeldet=? where id=?;");){
+				PreparedStatement ps = con.prepareStatement("Update instanz set abgemeldet=? where id=?;")){
+			
+			if(Nutzer.getNutzer().isAngemeldet()) Nutzer.getNutzer().abmelden(con);
 			ps.setString(1, LocalDateTime.now().toString());
 			ps.setInt(2, ApplikationsId);
 			ps.execute();
@@ -171,19 +166,12 @@ public class DB_Manager {
 		maxSize.put("ErgebnisseMin", 10);
 		maxSize.put("ErgebnisseMax", 1000);
 		
-		genre = new HashMap<>();
-		try(Statement st = con.createStatement();
-				ResultSet rs = st.executeQuery("Select id, genre, text from genre")){
-			while(rs.next()) 
-				genre.put(rs.getInt(1), new Genre(rs.getInt(1), rs.getString(2), rs.getString(3)));
-		}
-		
-		rolleMap =  new HashMap<>();
-		try(Statement st = con.createStatement();
-				ResultSet rs = st.executeQuery("Select id, rolle from rolle")){
-			while(rs.next()) 
-				rolleMap.put(rs.getInt(1), new Rolle(rs.getInt(1), rs.getString(2)));
-		}		
+		Filmverwaltung.ladeGerne(con);
+		Personenverwaltung.ladeRollen(con);
+	}
+
+	public static int get(String string) {
+		return maxSize.get(string);
 	}
 
 	
