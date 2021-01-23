@@ -176,9 +176,9 @@ public class FensterManager {
 			});
 		});
 		
-		primaryStage.focusedProperty().addListener((ob,ov,focus)->{
-			if(focus && dialog!=null && dialog.isShowing())	dialog.close();
-		});
+//		primaryStage.focusedProperty().addListener((ob,ov,focus)->{
+//			if(focus && dialog!=null && dialog.isShowing())	dialog.close();
+//		});
 	}
 	
 	public static void setSecondary(Stage stage) {

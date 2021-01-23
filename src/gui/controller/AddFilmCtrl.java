@@ -62,7 +62,6 @@ public class AddFilmCtrl {
 	private boolean blocked;
 	
 	// 0 - update 1 - delete
-	private Map<PersonMitRolle, BooleanProperty[]> confirmed = new HashMap<>();
 	private ObservableList<PersonMitRolle> personen;
 	private boolean[] changes = {false, false};
 	
@@ -99,9 +98,7 @@ public class AddFilmCtrl {
 	private void setTable() {
 		personen = FXCollections.observableArrayList(pvw.getPersonenMitRollen());
 		
-		table.setItems(personen);
-		confirmed.clear();		
-		personen.forEach(per->	confirmed.put(per, new SimpleBooleanProperty[]{new SimpleBooleanProperty(), new SimpleBooleanProperty()})	);
+		table.setItems(personen);	
 		
 		changes[1] = false;
 	}
@@ -291,8 +288,8 @@ public class AddFilmCtrl {
         t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()				);
         t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()			);
         t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()				);
-        t_confirm1.setCellValueFactory(	data->confirmed.get(data.getValue())[0]			);
-        t_confirm2.setCellValueFactory(	data->confirmed.get(data.getValue())[1]			);
+        t_confirm1.setCellValueFactory(	data->data.getValue().getUpdateProperty()						);
+        t_confirm2.setCellValueFactory(	data->data.getValue().getDeleteProperty()						);
         
         t_name.setCellFactory(TextFieldTableCell.forTableColumn());
         t_vorname.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -318,7 +315,7 @@ public class AddFilmCtrl {
         	if(val.length()>Personenverwaltung.getMaxVorname())
         		val = val.substring(0, Personenverwaltung.getMaxVorname());	//Wenn Eingabe zu Lang abschneiden.
         	data.getRowValue().getPerson().setVorname(val);
-        	confirmed.get(data.getRowValue())[0].set(true);
+        	data.getRowValue().getUpdateProperty().set(true);
         	changes[1]=true;
         });
         t_name.setOnEditCommit(	data->{
@@ -326,12 +323,12 @@ public class AddFilmCtrl {
         	if(val.length()>Personenverwaltung.getMaxName())
         		val = val.substring(0, Personenverwaltung.getMaxName());
         	data.getRowValue().getPerson().setName(val);
-        	confirmed.get(data.getRowValue())[0].set(true);
+        	data.getRowValue().getUpdateProperty().set(true);
         	changes[1]=true;
         });
         t_rolle.setOnEditCommit(	data->{
         	data.getRowValue().setRolle(data.getNewValue());
-        	confirmed.get(data.getRowValue())[0].set(true);
+        	data.getRowValue().getUpdateProperty().set(true);
         	changes[1]=true;
         });
         
@@ -345,17 +342,18 @@ public class AddFilmCtrl {
 
     private void addPerson() {
     	PersonMitRolle per = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0)).getPersonenMitRolle().get(0);
+    	pvw.addEntitaet(per.getPerson());
     	personen.add(per);
-    	confirmed.put(per, new SimpleBooleanProperty[]{new SimpleBooleanProperty(true), new SimpleBooleanProperty(false)});
+    	per.getUpdateProperty().set(true);
     	changes[1] = true;
     }
     
     private void commit() throws Exception {
     	System.out.println(changes[0]+"  "+changes[1]);
     	
-		FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
-    	FilteredList<PersonMitRolle> delete = personen.filtered(per->confirmed.get(per)[1].get());
-    	if(!changes[0]&& !changes[1] && delete.size()==0)
+		FilteredList<PersonMitRolle> update = personen.filtered(item->item.getUpdateProperty().get() && item.getPerson().getId()!=-1);
+    	FilteredList<PersonMitRolle> delete = personen.filtered(item->item.getDeleteProperty().get() && !item.getUpdateProperty().get());
+    	if(!changes[0] && !changes[1] && delete.size()==0 && update.size()==0)
     		return;
     	
         checkEingaben();
@@ -369,16 +367,21 @@ public class AddFilmCtrl {
     	if(film.getId()==-1) {
     		fvw.addEntitaet(film);
     		if(filmliste!=null) filmliste.addFilm(film);		//TODO save FIlmlisten filmverwaltung
-    		pvw = film.getPvw();
     	}else
     		fvw.updateEntitaet(film);
     		
-    	delete.forEach(g->System.out.println(g.toString()));
+    	update.forEach(item->{
+    		item.getPerson().makeBackup();
+    		pvw.updateEntitaet(item.getPerson());
+    	});
+    	delete.forEach(item->{
+    		item.getPerson().makeBackup();
+    		pvw.removeEntitaet(item.getPerson());
+    	});
     	
     	try(Connection con = DB_Manager.getCon()){
     		fvw.save(con);
-    		if(changes[1])	pvw.addOrUpdate(update, con);
-        	pvw.delete(delete, con);
+    		pvw.save(con);
     	}catch(Exception e) {
     		//fvw.reset();
     		throw e;

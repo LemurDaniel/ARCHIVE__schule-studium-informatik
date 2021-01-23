@@ -66,12 +66,15 @@ public class Rezension extends Entitaet implements Backup{
 
 	@Override
 	public void makeBackup() {
+		if(backup!=null)	return;
+		
 		backup = new Rezension(getId(), titel.get(), inhalt, verfasser.get(), verfasserId, bewertung.get());
 	}
 
 	@Override
 	public void reset() {
 		if(backup==null)	return;
+		
 		inhalt = backup.inhalt;
 		titel.set(backup.getTitel());
 		bewertung.set(backup.getBewertung());

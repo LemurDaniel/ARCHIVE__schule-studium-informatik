@@ -1,7 +1,9 @@
 package verwaltung.entitaeten;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -14,7 +16,6 @@ public class Person extends Entitaet implements Backup{
 	
 	public StringProperty vorname;
 	public StringProperty name;
-	public List<Rolle> rolle;   
 	private List<PersonMitRolle> pmrlist;
 	
 	public Person(int id, String vorname, String name){
@@ -25,9 +26,8 @@ public class Person extends Entitaet implements Backup{
 		super(id);
 		this.vorname = new SimpleStringProperty(vorname);
 		this.name = new SimpleStringProperty(name);
-		this.rolle = new ArrayList<>();
-		this.addRolle(rolle);
 		pmrlist = new ArrayList<>();
+		this.addRolle(rolle);
 	}
 	
 	public String getVorname() {
@@ -54,55 +54,45 @@ public class Person extends Entitaet implements Backup{
 	
 	
 	public void addRolle(Rolle rolle) {
-		if(rolle==null)return;
-		this.rolle.add(rolle);
+		if(rolle==null)	return;
 		pmrlist.add(new PersonMitRolle(rolle, this));
 	}
-//	public void removeRolle(Rolle rolle) {
-//		if(rolle==null)return;
-//		this.rolle.remove(rolle);
-//	}
-	public void addRollen(List<Rolle> rollen) {
-		if(rollen==null)return;
-		rollen.forEach(r->rolle.add(r));
-	}
 	
-	public void removeRolle(PersonMitRolle pmrrolle) {
-		if(pmrrolle==null)return;
-		pmrlist.remove(pmrrolle);
+	public void removePMR(PersonMitRolle pmr) {
+		if(pmr==null)return;
+		pmrlist.remove(pmr);
+		pmr.per = null;
+	}	
+	public void addPMR(PersonMitRolle pmr) {
+		if(pmr==null || existiert(pmr.getRolle()))	return;
+		pmrlist.add(pmr);
+		pmr.per = this;
 	}
-	public void addPMRRolle(PersonMitRolle pmrrolle) {
-		if(pmrrolle==null)return;
-		pmrlist.add(pmrrolle);
-		pmrrolle.per = this;
-	}
-
-	public List<Rolle> getRollen() {
-		return new ArrayList<>(this.rolle);
-	}
-	
-	
-	
-	public Person getCopy() {
-		Person p = new Person(getId(),vorname.get(),name.get());
-		p.addRollen(getRollen());
-		return p;
+	private boolean existiert(Rolle rolle) {
+		return pmrlist.stream().anyMatch(pmr->pmr.getRolle()==rolle);
 	}
 	
 	public List<PersonMitRolle> getPersonenMitRolle(){
 		return new ArrayList<>(pmrlist);
+	}
+	public int size() {
+		return pmrlist.size();
 	}
 	
 	
 	
 	@Override
 	public void makeBackup() {
+		if(backup!=null)	return;
+		
 		backup = new Person(getId(), vorname.get(), name.get());
 		backup.pmrlist = new ArrayList<>(pmrlist);
 		backup.pmrlist.forEach(pmr->pmr.makeBackup());
 	}
 	@Override
 	public void reset() {
+		if(backup==null)	return;
+		
 		setId(backup.getId());
 		vorname.set(backup.getVorname());
 		name.set(backup.getName());
@@ -117,6 +107,20 @@ public class Person extends Entitaet implements Backup{
 	}
 
 	
+	
+	
+	
+	
+	@Override
+	public String toString() {
+		return "Person [vorname=" + vorname + ", name=" + name + ", getId()=" + getId() + "]";
+	}
+
+
+
+
+
+
 	//Für table Einträge
 	public class PersonMitRolle implements Backup{
 		
@@ -124,8 +128,7 @@ public class Person extends Entitaet implements Backup{
 		
 		private Person per;
 		private Rolle rolle, initialRolle;
-		private boolean initialRolleAbschalten;
-		
+
 		private BooleanProperty update, delete;
 		
 		public PersonMitRolle(Rolle rolle, Person per) {
@@ -146,33 +149,40 @@ public class Person extends Entitaet implements Backup{
 		public Person getPerson() {
 			return per;
 		}
+		
 		public Rolle getinitialRolle() {
-			if(!initialRolleAbschalten) return initialRolle;
-			else return rolle;
+			return initialRolle;
 		}
 		public void resetInitialRolle() {
 			initialRolle = rolle;
 		}
-		public void setDavorAbschalten(boolean initialRolleAbschalten) {
-			this.initialRolleAbschalten = initialRolleAbschalten;
-		}
-		
+	
 		public BooleanProperty getDeleteProperty() {
 			return delete;
 		}
 		public BooleanProperty getUpdateProperty() {
-			return delete;
+			return update;
 		}
 
+		
 		@Override
 		public void makeBackup() {
+			if(backup!=null)	return;
+			
 			backup = new PersonMitRolle(rolle, per);
+			backup.initialRolle = initialRolle;
+			backup.delete.set(delete.get());
+			backup.update.set(update.get());
 		}
 		@Override
 		public void reset() {
 			if(backup==null)	return;
+			
 			rolle = backup.rolle;
+			initialRolle = backup.initialRolle;
 			per = backup.per;
+			delete.set(backup.delete.get());
+			update.set(backup.update.get());
 			
 			backup = null;
 		}

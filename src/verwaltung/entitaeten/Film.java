@@ -175,6 +175,8 @@ public class Film extends Entitaet  implements Backup{
 
 	@Override
 	public void makeBackup() {
+		if(backup!=null)	return;
+		
 		backup = new Film(getId(), erstellerId, titel.get(), dauer, erscheinungsjahr.get(), bewertung);
 		backup.genres = new ArrayList<>(genres);
 	}
@@ -182,6 +184,7 @@ public class Film extends Entitaet  implements Backup{
 	@Override
 	public void reset() {
 		if(backup==null) return;
+		
 		setBewertung(backup.bewertung);
 		setDauer(backup.dauer);
 		setTitel(backup.getTitel());

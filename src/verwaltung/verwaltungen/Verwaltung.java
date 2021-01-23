@@ -14,6 +14,8 @@ import javafx.collections.ObservableList;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.Entitaet;
+import verwaltung.entitaeten.Person;
+import verwaltung.entitaeten.Person.PersonMitRolle;
 
 public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manager{
 	
@@ -23,12 +25,12 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 	private List<T> deleteErr, addErr, updateErr;
 	private List<T> list; 
 	
-	private ObservableList<T> liste;
+	private ObservableList<T> observablelist;
 	private ReadOnlyIntegerWrapper size;
 	
 	protected Verwaltung() {
 		list = new ArrayList<T>();
-		liste = FXCollections.observableArrayList();
+		observablelist = FXCollections.observableArrayList();
 		size = new ReadOnlyIntegerWrapper(0);
 		
 		delete = new ArrayList<>();
@@ -41,25 +43,25 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 	}
 	
 	public ObservableList<T> getObList(){
-		return liste;
+		return observablelist;
 	}
 	public ReadOnlyIntegerProperty getSize() {
 		return size.getReadOnlyProperty();
 	}
 	
 	public void addObj(T obj) {
-		list.add(obj);
-		if(!liste.contains(obj))	liste.add(obj);
+		if(!list.contains(obj))				list.add(obj);
+		if(!observablelist.contains(obj))	observablelist.add(obj);
 		size.set(list.size());
 	}
 	public void removeObj(T obj) {
 		list.remove(obj);
-		if(liste.contains(obj))		liste.remove(obj);
+		observablelist.remove(obj);
 		size.set(list.size());
 	}
 	public void clear() {
 		list.clear();
-		liste.clear();
+		observablelist.clear();
 		size.set(list.size());
 	}
 	public List<T> getList() {
@@ -70,12 +72,12 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 	public void addEntitaet(T entitaet) {
 		if(add.contains(entitaet))	return;
 		add.add(entitaet);
-		liste.add(entitaet);
+		observablelist.add(entitaet);
 	}
 	public void removeEntitaet(T entitaet) {
-		if(delete.contains(entitaet) || !liste.contains(entitaet))	return;
-		delete.remove(entitaet);
-		liste.remove(entitaet);
+		if(delete.contains(entitaet))	return;
+		delete.add(entitaet);
+		observablelist.remove(entitaet);
 	}
 	public void updateEntitaet(T entitaet) {
 		if(entitaet==null  || !list.contains(entitaet))	return;
@@ -111,6 +113,7 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 				}
 			}
 			for(T ent: delete) {
+				if(!list.contains(ent))	continue;
 				try {
 					delete(ent, con);
 					con.commit();
@@ -134,11 +137,12 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 	}
 	
 	public void reset() {
+		add.forEach(	item->	observablelist.remove(item));
+		delete.forEach(	item->	observablelist.remove(item));
+		update.forEach(	item->	item.reset());
+
 		add.clear();
 		delete.clear();
-		if(update.size()>0) {
-			update.forEach(up->up.reset());
-		}
 		update.clear();
 	}
 	
