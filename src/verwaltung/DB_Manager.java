@@ -113,7 +113,7 @@ public class DB_Manager {
 					}
 				}
 			}
-		
+			
 			ps1.setInt(1, ++connectionsCreated);
 			ps1.setInt(2, ApplikationsId);
 			ps1.executeUpdate();

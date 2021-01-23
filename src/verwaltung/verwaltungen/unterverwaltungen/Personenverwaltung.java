@@ -207,7 +207,10 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			try(ResultSet rs = ps.executeQuery()){
 				if(rs.next()) {
 					int id = rs.getInt(1);
-					original = getList().stream().filter(per->per.getId()==id).findFirst().orElse(null);
+					if(person.getId()==id) {
+						original = person;
+					}else	
+						original = getList().stream().filter(per->per.getId()==id).findFirst().orElse(null);
 					if(original==null) {
 						original = person;
 						person.setId(id);
@@ -268,15 +271,24 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		
 		for(PersonMitRolle pmr: per.getPersonenMitRolle()) {
 
-			if(pmr.getRolle()!=pmr.getinitialRolle()) {
-				try(PreparedStatement ps = con.prepareStatement("Delete from film_person_rolle where fid=? and pid=? and rid=?;")){
-					ps.setInt(1, film.getId());
-					ps.setInt(2, per.getId());
-					ps.setInt(3, pmr.getinitialRolle().getId());
-					ps.executeUpdate();
-				}
-				pmr.resetInitialRolle();
-			}			
+//			if(pmr.getRolle()!=pmr.getinitialRolle()) {
+//				try(PreparedStatement ps = con.prepareStatement("Delete from film_person_rolle where fid=? and pid=? and rid=?;")){
+//					ps.setInt(1, film.getId());
+//					ps.setInt(2, per.getId());
+//					ps.setInt(3, pmr.getinitialRolle().getId());
+//					ps.executeUpdate();
+//				}
+//				pmr.resetInitialRolle();
+//			}
+			
+			int rolleid = pmr.getRolle().getId();
+			try(PreparedStatement ps = con.prepareStatement("Delete from film_person_rolle where fid=? and pid=? and rid=?;")){
+				ps.setInt(1, film.getId());
+				ps.setInt(2, per.getId());
+				ps.setInt(3, rolleid);
+				ps.executeUpdate();
+			}
+			pmr.getUpdateProperty().set(true);
 		}
 		add(per, con);		
 	}

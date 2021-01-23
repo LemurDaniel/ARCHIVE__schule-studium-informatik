@@ -368,7 +368,7 @@ public class AddFilmCtrl {
         
     	if(film.getId()==-1) {
     		fvw.addEntitaet(film);
-    		if(filmliste!=null) filmliste.addFilm(film);
+    		if(filmliste!=null) filmliste.addFilm(film);		//TODO save FIlmlisten filmverwaltung
     		pvw = film.getPvw();
     	}else
     		fvw.updateEntitaet(film);
@@ -379,6 +379,9 @@ public class AddFilmCtrl {
     		fvw.save(con);
     		if(changes[1])	pvw.addOrUpdate(update, con);
         	pvw.delete(delete, con);
+    	}catch(Exception e) {
+    		//fvw.reset();
+    		throw e;
     	}
     			
     	setDisplay();

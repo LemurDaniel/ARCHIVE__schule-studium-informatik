@@ -18,14 +18,6 @@ public class Main extends Application {
 		//FensterManager.setSecondary(FensterManager.getListensicht());
 //		Nutzer.getNutzer().anmeldenGast();
 
-		
-		List<Integer> li = new ArrayList<>();
-		li.add(new Integer(1));
-		li.add(new Integer(2));
-		for(Integer i:li) {
-			li.remove(i);
-		}
-//		}
 	}
 
 	public static void main(String[] args) {

@@ -15,7 +15,7 @@ public class Person extends Entitaet implements Backup{
 	public StringProperty vorname;
 	public StringProperty name;
 	public List<Rolle> rolle;   
-	public List<PersonMitRolle> pmrlist;
+	private List<PersonMitRolle> pmrlist;
 	
 	public Person(int id, String vorname, String name){
 		this(id, vorname, name, null);
@@ -27,6 +27,7 @@ public class Person extends Entitaet implements Backup{
 		this.name = new SimpleStringProperty(name);
 		this.rolle = new ArrayList<>();
 		this.addRolle(rolle);
+		pmrlist = new ArrayList<>();
 	}
 	
 	public String getVorname() {
@@ -73,6 +74,7 @@ public class Person extends Entitaet implements Backup{
 	public void addPMRRolle(PersonMitRolle pmrrolle) {
 		if(pmrrolle==null)return;
 		pmrlist.add(pmrrolle);
+		pmrrolle.per = this;
 	}
 
 	public List<Rolle> getRollen() {
@@ -88,34 +90,38 @@ public class Person extends Entitaet implements Backup{
 	}
 	
 	public List<PersonMitRolle> getPersonenMitRolle(){
-		List<PersonMitRolle> list = new ArrayList<>();
-		rolle.forEach(r->{
-			list.add(new PersonMitRolle(r, this));
-		});
-		return list;
+		return new ArrayList<>(pmrlist);
 	}
 	
 	
 	
 	@Override
 	public void makeBackup() {
-		// TODO Auto-generated method stub
-		
+		backup = new Person(getId(), vorname.get(), name.get());
+		backup.pmrlist = new ArrayList<>(pmrlist);
+		backup.pmrlist.forEach(pmr->pmr.makeBackup());
 	}
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub		
+		setId(backup.getId());
+		vorname.set(backup.getVorname());
+		name.set(backup.getName());
+		pmrlist = backup.pmrlist;
+		pmrlist.forEach(pmr->pmr.reset());
+		
+		backup = null;
 	}
 	@Override
 	public void deleteBackup() {
 		backup = null;	
 	}
-	public Person getBackup() {
-		return backup;
-	}
+
 	
 	//Für table Einträge
-	public class PersonMitRolle {
+	public class PersonMitRolle implements Backup{
+		
+		private PersonMitRolle backup;
+		
 		private Person per;
 		private Rolle rolle, initialRolle;
 		private boolean initialRolleAbschalten;
@@ -156,6 +162,23 @@ public class Person extends Entitaet implements Backup{
 		}
 		public BooleanProperty getUpdateProperty() {
 			return delete;
+		}
+
+		@Override
+		public void makeBackup() {
+			backup = new PersonMitRolle(rolle, per);
+		}
+		@Override
+		public void reset() {
+			if(backup==null)	return;
+			rolle = backup.rolle;
+			per = backup.per;
+			
+			backup = null;
+		}
+		@Override
+		public void deleteBackup() {
+			backup = null;
 		}
 
 	

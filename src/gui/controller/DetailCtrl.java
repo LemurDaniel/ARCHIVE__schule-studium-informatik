@@ -215,9 +215,9 @@ public class DetailCtrl {
           try {
         	  rvw.check(tf_rtitel.getText(), ta_rtext.getText());
           }catch(Exception e) {
-        	 a.setAlertType(AlertType.ERROR);
-         	 a.setContentText(e.getMessage());
-         	 a.show();
+        	 Alert err = new Alert(AlertType.ERROR);
+        	 err.setContentText(e.getMessage());
+        	 err.show();
          	 return; 
           }
           angezeigt.makeBackup();
@@ -238,8 +238,10 @@ public class DetailCtrl {
          try(Connection con = DB_Manager.getCon()){
         	 rvw.save(con);
          }catch(Exception e) {
-        	 a.setAlertType(AlertType.ERROR);
-        	 a.setContentText(e.getMessage());
+        	 Alert err = new Alert(AlertType.ERROR);
+        	 err.setContentText(e.getMessage());
+        	 err.show();
+        	 rvw.reset();
         	 return;
           }
          

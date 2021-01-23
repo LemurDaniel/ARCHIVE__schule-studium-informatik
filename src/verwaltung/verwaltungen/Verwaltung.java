@@ -20,6 +20,7 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 
 	/** VAR */
 	private List<T> delete, add, update;
+	private List<T> deleteErr, addErr, updateErr;
 	private List<T> list; 
 	
 	private ObservableList<T> liste;
@@ -33,6 +34,10 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 		delete = new ArrayList<>();
 		add = new ArrayList<>();
 		update = new ArrayList<>();
+		
+		deleteErr = new ArrayList<>();
+		addErr = new ArrayList<>();
+		updateErr = new ArrayList<>();
 	}
 	
 	public ObservableList<T> getObList(){
@@ -78,28 +83,41 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 	}
 	
 	public void save(Connection con) throws SQLException {
+		deleteErr.clear();
+		addErr.clear();
+		updateErr.clear();
 		try {
+			con.setAutoCommit(false);
 			for(T ent: add)	{
 				try {
 					add(ent, con);
+					con.commit();
 				}catch(SQLException e) {
 					System.out.println(e.getMessage());
+					addErr.add(ent);
+					con.rollback();
 				}
 			}
 			for(T ent: update) {
 				try {
 					update(ent, con);
+					con.commit();
 					ent.deleteBackup();
 				}catch(SQLException e) {
 					ent.reset();
 					System.out.println(e.getMessage());
+					updateErr.add(ent);
+					con.rollback();
 				}
 			}
 			for(T ent: delete) {
 				try {
 					delete(ent, con);
+					con.commit();
 				}catch(SQLException e) {
 					System.out.println(e.getMessage());
+					deleteErr.add(ent);
+					con.rollback();
 				}
 			}
 		}finally {

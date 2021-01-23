@@ -67,7 +67,6 @@ public class Film extends Entitaet  implements Backup{
 	
 	
 	
-	
 	public ReadOnlyStringWrapper getTitelProperty() {
 		return titel;
 	}
@@ -94,6 +93,9 @@ public class Film extends Entitaet  implements Backup{
 	public Personenverwaltung getPvw() {
 		return pvw;
 	}
+	
+	
+	
 	
 	
 	public void setBewertung(float bewertung) {
@@ -126,6 +128,16 @@ public class Film extends Entitaet  implements Backup{
 		genres.add(genre);
 		buildGenreString();
 	}
+	public void clearGenre() {
+		if(genres==null)
+			return;
+		genres.clear();
+		genre_string.set("");
+	}
+	
+	
+	
+	
 	private void buildGenreString() {
 		genres.sort((o1,o2)->o1.compare(o1, o2));
 		
@@ -134,13 +146,8 @@ public class Film extends Entitaet  implements Backup{
     		sb.append( ", "+genres.get(i).getGenre() );
     	genre_string.set(sb.toString());
 	}
-
-	public void clearGenre() {
-		if(genres==null)
-			return;
-		genres.clear();
-		genre_string.set("");
-	}
+	
+	
 	
 	
 	public static String getGenaueZeit(int min) {
@@ -153,6 +160,8 @@ public class Film extends Entitaet  implements Backup{
 	}
 
 	
+	
+	
 	@Override
 	public String toString() {
 		return "Film [erstellerId=" + erstellerId + ", genres=" + genres + ", titel=" + titel + ", dauer_string="
@@ -161,6 +170,8 @@ public class Film extends Entitaet  implements Backup{
 				+ "]";
 	}
 
+	
+	
 
 	@Override
 	public void makeBackup() {
@@ -175,7 +186,7 @@ public class Film extends Entitaet  implements Backup{
 		setDauer(backup.dauer);
 		setTitel(backup.getTitel());
 		setErscheinungsjahr(backup.getErscheinungsjahr());
-		genres = new ArrayList<>(backup.genres);
+		genres = backup.genres;
 		buildGenreString();
 		
 		backup = null;
