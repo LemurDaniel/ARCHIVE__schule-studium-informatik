@@ -7,10 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
+import verwaltung.entitaeten.Liste;
 
 public class Filmverwaltung extends Verwaltung<Film>{
 	
@@ -19,26 +21,29 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		if(instance == null) instance = new Filmverwaltung();
 		return instance;
 	}
-
+	private Filmverwaltung() {	}
+	
 	public static List<Genre> getGenres(){
 		List<Genre> g = new ArrayList<>();
 		genre.forEach((k, v)->g.add(v));
 		return g;
 	}
 	
-	private Filmverwaltung() {
-		getGenres();
-	}
-	private void generateFilm(ResultSet rs) throws SQLException {
-		list.clear();
-		
+	
+	/** **/
+	
+	
+	
+	
+	
+	public static void generateFilm(ResultSet rs, List<Film> fliste) throws SQLException {		
 		int lastId = -1, idNow;
 		Film current = null;
 		while(rs.next()) {
 			idNow = rs.getInt("id");
 			if(lastId!=idNow) {
 				current = new Film(idNow, rs.getInt("ersteller"), rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
-				list.add(current);
+				fliste.add(current);
 				lastId = idNow;
 			}
 			if(rs.getObject("gid")!=null)
@@ -51,7 +56,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		try(Connection con = getCon();
 				Statement st = con.createStatement();
 					ResultSet rs = con.createStatement().executeQuery(sql)){
-				generateFilm(rs);
+				generateFilm(rs, list);
 			}		
 	}
 	
@@ -193,7 +198,8 @@ public class Filmverwaltung extends Verwaltung<Film>{
 					ps.setString(++count, "%"+s+"%");
 				
 				try(ResultSet rs = ps.executeQuery()){
-					generateFilm(rs);
+					list.clear();
+					generateFilm(rs, list);
 				}
 			}
 		}
