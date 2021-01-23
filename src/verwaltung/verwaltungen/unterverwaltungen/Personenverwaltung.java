@@ -103,7 +103,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					if(original==null) {
 						original = person;
 						person.setId(id);
-						addObj(original);
+					//	addObj(original);
 					}
 				}
 			}
@@ -118,7 +118,7 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					rs.next();
 					original = person;
 					person.setId(rs.getInt(1));
-					addObj(original);	
+					//addObj(original);	
 				}
 			}
 		}

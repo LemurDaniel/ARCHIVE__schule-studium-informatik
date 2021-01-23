@@ -4,8 +4,9 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 
-public class Rezension extends Entitaet implements Backup{
+public class Rezension extends Entitaet implements Backup, EingabePruefung{
 	
 	private Rezension backup;
 	
@@ -89,5 +90,14 @@ public class Rezension extends Entitaet implements Backup{
 	@Override
 	public boolean hasBackup() {
 		return backup!=null;
+	}
+
+	
+	@Override
+	public void checkEingaben() throws Exception {	
+		if(titel.length().intValue()> Rezensionenverwaltung.getMaxTitel())	throw new Exception("Titel zu lang");
+		if(titel.length().intValue()< Rezensionenverwaltung.getMinTitel())	throw new Exception("Titel zu kurz");
+		if(inhalt.length()> Rezensionenverwaltung.getMaxInhalt())			throw new Exception("inhalt zu lang");
+		if(inhalt.length()> Rezensionenverwaltung.getMinInhalt())			throw new Exception("inhalt zu zu kurz ");
 	}
 }

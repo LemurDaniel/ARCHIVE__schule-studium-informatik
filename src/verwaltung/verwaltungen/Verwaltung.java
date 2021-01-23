@@ -14,16 +14,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
+import verwaltung.entitaeten.EingabePruefung;
 import verwaltung.entitaeten.Entitaet;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 
-public abstract class Verwaltung <T extends Backup> extends DB_Manager{
+public abstract class Verwaltung <T extends Backup & EingabePruefung> extends DB_Manager{
 	
 
 	/** VAR */
 	private Stack<T> delete, add, update;
-	private List<T> deleteErr, addErr, updateErr;
+//	private List<T> deleteErr, addErr, updateErr;
+//	protected List<T>	sucess;
 	private List<T> list; 
 	
 	private ObservableList<T> observablelist;
@@ -37,10 +39,6 @@ public abstract class Verwaltung <T extends Backup> extends DB_Manager{
 		delete = new Stack<>();
 		add = new Stack<>();
 		update = new  Stack<>();
-		
-		deleteErr = new ArrayList<>();
-		addErr = new ArrayList<>();
-		updateErr = new ArrayList<>();
 	}
 	
 	public ObservableList<T> getObList(){
@@ -52,7 +50,7 @@ public abstract class Verwaltung <T extends Backup> extends DB_Manager{
 	
 	public void addObj(T obj) {
 		if(!list.contains(obj))				list.add(obj);
-		if(!observablelist.contains(obj))	observablelist.add(obj);
+		if(!observablelist.contains(obj)) 	observablelist.add(obj);
 		size.set(list.size());
 	}
 	public void removeObj(T obj) {
@@ -72,17 +70,27 @@ public abstract class Verwaltung <T extends Backup> extends DB_Manager{
 	
 	public void addEntitaet(T entitaet) {
 		if(add.contains(entitaet))	return;
-		add.add(entitaet);
+		add.push(entitaet);
+		
+		//Verschiebt alle Element, sodass dass neu Element ganz oben steht
+		T temp = null;
+		if(observablelist.size()>0) {
+			for(int i=0;i<observablelist.size(); i++) {
+				temp = observablelist.get(i);
+				observablelist.set(i, entitaet);
+				entitaet = temp;
+			}
+		}
 		observablelist.add(entitaet);
 	}
 	public void removeEntitaet(T entitaet) {
 		if(delete.contains(entitaet))	return;
-		delete.add(entitaet);
+		delete.push(entitaet);
 		observablelist.remove(entitaet);
 	}
 	public void updateEntitaet(T entitaet) {
 		if(entitaet==null  || !list.contains(entitaet))	return;
-		update.add(entitaet);
+		update.push(entitaet);
 	}
 	
 	
@@ -91,77 +99,99 @@ public abstract class Verwaltung <T extends Backup> extends DB_Manager{
 	}
 	
 	
+	
+	
 	public void save(Connection con) throws SQLException {
-		deleteErr.clear();
-		addErr.clear();
-		updateErr.clear();
+		if(!hatAuftraege())		return;
+		
 		try {
 			con.setAutoCommit(false);
-			while(!add.empty()) {
-				T ent = add.pop();
-				try {
-					add(ent, con);
-					con.commit();
-				}catch(SQLException e) {
-					System.out.println(e.getMessage());
-					addErr.add(ent);
-					con.rollback();
-				}
-			}
+			while(!add.empty()) onAdd(add.pop(), con);
 			while(!update.empty()) {
 				T ent = update.pop();
-				try {
-					update(ent, con);
-					con.commit();
-					ent.deleteBackup();
-				}catch(SQLException e) {
-					ent.reset();
-					System.out.println(e.getMessage());
-					updateErr.add(ent);
-					con.rollback();
-				}
+				if(!ent.hasBackup())	continue;
+				onUpdate(ent, con);
 			}
 			while(!delete.empty()) {
-				T ent = delete.pop();
-				if(!list.contains(ent)) continue;
-				try {
-					delete(ent, con);
-					con.commit();
-				}catch(SQLException e) {
-					System.out.println(e.getMessage());
-					deleteErr.add(ent);
-					con.rollback();
-				}
+				T ent = update.pop();
+				if(!list.contains(ent))	continue;
+				onDelete(ent, con);
 			}
 		}finally {
 			reset();
 		}
 	}
 	
-	public void save(Save<T> save) throws SQLException{
+	protected void onAdd(T ent, Connection con) throws SQLException {
 		try {
-			save.save(add, delete, update, this);
-		}finally {
-			reset();
+			ent.checkEingaben();
+			add(ent, con);
+			con.commit();
+			addObj(ent);
+		}catch (SQLException e1) {
+			System.out.println(e1.getMessage());
+			con.rollback();
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	protected void onUpdate(T ent, Connection con) throws SQLException  {
+		try {
+			ent.checkEingaben();
+			update(ent, con);
+			con.commit();
+			ent.deleteBackup();
+		}catch (SQLException e1) {
+			System.out.println(e1.getMessage());
+			ent.reset();
+			con.rollback();
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			ent.reset();
+			e.printStackTrace();
+		}
+	}
+	protected void onDelete(T ent, Connection con) throws SQLException  {
+		try {
+			delete(ent, con);
+			con.commit();
+		}catch (SQLException e1) {
+			System.out.println(e1.getMessage());
+			con.rollback();
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+
 		}
 	}
 	
-	public void reset() {
-		add.forEach(	item->	observablelist.remove(item));
-		delete.forEach(	item->	observablelist.remove(item));
-		update.forEach(	item->	item.reset());
+	
 
+	
+	public void reset() {
+		update.forEach(	item->	item.reset());
 		add.clear();
 		delete.clear();
 		update.clear();
+		
+		observablelist.clear();
+		list.forEach(observablelist::add);
+		
+		System.out.println("ffffffffffff");
+		for(T t: observablelist) {
+			System.out.println(t);
+		}
+		System.out.println("ffffffffffff");
+		for(T t: list) {
+			System.out.println(t);					
+			
+		}
+		
 	}
 	
 	protected abstract void add(T ent, Connection con)					throws SQLException;
 	protected abstract void update(T ent, Connection con)				throws SQLException;
 	protected abstract void delete(T ent, Connection con)				throws SQLException;
 	
-	@FunctionalInterface
-	public interface Save<T extends Backup>{
-		public void save(List<T> add, List<T> remove, List<T> update, Verwaltung<T> vw) throws SQLException;
-	}
+
 }

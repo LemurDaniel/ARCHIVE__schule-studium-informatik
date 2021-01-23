@@ -115,4 +115,11 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		return maxSize.get("RezInhaltMax");
 	}
 
+	public static int getMinTitel() {
+		return maxSize.get("RezTitelMin");
+	}
+	public static int getMinInhalt() {
+		return maxSize.get("RezInhaltMin");
+	}
+
 }

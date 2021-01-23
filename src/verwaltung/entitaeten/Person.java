@@ -10,7 +10,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Person extends Entitaet implements Backup{
+public class Person extends Entitaet implements Backup, EingabePruefung{
 	
 	private Person backup;
 	
@@ -201,6 +201,13 @@ public class Person extends Entitaet implements Backup{
 	
 	}
 
-	
+
+
+
+
+	@Override
+	public void checkEingaben() throws Exception {
+
+	}
 
 }

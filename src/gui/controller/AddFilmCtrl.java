@@ -222,6 +222,10 @@ public class AddFilmCtrl {
 
     private void resetFilm() {
 		fvw.reset();
+		if(film.getId()==-1) {
+			film = new Film(-1, 0, "", 0, 0, 0);
+			pvw = film.getPvw();
+		}
 		setDisplay();
 	}
 	@FXML
@@ -320,12 +324,6 @@ public class AddFilmCtrl {
     		return;
     	}
     	
-    	if(film.hasBackup()) {
-    		film.makeBackup();
-    		if(film.getId()==-1)	fvw.addEntitaet(film);
-    		else					fvw.updateEntitaet(film);
-    	}    	    	
-    	
     	tf_genre.setText(null);
     	if(selected.size()==0)	return;
     	
@@ -333,10 +331,11 @@ public class AddFilmCtrl {
     }
     
     private void backupfilm() {
-    	if(!film.hasBackup()) {
+    	if(film.getId()==-1) 
+        	fvw.addEntitaet(film);
+    	else	if(!film.hasBackup()) {
     		film.makeBackup();
-    		if(film.getId()==-1)	fvw.addEntitaet(film);
-    		else					fvw.updateEntitaet(film);
+    		fvw.updateEntitaet(film);
     	}
     }
     
@@ -344,9 +343,9 @@ public class AddFilmCtrl {
     	if(blocked)	return;
     	
     	backupfilm();   	
-		film.setTitel(tf_titel.getText());
-        film.setDauer(tf_dauer.getValue());
-        film.setErscheinungsjahr(tf_jahr.getValue());
+		if(tf_titel.getText()!=null)	film.setTitel( tf_titel.getText() );
+		if(tf_dauer.getValue()!=null)	film.setDauer( tf_dauer.getValue() );
+		if(tf_jahr.getValue()!=null)	film.setErscheinungsjahr(tf_jahr.getValue());
     }
     
     private void onEditCommit( CellEditEvent<PersonMitRolle, ?> data ) {
@@ -401,17 +400,17 @@ public class AddFilmCtrl {
 //        film.clearGenre();
 //        selected.forEach(film::addGenre);
         
-    	if(film.getId()==-1) {
-    		fvw.addEntitaet(film);
-    		if(filmliste!=null) filmliste.addFilm(film);		//TODO save FIlmlisten filmverwaltung
-    	}else
-    		fvw.updateEntitaet(film);
+//    	if(film.getId()==-1) {
+//    		fvw.addEntitaet(film);
+//    		if(filmliste!=null) filmliste.addFilm(film);		//TODO save FIlmlisten filmverwaltung
+//    	}else
+//    		fvw.updateEntitaet(film);
     	
     	delete.forEach(item->pvw.removeEntitaet(item.getPerson()));
     	
     	try(Connection con = DB_Manager.getCon()){
     		fvw.save(con);
-    		pvw.save(con);
+    		for(Film f: fvw.getObList())	film.getPvw().save(con);
     	}catch(Exception e) {
     		//fvw.reset();
     		//pvw.reset();
@@ -424,12 +423,14 @@ public class AddFilmCtrl {
     }
     
     	// TODO Check Eingaben
-//    private void checkEingaben() throws Exception {
-//    	if(tf_titel.getLength() < 10)	throw new Exception("Titel zu kurz");
-//    	if(tf_jahr.getValue()==null)	throw new Exception("Geben sie ein gültiges jahr ein");
-//    	if(tf_dauer.getValue()==null)   throw new Exception("dauer");
-//    	if(selected.size()==0) 			throw new Exception("Kein Genre");
-//    }
+    private void checkEingaben()  {
+    	try {
+    		film.checkEingaben();
+    	} catch(Exception e) {
+    		Alert a = new Alert(AlertType.ERROR);
+    		a.setContentText(e.getMessage());
+    	}
+    }
     
     private void detail() {
     	if( film.getId()==-1) {

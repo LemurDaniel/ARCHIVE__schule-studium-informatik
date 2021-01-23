@@ -2,7 +2,7 @@ package verwaltung.entitaeten;
 
 import java.util.Comparator;
 
-public class Entitaet implements Comparator<Genre> {
+public class Entitaet implements Comparator<Entitaet> {
 	
 	private int id;
 	
@@ -19,7 +19,7 @@ public class Entitaet implements Comparator<Genre> {
 	}
 	
 	@Override
-	public int compare(Genre o1, Genre o2) {
+	public int compare(Entitaet o1, Entitaet o2) {
 		if(o1.getId()>o2.getId())
 			return 1;
 		else if(o1.getId()<o2.getId())

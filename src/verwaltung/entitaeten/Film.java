@@ -9,11 +9,12 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 
 
-public class Film extends Entitaet  implements Backup{
+public class Film extends Entitaet  implements Backup, EingabePruefung{
 
 	private Film backup;
 	
@@ -85,8 +86,7 @@ public class Film extends Entitaet  implements Backup{
 	
 	public List<Genre> getGenres() {
 		return new ArrayList<>(genres);
-	}
-	
+	}	
 	public Rezensionenverwaltung getRvw() {
 		return rvw;
 	}
@@ -120,6 +120,7 @@ public class Film extends Entitaet  implements Backup{
 		pvw.clear();
 		rvw.clear();
 		clearGenre();
+		backup = null;
 		return this;
 	}
 	
@@ -171,13 +172,13 @@ public class Film extends Entitaet  implements Backup{
 	
 	
 	
-	@Override
-	public String toString() {
-		return "Film [erstellerId=" + erstellerId + ", genres=" + genres + ", titel=" + titel + ", dauer_string="
-				+ dauer_string + ", genre_string=" + genre_string + ", bwt_string=" + bwt_string + ", erscheinungsjahr="
-				+ erscheinungsjahr + ", dauer=" + dauer + ", bewertung=" + bewertung + ", pvw=" + pvw + ", rvw=" + rvw
-				+ "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "Film [erstellerId=" + erstellerId + ", genres=" + genres + ", titel=" + titel + ", dauer_string="
+//				+ dauer_string + ", genre_string=" + genre_string + ", bwt_string=" + bwt_string + ", erscheinungsjahr="
+//				+ erscheinungsjahr + ", dauer=" + dauer + ", bewertung=" + bewertung + ", pvw=" + pvw + ", rvw=" + rvw
+//				+ "]";
+//	}
 
 	
 	
@@ -211,6 +212,21 @@ public class Film extends Entitaet  implements Backup{
 	@Override
 	public boolean hasBackup() {
 		return backup!=null;
+	}
+
+	
+	
+	@Override
+	public void checkEingaben() throws Exception {
+		if(titel==null)														throw new Exception("Kein Titel");
+		if(titel.length().intValue() < 	Filmverwaltung.getMinTitel())		throw new Exception("Titel zu kurz");
+		if(titel.length().intValue() >	Filmverwaltung.getMaxTitel())		throw new Exception("Titel zu lan");
+		if(erscheinungsjahr.intValue()<	Filmverwaltung.getMinJahr())		throw new Exception("Geben sie ein gültiges jahr ein");
+		if(erscheinungsjahr.intValue()>	Filmverwaltung.getMaxJahr())		throw new Exception("Geben sie ein gültiges jahr ein");
+		if(dauer<	Filmverwaltung.getMinDauer())							throw new Exception("dauer");
+		if(dauer>	Filmverwaltung.getMaxDauer())  							throw new Exception("dauer");
+		if(genres.size()< Filmverwaltung.getMinGenre()) 					throw new Exception("Kein Genre");
+		if(genres.size()> Filmverwaltung.getMaxGenre())						throw new Exception("Genre");
 	}
 	
 }

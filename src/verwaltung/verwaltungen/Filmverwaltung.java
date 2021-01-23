@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.net.httpserver.Authenticator.Success;
+
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
@@ -26,7 +28,11 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	/** **/
 	private static Map<Integer, Film> geladeneFilme = new HashMap<>();
 	private static Map<Film, Integer> referenziert = new HashMap<>();
+	private static List<Filmverwaltung> fvws = new ArrayList<>();
 	
+	public Filmverwaltung() {
+		fvws.add(this);
+	}
 	
 	public void generiereFilme(ResultSet rs) throws SQLException {	
 		int lastId = -1, idNow;
@@ -39,6 +45,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				addObj(current);
 				lastId = idNow;
 			}
+			System.out.println( rs.getInt("gid"));
 			current.addGenre( genre.get(rs.getInt("gid")) );	
 		}
 	}
@@ -52,10 +59,12 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				generiereFilme(rs);
 			}		
 	}
+
 	
 	@Override
 	protected void add(Film f, Connection con) throws SQLException {
-				
+		f.getPvw().save(con);		
+		
 		String sql = "Insert into film(titel, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?); Select SCOPE_IDENTITY()";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){			
@@ -73,12 +82,11 @@ public class Filmverwaltung extends Verwaltung<Film>{
 
 			updateGenres(con, f.getGenres(), f.getId());
 		}		
-		addObj(f);	
 	}
 	
 	@Override
 	protected void update(Film f, Connection con) throws SQLException {
-	
+		
 		String sql = "Update film set titel=?, dauer=?, erscheinungsjahr=? where id=?;";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
@@ -92,6 +100,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 
 			updateGenres(con, f.getGenres(), f.getId());
 		}
+		f.getPvw().save(con);	
 	}
 	
 	@Override
@@ -224,6 +233,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	@Override
 	public void removeObj(Film f) {
 		super.removeObj(f);
+		if(!referenziert.containsKey(f))	return;
 		int i = referenziert.get(f)-1;
 		if(i==0) {
 			geladeneFilme.remove(f.getId());
@@ -236,9 +246,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		getList().forEach(this::removeObj);
 //		referenziert.forEach((k,v)->System.out.println(k+"  "+v));
 //		geladeneFilme.forEach((k,v)->System.out.println(k+"  "+v));
-	}
-	public void refresh() {
-		
 	}
 	
 	public static void refreshAll() throws SQLException {
@@ -263,6 +270,7 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				current.addGenre( genre.get(rs.getInt("gid")) );	
 			}
 		}
+		//fvws.forEach(fvw->fvw.reset());
 	}	
 	
 	
@@ -270,8 +278,14 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		return geladeneFilme.get(id);
 	}
 	
+	public static int getMinTitel() {
+		return maxSize.get("FilmTitelMin");
+	}
 	public static int getMaxTitel() {
 		return maxSize.get("FilmTitelMax");
+	}
+	public static int getMinDauer() {
+		return maxSize.get("FilmDauerMin");
 	}
 	public static int getMaxDauer() {
 		return maxSize.get("FilmDauerMax");
@@ -282,6 +296,9 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	public static int getMaxJahr() {
 		return maxSize.get("JahrMax");
 	}
+	public static int getMinGenre() {
+		return maxSize.get("GenreMin");
+	}
 	public static int getMaxGenre() {
 		return maxSize.get("GenreMax");
 	}
@@ -291,4 +308,5 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	public static int getMaxErgebnisse() {
 		return maxSize.get("ErgebnisseMax");
 	}
+
 }

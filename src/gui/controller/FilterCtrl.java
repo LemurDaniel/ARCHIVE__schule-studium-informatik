@@ -11,10 +11,13 @@ import fxControls.StringTextField;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import verwaltung.entitaeten.Genre;
@@ -148,7 +151,7 @@ public class FilterCtrl {
     	hb_anzahl.getChildren().add(cb_genreVerkuepfung);
     	
     	btn_reset.setOnAction(this::reset);
-    	btn_filter.setOnAction(this::filter);
+    	btn_filter.setOnAction(this::abfrage);
     }
 
     private void reset(ActionEvent event) {
@@ -164,7 +167,25 @@ public class FilterCtrl {
 		cb_genreVerkuepfung.setSelected(true);
     }
     
-    private void filter(ActionEvent event) {
+    private void abfrage(ActionEvent event) {
+    	if(fvw.hatAuftraege()) {
+    		Alert a = new Alert(AlertType.CONFIRMATION);
+    		a.setTitle("Filtern");
+    		a.setHeaderText("Es sind nicht gespeicherte Änderungen vorhanden");
+    		a.setContentText("Nicht gespeicherte Änderungen gehen verloren. Möchten sie trotzdem filtern?");
+    		a.show();
+    		a.setOnCloseRequest(ev->{
+    			if(a.getResult().getButtonData().equals(ButtonData.OK_DONE)) {
+    				fvw.reset();
+    				filter();
+    			}
+    		});
+    	}else
+    		filter();
+    }
+    
+    private void filter() {
+ 	
 		List<String> tags = new ArrayList<>();
 		
     	if(tf_tags.getText()!=null && tf_tags.getText().length()!=0) {
