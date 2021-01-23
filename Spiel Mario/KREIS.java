@@ -1,5 +1,5 @@
 /**
- * Write a description of class DREIECK here.
+ * Write a description of class KREIS here.
  * 
  * @author (Daniel Landau) 
  * @version (04.05.2015v1)
@@ -62,16 +62,16 @@ public class KREIS {
         
         switch(direction){
         case "rechts":  // Bewegen nach rechts auf x-Achse um den Wert newposx
-        mittelpunktX = mittelpunktX + newposx;  // Formel um neue  Position des Mittelpunktes zu errechenen
+        mittelpunktX += newposx;  // Formel um neue  Position des Mittelpunktes zu errechenen
         break;
         
         case "links":  // Bewegen nach links auf x-Achse um den Wert newposx
-        mittelpunktX = mittelpunktX - newposx;  // Formel um neue  Position des Mittelpunktes zu errechenen
+        mittelpunktX -= newposx;  // Formel um neue  Position des Mittelpunktes zu errechenen
         break;
         
         default:
-        System.out.print("Ungültige Eingabe");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
-        break;
+        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der x-Achse//Klasse: KREIS, Methode: bewegex//");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
+        System.exit(0);
         }
         
 		zeichnen();
@@ -82,16 +82,16 @@ public class KREIS {
         
         switch(direction){
         case "hoch":  // Bewegen nach oben auf y-Achse um den Wert newposy
-        mittelpunktY = mittelpunktY - newposy;  // Formel um neue  Position des Mittelpunktes zu errechenen
+        mittelpunktY -= newposy;  // Formel um neue  Position des Mittelpunktes zu errechenen
         break;
         
         case "runter":  // Bewegen nach unten auf y-Achse um den Wert newposy
-        mittelpunktY = mittelpunktY + newposy;  // Formel um neue  Position des Mittelpunktes zu errechenen
+        mittelpunktY += newposy;  // Formel um neue  Position des Mittelpunktes zu errechenen
         break;
         
         default:
-        System.out.print("Ungültige Eingabe");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
-        break;
+        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der y-Achse//Klasse: KREIS, Methode: bewegey//");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
+        System.exit(0);
         }
         
 		zeichnen();

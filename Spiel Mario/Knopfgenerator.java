@@ -89,10 +89,10 @@ public class Knopfgenerator
                  break;
                      
                  case "Stop":
-
+                 System.exit(0);
                  break;  
                    
-                default: System.exit (0);
+                default: System.out.print("Kein ausführbarere Befehl gefunden");
             }
         }
         

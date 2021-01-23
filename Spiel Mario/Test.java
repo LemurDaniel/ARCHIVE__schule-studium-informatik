@@ -1,3 +1,10 @@
+/**
+ * Write a description of class Test here.
+ * 
+ * @author (Daniel Landau) 
+ * @version (23.05.2015v1)
+ */
+
 import javax.swing.Timer;
 import javax.swing.*;
 import java.awt.event.*;
@@ -31,7 +38,7 @@ public class Test
         
         blauesHintergrundBild = new Bild("pic/blauesHintergrundBild.png",-100,-100);
         
-        Lauftimer = new Timer(1,new ActionListener()
+       Lauftimer = new Timer(1,new ActionListener()
                 {           
                  public void actionPerformed(ActionEvent e){
                      bewegeFigurMario(1, 1);
@@ -64,7 +71,7 @@ public class Test
                     }
                 });
                 
-     Lauftimer4 = new Timer(1,new ActionListener()
+       Lauftimer4 = new Timer(1,new ActionListener()
                 {           
                  public void actionPerformed(ActionEvent e){
                      bewegeFigurLuigi(1, 1);
@@ -112,7 +119,6 @@ public class Test
     }
     
     private  void bewegeFigurMario3(int Geschwindigkeit, int Zeit){
-        //Mario.loeschen(Mario.pic,x,y);
         
         uebermalen(x,y);
         x = x - Geschwindigkeit * Zeit; 
@@ -121,8 +127,7 @@ public class Test
     }
     
     private void bewegeFigurLuigi(int Geschwindigkeit, int Zeit){
-        //Mario.loeschen(Mario.pic,x,y);
-        
+
         uebermalen(x,y);
         x = x - Geschwindigkeit * Zeit; 
         Luigi[2].positioniereBild(Luigi[2].pic,x,y);

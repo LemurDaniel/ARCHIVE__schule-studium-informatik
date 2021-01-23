@@ -1,4 +1,4 @@
-//import gnu.io.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -13,7 +13,7 @@ class Tasten extends JFrame implements ActionListener, KeyListener
 	{
         this.addKeyListener(this);
         
-	//Layout-Definition
+	  //Layout-Definition
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);

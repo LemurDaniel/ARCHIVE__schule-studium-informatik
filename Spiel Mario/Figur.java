@@ -1,26 +1,56 @@
 import javax.swing.Timer;
-import java.awt.event.*;
-import java.awt.*;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 public class Figur
 {
     
-    RECHTECK [] Pixel = new RECHTECK [144];
-    int breite = 6;
-    int x=15;
-    int y=315;
+    private RECHTECK [] Pixel = new RECHTECK [144];
+    private int breite = 6;
+    private int x=15;
+    private int y=315;
     
-    Timer Lauftimer;
-    Timer Springhochtimer;
-    Timer Springruntertimer;
+    private Timer Lauftimer;
+    private Timer Springhochtimer;
+    private Timer Springruntertimer;
    
         
     public Figur()
     {
         this(10,315, "Luigi");
+        erstelleKnopf("rechtsLaufen");
+        erstelleKnopf("rechtsLaufenStop");
+        erstelleKnopf("Springen");
+        erstelleKnopf("SpringenStop");
     }
     
     public Figur(int x, int y, String Spielfigur)
     {
+        
+         Lauftimer = new Timer(1, new ActionListener() //erstellen des Lauftimers
+            {
+             public void actionPerformed(ActionEvent e)
+                   {
+                       lauf(1,1);  //Zugreifen auf die Methode lauf
+                                }
+           });
+           
+         Springhochtimer = new Timer(1, new ActionListener()  //erstellen des Springochtimers
+            {
+             public void actionPerformed(ActionEvent e)
+                   {
+                       springhoch(1,1,150);  //Zugreifen auf die Methode springhoch
+                                }
+           });
+          Springruntertimer = new Timer(1, new ActionListener()  //erstellen des Springruntertimers
+            {
+             public void actionPerformed(ActionEvent e)
+                   {
+                       springrunter(1,1);  //Zugreifen auf die Methode springrunter
+                                }
+           });
+           
      if(Spielfigur=="Mario"){
       Pixel[0]= new RECHTECK(x,y,breite,breite,"braun", true); //1 Reihe von unten des linken Fußes 1 Pixel von links aus gezählt
       Pixel[1]= new RECHTECK(x+breite,y,breite,breite,"braun", true); //1 Reihe von unten des linken Fußes 2 Pixel von links aus gezählt
@@ -408,17 +438,7 @@ public class Figur
                 Pixel[i].bewegey(newposy,"hoch");      // sie um den errechneten Wert "newposy" zu verschieben
                 }
         }
-   }
-   
-   public void HuepfenStart(){  // Methode um Hauptfigur huepfen zu lassen 
-       LaufenStart();           // (Huepfen = Gleichzeitge Bewegung über x- und y-Achse)
-       SpringenStart();
-    }
-    
-    public void HuepfenStop(){  // Methode um huepfen der Hauptfigur zu stopen
-       LaufenStop();             // (Huepfen = Gleichzeitge Bewegung über x- und y-Achse)
-       SpringenStop();
-    }
+   }  
    
    private  void springrunter(int zeit, int Geschwindigkeit){  //Methode um dei Figur auf der y-Achse zu bewegen
         int newposy = Geschwindigkeit * zeit;  //Formel um weite Groeße der Verschiebung zu berechen
@@ -432,6 +452,51 @@ public class Figur
          Springruntertimer.stop();
         }
    }
+   
+   public void erstelleKnopf(String Knopf){  // Methode zum erstellen von ausgewählten Knöpfen im Zeichenfenster
+        switch(Knopf){
+        
+        case "rechtsLaufen":           // erstellen des Laufen Knopfes mit der Funktion die LaufenBewegung zu Starten
+        JButton FigurBewegrechtsStart=new JButton("Laufen");
+        ZEICHENFENSTER.gibFenster().steuerungSued.add(FigurBewegrechtsStart);;
+        FigurBewegrechtsStart.addActionListener(new ActionListener(){        
+                   public void actionPerformed(ActionEvent e){     
+                      LaufenStart();   
+                   }
+              });
+         break;     
+         
+        case "rechtsLaufenStop":      // erstellen des LaufenStop Knopfes mit der Funktion die LaufenBewegung zu Stopen
+        JButton FigurBewegrechtsStop=new JButton("LaufenStop");
+        ZEICHENFENSTER.gibFenster().steuerungSued.add(FigurBewegrechtsStop);;
+        FigurBewegrechtsStop.addActionListener(new ActionListener(){        
+                   public void actionPerformed(ActionEvent e){                                                                    
+                      LaufenStop();   
+                   }
+              });
+         break;
+         
+        case "Springen":          // erstellen des Springen Knopfes mit der Funktion die SpringBewegung zu Starten
+        JButton FigurSpringStart=new JButton("Springen");
+        ZEICHENFENSTER.gibFenster().steuerungSued.add(FigurSpringStart);;
+        FigurSpringStart.addActionListener(new ActionListener(){        
+                   public void actionPerformed(ActionEvent e){                                                                    
+                      SpringenStart();   
+                   }
+              });
+         break;
+              
+        case "SpringenStop":     // erstellen des SpringenStop Knopfes mit der Funktion die SpringBewegung zu Stopen
+        JButton FigurSpringStop=new JButton("SpringenStop");
+        ZEICHENFENSTER.gibFenster().steuerungSued.add(FigurSpringStop);;
+        FigurSpringStop.addActionListener(new ActionListener(){        
+                   public void actionPerformed(ActionEvent e){                                                                    
+                      SpringenStop();   
+                   }
+              });
+         break;
+        }
+    }
    
 }
 

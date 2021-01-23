@@ -1,5 +1,5 @@
 /**
- * Write a description of class DREIECK here.
+ * Write a description of class RECHTECK here.
  * 
  * @author (Daniel Landau) 
  * @version (04.05.2015v1)
@@ -73,11 +73,10 @@ public class RECHTECK {
         break;
         
         default:
-        System.out.print("Ungültige Eingabe");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
-        break;
+        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der x-Achse//Klasse: RECHTECK, Methode: bewegex//");  // Fehlermeldung bei ungültiger Eingabe der "direction"
+        System.exit(0);
         }
-        
-		zeichnen();
+        zeichnen();
     }
     
     public void bewegey(int newposy, String direction){  // bewegen auf der y-Achse um angegebenen Werte "newposy"
@@ -85,18 +84,17 @@ public class RECHTECK {
         
         switch(direction){
         case "hoch":  // Bewegen nach oben auf y-Achse um den Wert newposy
-        positionY = positionY - newposy;  // Formel um neue Position zu errechenen
+        positionY -= newposy;  // Formel um neue Position zu errechenen
         break;
         
         case "runter":  // Bewegen nach unten auf y-Achse um den Wert newposy
-        positionY = positionY + newposy;  // Formel um neue Position zu errechenen
+        positionY += newposy;  // Formel um neue Position zu errechenen
         break;
         
         default:
-        System.out.print("Ungültige Eingabe");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
-        break;
-        }
-        
+        System.out.println("Ungültige Richtungsangabe bei Bewegung auf der y-Achse//Klasse: RECHTECK, Methode: bewegey//");  // Fehlermeldung bei ungültiger Eingabe der "direction" 
+        System.exit(0);
+        } 
 		zeichnen();
     }
     
