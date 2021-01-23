@@ -154,6 +154,8 @@ public class DetailCtrl {
     @FXML
     private TextArea ta_genre;
 
+    @FXML
+    private TextField tf_genre2;
 
     /** Mitwirkende **/
     @FXML
@@ -297,7 +299,10 @@ public class DetailCtrl {
         table_genre.setEditable(false);
         table_genre.setItems(FXCollections.observableArrayList(Filmverwaltung.getGenres()));
         table_genre.getSelectionModel().selectedItemProperty().addListener( (ob,ov,nv)->{
-        	if(nv!=null)	ta_genre.setText(nv.getText());
+        	if(nv!=null)	{
+        		ta_genre.setText(nv.getText());
+        		tf_genre2.setText(nv.getGenre());
+        	}
         	else			ta_genre.setText(null);
         });
         
@@ -306,6 +311,10 @@ public class DetailCtrl {
       	Filmverwaltung.getGenres().forEach(g->checked_genre.put(g, new SimpleBooleanProperty(false)));
         t_genre.setCellValueFactory(data-> new SimpleStringProperty(data.getValue().getGenre()));
         t_check.setCellValueFactory(data-> checked_genre.get(data.getValue()));
+        
+        ta_genre.setEditable(false);
+        ta_genre.setWrapText(true);
+        tf_genre2.setEditable(false);
         
         /** Mitwirkende  Tabelle **/       
         t_name.setCellValueFactory(		data->data.getValue().getNameProperty()				);

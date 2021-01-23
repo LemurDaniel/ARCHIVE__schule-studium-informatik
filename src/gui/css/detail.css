@@ -87,6 +87,10 @@ FlowPane > StringTextField {
 }
 
 
+#tfGenre {
+	-fx-font-weight: bolder;
+}
+
 
 
 

@@ -63,7 +63,7 @@
                 </Tab>
                 <Tab text="Genre">
                  <content>
-                        <VBox prefHeight="199.0" prefWidth="598.0">
+                        <VBox prefHeight="199.0" prefWidth="598.0" styleClass="vb">
                            <children>
                               <HBox prefHeight="326.0" prefWidth="558.0">
                                  <children>
@@ -76,7 +76,16 @@
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </TableView>
-                                    <TextArea fx:id="ta_genre" prefHeight="282.0" prefWidth="330.0" />
+                                    <VBox prefHeight="281.0" prefWidth="333.0" styleClass="vb">
+                                       <children>
+                                          <TextField id="tfGenre" fx:id="tf_genre2" alignment="CENTER" prefHeight="43.0" prefWidth="284.0" promptText="Genre">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" />
+                                             </VBox.margin>
+                                          </TextField>
+                                          <TextArea fx:id="ta_genre" prefHeight="236.0" prefWidth="323.0" promptText="Beschreibung" />
+                                       </children>
+                                    </VBox>
                                  </children>
                               </HBox>
                            </children>

@@ -150,6 +150,9 @@ public class AddFilmCtrl {
 
 	    @FXML
 	    private TextArea ta_genre;
+	    
+	    @FXML
+	    private TextField tf_genre2;
 
 	    /** Mitwirkende **/
 	    @FXML
@@ -214,13 +217,15 @@ public class AddFilmCtrl {
         
         tf_bewertung.setDisable(true);
         tf_genre.setEditable(false);
-        ta_genre.setWrapText(true);
         
         /** Table Genre **/
         table_genre.setEditable(true);
         table_genre.setItems(FXCollections.observableArrayList(Filmverwaltung.getGenres()));
         table_genre.getSelectionModel().selectedItemProperty().addListener( (ob,ov,nv)->{
-        	if(nv!=null)	ta_genre.setText(nv.getText());			//Wenn Genre in Tabelle ausgewählt(Nicht abgehakt), dann Infotext dazu anzeigen
+        	if(nv!=null)	{
+        		ta_genre.setText(nv.getText());			
+        		tf_genre2.setText(nv.getGenre());
+        	}
         	else			ta_genre.setText(null);
         });
         
@@ -228,10 +233,13 @@ public class AddFilmCtrl {
         t_check.setCellFactory(CheckBoxTableCell.forTableColumn(t_check));
         t_check.setCellValueFactory(data->checked_genre.get(data.getValue()));
         t_genre.setCellValueFactory(data->new SimpleStringProperty( data.getValue().getGenre() ));
-
         
         checked_genre.values().forEach(v->v.addListener(this::aktualisierGenre));
 
+        tf_genre2.setEditable(false);  
+        ta_genre.setEditable(false);
+        ta_genre.setWrapText(true);
+        
             
         /** Table Mitwirkende **/
         table.setEditable(true);

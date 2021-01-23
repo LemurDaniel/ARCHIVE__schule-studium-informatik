@@ -75,7 +75,6 @@
             <Button fx:id="btn_liste" mnemonicParsing="false" onAction="#action" text="Listensicht" />
             <Button fx:id="btn_status" mnemonicParsing="false" onAction="#action" text="Status" />
             <Button fx:id="btn_credits" mnemonicParsing="false" onAction="#action" text="Credits" />
-            <Button fx:id="btn_fun" mnemonicParsing="false" onAction="#action" text="Sudoku" />
             <ImageView fx:id="muell" fitHeight="36.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/delete.png" />

@@ -67,11 +67,16 @@
                                           <Insets right="5.0" />
                                        </HBox.margin>
                                     </TableView>
-                                    <TextArea fx:id="ta_genre" prefHeight="276.0" prefWidth="330.0">
-                                       <HBox.margin>
-                                          <Insets left="5.0" />
-                                       </HBox.margin>
-                                    </TextArea>
+                                    <VBox prefHeight="334.0" prefWidth="324.0">
+                                       <children>
+                                          <TextField id="tfGenre" fx:id="tf_genre2" alignment="CENTER" promptText="Genre">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" />
+                                             </VBox.margin>
+                                          </TextField>
+                                          <TextArea fx:id="ta_genre" prefHeight="276.0" prefWidth="166.0" promptText="Beschreibung" />
+                                       </children>
+                                    </VBox>
                                  </children>
                               </HBox>
                            </children>
