@@ -157,12 +157,10 @@ public class Filmverwaltung extends Verwaltung<Film>{
 		}
 		
 		sb.append("join genre_film on film.id=genre_film.fid ");
-		sb.append("join genre on genre_film.gid=genre.id ");
 		sb.append("where ");
 		
-		if(titel!=null)
-			sb.append("titel Like ? ");
-		sb.append("and bewertung between ? and ? ");
+		if(titel!=null)	sb.append("titel Like ? and ");
+		sb.append("bewertung between ? and ? ");
 		sb.append("and dauer between ? and ? ");
 		sb.append("and erscheinungsjahr between ? and ? ");
 		

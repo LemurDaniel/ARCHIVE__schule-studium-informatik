@@ -8,31 +8,25 @@ import javafx.scene.control.TextFormatter;
 
 public class MinMaxTextField extends CustomTextField<Integer>{
 	
+	private Integer value;
 	private int min, max;
 	private Supplier<Integer> minSupplier, maxSupplier;
 	
-	private boolean tailAdded;
 	private String tail;
 	private Supplier<String> tailSupplier;
-	private boolean formatText;
 	
 	public MinMaxTextField(int min, int max) {
 		this(min, max, "");
 	}
 	
-	public MinMaxTextField(int min, int max, String schwanz) {
+	public MinMaxTextField(int min, int max, String tail) {
 		super(9);	//Integer Limit: 2 147 483 647 -> 10 Zeichen lang -> 9 ist safe
 		this.min = min;
 		this.max = max;
-		this.tail = schwanz;
-		tailAdded = false;
+		this.tail = tail;
 
 		focusedProperty().addListener((ob,ov,focus)->{
-			formatText = focus;
-			if(focus==false)
-				pruefe();
-			else if(getText()!=null)
-				trimSchwanz();		
+			if(focus==true)	setText( value+"" );	
 		});
 		
 		
@@ -52,20 +46,17 @@ public class MinMaxTextField extends CustomTextField<Integer>{
 	public void setTailSupplier(Supplier<String> tailSupplier) {
 		this.tailSupplier = tailSupplier;
 	}
+	@Override
 	public void setDefVal(Integer defVal) {
 		if(defVal!=null) {
 			if(defVal>max)		defVal=max;
 			else if(defVal<min)	defVal=min;
 		}
 		this.defVal = defVal;
-		pruefe();
+		value = defVal;
+		setTextToVal();
 	}
 	
-	private void trimSchwanz() {
-		if(!tailAdded)	return;
-		setText( getText().substring(0, getLength()-tail.length()));
-		tailAdded = false;
-	}
 	private void setTextToVal() {		
 		if(value==null) {
 			setText(null);
@@ -76,16 +67,14 @@ public class MinMaxTextField extends CustomTextField<Integer>{
 		
 		if(tailSupplier!=null)	tail=tailSupplier.get();
 		setText(value+tail);
-		tailAdded = true;
 		selectPositionCaret(getLength());
 		
 		formatText = temp;
 	}
 	
-	
-	private void pruefe() {
+	@Override
+	protected void pruefe() {
 		
-		trimSchwanz();
 		if(getText()==null || getText().length()==0) {
 			value = defVal;
 			setTextToVal();
@@ -101,13 +90,12 @@ public class MinMaxTextField extends CustomTextField<Integer>{
 		if(min==null) 	min=this.min;
 		if(max==null)	max=this.max;
 		
-		if(value > max)
-			value = max;
-		else if(value < min)
-			value = min;
+		if(value > max)			value = max;
+		else if(value < min)	value = min;
 		
 		setTextToVal();
 	}
+
 	
 	public Integer getValue() {
 		return value;

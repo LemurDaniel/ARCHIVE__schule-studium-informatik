@@ -7,15 +7,21 @@ import javafx.scene.control.TextFormatter;
 
 public class CustomTextField<T> extends TextField{
 	
-	protected T defVal, value;
+	protected T defVal;
+	protected boolean formatText;
 	private int maxlen;
 	
 	public CustomTextField(int maxlen) {
 		super();
 		this.maxlen = maxlen;
 		defVal = null;
-		value = null;
 		setTextFormatter(new TextFormatter<>( getMaxLenFilter() ));
+		
+		focusedProperty().addListener((ob,ov,focus)->{
+			formatText = focus;
+			if(focus==false)
+				pruefe();
+		});
 	}
 	protected UnaryOperator<TextFormatter.Change> getMaxLenFilter(){
 		return (UnaryOperator<TextFormatter.Change>) change ->{
@@ -29,12 +35,15 @@ public class CustomTextField<T> extends TextField{
 	
 	public void setDefVal(T defVal) {
 		this.defVal = defVal;
-		pruefe();
+		setText( defVal==null? null:defVal.toString() );
+		selectPositionCaret(getLength());
 	}	
-	private void pruefe() {		
+	
+	protected void pruefe() {			
 		if(getText()==null || getText().length()==0) {
-			value = defVal;
-		}
-		setText( value==null? null:value.toString() );
+			setText( defVal==null? null:defVal.toString() );
+			selectPositionCaret(getLength());
+		}	
 	}
+
 }

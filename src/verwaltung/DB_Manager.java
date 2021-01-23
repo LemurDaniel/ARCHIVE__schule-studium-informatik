@@ -22,7 +22,7 @@ public class DB_Manager {
 //	private static String user = "demolandau";
 //	private static String password = "bj14zC2O4zHg9Rtr7yUj";
 	
-	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=FilmDB";
+	private static String url = "jdbc:sqlserver://localhost:1433;databaseName=FilmDB_2";
 	private static String user = "DanielTest";
 	private static String password = "Test";
 	

@@ -109,7 +109,7 @@ public class AddFilmCtrl {
 		selected.clear();
 		blocked = false;
 		
-		if(film == null) {
+		if(film==null) {
 			tf_titel.setDefVal(null);
 			tf_dauer.setDefVal(null);
 			tf_jahr.setDefVal(null);
@@ -122,8 +122,7 @@ public class AddFilmCtrl {
 			tf_bewertung.setText(film.getBewertung()+"");
 			tf_genre.setText(null);
 			film.getGenres().forEach(g->checked_genre.get(g).set(true));
-		}
-		
+		}		
 		changes[0] = false;
 	}
 	

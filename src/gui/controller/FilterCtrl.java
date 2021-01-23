@@ -160,12 +160,13 @@ public class FilterCtrl {
     	
     	for(int i=0; i<sarr.length; i++) {
     		sarr[i] = sarr[i].trim();
-    		if(sarr[i].length()!=0)
-    			tags.add(sarr[i]);
+    		if(sarr[i].length()!=0)	tags.add(sarr[i]);
     	}
 
+    	if(tf_titel.getText()!=null)	tf_titel.setText(tf_titel.getText().trim());
+    	
     	try {
-    		fvw.filter(tf_titel.getText().trim(), tf_bwtMax.getValue(), tf_bwtMin.getValue(), tf_dauerMax.getValue(), tf_dauerMin.getValue(), 
+    		fvw.filter(tf_titel.getText(), tf_bwtMax.getValue(), tf_bwtMin.getValue(), tf_dauerMax.getValue(), tf_dauerMin.getValue(), 
     					tf_jahrMax.getValue(), tf_jahrMin.getValue(), cb_genre.getCheckModel().getCheckedItems(), cb_genreVerkuepfung.isSelected(), tags, tf_anzahl.getValue());
     	}catch(Exception e) {
     		e.printStackTrace();
