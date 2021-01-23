@@ -1,9 +1,9 @@
-$dest = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\Spiel Mario\"
+$dest = "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming"
 $src = "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium\Java10c Projekte\PROJEKT - Mario\Spiel Mario - "
 $count = 2
 $target_count = 22
 
-cd "C:\Users\Daniel Notebook\Documents\Git\Programmieren-Schule-Studium"
+cd "C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming"
 
 while($count -lt $target_count){
     Remove-Item -Path $dest -Recurse
