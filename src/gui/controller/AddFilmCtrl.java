@@ -313,6 +313,7 @@ public class AddFilmCtrl {
         	if(val.length()>Personenverwaltung.getMaxVorname())
         		val = val.substring(0, Personenverwaltung.getMaxVorname());	//Wenn Eingabe zu Lang abschneiden.
         	data.getRowValue().getPerson().setVorname(val);
+        	confirmed.get(data.getRowValue())[0].set(true);
         	changes[1]=true;
         });
         t_name.setOnEditCommit(	data->{
@@ -320,10 +321,12 @@ public class AddFilmCtrl {
         	if(val.length()>Personenverwaltung.getMaxName())
         		val = val.substring(0, Personenverwaltung.getMaxName());
         	data.getRowValue().getPerson().setName(val);
+        	confirmed.get(data.getRowValue())[0].set(true);
         	changes[1]=true;
         });
         t_rolle.setOnEditCommit(	data->{
         	data.getRowValue().setRolle(data.getNewValue());
+        	confirmed.get(data.getRowValue())[0].set(true);
         	changes[1]=true;
         });
         

@@ -133,24 +133,7 @@ public class HauptseiteCtrl {
         	 content.put(df, ids);
         	db.setContent(content);
         });
-        table.setOnDragDone(ev->{
-        	System.out.println("HauptseiteCtrl.initialize()");
-        	ev.consume();
-        });
         
-        btn_filter.setOnDragOver(ev->{
-        	if(ev.getDragboard().hasContent(df))
-        		ev.acceptTransferModes(TransferMode.LINK);
-        	ev.consume();
-        });
-        btn_filter.setOnDragDropped(ev->{
-        	@SuppressWarnings("unchecked")
-			List<Integer> ids = (List<Integer>)ev.getDragboard().getContent(df);
-        	ids.forEach(f->System.out.println(f.toString()));
-        	System.out.println("test");
-        	ev.setDropCompleted(true);
-        	ev.consume();
-        });
     }
     
     private void detail() throws Exception {
