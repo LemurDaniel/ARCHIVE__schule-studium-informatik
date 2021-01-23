@@ -3,6 +3,7 @@ package verwaltung.verwaltungen.unterverwaltungen;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
@@ -39,55 +40,71 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		  return getList().stream().filter(rz->rz.getVerfasserId()==nid).findFirst().orElse(null);
 	}
 	
-	
-	public void addRezension(String titel, String inhalt, int bewertung, int nid) throws Exception {
-		if(getList().stream().anyMatch(rez->rez.getVerfasserId()==nid))
-			throw new Exception("Es existiert bereits eine Rezension mit dieser BenutzerId");
+	@Override
+	protected void add(Rezension rez, Connection con) throws SQLException {
+//		if(getList().stream().anyMatch(rez->rez.getVerfasserId()==nid))
+//			throw new Exception("Es existiert bereits eine Rezension mit dieser BenutzerId");
 
-		check(titel, inhalt);
+		//check(rez.getTitel(), rez.getInhalt());
 		
 		String sql = "Insert into rezension(titel, inhalt, bewertung, verfasser, filmid) values(?, ?, ?, ?, ?); "
 					+ "Select SCOPE_IDENTITY()";
 		
-		try(Connection con = getCon();
-				PreparedStatement ps = con.prepareStatement(sql);){
-			ps.setString(1, titel);
-			ps.setString(2, inhalt);
-			ps.setInt(3, bewertung);
-			ps.setInt(4, nid);
-			ps.setInt(5, film.getId());
+		con.setAutoCommit(false);
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, rez.getTitel());
+			ps.setString(2, rez.getInhalt());
+			ps.setInt(3, 	rez.getBewertung());
+			ps.setInt(4, 	rez.getVerfasserId());
+			ps.setInt(5, 	film.getId());
 			
 			try(ResultSet rs = ps.executeQuery();){	
 				rs.next();
-				addObj(new Rezension(rs.getInt(1), titel, inhalt, Nutzer.getNutzer().getName(), nid, bewertung));
+				rez.setId(rs.getInt(1));
 			}
 			updateFilmBewertung(con);
+			con.commit();
+			con.setAutoCommit(true);
+			
+			addObj(rez);
+		}catch(SQLException e) {
+			con.rollback();
+			throw e;
 		}
 	}
 	
-	public void updateRezension(String titel, String inhalt, int bewertung, int rid) throws Exception {
-		Optional<Rezension> opt = getList().stream().filter(r->r.getId()==rid).findFirst();
-		if(!opt.isPresent())
-			throw new Exception("Diese Rezension existiert nicht");
-		Rezension rez = opt.get();
-		check(titel, inhalt);
-			
+	@Override
+	protected void update(Rezension alt, Rezension neu, Connection con) throws SQLException {
+//		Optional<Rezension> opt = getList().stream().filter(r->r.getId()==rid).findFirst();
+//		if(!opt.isPresent())throw new Exception("Diese Rezension existiert nicht");
+//		Rezension rez = opt.get();
+//		check(titel, inhalt);
+//			
 		String sql = "Update rezension set titel=?, inhalt=?, bewertung=? where id=?;";
 	
-		try(Connection con = getCon();
-				PreparedStatement ps = con.prepareStatement(sql);){
-			ps.setString(1, titel);
-			ps.setString(2, inhalt);
-			ps.setInt(3, bewertung);
-			ps.setInt(4, rez.getId());
+		con.setAutoCommit(false);
+		try(PreparedStatement ps = con.prepareStatement(sql);){
+			ps.setString(1, neu.getTitel());
+			ps.setString(2, neu.getInhalt());
+			ps.setInt(3, 	neu.getBewertung());
+			ps.setInt(4, 	alt.getId());
 			ps.executeUpdate();
-			
-			rez.setTitel(titel);
-			rez.setInhalt(inhalt);
-			rez.setBewertung(bewertung);
-			
 			updateFilmBewertung(con);
+			con.commit();
+			con.setAutoCommit(true);
+			
+			alt.setTitel(neu.getTitel());
+			alt.setInhalt(neu.getInhalt());
+			alt.setBewertung(neu.getBewertung());	
+		}catch(SQLException e) {
+			con.rollback();
+			throw e;
 		}
+	}
+	
+	@Override
+	protected void delete(Rezension rez, Connection con) {
+		// f
 	}
 	
 	private void updateFilmBewertung(Connection con) throws SQLException{

@@ -60,26 +60,17 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	public void addOrUpdate(List<PersonMitRolle> pmrlist, Connection con) throws SQLException {
 		if(pmrlist.size()==0)	return;
 		
-//		for(PersonMitRolle pmr: pmrlist)
-//			System.out.print(pmr.getRolle().get());
-		
-		
 		con.setAutoCommit(false);
 			
 		//Working Copy for AddFilm , Actual object
 		Person person = null, original = null;
 		for(PersonMitRolle pmr: pmrlist) {
 				
-			if(person != pmr.getPerson()) {
-				person = pmr.getPerson();
-//				inner:
-//				for(Person per: list) {
-//					if(	per.getId() == person.getId() ) {
-//						original = per;
-//						break inner;
-//					}
-//				}
-				
+		if(person != pmr.getPerson()) {
+			person = pmr.getPerson();
+			original = getOriginal(person);
+		
+			if(original==null || !original.getName().equals(person.getName()) || !original.getVorname().equals(person.getVorname())) {
 				//Existiert bereits in Datenbank?
 				try(PreparedStatement ps = con.prepareStatement("Select id from person where name=? and vorname=?")){
 					ps.setString(1, person.getName());
@@ -121,9 +112,20 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 					}
 				}				
 			}
-
+		}
+			
 			int rolleId = pmr.getRolle().getId();
-				
+			if(pmr.getRolle()!=pmr.getinitialRolle()) {
+				try(PreparedStatement ps = con.prepareStatement("Delete from film_person_rolle where fid=? and pid=? and rid=?;")){
+					ps.setInt(1, film.getId());
+					ps.setInt(2, original.getId());
+					ps.setInt(3, pmr.getinitialRolle().getId());
+					ps.executeUpdate();
+					con.commit();
+					original.removeRolle(pmr.getinitialRolle());
+				}
+			}
+			
 			//Kombination schon vorhanden?
 			try(PreparedStatement ps1 = con.prepareStatement("Select * from film_person_rolle where fid=? and pid=? and rid=?");
 					PreparedStatement ps2 = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)");){
@@ -152,22 +154,32 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	public void delete(List<PersonMitRolle> pmrlist, Connection con) throws SQLException {
 		if(pmrlist.size()==0)	return;
 		
-		for(PersonMitRolle pmr: pmrlist) {			
+		Person original = null;
+		
+		for(PersonMitRolle pmr: pmrlist) {		
+			if(original==null || original.getId()!=pmr.getPerson().getId())
+				original = getOriginal(pmr.getPerson());
+			
+			if(original==null)	continue;
+			
 			int rolleId = pmr.getRolle().getId();			
 			try (PreparedStatement ps = con.prepareStatement("Delete film_person_rolle where fid=? and pid=? and rid=?");){
 				ps.setInt(1, film.getId());
-				ps.setInt(2, pmr.getPerson().getId());
+				ps.setInt(2, original.getId());
 				ps.setInt(3, rolleId);
 				ps.executeUpdate();
-				pmr.getPerson().removeRolle(pmr.getRolle());
+				original.removeRolle(pmr.getRolle());
 			}
 
-			if(pmr.getPerson().getRollen().size()==0) {
-				removeObj( getList().stream().filter(per->per.getId()==pmr.getPerson().getId()).findFirst().orElse(null) );										
+			if(original.getRollen().size()==0) {
+				removeObj( original );										
 			}		
 		}
 	}
 
+	private Person getOriginal(Person person) {
+		return getList().stream().filter(per->per.getId()==person.getId()).findFirst().orElse(null);
+	}
 	
 	public List<PersonMitRolle> getPersonenMitRollen(){
 		List<PersonMitRolle> pml = new ArrayList<>();
@@ -180,6 +192,22 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	public static int getMaxVorname() {
 		return maxSize.get("PerVornameMax");
+	}
+
+	
+	
+	@Override
+	protected void add(Person ent, Connection con) throws SQLException {
+		// TODO Auto-generated method stub		
+	}
+	@Override
+	protected void update(Person entAlt, Person entNeu, Connection con) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	protected void delete(Person ent, Connection con) throws SQLException {
+		// TODO Auto-generated method stub	
 	}
 
 

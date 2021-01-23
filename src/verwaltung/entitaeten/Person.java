@@ -83,11 +83,13 @@ public class Person extends Entitaet{
 	//Für table Einträge
 	public class PersonMitRolle {
 		private Person per;
-		private Rolle rolle;
+		private Rolle rolle, initialRolle;
+		private boolean initialRolleAbschalten;
 		
 		public PersonMitRolle(Rolle rolle, Person per) {
 			this.per = per;
 			this.rolle = rolle;
+			this.initialRolle = rolle;
 		}
 		
 		public Rolle getRolle() {
@@ -99,6 +101,13 @@ public class Person extends Entitaet{
 		
 		public Person getPerson() {
 			return per;
+		}
+		public Rolle getinitialRolle() {
+			if(!initialRolleAbschalten) return initialRolle;
+			else return rolle;
+		}
+		public void setDavorAbschalten(boolean initialRolleAbschalten) {
+			this.initialRolleAbschalten = initialRolleAbschalten;
 		}
 	}
 	

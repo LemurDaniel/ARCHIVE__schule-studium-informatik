@@ -9,6 +9,7 @@ import java.util.function.UnaryOperator;
 
 import fxControls.CustomTextField;
 import fxControls.StringTextField;
+import gui.FensterManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -211,26 +212,29 @@ public class DetailCtrl {
     void add_rez(ActionEvent event) {
           Alert a = new Alert(AlertType.INFORMATION);
           boolean existiert = rvw.existiert(angezeigt.getId());
+          Rezension temp = new Rezension(-1, tf_rtitel.getText(), ta_rtext.getText(), Nutzer.getNutzer().getName(), Nutzer.getNutzer().getId(), (int)s_bwt.getValue());
           if(existiert) {
         	  a.setTitle("Rezension - Update");
-        	  a.setContentText("Rezension erfolgreich upgedatet");
+        	  a.setContentText("Rezension erfolgreich upgedatet");   
+        	  rvw.updateEntitaet(angezeigt, temp);
           }else {
         	  a.setTitle("Rezension - Erstellen");
         	  a.setContentText("Rezension erfolgreich Erstellt");
+        	  rvw.addEntitaet(temp);
           }
           
-          try {
-        	if(existiert)	rvw.updateRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), angezeigt.getId());
-        	else			rvw.addRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), nid);
-        	setRezension();
-          	setEdit(false);
-            tf_bewertung.setText(film.getBwtStringProperty().get());
-            tp_rez.setDisable(false);
-          }catch(Exception e) {
-        	  a.setAlertType(AlertType.ERROR);
-        	  a.setContentText(e.getMessage());
+         try(Connection con = DB_Manager.getCon()){
+        	 rvw.save(con);
+         }catch(Exception e) {
+        	 a.setAlertType(AlertType.ERROR);
+        	 a.setContentText(e.getMessage());
+        	 return;
           }
-          a.show();
+         setRezension();
+         setEdit(false);
+        tf_bewertung.setText(film.getBwtStringProperty().get());
+        tp_rez.setDisable(false);
+        a.show();
     }
     
     @FXML
@@ -309,9 +313,9 @@ public class DetailCtrl {
         }));
 
         /** Tabelle mit Rezensionen **/ 
-        t_ersteller.setCellValueFactory(data->data.getValue().getVerfasser());
-        t_bwt.setCellValueFactory(data->data.getValue().getBewertung());
-        t_titel.setCellValueFactory(data->data.getValue().getTitel());      
+        t_ersteller.setCellValueFactory(data->	data.getValue().getVerfasserProperty());
+        t_bwt.setCellValueFactory(		data->	data.getValue().getBewertungProperty());
+        t_titel.setCellValueFactory(	data->	data.getValue().getTitelProperty());      
         
         table1.getSelectionModel().selectedItemProperty().addListener((ob, ov, newValue)->{      	
         	// Wenn ausgewählter Rez == Nutzerrez dann nur eine Option anzeigen
@@ -321,7 +325,7 @@ public class DetailCtrl {
         		cb_r.getSelectionModel().select(1);
         	}else {
         		int i = cb_r.getSelectionModel().getSelectedIndex();
-            	cb_r.getItems().set(0, newValue.getVerfasser().get());	// Optionsname = verfasser name
+            	cb_r.getItems().set(0, newValue.getVerfasser());	// Optionsname = verfasser name
             	cb_r.getSelectionModel().select(i);	// Bei änderungen wird select reseted -> merkt sich was selected wurde
             	cb_r.setDisable(false);
         	}   		
@@ -381,9 +385,9 @@ public class DetailCtrl {
     // Rezension anzeigen
     private void setAnzeige() {
     	if(angezeigt == null) setRezension();
-    	ta_rtext.setText(angezeigt.getInhalt().get());
-    	tf_rtitel.setDefaultValue(angezeigt.getTitel().get());
-    	s_bwt.setValue(angezeigt.getBewertung().get());
+    	ta_rtext.setText(angezeigt.getInhalt());
+    	tf_rtitel.setDefaultValue(angezeigt.getTitel());
+    	s_bwt.setValue(angezeigt.getBewertung());
     	setEdit(false);
     }
    

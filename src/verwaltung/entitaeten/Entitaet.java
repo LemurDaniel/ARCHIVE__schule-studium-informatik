@@ -14,6 +14,9 @@ public class Entitaet implements Comparator<Genre> {
 	public int getId() {
 		return id;
 	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	@Override
 	public int compare(Genre o1, Genre o2) {

@@ -21,16 +21,30 @@ public class Rezension extends Entitaet{
 		setBewertung(bewertung);
 	}
 	
-	public ReadOnlyStringProperty getTitel() {
+	public String getTitel() {
+		return titel.get();
+	}
+	public String getInhalt() {
+		return inhalt.get();
+	}
+	public String getVerfasser() {
+		return verfasser.get();
+	}
+	public int getBewertung() {
+		return bewertung.get();
+	}
+	
+	
+	public ReadOnlyStringProperty getTitelProperty() {
 		return titel.getReadOnlyProperty();
 	}
-	public ReadOnlyStringProperty getInhalt() {
+	public ReadOnlyStringProperty getInhaltProperty() {
 		return inhalt.getReadOnlyProperty();
 	}
-	public ReadOnlyStringProperty getVerfasser() {
+	public ReadOnlyStringProperty getVerfasserProperty() {
 		return verfasser.getReadOnlyProperty();
 	}
-	public ReadOnlyIntegerProperty getBewertung() {
+	public ReadOnlyIntegerProperty getBewertungProperty() {
 		return bewertung.getReadOnlyProperty();
 	}
 	public int getVerfasserId() {

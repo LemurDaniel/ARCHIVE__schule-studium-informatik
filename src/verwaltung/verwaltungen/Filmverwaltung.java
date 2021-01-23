@@ -53,54 +53,59 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			}		
 	}
 	
-	public Film addFilm(String titel, List<Genre> genres, int dauer, int erscheinungsjahr, Connection con) throws SQLException {
-		
+	@Override
+	protected void add(Film f, Connection con) throws SQLException {
+				
 		String sql = "Insert into film(titel, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?); Select SCOPE_IDENTITY()";
 		
-		try(PreparedStatement ps = con.prepareStatement(sql)){
+		try(PreparedStatement ps = con.prepareStatement(sql)){			
+			con.setAutoCommit(false);	
 			
-			con.setAutoCommit(false);
-			ps.setString(	1, 	titel				);
-			ps.setInt(		2, 	dauer				);
-			ps.setInt(		3,	erscheinungsjahr	);
-			ps.setFloat(	4, 	0					);
+			ps.setString(	1, 	f.getTitel()				);
+			ps.setInt(		2, 	f.getDauer()				);
+			ps.setInt(		3,	f.getErscheinungsjahr()		);
+			ps.setFloat(	4, 	0							);
 			ps.setInt(		5,  Nutzer.getNutzer().getId()	);
 			
-			Film f;
 			try(ResultSet rs = ps.executeQuery()) {
 				rs.next();
-				f = new Film(rs.getInt(1), Nutzer.getNutzer().getId(), titel, dauer, erscheinungsjahr, 0 );
+				f.setId(rs.getInt(1));
 			}
 
-			updateGenres(con, genres, f.getId());
+			updateGenres(con, f.getGenres(), f.getId());
 			con.commit();
-			genres.forEach(g->f.addGenre(g));
-			addObj(f);
-			return f;
-		}
+			con.setAutoCommit(true);
+		}		
+		addObj(f);	
 	}
-
-	public void updateFilm(String titel, List<Genre> genres, int dauer, int erscheinungsjahr, Film film, Connection con) throws SQLException {
+	
+	@Override
+	protected void update(Film alt, Film neu, Connection con) throws SQLException {
 	
 		String sql = "Update film set titel=?, dauer=?, erscheinungsjahr=? where id=?;";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
 			
 			con.setAutoCommit(false);
-			ps.setString(	1, 	titel				);
-			ps.setInt(		2, 	dauer				);
-			ps.setInt(		3,	erscheinungsjahr	);
-			ps.setInt(		4,	film.getId()		);
+			ps.setString(	1, 	neu.getTitel()				);
+			ps.setInt(		2, 	neu.getDauer()				);
+			ps.setInt(		3,	neu.getErscheinungsjahr()		);
+			ps.setInt(		4,	alt.getId()					);
 			ps.executeUpdate();
 
-			updateGenres(con, genres, film.getId());
+			updateGenres(con, neu.getGenres(), alt.getId());
 			con.commit();
+			con.setAutoCommit(true);
 		}
-		film.setTitel(titel);
-		film.setDauer(dauer);
-		film.setErscheinungsjahr(erscheinungsjahr);
-		film.clearGenre();
-		genres.forEach(g->film.addGenre(g));		
+		alt.setTitel(neu.getTitel());
+		alt.setDauer(neu.getDauer());
+		alt.setErscheinungsjahr(neu.getErscheinungsjahr());
+		alt.clearGenre();
+		neu.getGenres().forEach(g->alt.addGenre(g));		
+	}
+	@Override
+	protected void delete(Film f, Connection con) {
+		// f
 	}
 	
 	private void updateGenres(Connection con, List<Genre> genres, int fid) throws SQLException{

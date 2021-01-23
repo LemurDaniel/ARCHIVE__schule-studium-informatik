@@ -147,7 +147,7 @@ public class Film extends Entitaet  {
 		return zeit;
 	}
 
-
+	
 	@Override
 	public String toString() {
 		return "Film [erstellerId=" + erstellerId + ", genres=" + genres + ", titel=" + titel + ", dauer_string="

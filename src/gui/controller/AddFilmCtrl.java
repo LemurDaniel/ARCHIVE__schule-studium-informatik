@@ -39,6 +39,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import verwaltung.DB_Manager;
+import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Liste;
@@ -50,7 +51,7 @@ import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 public class AddFilmCtrl {
 
-	private Film film;
+	private Film original, temp;
 	private Personenverwaltung pvw;
 	private Filmverwaltung fvw;
 	private Liste filmliste;
@@ -75,11 +76,13 @@ public class AddFilmCtrl {
 	public void setFilm(Film film) throws SQLException{
 		accordion.setExpandedPane(tp_allg);
 	    tab_pane.getSelectionModel().select(tab_allg);
-	    tab_pane.requestFocus();
-			
-		if(film==null)	pvw = null;
-		else {
-			pvw = film.getPvw();
+	    tab_pane.requestFocus();	
+	    this.original = film;
+
+	    temp = new Film(-1, Nutzer.getNutzer().getId(), null, 0, 0, 0);
+	    if(original==null)	pvw = temp.getPvw();
+	    else {
+	    	pvw = original.getPvw();
 			if(!pvw.isLoaded() || !film.getRvw().isLoaded()) {
 				try(Connection con = DB_Manager.getCon()){
 					pvw.loadIfnotLoaded(con);
@@ -88,7 +91,6 @@ public class AddFilmCtrl {
 			}
 		}
 		
-		this.film = film;	
 		setDisplay();
 		setTable();
 	}
@@ -113,17 +115,17 @@ public class AddFilmCtrl {
 		tf_genre.setText(null);
 		blocked = false;
 		
-		if(film==null) {
+		if(original==null) {
 			tf_titel.setDefaultValue(null);
 			tf_dauer.setDefaultValue(null);
 			tf_jahr.setDefaultValue(null);
 			tf_bewertung.setText(null);
 		}else {
-			tf_titel.setDefaultValue(film.getTitel());
-			tf_dauer.setDefaultValue(film.getDauer());
-			tf_jahr.setDefaultValue(film.getErscheinungsjahr());
-			tf_bewertung.setText(film.getBwtStringProperty().get());
-			film.getGenres().forEach(g->checked_genre.get(g).set(true));
+			tf_titel.setDefaultValue(original.getTitel());
+			tf_dauer.setDefaultValue(original.getDauer());
+			tf_jahr.setDefaultValue(original.getErscheinungsjahr());
+			tf_bewertung.setText(original.getBwtStringProperty().get());
+			original.getGenres().forEach(g->checked_genre.get(g).set(true));
 		}		
 		changes[0] = false;
 	}
@@ -213,12 +215,15 @@ public class AddFilmCtrl {
 
     @FXML
     void action(ActionEvent event) {
-    	if(event.getSource()==btn_rel1)			setDisplay();
-    	else if(event.getSource()==btn_rel2) 	setTable();
-    	else if(event.getSource()==btn_commit1)	commit();
-    	else if(event.getSource()==btn_addP)	addPerson();
-    	else if(event.getSource()==btn_detail)	detail();
-    	
+    	try {
+    		if(event.getSource()==btn_rel1)			setDisplay();
+    		else if(event.getSource()==btn_rel2) 	setTable();
+    		else if(event.getSource()==btn_commit1)	commit();
+    		else if(event.getSource()==btn_addP)	addPerson();
+    		else if(event.getSource()==btn_detail)	detail();
+    	}catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     @FXML
@@ -283,9 +288,9 @@ public class AddFilmCtrl {
         
         /** Table Mitwirkende **/
         table.setEditable(true);
-        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()		);
-        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()	);
-        t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()			);
+        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()				);
+        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()			);
+        t_rolle.setCellValueFactory(	data->data.getValue().getRolle().getObservable()				);
         t_confirm1.setCellValueFactory(	data->confirmed.get(data.getValue())[0]			);
         t_confirm2.setCellValueFactory(	data->confirmed.get(data.getValue())[1]			);
         
@@ -345,7 +350,7 @@ public class AddFilmCtrl {
     	changes[1] = true;
     }
     
-    private void commit() {
+    private void commit() throws Exception {
     	System.out.println(changes[0]+"  "+changes[1]);
     	
 		FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
@@ -353,29 +358,27 @@ public class AddFilmCtrl {
     	if(!changes[0]&& !changes[1] && delete.size()==0)
     		return;
     	
-    	try(Connection con = DB_Manager.getCon()) {
-    		//Wenn Filmdaten geändert
-    		if(changes[0]) {
-            	checkEingaben();
-    			if(film==null) {
-    				film = fvw.addFilm(tf_titel.getText(), selected, tf_dauer.getValue(), tf_jahr.getValue(), con );
-    				pvw = film.getPvw();
-    				if(filmliste!=null) filmliste.addFilm(film);
-    			}else		
-    				fvw.updateFilm(tf_titel.getText(), selected, tf_dauer.getValue(),  tf_jahr.getValue(), film, con);
-    		}
+        checkEingaben();
+        temp.setTitel(tf_titel.getText());
+    	temp.setDauer(tf_dauer.getValue());
+    	temp.setErscheinungsjahr(tf_jahr.getValue());
+    	selected.forEach(temp::addGenre);
+    			
+    	if(original==null) {
+    		fvw.addEntitaet(temp);
+    		if(filmliste!=null) filmliste.addFilm(temp);
+    		original = temp;
+    	}else		
+    		fvw.updateEntitaet(original, temp);
     		
+    	delete.forEach(g->System.out.println(g.toString()));
+    	
+    	try(Connection con = DB_Manager.getCon()){
+    		fvw.save(con);
     		if(changes[1])	pvw.addOrUpdate(update, con);
         	pvw.delete(delete, con);
-    		
-		} catch (Exception e) {
-			Alert a = new Alert(AlertType.ERROR);
-			a.setTitle(e.getClass().getSimpleName());
-			a.setContentText(e.getMessage());
-			a.show();
-			e.printStackTrace();
-			return;
-		}
+    	}
+    			
     	setDisplay();
     	setTable();
     }
@@ -388,10 +391,10 @@ public class AddFilmCtrl {
     }
     
     private void detail() {
-    	if( film == null) {
+    	if( original == null) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle("Detailansicht öffnen");
-    		a.setHeaderText("Dieser Film existiert nich niht in der Datenbank");
+    		a.setHeaderText("Dieser Film existiert nich nicht in der Datenbank");
     		a.setContentText("Bitte Speichern sie vorher den Film ab");
     		a.show();
     		return;
@@ -413,7 +416,7 @@ public class AddFilmCtrl {
     
     private void openDetail() {
     	try {
-			FensterManager.setDialog( FensterManager.getDetail(film) );
+			FensterManager.setDialog( FensterManager.getDetail(original) );
 		} catch (SQLException e) {
 			Alert a2 = new Alert(AlertType.ERROR);
 			a2.setTitle(e.getClass().getSimpleName());
