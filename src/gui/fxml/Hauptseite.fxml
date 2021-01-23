@@ -56,7 +56,7 @@
           <TableColumn fx:id="t_Titel" prefWidth="328.0" text="Titel" />
           <TableColumn fx:id="t_genre" minWidth="0.0" prefWidth="356.0" text="Genre" />
             <TableColumn fx:id="t_bewertung" minWidth="0.0" prefWidth="336.0" text="Bewertung" />
-            <TableColumn fx:id="t_dauer" minWidth="0.0" prefWidth="346.0" text="Dauer" />
+            <TableColumn fx:id="t_dauer" minWidth="0.0" prefWidth="346.0" text="Laufzeit" />
             <TableColumn fx:id="t_jahr" minWidth="0.0" prefWidth="354.0" text="Erscheinungsjahr" />
         </columns>
       </TableView>

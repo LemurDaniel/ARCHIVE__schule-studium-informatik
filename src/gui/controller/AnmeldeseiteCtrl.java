@@ -1,9 +1,6 @@
 package gui.controller;
 
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
-
 
 import exceptions.LogInException;
 import exceptions.RegisterException;

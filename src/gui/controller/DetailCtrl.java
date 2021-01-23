@@ -79,12 +79,9 @@ public class DetailCtrl {
         film.getGenres().forEach(g->checked_genre.get(g).set(true));
         table_genre.getSelectionModel().clearSelection();
         
-        if(pvw.getList().size()==0)
-        	tp_mit.setDisable(true);
-        
-        if(rvw.getList().size()==0)
-        	tp_rez.setDisable(true);
-        
+        tp_mit.setDisable( pvw.getList().size()==0 );
+        tp_rez.setDisable( rvw.getList().size()==0 );
+       
         setEdit(false);
 		cb_r.setDisable(true);
 		displayRezension();			//Wenn Film gewechselt display aktualisieren 
@@ -225,15 +222,14 @@ public class DetailCtrl {
     void initialize() {
         
         /** Rechte **/
-        if(!rechte.isReviewRead()) tp_rezd.setDisable(true);
+        tp_rezd.setDisable(!rechte.isReviewRead());
         
-        Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, nv)->{
-        	nid = Nutzer.getNutzer().getId();
-        	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
-        	if(!rechte.isReviewRead()) 	tp_rezd.setDisable(true);
-        	if(!rechte.isReviewWrite()) cb_r.getSelectionModel().select(0);
-
-        });
+//        Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, nv)->{
+//        	nid = Nutzer.getNutzer().getId();
+//        	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
+//        	tp_rezd.setDisable( !rechte.isReviewRead() );
+//        	if(!rechte.isReviewWrite()) cb_r.getSelectionModel().select(0);
+//        });
         
         // Wenn nicht review Write -> keine eigene Review auswählbar
         cb_r.disabledProperty().addListener((ob, ov, nv)->{
@@ -293,6 +289,8 @@ public class DetailCtrl {
         s_bwt.setShowTickLabels(true);
         s_bwt.setShowTickMarks(true);
         s_bwt.setSnapToTicks(true);
+        
+        lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()+"");
   
         tbtn_r.setOnAction(ev->{
         	if(!tbtn_r.isSelected()) setDisplay(); // Bei wechsel von write auf read reset display
@@ -300,10 +298,11 @@ public class DetailCtrl {
         });
   
         tf_rtitel.addEventFilter(KeyEvent.KEY_TYPED, ev->{
+        	if(!tf_rtitel.isEditable()) return;
         	if(tf_rtitel.getLength() >= Rezensionenverwaltung.getMaxTitel()) ev.consume();
         });
         ta_rtext.addEventFilter(KeyEvent.KEY_TYPED, ev->{
-        	System.out.println("test");
+        	if(!ta_rtext.isEditable()) return;
         	if(ta_rtext.getLength() >= Rezensionenverwaltung.getMaxInhalt()) ev.consume();
         	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-ta_rtext.getLength()+"");
         });
@@ -382,7 +381,7 @@ public class DetailCtrl {
     	s_bwt.setValue(displayed.getBewertung().get());
     	lbl_r.setText(Rezensionenverwaltung.getMaxInhalt()-ta_rtext.getLength()+"");
     }
-    
+   
     
     // Rezension Editierbarkeit
     private void setEdit(boolean edit) {

@@ -154,8 +154,9 @@ public class FensterManager {
 	}
 	
 	public static void reset() {
-		if(anmelden!=null)		anmelden.close();
-		if(hauptseite!=null)	hauptseite.close();
-		if(detail!=null)		detail.close();
+		if(primaryStage!=null)		primaryStage.close();
+		if(dialog!=null)			dialog.close();
+		detail = null;
+		addFilm = null;
 	}
 }
