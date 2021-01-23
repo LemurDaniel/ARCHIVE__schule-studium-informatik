@@ -36,6 +36,8 @@ public class DetailCtrl {
 	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
 	
+	private long lastMouseClick;
+	
 	public void setFilm(Film film) throws SQLException {
 		this.film = film;
 		pvw = film.getPvw();
@@ -55,9 +57,14 @@ public class DetailCtrl {
         accordion.setExpandedPane(tp_allg);
         
 		cb_r.setDisable(true);
-        cb_r.getSelectionModel().select(1);
+		// Wenn keine Rechte zum schreiben einer Review und keine bereits geschreiben vorhanden
+        if(!rechte.isReviewWrite() && rvw.getRezensionVonNutzer(nid)==null)
+        	cb_r.getSelectionModel().select(0);
+        else
+        	cb_r.getSelectionModel().select(1);
 	}
 	
+    /** Allgemein **/
     @FXML // fx:id="accordion"
     private Accordion accordion; // Value injected by FXMLLoader
 	
@@ -79,6 +86,7 @@ public class DetailCtrl {
     @FXML // fx:id="tf_jahr"
     private TextField tf_jahr; // Value injected by FXMLLoader
 
+    /** Mitwirkende **/
     @FXML // fx:id="tp_mit"
     private TitledPane tp_mit; // Value injected by FXMLLoader
 
@@ -94,6 +102,7 @@ public class DetailCtrl {
     @FXML // fx:id="t_rolle"
     private TableColumn<Person, String> t_rolle; // Value injected by FXMLLoader
     
+    /** Rezension **/
     @FXML // fx:id="tp_rez"
     private TitledPane tp_rez; // Value injected by FXMLLoader
 
@@ -109,6 +118,7 @@ public class DetailCtrl {
     @FXML // fx:id="t_titel"
     private TableColumn<Rezension, String> t_titel; // Value injected by FXMLLoader
     
+    /** Rezension Detail**/
     @FXML // fx:id="tp_rezd"
     private TitledPane tp_rezd; // Value injected by FXMLLoader
 
@@ -143,14 +153,12 @@ public class DetailCtrl {
           }
           
           try {
-        	  if(exists)
-        		  rvw.updateRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), displayed.getId());
-        	  else
-        		  rvw.addRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), nid);
+        	if(exists)	rvw.updateRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), displayed.getId());
+        	else		rvw.addRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), nid);
           	setEdit(false);
             tf_bewertung.setText(film.getBewertung().get()+"");
           }catch(Exception e) {
-        	  a = new Alert(AlertType.ERROR);
+        	  a.setAlertType(AlertType.ERROR);
         	  a.setContentText(e.getMessage());
           }
           a.show();
@@ -182,22 +190,35 @@ public class DetailCtrl {
         assert ta_rtext != null : "fx:id=\"ta_rtext\" was not injected: check your FXML file 'Detail.fxml'.";
         assert btn_r != null : "fx:id=\"btn_r\" was not injected: check your FXML file 'Detail.fxml'.";
        
-        accordion.setExpandedPane(tp_allg);
+        /** Rechte **/
+        if(!rechte.isReviewRead()) tp_rezd.setDisable(true);
+        
+        Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, nv)->{
+        	nid = Nutzer.getNutzer().getId();
+        	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
+        	if(!rechte.isReviewRead()) 	tp_rezd.setDisable(true);
+        	if(!rechte.isReviewWrite()) cb_r.getSelectionModel().select(0);
+
+        });
+        
+        // Wenn nicht review Write -> keine eigene Review auswählbar
+        cb_r.disabledProperty().addListener((ob, ov, nv)->{
+        	if(!rechte.isReviewWrite()  && !nv && rvw.getRezensionVonNutzer(nid)==null) {
+        		cb_r.setDisable(true);
+        	}
+        });      
+        // Wenn nicht review Read Rez Detail disabled
+        tp_rezd.disabledProperty().addListener((ob, ov, nv)->{
+        	if(!rechte.isReviewRead() && nv==false) tp_rezd.setDisable(true);
+        });
+
+        /** Rechte **/
+        
         /** Reze Detail **/
         cb_r.setItems(FXCollections.observableArrayList());
         cb_r.getItems().add("Rezensions-Verfasser"); // Nur ein Platzhalter
         cb_r.getItems().add("Nutzer - "+Nutzer.getNutzer().getName());
         cb_r.getSelectionModel().selectedIndexProperty().addListener((ob, ov, nv)->displayRezension()); 
-        
-        // Wenn nicht review Write -> keine eigene Review auswählbar
-        cb_r.disabledProperty().addListener((ob, ov, nv)->{
-        	if(!rechte.isReviewWrite()  && !nv) cb_r.setDisable(true);
-        });
-        
-        // Wenn nicht review Read Rez Detail disabled
-        tp_rezd.disabledProperty().addListener((ob, ov, nv)->{
-        	if(!rechte.isReviewRead() && nv==false) tp_rezd.setDisable(true);
-        });
         
         ta_rtext.setPromptText("Rezension hier einfügen");
         tf_rtitel.setPromptText("Titel hier einfügen");
@@ -210,10 +231,9 @@ public class DetailCtrl {
         s_bwt.setSnapToTicks(true);
   
         tbtn_r.setOnAction(ev->{
+        	if(!tbtn_r.isSelected()) setDisplay(); // Bei wechsel von write auf read reset display
         	setEdit(tbtn_r.isSelected());
-        	displayRezension();
         });
-        setEdit(false);
   
         /**  **/
         
@@ -225,26 +245,34 @@ public class DetailCtrl {
         t_bwt.setCellValueFactory(data->data.getValue().getBewertung());
         t_titel.setCellValueFactory(data->data.getValue().getTitel());      
         
-        table1.getSelectionModel().selectedItemProperty().addListener((ob, ov, nv)->{      	
+        table1.getSelectionModel().selectedItemProperty().addListener((ob, ov, newValue)->{      	
         	// Wenn ausgewählter Rez == Nutzerrez dann nur eine Option anzeigen
-        	System.out.println(nid);
         	Rezension r = rvw.getRezensionVonNutzer(nid);
-        	if(nv==null || r!=null && nv.getId()==r.getId()) {
+        	if(newValue==null || r!=null && newValue.getId()==r.getId()) {
         		cb_r.setDisable(true);
         		cb_r.getSelectionModel().select(1);
         	}else {
         		int i = cb_r.getSelectionModel().getSelectedIndex();
-            	cb_r.getItems().set(0, nv.getVerfasser().get());
-            	cb_r.getSelectionModel().select(i);
+            	cb_r.getItems().set(0, newValue.getVerfasser().get());	// Optionsname = verfasser name
+            	cb_r.getSelectionModel().select(i);	// Bei änderungen wird select reseted -> merkt sich was selected wurde
             	cb_r.setDisable(false);
         	}   		
         });
         
-        Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, nv)->{
-        	nid = Nutzer.getNutzer().getId();
-        	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
-        	if(!rechte.isReviewRead()) tp_rezd.setDisable(true);
-        	if(!rechte.isReviewWrite()) cb_r.getSelectionModel().select(0);
+        table1.setOnMouseClicked(ev->{
+        	//Double Click
+        	long now = System.currentTimeMillis();
+        	if(now-lastMouseClick < 200 && table1.getSelectionModel().getSelectedIndex()!=-1) {
+        		if(rechte.isReviewRead())	{
+        			tp_rezd.setExpanded(true);
+        			// Wenn eigene Rez ausgewähl, dann nur eine Option anzeigen
+        			if(table1.getSelectionModel().getSelectedItem().getId()==rvw.getRezensionVonNutzer(nid).getId())
+        				cb_r.getSelectionModel().select(1);
+        			else
+        				cb_r.getSelectionModel().select(0);
+        		}
+        	}
+        	lastMouseClick = now;
         });
     }
     
@@ -265,10 +293,6 @@ public class DetailCtrl {
     	}else
     		tp_rezd.setDisable(false);
     	
-    	ta_rtext.setText(displayed.getInhalt().get());
-    	tf_rtitel.setText(displayed.getTitel().get());
-    	s_bwt.setValue(displayed.getBewertung().get());
-
     	if( (displayed.getVerfasserId()==nid && rechte.isReviewWrite()) || rechte.isReviewWriteAll()) {
     		btn_r.setVisible(true);
     		tbtn_r.setVisible(true);
@@ -280,6 +304,16 @@ public class DetailCtrl {
     		tbtn_r.setVisible(false);
     		setEdit(false);
     	}
+    	 	
+    	setDisplay();
+    }
+    
+    private void setDisplay() {
+    	if(displayed == null) displayRezension();
+    	ta_rtext.setText(displayed.getInhalt().get());
+    	tf_rtitel.setText(displayed.getTitel().get());
+    	s_bwt.setValue(displayed.getBewertung().get());
+
     }
     
     

@@ -58,7 +58,9 @@ public class AnmeldeseiteCtrl {
     		a.show();
     		
     		a.setOnCloseRequest(eva->{
-    			if(e.getType()==LogInException.ALREADY_LOGGED_IN && e.getClass().equals(LogInException.class)){
+    			//Abfrage wenn Typ = Already Logged in
+    			if( e.isTyp(LogInException.ALREADY_LOGGED_IN) ){
+    				
     				Alert b = new Alert(AlertType.CONFIRMATION);
     				b.setAlertType(AlertType.CONFIRMATION);
     				b.setContentText("Möchten sie sich von den anderen Instanzen abmelden? ");
@@ -72,8 +74,11 @@ public class AnmeldeseiteCtrl {
     				});
     			}
     		});
-    	} catch (Exception e) {
-			e.printStackTrace();
+    	} catch (SQLException e) {
+    		Alert a = new Alert(AlertType.ERROR);
+    		a.setTitle("Datenbank Fehler");
+    		a.setContentText(e.getMessage());
+    		a.show();
 		}
     }
 

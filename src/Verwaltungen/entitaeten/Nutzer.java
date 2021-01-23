@@ -28,13 +28,15 @@ public class Nutzer extends DB_Manager {
 		id = rs.getInt("id");
 		name = rs.getString("name");
 		rechte.setRechte(rs.getString("berechtigung"), rs.getBoolean("read"), rs.getBoolean("add"), rs.getBoolean("update"), rs.getBoolean("updateAll"), rs.getBoolean("multiLogin"), rs.getBoolean("reviewRead"), rs.getBoolean("reviewWrite"), rs.getBoolean("reviewWriteAll"));
+	
+		System.out.println(rechte.toString());
 	}
 
-	public static void anmeldenGast() throws Exception {
+	public static void anmeldenGast() throws SQLException, LogInException {
 		anmeldenKonto("Gast", "Gast");
 	}
 	
-	public static void anmeldenKonto(String name, String passwort) throws Exception {	
+	public static void anmeldenKonto(String name, String passwort) throws SQLException, LogInException {	
 		try(Connection con = getCon();){
 			ResultSet rs = con.createStatement().executeQuery("Select name from Nutzer where name='"+name+"'");
 			if(!rs.next()) throw new LogInException("Der Nutzer: '"+name+"' existiert nicht", LogInException.NO_USER);
@@ -62,7 +64,7 @@ public class Nutzer extends DB_Manager {
 		}
 	}
 	
-	public static void registrieren(String name, String passwort, String passwort1) throws Exception {	
+	public static void registrieren(String name, String passwort, String passwort1) throws SQLException, RegisterException, LogInException {	
 			if(name.length()<3) throw new RegisterException("Der Name muss mindestens 3 Zeichen lang sein", RegisterException.ILLEGAL_NAME);
 			if(!passwort.equals(passwort1)) throw new RegisterException("Das Passwort muss mindestens 6 Zeichen lang sein", RegisterException.NON_MATCHING_PASSWORDS);
 			if(passwort.length() < 6) throw new RegisterException("Das Passwort muss mindestens 6 Zeichen lang sein", RegisterException.ILLEGAL_PASSWORD);
@@ -184,6 +186,13 @@ public class Nutzer extends DB_Manager {
 
 		public boolean isReviewWriteAll() {
 			return reviewWriteAll;
+		}
+
+		@Override
+		public String toString() {
+			return "Rechte [berechtigung=" + berechtigung + ", read=" + read + ", add=" + add + ", update=" + update
+					+ ", updateAll=" + updateAll + ", multiLogin=" + multiLogin + ", reviewRead=" + reviewRead
+					+ ", reviewWrite=" + reviewWrite + ", reviewWriteAll=" + reviewWriteAll + "]";
 		}
 
 		

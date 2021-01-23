@@ -8,13 +8,10 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
-	static {
-		DB_Manager.InstanzAnmelden();
-	}
-	
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 		
+		DB_Manager.InstanzAnmelden();
 		FensterManager.getInstance().setPrimaryStage( FensterManager.getInstance().showAnmelden() );
 	}
 	

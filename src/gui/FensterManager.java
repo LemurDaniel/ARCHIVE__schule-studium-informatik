@@ -26,6 +26,7 @@ public class FensterManager {
 	
 	private static Stage primaryStage;
 	
+	/** Primary **/
 	private static Stage anmelden;
 	@SuppressWarnings("unused")
 	private static AnmeldeseiteCtrl anmeldenCtrl;	
@@ -34,15 +35,16 @@ public class FensterManager {
 	@SuppressWarnings("unused")
 	private static HauptseiteCtrl hauptseiteCtrl;	
 	
-		
+	
+	/** Other **/
 	private static Stage detail;
 	private static DetailCtrl detailCtrl;
 	
 	private FensterManager() {
 		
-		Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, nv)->{
+		Nutzer.getNutzer().angemeldetProperty().addListener((ob, ov, angemeldet)->{
 			try {
-				if(nv) 
+				if(angemeldet) 
 					setPrimaryStage(showHauptSeite());
 				else {
 					reset();
@@ -110,6 +112,7 @@ public class FensterManager {
 			a.setOnCloseRequest(ev2->{
 				if(a.getResult().getButtonData().equals(ButtonData.OK_DONE)){
 					DB_Manager.InstanzAbmelden();
+					reset();
 					System.exit(0);
 				}
 			});

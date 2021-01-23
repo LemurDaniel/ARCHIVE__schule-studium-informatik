@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import Verwaltungen.Unterverwaltung;
 import Verwaltungen.entitaeten.Film;
@@ -41,7 +42,9 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	
 	
 	public void addRezension(String titel, String inhalt, int bewertung, int nid) throws Exception {
-
+		if(list.stream().anyMatch(rez->rez.getVerfasserId()==nid))
+			throw new Exception("Es existiert bereits eine Rezension mit dieser BenutzerId");
+		
 		check(titel, inhalt);
 		try(Connection con = getCon()) {
 			PreparedStatement ps = con.prepareStatement("Insert into rezensionen(titel, inhalt, bewertung, verfasser, filmid) values(?, ?, ?, ?, ?); "
@@ -67,8 +70,11 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 	}
 	
 	public void updateRezension(String titel, String inhalt, int bewertung, int rid) throws Exception {
-		Rezension rez = list.stream().filter(r->r.getId()==rid).findFirst().get();
-		
+		Optional<Rezension> opt = list.stream().filter(r->r.getId()==rid).findFirst();
+		if(!opt.isPresent())
+			throw new Exception("Diese Rezension existiert nicht");
+	
+		Rezension rez = opt.get();
 		check(titel, inhalt);
 		try(Connection con = getCon()) {
 			PreparedStatement ps = con.prepareStatement("Update rezensionen set titel=?, inhalt=?, bewertung=? where id=?;"

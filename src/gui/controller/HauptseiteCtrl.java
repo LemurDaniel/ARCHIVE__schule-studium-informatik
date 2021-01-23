@@ -22,12 +22,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 public class HauptseiteCtrl {
-
-    @FXML // ResourceBundle that was given to the FXMLLoader
-    private ResourceBundle resources;
-
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
-    private URL location;
+	
+	private long lastMouseClick;
 
     @FXML // fx:id="table"
     private TableView<Film> table; // Value injected by FXMLLoader
@@ -113,7 +109,15 @@ public class HauptseiteCtrl {
         	System.out.println(table.getSelectionModel().getSelectedItem());
         });
         
-        
+        table.setOnMouseClicked(ev->{
+            //Double Click
+            long now = System.currentTimeMillis();
+            if(now-lastMouseClick < 200 && table.getSelectionModel().getSelectedIndex()!=-1) {
+            	btn_detail.fire();
+            }
+            lastMouseClick = now;
+        });
+       
         btn_add.setOnAction(ev->{
         	try {
 				Nutzer.getNutzer().abmelden();
