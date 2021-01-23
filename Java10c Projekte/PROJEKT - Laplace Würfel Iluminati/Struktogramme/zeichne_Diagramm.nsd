@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:nsd="http://structorizer.fisch.lu/" text="&#34;zeichne_Diagramm()&#34;" comment="" color="ffffff" type="program" style="nice">
+	<children>
+		<instruction text="&#34;      Diagramm.Saeulen[0].hoehe_aendern(Wuerfelzahl[0]);&#34;,&#34;      Diagramm.Saeulen[1].hoehe_aendern(Wuerfelzahl[1]);&#34;,&#34;      Diagramm.Saeulen[2].hoehe_aendern(Wuerfelzahl[2]);&#34;,&#34;      Diagramm.Saeulen[3].hoehe_aendern(Wuerfelzahl[3]);&#34;,&#34;      Diagramm.Saeulen[4].hoehe_aendern(Wuerfelzahl[4]);&#34;,&#34;      Diagramm.Saeulen[5].hoehe_aendern(Wuerfelzahl[5]);&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+	</children>
+</root>

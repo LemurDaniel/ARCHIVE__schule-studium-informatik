@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:nsd="http://structorizer.fisch.lu/" text="&#34;wuerfle(int Versuchszahl)&#34;" comment="" color="ffffff" type="program" style="nice">
+	<children>
+		<instruction text="&#34;        Wuerfelzahl[0]=0;&#34;,&#34;        Wuerfelzahl[1]=0;&#34;,&#34;        Wuerfelzahl[2]=0;&#34;,&#34;        Wuerfelzahl[3]=0;&#34;,&#34;        Wuerfelzahl[4]=0;&#34;,&#34;        Wuerfelzahl[5]=0;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+		<for text="&#34;for (int i = 1; i &#60;= Versuchszahl; i++)&#34;" comment="" color="ffffff">
+			<qFor>
+				<instruction text="&#34;x = gib_Zufallszahl()&#34;,&#34;zaehle_mit()&#34;" comment="" color="ffffff" rotated="0"></instruction>
+				<alternative text="&#34;if(i == Versuchszahl)&#34;" comment="" color="ffffff">
+					<qTrue>
+						<instruction text="&#34;gib_Werte_aus()&#34;,&#34;zeichne_Diagramm()&#34;" comment="" color="ffffff" rotated="0"></instruction>
+					</qTrue>
+					<qFalse>
+					</qFalse>
+				</alternative>
+			</qFor>
+		</for>
+	</children>
+</root>

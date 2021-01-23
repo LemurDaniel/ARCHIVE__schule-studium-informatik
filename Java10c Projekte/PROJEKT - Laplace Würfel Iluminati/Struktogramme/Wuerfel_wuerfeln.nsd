@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:nsd="http://structorizer.fisch.lu/" text="&#34;Wuerfel_wuerfeln(int Wurfzahl)&#34;" comment="&#34;&#34;" color="ffffff" type="program" style="nice">
+	<children>
+		<case text="&#34;switch(Wurfzahl)&#34;,&#34;case 1&#34;,&#34;case 2&#34;,&#34;case 3&#34;,&#34;case 4&#34;,&#34;case 5&#34;,&#34;case 6&#34;,&#34;deafult&#34;" comment="&#34;&#34;" color="ffffff">
+			<qCase>
+				<instruction text="&#34;            Augen[0].SichtbarSetzen(false);&#34;,&#34;            Augen[1].SichtbarSetzen(false);&#34;,&#34;            Augen[2].SichtbarSetzen(false);&#34;,&#34;            Augen[3].SichtbarSetzen(false);&#34;,&#34;            Augen[4].SichtbarSetzen(false);&#34;,&#34;            Augen[5].SichtbarSetzen(false);&#34;,&#34;            Augen[6].SichtbarSetzen(true);&#34;,&#34;            break;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+			</qCase>
+			<qCase>
+				<instruction text="&#34;            Augen[0].SichtbarSetzen(true);&#34;,&#34;            Augen[1].SichtbarSetzen(false);&#34;,&#34;            Augen[2].SichtbarSetzen(false);&#34;,&#34;            Augen[3].SichtbarSetzen(false);&#34;,&#34;            Augen[4].SichtbarSetzen(false);&#34;,&#34;            Augen[5].SichtbarSetzen(true);&#34;,&#34;            Augen[6].SichtbarSetzen(false);&#34;,&#34;            break;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+			</qCase>
+			<qCase>
+				<instruction text="&#34;            Augen[0].SichtbarSetzen(true);&#34;,&#34;            Augen[1].SichtbarSetzen(false);&#34;,&#34;            Augen[2].SichtbarSetzen(false);&#34;,&#34;            Augen[3].SichtbarSetzen(false);&#34;,&#34;            Augen[4].SichtbarSetzen(false);&#34;,&#34;            Augen[5].SichtbarSetzen(true);&#34;,&#34;            Augen[6].SichtbarSetzen(true);&#34;,&#34;            break;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+			</qCase>
+			<qCase>
+				<instruction text="&#34;            Augen[0].SichtbarSetzen(true);&#34;,&#34;            Augen[1].SichtbarSetzen(false);&#34;,&#34;            Augen[2].SichtbarSetzen(true);&#34;,&#34;            Augen[3].SichtbarSetzen(true);&#34;,&#34;            Augen[4].SichtbarSetzen(false);&#34;,&#34;            Augen[5].SichtbarSetzen(true);&#34;,&#34;            Augen[6].SichtbarSetzen(false);&#34;,&#34;            break;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+			</qCase>
+			<qCase>
+				<instruction text="&#34;            Augen[0].SichtbarSetzen(true);&#34;,&#34;            Augen[1].SichtbarSetzen(false);&#34;,&#34;            Augen[2].SichtbarSetzen(true);&#34;,&#34;            Augen[3].SichtbarSetzen(true);&#34;,&#34;            Augen[4].SichtbarSetzen(false);&#34;,&#34;            Augen[5].SichtbarSetzen(true);&#34;,&#34;            Augen[6].SichtbarSetzen(true);&#34;,&#34;            break;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+			</qCase>
+			<qCase>
+				<instruction text="&#34;            Augen[0].SichtbarSetzen(true);&#34;,&#34;            Augen[1].SichtbarSetzen(true);&#34;,&#34;            Augen[2].SichtbarSetzen(true);&#34;,&#34;            Augen[3].SichtbarSetzen(true);&#34;,&#34;            Augen[4].SichtbarSetzen(true);&#34;,&#34;            Augen[5].SichtbarSetzen(true);&#34;,&#34;            Augen[6].SichtbarSetzen(false);&#34;,&#34;            break;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+			</qCase>
+			<qCase>
+				<instruction text="&#34;            System.out.println(&#34;&#34;Error&#34;&#34;);&#34;,&#34;            break;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+			</qCase>
+		</case>
+	</children>
+</root>
