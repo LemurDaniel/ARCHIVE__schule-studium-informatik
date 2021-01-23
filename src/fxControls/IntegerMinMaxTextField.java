@@ -17,7 +17,7 @@ public class IntegerMinMaxTextField extends MinMaxTextField<Integer>{
 		return wert;
 	}
 	@Override
-	protected Integer parseTextAufValue(String text) throws NumberFormatException{
+	protected Integer parseText(String text) throws NumberFormatException{
 		return Integer.parseInt(text);
 	}
 

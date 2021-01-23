@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -21,7 +22,7 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 	
 
 	/** VAR */
-	private List<T> delete, add, update;
+	private Stack<T> delete, add, update;
 	private List<T> deleteErr, addErr, updateErr;
 	private List<T> list; 
 	
@@ -33,9 +34,9 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 		observablelist = FXCollections.observableArrayList();
 		size = new ReadOnlyIntegerWrapper(0);
 		
-		delete = new ArrayList<>();
-		add = new ArrayList<>();
-		update = new ArrayList<>();
+		delete = new Stack<>();
+		add = new Stack<>();
+		update = new  Stack<>();
 		
 		deleteErr = new ArrayList<>();
 		addErr = new ArrayList<>();
@@ -90,7 +91,8 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 		updateErr.clear();
 		try {
 			con.setAutoCommit(false);
-			for(T ent: add)	{
+			while(!add.empty()) {
+				T ent = add.pop();
 				try {
 					add(ent, con);
 					con.commit();
@@ -100,7 +102,8 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 					con.rollback();
 				}
 			}
-			for(T ent: update) {
+			while(!update.empty()) {
+				T ent = update.pop();
 				try {
 					update(ent, con);
 					con.commit();
@@ -112,8 +115,8 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 					con.rollback();
 				}
 			}
-			for(T ent: delete) {
-				if(!list.contains(ent))	continue;
+			while(!delete.empty()) {
+				T ent = delete.pop();
 				try {
 					delete(ent, con);
 					con.commit();

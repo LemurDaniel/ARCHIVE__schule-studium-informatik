@@ -34,7 +34,7 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 		if(change.getControlNewText().equals("-") || change.getControlNewText().length()==0)	return change;		
 		change = super.filter(change);
 		try {
-			parseTextAufValue(change.getControlNewText());
+			parseText(change.getControlNewText());
 		}catch(NumberFormatException nfe) {
 			change.setText("");
 		}
@@ -67,20 +67,21 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 		selectPositionCaret(getLength());
 		
 		formatText = temp;
-	}
-	
-	
+	}	
 	
 	@Override
 	protected void pruefe() {	
 		try {
-			value = parseTextAufValue(getText());	
+			value = parseText(getText());	
 			if(value!=null)	value = pruefeMinMax(getMin(), getMax(), value);
 		}catch(NumberFormatException nfe) {
 			value = getDefaultValue();
 		}
 		setTextToValue();
 	}	
+	
+	
+	
 	@Override
 	public void setDefaultValue(T defaultValue) {
 		defaultValue = defaultValue!=null ? pruefeMinMax(getMin(), getMax(), defaultValue) : defaultValue;
@@ -90,28 +91,30 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	}
 	@Override
 	protected T getDefaultValue(){
-		return pruefeMinMax(getMin(), getMax(), super.getDefaultValue());
+		T defaultValue = super.getDefaultValue();
+		return defaultValue==null? null:pruefeMinMax(getMin(), getMax(), defaultValue);
 	}
 	
 	
 	
 	protected T getMin() {
-		if(minSupplier!=null && minSupplier.get()!=null) return minSupplier.get();	
-		return min;
+		T min = null;
+		if(minSupplier!=null)	min = minSupplier.get();
+		if(min!=null)			return min;
+		else					return this.min;
 	}
 	protected T getMax() {
-		if(maxSupplier!=null && maxSupplier.get()!=null) return maxSupplier.get();	
-		return max;
+		T max = null;
+		if(maxSupplier!=null)	max = maxSupplier.get();
+		if(max!=null)			return max;
+		else					return this.max;	
+	}
+	public T getValue() {
+		return value;
 	}
 	
 	
 	
 	abstract protected T pruefeMinMax(T min, T max, T wert);
-	abstract protected T parseTextAufValue(String text) throws NumberFormatException;
-
-	
-	
-	public T getValue() {
-		return value;
-	}
+	abstract protected T parseText(String text) throws NumberFormatException;
 }

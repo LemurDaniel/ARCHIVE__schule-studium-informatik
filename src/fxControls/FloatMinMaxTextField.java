@@ -22,7 +22,7 @@ public class FloatMinMaxTextField extends MinMaxTextField<Float> {
 		return wert;
 	}
 	@Override
-	protected Float parseTextAufValue(String text) throws NumberFormatException{
+	protected Float parseText(String text) throws NumberFormatException{
 		float val = Float.parseFloat(text);
 		return (int)(val*(10*decimals)) / (10f*decimals);
 	}
