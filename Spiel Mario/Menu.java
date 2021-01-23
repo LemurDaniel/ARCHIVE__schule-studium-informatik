@@ -6,6 +6,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
              
 public class Menu extends JFrame{
+    
+    String Zustand;
+    int breite; 
+    int x;
+    int y;
+    private static int boden = 480;
+    Hauptfigur Figur;
+    Hauptfigur2 Figur2;
              
   public static void main(String[] args){
      new Menu();
@@ -33,7 +41,7 @@ public class Menu extends JFrame{
          
       @Override
         public void actionPerformed(ActionEvent e) {
-           //start das Spiel
+           Spiel Hauptspiel = new Spiel();
             }
             
         });
@@ -53,7 +61,28 @@ public class Menu extends JFrame{
      
      return panel;
   }
+ 
+  
+  protected static int gibBoden()
+  {
+      return boden;
+    }
+  
+  public void bewege(double zeit)
+  {
+      if (x < Hauptfigur.gibBoden())
+      {
+          super.bewege(zeit);
+        }
+        else
+        {
+            meineHauptfigur.entferne(this);
+        }
+    }
 }
+  
+
+
 
         
           

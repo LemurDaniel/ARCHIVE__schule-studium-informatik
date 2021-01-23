@@ -1,5 +1,6 @@
 
-public class Hauptfigur
+
+public class Hauptfigur2
 {
     
     RECHTECK [] Pixel = new RECHTECK [150]; 
@@ -7,10 +8,9 @@ public class Hauptfigur
     private int x=2;
     private int y=345;
     private static int boden = 480;
-    Hauptfigur Figur;
-    
+    Hauptfigur2 Figur2;
         
-    public Hauptfigur()
+    public Hauptfigur2()
     {
         
       Pixel[0]= new RECHTECK(x,y,breite,breite,"braun"); //1 Reihe von unten des linken Fußes 1 Pixel von links aus gezählt
@@ -67,49 +67,49 @@ public class Hauptfigur
       
       Pixel[44]= new RECHTECK(x,y-5*breite,breite,breite,"weiss"); //6 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt
       Pixel[45]= new RECHTECK(x+1*breite,y-5*breite,breite,breite,"weiss"); //6 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
-      Pixel[46]= new RECHTECK(x+2*breite,y-5*breite,breite,breite,"rot"); //6 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
+      Pixel[46]= new RECHTECK(x+2*breite,y-5*breite,breite,breite,"gruen"); //6 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
       Pixel[47]= new RECHTECK(x+3*breite,y-5*breite,breite,breite,"blau"); //6 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
       Pixel[48]= new RECHTECK(x+4*breite,y-5*breite,breite,breite,"gelb"); //6 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
       Pixel[49]= new RECHTECK(x+5*breite,y-5*breite,breite,breite,"blau"); //6 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
       Pixel[50]= new RECHTECK(x+6*breite,y-5*breite,breite,breite,"blau"); //6 Reihe von unten des rechten Fußes 7 Pixel von links aus gezählt
       Pixel[51]= new RECHTECK(x+7*breite,y-5*breite,breite,breite,"gelb"); //6 Reihe von unten des rechten Fußes 8 Pixel von links aus gezählt
       Pixel[52]= new RECHTECK(x+8*breite,y-5*breite,breite,breite,"blau"); //6 Reihe von unten des rechten Fußes 9 Pixel von links aus gezählt
-      Pixel[53]= new RECHTECK(x+9*breite,y-5*breite,breite,breite,"rot"); //6 Reihe von unten des rechten Fußes 10 Pixel von links aus gezählt
+      Pixel[53]= new RECHTECK(x+9*breite,y-5*breite,breite,breite,"gruen"); //6 Reihe von unten des rechten Fußes 10 Pixel von links aus gezählt
       Pixel[54]= new RECHTECK(x+10*breite,y-5*breite,breite,breite,"weiss"); //6 Reihe von unten des rechten Fußes 11 Pixel von links aus gezählt
       Pixel[55]= new RECHTECK(x+11*breite,y-5*breite,breite,breite,"weiss"); //6 Reihe von unten des rechten Fußes 12 Pixel von links aus gezählt
       
-      Pixel[56]= new RECHTECK(x,y-6*breite,breite,breite,"rot"); //7 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt
-      Pixel[57]= new RECHTECK(x+1*breite,y-6*breite,breite,breite,"rot"); //7 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
-      Pixel[58]= new RECHTECK(x+2*breite,y-6*breite,breite,breite,"rot"); //7 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
-      Pixel[59]= new RECHTECK(x+3*breite,y-6*breite,breite,breite,"rot"); //7 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
+      Pixel[56]= new RECHTECK(x,y-6*breite,breite,breite,"gruen"); //7 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt
+      Pixel[57]= new RECHTECK(x+1*breite,y-6*breite,breite,breite,"gruen"); //7 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
+      Pixel[58]= new RECHTECK(x+2*breite,y-6*breite,breite,breite,"gruen"); //7 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
+      Pixel[59]= new RECHTECK(x+3*breite,y-6*breite,breite,breite,"gruen"); //7 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
       Pixel[60]= new RECHTECK(x+4*breite,y-6*breite,breite,breite,"blau"); //7 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
       Pixel[61]= new RECHTECK(x+5*breite,y-6*breite,breite,breite,"blau"); //7 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
       Pixel[62]= new RECHTECK(x+6*breite,y-6*breite,breite,breite,"blau"); //7 Reihe von unten des rechten Fußes 7 Pixel von links aus gezählt
       Pixel[63]= new RECHTECK(x+7*breite,y-6*breite,breite,breite,"blau"); //7 Reihe von unten des rechten Fußes 8 Pixel von links aus gezählt
-      Pixel[64]= new RECHTECK(x+8*breite,y-6*breite,breite,breite,"rot"); //7 Reihe von unten des rechten Fußes 9 Pixel von links aus gezählt
-      Pixel[65]= new RECHTECK(x+9*breite,y-6*breite,breite,breite,"rot"); //7 Reihe von unten des rechten Fußes 10 Pixel von links aus gezählt
-      Pixel[66]= new RECHTECK(x+10*breite,y-6*breite,breite,breite,"rot"); //7 Reihe von unten des rechten Fußes 11 Pixel von links aus gezählt
-      Pixel[67]= new RECHTECK(x+11*breite,y-6*breite,breite,breite,"rot"); //7 Reihe von unten des rechten Fußes 12 Pixel von links aus gezählt
+      Pixel[64]= new RECHTECK(x+8*breite,y-6*breite,breite,breite,"gruen"); //7 Reihe von unten des rechten Fußes 9 Pixel von links aus gezählt
+      Pixel[65]= new RECHTECK(x+9*breite,y-6*breite,breite,breite,"gruen"); //7 Reihe von unten des rechten Fußes 10 Pixel von links aus gezählt
+      Pixel[66]= new RECHTECK(x+10*breite,y-6*breite,breite,breite,"gruen"); //7 Reihe von unten des rechten Fußes 11 Pixel von links aus gezählt
+      Pixel[67]= new RECHTECK(x+11*breite,y-6*breite,breite,breite,"gruen"); //7 Reihe von unten des rechten Fußes 12 Pixel von links aus gezählt
       
       
-      Pixel[68]= new RECHTECK(x+1*breite,y-7*breite,breite,breite,"rot"); //8 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt
-      Pixel[69]= new RECHTECK(x+2*breite,y-7*breite,breite,breite,"rot"); //8 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
-      Pixel[70]= new RECHTECK(x+3*breite,y-7*breite,breite,breite,"rot"); //8 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
+      Pixel[68]= new RECHTECK(x+1*breite,y-7*breite,breite,breite,"gruen"); //8 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt
+      Pixel[69]= new RECHTECK(x+2*breite,y-7*breite,breite,breite,"gruen"); //8 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
+      Pixel[70]= new RECHTECK(x+3*breite,y-7*breite,breite,breite,"gruen"); //8 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
       Pixel[71]= new RECHTECK(x+4*breite,y-7*breite,breite,breite,"blau"); //8 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
-      Pixel[72]= new RECHTECK(x+5*breite,y-7*breite,breite,breite,"rot"); //8 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
-      Pixel[73]= new RECHTECK(x+6*breite,y-7*breite,breite,breite,"rot"); //8 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
+      Pixel[72]= new RECHTECK(x+5*breite,y-7*breite,breite,breite,"gruen"); //8 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
+      Pixel[73]= new RECHTECK(x+6*breite,y-7*breite,breite,breite,"gruen"); //8 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
       Pixel[74]= new RECHTECK(x+7*breite,y-7*breite,breite,breite,"blau"); //8 Reihe von unten des rechten Fußes 7 Pixel von links aus gezählt
-      Pixel[75]= new RECHTECK(x+8*breite,y-7*breite,breite,breite,"rot"); //8 Reihe von unten des rechten Fußes 8 Pixel von links aus gezählt
-      Pixel[76]= new RECHTECK(x+9*breite,y-7*breite,breite,breite,"rot"); //8 Reihe von unten des rechten Fußes 9 Pixel von links aus gezählt
-      Pixel[77]= new RECHTECK(x+10*breite,y-7*breite,breite,breite,"rot"); //8 Reihe von unten des rechten Fußes 10 Pixel von links aus gezählt
+      Pixel[75]= new RECHTECK(x+8*breite,y-7*breite,breite,breite,"gruen"); //8 Reihe von unten des rechten Fußes 8 Pixel von links aus gezählt
+      Pixel[76]= new RECHTECK(x+9*breite,y-7*breite,breite,breite,"gruen"); //8 Reihe von unten des rechten Fußes 9 Pixel von links aus gezählt
+      Pixel[77]= new RECHTECK(x+10*breite,y-7*breite,breite,breite,"gruen"); //8 Reihe von unten des rechten Fußes 10 Pixel von links aus gezählt
             
-      Pixel[78]= new RECHTECK(x+2*breite,y-8*breite,breite,breite,"rot"); //9 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt
-      Pixel[79]= new RECHTECK(x+3*breite,y-8*breite,breite,breite,"rot"); //9 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
+      Pixel[78]= new RECHTECK(x+2*breite,y-8*breite,breite,breite,"gruen"); //9 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt
+      Pixel[79]= new RECHTECK(x+3*breite,y-8*breite,breite,breite,"gruen"); //9 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
       Pixel[80]= new RECHTECK(x+4*breite,y-8*breite,breite,breite,"blau"); //9 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
-      Pixel[81]= new RECHTECK(x+5*breite,y-8*breite,breite,breite,"rot"); //9 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
-      Pixel[82]= new RECHTECK(x+6*breite,y-8*breite,breite,breite,"rot"); //9 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
-      Pixel[83]= new RECHTECK(x+7*breite,y-8*breite,breite,breite,"rot"); //9 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
-      Pixel[84]= new RECHTECK(x+8*breite,y-8*breite,breite,breite,"rot"); //9 Reihe von unten des rechten Fußes 7 Pixel von links aus gezählt
+      Pixel[81]= new RECHTECK(x+5*breite,y-8*breite,breite,breite,"gruen"); //9 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
+      Pixel[82]= new RECHTECK(x+6*breite,y-8*breite,breite,breite,"gruen"); //9 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
+      Pixel[83]= new RECHTECK(x+7*breite,y-8*breite,breite,breite,"gruen"); //9 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
+      Pixel[84]= new RECHTECK(x+8*breite,y-8*breite,breite,breite,"gruen"); //9 Reihe von unten des rechten Fußes 7 Pixel von links aus gezählt
       
       
       Pixel[85]= new RECHTECK(x+3*breite,y-9*breite,breite,breite,"hautfarbe"); //10 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt
@@ -162,25 +162,25 @@ public class Hauptfigur
       Pixel[117]= new RECHTECK(x+7*breite,y-13*breite,breite,breite,"braun"); //14 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
       Pixel[118]= new RECHTECK(x+8*breite,y-13*breite,breite,breite,"hautfarbe"); //14 Reihe von unten des rechten Fußes 7 Pixel von links aus gezählt
             
-      Pixel[119]= new RECHTECK(x+2*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt 
-      Pixel[120]= new RECHTECK(x+3*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
-      Pixel[121]= new RECHTECK(x+4*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
-      Pixel[122]= new RECHTECK(x+5*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
-      Pixel[123]= new RECHTECK(x+6*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
-      Pixel[124]= new RECHTECK(x+7*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
-      Pixel[125]= new RECHTECK(x+8*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 7 Pixel von links aus gezählt
-      Pixel[126]= new RECHTECK(x+9*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 8 Pixel von links aus gezählt
-      Pixel[127]= new RECHTECK(x+10*breite,y-14*breite,breite,breite,"rot"); //15 Reihe von unten des rechten Fußes 9 Pixel von links aus gezählt
+      Pixel[119]= new RECHTECK(x+2*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 1 Pixel von links aus gezählt 
+      Pixel[120]= new RECHTECK(x+3*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
+      Pixel[121]= new RECHTECK(x+4*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
+      Pixel[122]= new RECHTECK(x+5*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
+      Pixel[123]= new RECHTECK(x+6*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
+      Pixel[124]= new RECHTECK(x+7*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
+      Pixel[125]= new RECHTECK(x+8*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 7 Pixel von links aus gezählt
+      Pixel[126]= new RECHTECK(x+9*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 8 Pixel von links aus gezählt
+      Pixel[127]= new RECHTECK(x+10*breite,y-14*breite,breite,breite,"gruen"); //15 Reihe von unten des rechten Fußes 9 Pixel von links aus gezählt
                   
-      Pixel[128]= new RECHTECK(x+3*breite,y-15*breite,breite,breite,"rot"); //16 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
-      Pixel[129]= new RECHTECK(x+4*breite,y-15*breite,breite,breite,"rot"); //16 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
-      Pixel[130]= new RECHTECK(x+5*breite,y-15*breite,breite,breite,"rot"); //16 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
-      Pixel[131]= new RECHTECK(x+6*breite,y-15*breite,breite,breite,"rot"); //16 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
-      Pixel[132]= new RECHTECK(x+7*breite,y-15*breite,breite,breite,"rot"); //16 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
+      Pixel[128]= new RECHTECK(x+3*breite,y-15*breite,breite,breite,"gruen"); //16 Reihe von unten des rechten Fußes 2 Pixel von links aus gezählt
+      Pixel[129]= new RECHTECK(x+4*breite,y-15*breite,breite,breite,"gruen"); //16 Reihe von unten des rechten Fußes 3 Pixel von links aus gezählt
+      Pixel[130]= new RECHTECK(x+5*breite,y-15*breite,breite,breite,"gruen"); //16 Reihe von unten des rechten Fußes 4 Pixel von links aus gezählt
+      Pixel[131]= new RECHTECK(x+6*breite,y-15*breite,breite,breite,"gruen"); //16 Reihe von unten des rechten Fußes 5 Pixel von links aus gezählt
+      Pixel[132]= new RECHTECK(x+7*breite,y-15*breite,breite,breite,"gruen"); //16 Reihe von unten des rechten Fußes 6 Pixel von links aus gezählt
              
     }
     
-    protected static int gibBoden()
+     protected static int gibBoden()
   {
       return boden;
     }
