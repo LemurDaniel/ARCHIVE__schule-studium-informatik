@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import java.util.Arrays;
- 
+             
 public class Menue extends JFrame{
     
     private String Spielfigur = "Keine Spielfigur gewählt!";  // Name der Spielfigur
@@ -59,7 +59,7 @@ public class Menue extends JFrame{
               });
                
                
-           Knopfgenerator EndKnopf = new Knopfgenerator("End","rechts","Stop");  // erstellen des "End" Knopfes mit der Klasse Knopfgenerator
+           Knopfgenerator kn3 = new Knopfgenerator("End","rechts","Stop");  // erstellen des "End" Knopfes mit der Klasse Knopfgenerator
            
            Hauptmap Map = new Hauptmap(Spielkarte);  // erstellen der Map mit dem Parameter Spielkarte (Karte-1)
            Map.erstelleKnopf("Start");  // erstellen des "Start" Knopfes im Objekt Map (siehe Klasse Hauptkarte, Methode: erstelleKnopf)
@@ -74,12 +74,11 @@ public class Menue extends JFrame{
            Figur.erstelleKnopf("linksLaufen");      // erstellen des "Springen" Knopfes im Objekt Figur    (siehe Klasse Hauptfigur, Methode: erstelleKnopf)
            Figur.erstelleKnopf("linksLaufenStop");  // erstellen des "SpringenStop" im Objekt Figur        (siehe Klasse Hauptfigur, Methode: erstelleKnopf) 
            
-           
            ZEICHENFENSTER.gibFenster().setzeSichtbar(true); // Damit erst beim Starten des Spiels, das Zeichenfenster sichtbar wird
            
-           setVisible(false); // Das Hauptmenue wird dadurch nach drücken des Startknopfes und starten des Spiels unsichtbar           
-        } //Startknopf im Hauptmenü            
-     });
+           setVisible(false);
+            } //Startknopf im Hauptmenü            
+        });
         
          JButton Settings = new JButton("Settings"); // erstellen des "Settings" Knopfs im Hauptmenue
          Settings.addActionListener(new ActionListener() { // zuweisen eines AL           
@@ -117,14 +116,13 @@ public class Menue extends JFrame{
     private void aendereSettings(){ // Methode zum aendern der Einstellungen (Spielfigur und Spielkarte)
       String Settings[]=gibArray("Settings") ;
       String Auswahl[]={"Ändern","Behalten!!!"};
-      if( Dialogfenster.stelleFragemitKnopf(Settings[0],Settings[1],Auswahl,Auswahl[1]) == 0 ){   //gibt dem Spieler die Settings und fragt ob er sie ändern möchte //Methode gibt Integer aus: 0 == 1.Knopf; 1 == 2.Knopf
+      if(Dialogfenster.stelleFragemitKnopf(Settings[0],Settings[1],Auswahl,Auswahl[1])==0){   //gibt dem Spieler die Settings und fragt ob er sie ändern möchte
           
-         Spielfigur = Dialogfenster.stelleFragemitListe("Spielfigurenwahl","Mit welcher Spielfigur möchten sie spielen?\n\n" + "Wählen sie eine Figur:",SF); // Fragt nach Spielfigur
-            if(Spielfigur==null){Spielfigur = "Keine Spielfigur gewählt!";}
-         
-         Spielkarte = Dialogfenster.stelleFragemitListe("Spielkartenwahl","Auf welcher Karte möchten sie spielen?\n\n" + "Wählen sie eine Karte:",SK); // Fragt nach Spielkarte
-            if(Spielkarte ==null){Spielkarte = "Keine Spielkarte gewählt!";}
-         
+         String Figur=Dialogfenster.stelleFragemitListe("Spielfigurenwahl","Mit welcher Spielfigur möchten sie spielen?\n\n"+"wählen sie eine Figur:",SF);
+          if(Figur!=null){Spielfigur=Figur;}; //prüfen auf gültigen Wert
+          
+         String Karte=Dialogfenster.stelleFragemitListe("Spielkartenwahl","Auf welcher Karte möchten sie spielen?\n\n"+"wählen sie eine Karte:",SK);
+         if(Karte!=null){Spielkarte=Karte;}; //prüfen auf gültigen Wert
       } 
     }
     
@@ -135,14 +133,13 @@ public class Menue extends JFrame{
     
     private String[] gibArray(String array){
         switch(array){
-            
         case "Settings":
-        String Settings[]={"Aktuelle Einstellungen","Spielfigur:  " + Spielfigur + "\n" + "Spielkarte:  " + Spielkarte + "\n\n"}; // Titel, Dialog
-        return (Settings);  // Angezeigte Settings
+        String Settings[]={"Aktuelle Einstellungen","Spielfigur:  "+Spielfigur+"\n"+"Spielkarte:  "+Spielkarte+"\n\n"}; // Titel, Dialog
+        return (Settings);
         
         case "Credits":
-        String Credits[]={"Credits","Developed in 2015: \n\n" + "Alexander Kiselov\n" + "Daniel Landau\n" + "Patric Zimonich\n" + "Dominic Zimonich\n\n"}; //Titel, Dialog
-        return (Credits); //Angezeigte Credits
+        String Credits[]={"Credits","Developed in 2015: \n\n"+"Alexander Kiselov\n"+"Daniel Landau\n"+"Patric Zimonich\n"+"Dominic Zimonich\n\n"}; //Titel, Dialog
+        return (Credits);
         
         default: 
         Dialogfenster.gibFehlermeldung("!!!FEHLER!!!","Klasse: Menue\nMethode: gibArrays()\nArray "+array+" nicht gefunden");
@@ -151,10 +148,8 @@ public class Menue extends JFrame{
         
         }     
     }
-     
-}
    
-
+}
 
         
           

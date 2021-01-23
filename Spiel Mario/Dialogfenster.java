@@ -28,46 +28,9 @@ public class Dialogfenster
        gibArrayaus(Titel,Dialog,array,Nachrichtentyp,Zeilenumbruch);
     }
    
-   public static void gibArrayaus(String Titel, String Dialog, String[] array, String Nachrichtentyp, int Zeilenumbruch){ //Arraausgabe in einem Dialogfenster von einem Array aus Strings   
+   public static void gibArrayaus(String Titel, String Dialog, Object[] array, String Nachrichtentyp, int Zeilenumbruch){ //Arraausgabe in einem Dialogfenster von einem Array aus Strings   
        int zahl=0; //zählt für Zeilenumbruch mit
-      if ((Dialog==null)==false) {Dialog += "\n";}   
-      for(int i=0;i<array.length;i++){
-           if(zahl==Zeilenumbruch){
-               Dialog += "\n" + array[i] + "; "; //Zeilenumbruch nach gewünschter Zahl an Elementen
-               zahl=1;
-            }else{
-                Dialog += array[i] + "; "; //addieren aller Elemente des arrays zu einem String mit Komma Leerzeichen dazwischen
-                zahl++;
-            }
-        } 
-        
-       switch(Nachrichtentyp){
-           
-           case "Frage":
-                gibFrage(Titel, Dialog);
-                break;  
-                
-           case "Information":           
-                gibInformation(Titel, Dialog);
-                break;
-                
-           case "Fehlermeldung":
-                gibFehlermeldung(Titel, Dialog);
-                break;
-                
-           case "Warnung":
-                gibWarnung(Titel, Dialog);
-                break;
-                
-           case "Nachricht":
-                gibNachricht(Titel, Dialog);
-                break;           
-       }
-   }
-   
-   public static void gibArrayaus(String Titel, String Dialog, int[] array, String Nachrichtentyp, int Zeilenumbruch){  //Arraausgabe in einem Dialogfenster von einem Array aus Integers    
-       int zahl=0; //zählt für Zeilenumbruch mit
-       if ((Dialog==null)==false) {Dialog += "\n";}       
+       
        for(int i=0;i<array.length;i++){
            if(zahl==Zeilenumbruch){
                Dialog += "\n" + array[i] + "; "; //Zeilenumbruch nach gewünschter Zahl an Elementen
@@ -100,6 +63,14 @@ public class Dialogfenster
                 gibNachricht(Titel, Dialog);
                 break;           
        }
+   }
+   
+   public static void gibArrayaus(String Titel, String Dialog, int[] array, String Nachrichtentyp, int Zeilenumbruch){    
+       Object arrayobj[] = new Object[array.length];
+       for(int i=0;i<array.length;i++){ 
+           arrayobj[i]=(Object)array[i];
+       }
+       gibArrayaus(Titel, Dialog, arrayobj, Nachrichtentyp, Zeilenumbruch);
    }
    
    public static String stelleFragemitListe(String Titel, String Dialog, String[] array, String Vorauswahl){ //Methode zum stellen einer Frage mit Antworten als Liste

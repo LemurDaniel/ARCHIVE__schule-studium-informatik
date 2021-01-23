@@ -38,11 +38,8 @@ public class Hauptmap{
    private Timer Bewegungstimer;
       
    public Hauptmap(){
-       this(300,330,10,SK[1]);
-         for(int i=0;i<Knoepfe.length;i++){ // Zeichen aller vorhandenen knöpfe
-             erstelleKnopf(Knoepfe[i]);
-        }
-       ZEICHENFENSTER.gibFenster().setzeSichtbar(true); //Setzen des Zeichenfenster auf Sichtbar
+       this(300,330,10,SK[2]);
+       ZEICHENFENSTER.gibFenster().setzeSichtbar(true);
     }
     
     public Hauptmap(String Karte){
@@ -259,7 +256,7 @@ public class Hauptmap{
     
     public static int gibKartenboden(){ // gibt den Kartenboden aus
         return Kartenboden;
-    }   
+    }
     
     public void erstelleKnopf(String Knopf){  // Methode zum erstellen von ausgewählten Knöpfen im Zeichenfenster
         
