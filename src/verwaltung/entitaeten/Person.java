@@ -68,7 +68,7 @@ public class Person extends Entitaet implements Backup{
 		pmrlist.add(pmr);
 		pmr.per = this;
 	}
-	private boolean existiert(Rolle rolle) {
+	public boolean existiert(Rolle rolle) {
 		return pmrlist.stream().anyMatch(pmr->pmr.getRolle()==rolle);
 	}
 	
@@ -105,7 +105,10 @@ public class Person extends Entitaet implements Backup{
 	public void deleteBackup() {
 		backup = null;	
 	}
-
+	@Override
+	public boolean hasBackup() {
+		return backup!=null;
+	}
 	
 	
 	
@@ -189,6 +192,10 @@ public class Person extends Entitaet implements Backup{
 		@Override
 		public void deleteBackup() {
 			backup = null;
+		}
+		@Override
+		public boolean hasBackup() {
+			return backup!=null;
 		}
 
 	

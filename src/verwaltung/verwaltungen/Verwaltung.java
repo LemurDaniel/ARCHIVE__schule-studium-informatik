@@ -18,7 +18,7 @@ import verwaltung.entitaeten.Entitaet;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 
-public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manager{
+public abstract class Verwaltung <T extends Backup> extends DB_Manager{
 	
 
 	/** VAR */
@@ -84,6 +84,12 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 		if(entitaet==null  || !list.contains(entitaet))	return;
 		update.add(entitaet);
 	}
+	
+	
+	public boolean hatAuftraege() {
+		return add.size()!=0 || update.size()!=0 || delete.size()!=0;
+	}
+	
 	
 	public void save(Connection con) throws SQLException {
 		deleteErr.clear();
@@ -155,7 +161,7 @@ public abstract class Verwaltung <T extends Entitaet & Backup> extends DB_Manage
 	protected abstract void delete(T ent, Connection con)				throws SQLException;
 	
 	@FunctionalInterface
-	public interface Save<T extends Entitaet & Backup>{
+	public interface Save<T extends Backup>{
 		public void save(List<T> add, List<T> remove, List<T> update, Verwaltung<T> vw) throws SQLException;
 	}
 }

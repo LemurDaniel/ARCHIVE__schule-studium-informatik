@@ -41,16 +41,18 @@ public abstract class CustomTextField<T> extends TextField{
 	
 	public void setDefaultSupplier(Supplier<T> defaultSupplier) {
 		this.defaultSupplier = defaultSupplier;
+		setText(null);
 		pruefe();
 	}
 	public void setDefaultValue(T defaultValue) {
 		this.defaultValue = defaultValue;
+		setText(null);
+		pruefe();
 	};	
 	protected T getDefaultValue() {
 		if(defaultSupplier!=null)	return defaultSupplier.get();
 		return defaultValue;
 	}
-	
 	
 	abstract protected void pruefe();
 	

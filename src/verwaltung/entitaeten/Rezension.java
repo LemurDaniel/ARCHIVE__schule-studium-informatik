@@ -86,4 +86,8 @@ public class Rezension extends Entitaet implements Backup{
 	public void deleteBackup() {
 		backup = null;
 	}
+	@Override
+	public boolean hasBackup() {
+		return backup!=null;
+	}
 }

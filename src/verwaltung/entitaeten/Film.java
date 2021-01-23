@@ -128,6 +128,11 @@ public class Film extends Entitaet  implements Backup{
 		genres.add(genre);
 		buildGenreString();
 	}
+
+	public void remove(Genre genre) {
+		genres.remove(genre);
+		buildGenreString();
+	}
 	public void clearGenre() {
 		if(genres==null)
 			return;
@@ -139,6 +144,10 @@ public class Film extends Entitaet  implements Backup{
 	
 	
 	private void buildGenreString() {
+		if(genres.size()==0) {
+			genre_string.set("");
+			return;
+		}
 		genres.sort((o1,o2)->o1.compare(o1, o2));
 		
 		StringBuilder sb = new StringBuilder(genres.get(0).getGenre());
@@ -199,6 +208,9 @@ public class Film extends Entitaet  implements Backup{
 	public void deleteBackup() {
 		backup = null;
 	}
-	
+	@Override
+	public boolean hasBackup() {
+		return backup!=null;
+	}
 	
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -16,10 +17,12 @@ import gui.FensterManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -29,6 +32,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -49,6 +53,7 @@ import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
+
 public class AddFilmCtrl {
 
 	private Film film;
@@ -58,10 +63,8 @@ public class AddFilmCtrl {
 	
 
 	private BiMap<Genre, BooleanProperty> checked_genre = HashBiMap.create();
-	private List<Genre> selected = new ArrayList<>();
+	private List<Genre> selected;
 	private boolean blocked;
-	
-	private boolean[] changes = {false, false};
 	
 	public void setFvw(Filmverwaltung fvw) {
 		this.fvw = fvw;
@@ -95,17 +98,17 @@ public class AddFilmCtrl {
 	
 	private void setTable() {
 		table.setItems(pvw.getPersonenMitRollen());			
-		changes[1] = false;
 	}
 	
 	private void setDisplay() {
+	    blocked = true;
 		table_genre.getSelectionModel().clearSelection();
 
-		blocked = true;
-		selected.forEach(ge->checked_genre.get(ge).set(false));
-		selected.clear();
-		tf_genre.setText(null);
-		blocked = false;
+		if(selected!=null)	selected.forEach(ge->checked_genre.get(ge).set(false));
+		film.getGenres().forEach(g->checked_genre.get(g).set(true));
+		selected = film.getGenres();
+		tf_genre.setText(film.getGenreStringProperty().get());
+		t_check.setText(Filmverwaltung.getMaxGenre()-selected.size()+"");
 		
 		if(film.getId()==-1) {
 			tf_titel.setDefaultValue(null);
@@ -113,13 +116,12 @@ public class AddFilmCtrl {
 			tf_jahr.setDefaultValue(null);
 			tf_bewertung.setText(null);
 		}else {
-			tf_titel.setDefaultSupplier(	()->film.getTitel() 			);
-			tf_dauer.setDefaultSupplier(	()->film.getDauer()				);
-			tf_jahr.setDefaultSupplier(		()->film.getErscheinungsjahr()	);
+			tf_titel.setDefaultValue(film.getTitel());
+			tf_dauer.setDefaultValue(film.getDauer());
+			tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
 			tf_bewertung.setText(film.getBwtStringProperty().get());
-			film.getGenres().forEach(g->checked_genre.get(g).set(true));
-		}		
-		changes[0] = false;
+		}	
+		blocked = false;
 	}
 	
 	/** Variablen **/
@@ -208,8 +210,8 @@ public class AddFilmCtrl {
     @FXML
     void action(ActionEvent event) {
     	try {
-    		if(event.getSource()==btn_rel1)			setDisplay();
-    		else if(event.getSource()==btn_rel2) 	setTable();
+    		if(event.getSource()==btn_rel1)			resetFilm();
+    		else if(event.getSource()==btn_rel2) 	pvw.reset();
     		else if(event.getSource()==btn_commit1)	commit();
     		else if(event.getSource()==btn_addP)	addPerson();
     		else if(event.getSource()==btn_detail)	detail();
@@ -218,7 +220,11 @@ public class AddFilmCtrl {
 		}
     }
 
-    @FXML
+    private void resetFilm() {
+		fvw.reset();
+		setDisplay();
+	}
+	@FXML
     void initialize() {
         accordion.setExpandedPane(tp_allg);
         
@@ -253,29 +259,8 @@ public class AddFilmCtrl {
         t_check.setCellValueFactory(data->checked_genre.get(data.getValue()));
         t_genre.setCellValueFactory(data->new SimpleStringProperty( data.getValue().getGenre() ));
 
-        /** Beim abhaken -> Genre Textfeld aktualisieren **/
-        checked_genre.forEach((k,v)->v.addListener((ob,ov,nv)->{
-        	if(blocked) return;
-        	if(nv.booleanValue()==true) selected.add(checked_genre.inverse().get(ob));
-        	else						selected.remove(checked_genre.inverse().get(ob));
-        	
-        	t_check.setText(Filmverwaltung.getMaxGenre()-selected.size()+"");	// Anzeige der noch übrigen Anzahl abzuhakender Genres
-        	if(selected.size()>Filmverwaltung.getMaxGenre()) {
-        		checked_genre.get(selected.get(0)).set(false);
-        		return;
-        	}
-        	
-        	tf_genre.setText(null);
-        	if(selected.size()==0)	return;
-        	
-        	List<Genre> sorted = new ArrayList<>(selected);
-        	sorted.sort((o1,o2)->o1.compare(o1, o2));
-        	StringBuilder sb = new StringBuilder(sorted.get(0).getGenre());
-        	for(int i=1; i<sorted.size(); i++)
-        		sb.append( ", "+sorted.get(i).getGenre() );
-        	tf_genre.setText(sb.toString());
-        	tf_genre.selectPositionCaret(sb.toString().length());	//Bei zu viel Text verschiebt sich der Text sonst zu weit nach rechts
-        }));
+        
+        checked_genre.forEach((k,v)->v.addListener(this::aktualisierGenre));
         
         
         /** Table Mitwirkende **/
@@ -291,6 +276,7 @@ public class AddFilmCtrl {
        // t_rolle.setCellFactory( ChoiceBoxTableCell.forTableColumn(Personenverwaltung.getRollen()) );
         t_confirm1.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm1));
         t_confirm2.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm2));
+        t_confirm1.setEditable(false);
         
         //Konvertiere Rolle zu String für t_rolle spalte
         StringConverter<Rolle> stconv = new StringConverter<Rolle>() {
@@ -305,74 +291,123 @@ public class AddFilmCtrl {
         
         
         /**Changes**/
-        t_vorname.setOnEditCommit(	data->{
-        	String val = data.getNewValue();
-        	if(val.length()>Personenverwaltung.getMaxVorname())
-        		val = val.substring(0, Personenverwaltung.getMaxVorname());	//Wenn Eingabe zu Lang abschneiden.
-        	data.getRowValue().getPerson().setVorname(val);
-        	data.getRowValue().getUpdateProperty().set(true);
-        	changes[1]=true;
-        });
-        t_name.setOnEditCommit(	data->{
-        	String val = data.getNewValue();
-        	if(val.length()>Personenverwaltung.getMaxName())
-        		val = val.substring(0, Personenverwaltung.getMaxName());
-        	data.getRowValue().getPerson().setName(val);
-        	data.getRowValue().getUpdateProperty().set(true);
-        	changes[1]=true;
-        });
-        t_rolle.setOnEditCommit(	data->{
-        	data.getRowValue().setRolle(data.getNewValue());
-        	data.getRowValue().getUpdateProperty().set(true);
-        	changes[1]=true;
-        });
+        t_vorname.setOnEditCommit(this::onEditCommit);
+        t_name.setOnEditCommit(this::onEditCommit);
+        t_rolle.setOnEditCommit(this::onEditCommit);      
         
-        tf_bewertung.textProperty().addListener((ob,ov,nv)-> changes[0]=true);
-        tf_dauer.textProperty().addListener(	(ob,ov,nv)-> changes[0]=true);
-        tf_genre.textProperty().addListener(	(ob,ov,nv)-> changes[0]=true);
-        tf_jahr.textProperty().addListener(		(ob,ov,nv)-> changes[0]=true);
-        tf_titel.textProperty().addListener(	(ob,ov,nv)-> changes[0]=true);    
+        tf_dauer.textProperty().addListener(this::changeListener);
+        tf_jahr.textProperty().addListener(this::changeListener);
+        tf_titel.textProperty().addListener(this::changeListener);    
         
-    }
-
-    private void addPerson() {
-    	PersonMitRolle per = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0)).getPersonenMitRolle().get(0);
-    	pvw.addEntitaet(per.getPerson());
-    //	personen.add(per);
-    	per.getUpdateProperty().set(true);
-    	changes[1] = true;
     }
     
-    private void commit() throws Exception {
-    	System.out.println(changes[0]+"  "+changes[1]);
+    private void aktualisierGenre( ObservableValue<? extends Boolean> ob, Boolean ov, Boolean nv) {
+    	if(blocked)	return;
+    	backupfilm();
+   
+    	Genre g = checked_genre.inverse().get(ob);
+    	if(nv.booleanValue()==true) {
+    		selected.add(g);
+    		film.addGenre(g);
+    	}else {
+    		selected.remove(g);
+    		film.remove(g);
+    	}
     	
-		FilteredList<PersonMitRolle> update = pvw.getPersonenMitRollen().filtered(item->item.getUpdateProperty().get() && item.getPerson().getId()!=-1);
-    	FilteredList<PersonMitRolle> delete = pvw.getPersonenMitRollen().filtered(item->item.getDeleteProperty().get() && !item.getUpdateProperty().get());
-    	if(!changes[0] && !changes[1] && delete.size()==0 && update.size()==0)
+    	t_check.setText(Filmverwaltung.getMaxGenre()-selected.size()+"");	// Anzeige der noch übrigen Anzahl abzuhakender Genres
+    	if(selected.size()>Filmverwaltung.getMaxGenre()) {
+    		checked_genre.get(selected.get(0)).set(false);
     		return;
+    	}
     	
-        checkEingaben();
- 		film.makeBackup();
+    	if(film.hasBackup()) {
+    		film.makeBackup();
+    		if(film.getId()==-1)	fvw.addEntitaet(film);
+    		else					fvw.updateEntitaet(film);
+    	}    	    	
+    	
+    	tf_genre.setText(null);
+    	if(selected.size()==0)	return;
+    	
+    	tf_genre.setText(film.getGenreStringProperty().get());
+    }
+    
+    private void backupfilm() {
+    	if(!film.hasBackup()) {
+    		film.makeBackup();
+    		if(film.getId()==-1)	fvw.addEntitaet(film);
+    		else					fvw.updateEntitaet(film);
+    	}
+    }
+    
+    private void changeListener( ObservableValue<? extends String> ob, String ov, String nv) {
+    	if(blocked)	return;
+    	
+    	backupfilm();   	
 		film.setTitel(tf_titel.getText());
         film.setDauer(tf_dauer.getValue());
         film.setErscheinungsjahr(tf_jahr.getValue());
-        film.clearGenre();
-        selected.forEach(film::addGenre);
+    }
+    
+    private void onEditCommit( CellEditEvent<PersonMitRolle, ?> data ) {
+     	PersonMitRolle pmr = data.getRowValue();
+       	pmr.makeBackup();
+     	
+       	if(data.getTableColumn()==t_rolle){
+       		if(pmr.getPerson().existiert((Rolle) data.getNewValue())) {
+       			data.consume();
+       			data.getTableView().refresh();
+       			return;
+       		}
+       		pmr.setRolle((Rolle) data.getNewValue());
+       	}
+       	
+    	if(pmr.getPerson().getId()!=-1 && pmr.getUpdateProperty().get()==false)	{
+        	pvw.updateEntitaet(pmr.getPerson());
+        	pmr.getUpdateProperty().set(true);
+    	}
+       	
+       	if(data.getTableColumn()==t_rolle)	return;
+    	
+    	int maxlen = 0;
+    	if(data.getTableColumn()==t_vorname) 		maxlen = Personenverwaltung.getMaxVorname();
+    	else if(data.getTableColumn()==t_name) 		maxlen = Personenverwaltung.getMaxName();
+
+    	String val = data.getNewValue().toString();
+    	if(val.length()>maxlen) 					val = val.substring(0, maxlen);
+    	
+     	if(data.getTableColumn()==t_vorname) 		pmr.getPerson().setVorname(val);
+    	else if(data.getTableColumn()==t_name)		pmr.getPerson().setName(val);
+     		
+    }
+
+    private void addPerson() {
+    	PersonMitRolle pmr = new Person(-1, "Neue Person", "Neue Person", Personenverwaltung.getRollen().get(0) ).getPersonenMitRolle().get(0);
+    	pvw.addEntitaet(pmr.getPerson());
+    	pmr.getUpdateProperty().set(true);
+    }
+    
+    private void commit() throws Exception {
+  	
+    	FilteredList<PersonMitRolle> delete = pvw.getPersonenMitRollen().filtered(item->item.getDeleteProperty().get() && !item.getUpdateProperty().get());
+    	if(!pvw.hatAuftraege() && !fvw.hatAuftraege() && delete.size()==0)
+    		return;
+    	
+//        checkEingaben();
+// 		film.makeBackup();
+//		film.setTitel(tf_titel.getText());
+//        film.setDauer(tf_dauer.getValue());
+//        film.setErscheinungsjahr(tf_jahr.getValue());
+//        film.clearGenre();
+//        selected.forEach(film::addGenre);
         
     	if(film.getId()==-1) {
     		fvw.addEntitaet(film);
     		if(filmliste!=null) filmliste.addFilm(film);		//TODO save FIlmlisten filmverwaltung
     	}else
     		fvw.updateEntitaet(film);
-    		
-    	update.forEach(item->{
-    		item.getPerson().makeBackup();
-    		pvw.updateEntitaet(item.getPerson());
-    	});
-    	delete.forEach(item->{
-    		item.getPerson().makeBackup();
-    		pvw.removeEntitaet(item.getPerson());
-    	});
+    	
+    	delete.forEach(item->pvw.removeEntitaet(item.getPerson()));
     	
     	try(Connection con = DB_Manager.getCon()){
     		fvw.save(con);
@@ -381,18 +416,20 @@ public class AddFilmCtrl {
     		//fvw.reset();
     		//pvw.reset();
     		throw e;
-    	}  			
-    	//setDisplay();
-    	changes[1] = false;
-    	changes[0] = false;
+    	}  	
+    	
+		tf_titel.setDefaultValue(film.getTitel());
+		tf_dauer.setDefaultValue(film.getDauer());
+		tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
     }
     
-    private void checkEingaben() throws Exception {
-    	if(tf_titel.getLength() < 10)	throw new Exception("Titel zu kurz");
-    	if(tf_jahr.getValue()==null)	throw new Exception("Geben sie ein gültiges jahr ein");
-    	if(tf_dauer.getValue()==null)   throw new Exception("dauer");
-    	if(selected.size()==0) 			throw new Exception("Kein Genre");
-    }
+    	// TODO Check Eingaben
+//    private void checkEingaben() throws Exception {
+//    	if(tf_titel.getLength() < 10)	throw new Exception("Titel zu kurz");
+//    	if(tf_jahr.getValue()==null)	throw new Exception("Geben sie ein gültiges jahr ein");
+//    	if(tf_dauer.getValue()==null)   throw new Exception("dauer");
+//    	if(selected.size()==0) 			throw new Exception("Kein Genre");
+//    }
     
     private void detail() {
     	if( film.getId()==-1) {
@@ -404,11 +441,11 @@ public class AddFilmCtrl {
     		return;
     	}
     	
-    	if( changes[0]==true || changes[1]==true ) {
+    	if(pvw.hatAuftraege() || fvw.hatAuftraege()) {
     		Alert a = new Alert(AlertType.CONFIRMATION);
     		a.setTitle("Detailansicht öffnen");
     		a.setHeaderText("Es sind nicht gespeicherte Änderungen vorhanden");
-    		a.setContentText("Nicht gespeicherte Änderungen gehen verloren. Möchten sie trotzdem zur Detailansicht wechseln?");
+    		a.setContentText("Nicht gespeicherte Änderungen gehen möglicherweise verloren. Möchten sie trotzdem zur Detailansicht wechseln?");
     		a.show();
     		a.setOnCloseRequest(ev->{
     			if(a.getResult().getButtonData().equals(ButtonData.OK_DONE)) 
@@ -419,6 +456,8 @@ public class AddFilmCtrl {
     }
     
     private void openDetail() {
+//    	fvw.reset();
+//    	pvw.reset();
     	try {
 			FensterManager.setDialog( FensterManager.getDetail(film) );
 		} catch (SQLException e) {

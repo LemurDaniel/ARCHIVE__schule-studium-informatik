@@ -86,8 +86,6 @@ abstract class MinMaxTextField<T extends Number> extends CustomTextField<T>{
 	public void setDefaultValue(T defaultValue) {
 		defaultValue = defaultValue!=null ? pruefeMinMax(getMin(), getMax(), defaultValue) : defaultValue;
 		super.setDefaultValue(defaultValue);
-		value = defaultValue;
-		setTextToValue();
 	}
 	@Override
 	protected T getDefaultValue(){

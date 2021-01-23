@@ -5,4 +5,5 @@ public interface Backup {
 	public void makeBackup();
 	public void reset();
 	public void deleteBackup();
+	public boolean hasBackup();
 }

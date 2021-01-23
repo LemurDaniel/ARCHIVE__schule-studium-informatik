@@ -52,6 +52,16 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		super.save(con);
 		aktualisierePmrliste();
 	}
+	@Override
+	public void reset() {
+		super.reset();
+		aktualisierePmrliste();
+		pmrliste.forEach(item->{
+			item.getDeleteProperty().set(false);
+			item.getUpdateProperty().set(false);
+		});
+	}
+	
 	
 	@Override
 	public void load(Connection con) throws SQLException {
