@@ -14,7 +14,7 @@ import exceptions.RegisterException;
 import gui.FensterManager;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
-import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
+import verwaltung.verwaltungen.Listenverwaltung;
 
 public class Nutzer extends DB_Manager {
 	
@@ -121,7 +121,7 @@ public class Nutzer extends DB_Manager {
 	}
 	
 	public static void registrieren(String name, String passwort, String passwort1) throws SQLException, RegisterException, LogInException {	
-			if(name.length() < getMinName()) 				throw new RegisterException("Der Name muss mindestens 3 Zeichen lang sein", RegisterException.ILLEGAL_NAME);
+			if(name.length() < getMinName()) 				throw new RegisterException("Der Name muss mindestens "+getMinName()+" Zeichen lang sein", RegisterException.ILLEGAL_NAME);
 			if(!passwort.equals(passwort1)) 				throw new RegisterException("Die Passwörter stimmen nicht überein", RegisterException.NON_MATCHING_PASSWORDS);
 			if(passwort.length() < getMinPasswort()) 		throw new RegisterException("Das Passwort muss mindestens "+getMinPasswort()+" Zeichen lang sein", RegisterException.ILLEGAL_PASSWORD);
 			if(passwort.length() > getMaxPasswort()) 		throw new RegisterException("Das Passwort darf höchstens "+getMaxPasswort()+" Zeichen lang sein", RegisterException.ILLEGAL_PASSWORD);

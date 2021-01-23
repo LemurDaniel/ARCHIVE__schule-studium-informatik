@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
@@ -74,6 +75,9 @@ public class HauptseiteCtrl {
     
     @FXML
     private Button btn_liste;
+    
+    @FXML
+    private ImageView muell;
 
     @FXML
     void action(ActionEvent event) {
@@ -95,7 +99,7 @@ public class HauptseiteCtrl {
     		e.printStackTrace();
     	}
     }
-
+    
 	@FXML
     void initialize() {  
 		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -107,7 +111,9 @@ public class HauptseiteCtrl {
         t_jahr.setCellValueFactory(		data->data.getValue().getErscheinungsjahrProperty());
         
         table.setOnMouseClicked(this::onMouseClicked);
-        table.setOnDragDetected(this::onDragDetected);      
+        table.setOnDragDetected(this::onDragDetected);
+        muell.setOnDragOver(this::onDragOver);
+        muell.setOnDragDropped(this::onDragDropped);
     }
 	
 	private void onMouseClicked(MouseEvent event) {
@@ -126,14 +132,20 @@ public class HauptseiteCtrl {
 		Dragboard db = table.startDragAndDrop(TransferMode.LINK);
     	Filmverwaltung.kopiereInDragbord(db, table.getSelectionModel().getSelectedItems());
 	}
-    
-	
+	private void onDragOver(DragEvent event) {
+		if(event.getGestureSource()==table)	event.acceptTransferModes(TransferMode.ANY);
+	}
+	private void onDragDropped(DragEvent event) {
+		// Löscht keine Filme. Entfernt nur neu erstellte nicht abgespeicherte Filme (id==-1)
+		table.getSelectionModel().getSelectedItems().filtered(film->film.getId()==-1).forEach(film->fvw.removeEntitaet(film));
+	}
+    	
     private void detail() throws Exception {
     	Film film = table.getSelectionModel().getSelectedItem();
     	if(film == null)	throw new Exception("Es wurde kein Film ausgewählt");
 		FensterManager.setDialog( FensterManager.getDetail(film, fvw) );
     }
-
+    
     private void updateFilm() throws Exception {
     	Film film = table.getSelectionModel().getSelectedItem();
     	if(film == null)	throw new Exception("Es wurde kein Film ausgewählt");

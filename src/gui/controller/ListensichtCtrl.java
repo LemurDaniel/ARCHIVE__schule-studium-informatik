@@ -1,5 +1,7 @@
 package gui.controller;
 
+import java.awt.datatransfer.Clipboard;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -20,6 +22,8 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
@@ -27,10 +31,12 @@ import javafx.scene.input.TransferMode;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;
 import verwaltung.verwaltungen.Filmverwaltung;
-import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
+import verwaltung.verwaltungen.Listenverwaltung;
 
 public class ListensichtCtrl {
 
+	private final static DataFormat NICHTS = new DataFormat("nichts");
+	
 	private Listenverwaltung lvw = Listenverwaltung.instance();
 	private Liste angezeigteListe;
 	
@@ -188,35 +194,27 @@ public class ListensichtCtrl {
     	}
     	blocked = false;
     }
-   
-    private void onDragDected(MouseEvent event) {  
-    	if(event.getSource()==table_film) {
-    		Dragboard db = table_film.startDragAndDrop(TransferMode.MOVE);
-    		Filmverwaltung.kopiereInDragbord(db, table_film.getSelectionModel().getSelectedItems());
-    	}
-    	else if(event.getSource()==table_listen) {
-    		Dragboard db = table_listen.startDragAndDrop(TransferMode.MOVE);
-    		Listenverwaltung.kopiereInDragbord(db, table_listen.getSelectionModel().getSelectedItems());
-    	}
+  
+    private void onDragDected(MouseEvent event) { 
+		ClipboardContent content = new ClipboardContent();
+		content.put(NICHTS, "");
+    	if(event.getSource()==table_film) 			table_film.startDragAndDrop(TransferMode.MOVE).setContent(content);
+    	else if(event.getSource()==table_listen) 	table_listen.startDragAndDrop(TransferMode.MOVE).setContent(content);
+
     } 
     private void onDragOverTable(DragEvent event) {
     	if(!event.getDragboard().hasContent(Filmverwaltung.dfFilm)) return;   
     	if(angezeigteListe!=null)	event.acceptTransferModes(TransferMode.LINK);
     }  	
     private void onDragOverMuell(DragEvent event) {    		
-    	if(event.getGestureSource()==table_film && event.getTarget()==muelleimer_filme && event.getDragboard().hasContent(Filmverwaltung.dfFilm))		event.acceptTransferModes(TransferMode.MOVE);
-    	else if(event.getGestureSource()==table_listen && event.getTarget()==muelleimer_listen && event.getDragboard().hasContent(Listenverwaltung.dfListe))	event.acceptTransferModes(TransferMode.MOVE);
+    	if(event.getGestureSource()==table_film && event.getTarget()==muelleimer_filme )			event.acceptTransferModes(TransferMode.MOVE);
+    	else if(event.getGestureSource()==table_listen && event.getTarget()==muelleimer_listen )	event.acceptTransferModes(TransferMode.MOVE);
     }   
     private void onDragDroppedMuell(DragEvent event) {
-    	if(event.getGestureTarget()==muelleimer_filme) {
-    		Filmverwaltung.kopiereAusDragbord(event.getDragboard()).forEach(angezeigteListe::removeEntitaet);
-			event.setDropCompleted(true);
-			event.consume();
-    	}else if(event.getGestureTarget()==muelleimer_listen) {
-			lvw.kopiereAusDragbord(event.getDragboard()).forEach(lvw::removeEntitaet);
-			event.setDropCompleted(true);
-			event.consume();
-		}
+    	if(event.getGestureTarget()==muelleimer_filme) 			table_film.getSelectionModel().getSelectedItems().forEach(angezeigteListe::removeEntitaet);
+    	else if(event.getGestureTarget()==muelleimer_listen)	table_listen.getSelectionModel().getSelectedItems().forEach(lvw::removeEntitaet);
+		event.setDropCompleted(true);
+		event.consume();	
     }
     private void zuListeHinzufuegen(DragEvent event) {
     	Filmverwaltung.kopiereAusDragbord(event.getDragboard()).forEach(angezeigteListe::addEntitaet);

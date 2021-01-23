@@ -15,7 +15,7 @@ import java.util.TreeMap;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
-import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
+import verwaltung.verwaltungen.Listenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 
 

@@ -46,6 +46,10 @@ public class AnmeldeseiteCtrl {
     		else if(i==4) Nutzer.anmeldenKonto("Unlimited", "123456");
     		
         	if(Nutzer.getNutzer().isAngemeldet())	FensterManager.setPrimaryStage( FensterManager.getHauptSeite() );
+    	}catch(NullPointerException np) {
+    		Alert a = new Alert(AlertType.ERROR);
+    		a.setContentText("Bitte geben sie etwas ein bevor sie sich anmelden");
+    		a.show();
     	}catch(LogInException | RegisterException e) { 	
     		Alert a = new Alert(AlertType.ERROR);
     		a.setTitle(e.getTitle());

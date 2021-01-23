@@ -13,8 +13,8 @@ import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import verwaltung.DB_Manager;
 import verwaltung.verwaltungen.Filmverwaltung;
+import verwaltung.verwaltungen.Listenverwaltung;
 import verwaltung.verwaltungen.Stapelverarbeitung;
-import verwaltung.verwaltungen.unterverwaltungen.Listenverwaltung;
 
 
 public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePruefung {
@@ -129,10 +129,16 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		return true;
 	}
 	
+	//Neu angelegte Filme können nicht mit dragndrop entfernt werden
+	// nicht via id, diese ist immer -1 !!
 	@Override
 	public boolean removeEntitaet(Film film) {
-		if(!filme.existiert(film) && !add.contains(film))		return false;
+		System.out.println(add.contains(film));
+		System.out.println(film);
+		System.out.println(!filme.existiert(film) && !add.contains(film));
+		if(!filme.existiert(film) && !add.contains(film))	return false;
 		if(!super.removeEntitaet(film))		return false;
+		if(film.getId()==-1)	filme.removeEntitaet(film);
 		filme.getObList().remove(film);
 		return true;
 	}	

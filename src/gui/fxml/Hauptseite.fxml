@@ -7,6 +7,8 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -71,6 +73,11 @@
             <Button fx:id="btn_save" mnemonicParsing="false" onAction="#action" text="Speichern" />
             <Button fx:id="btn_reset" mnemonicParsing="false" onAction="#action" text="Zurücksetzen" />
             <Button fx:id="btn_liste" mnemonicParsing="false" onAction="#action" text="Listensicht" />
+            <ImageView fx:id="muell" fitHeight="36.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/delete.png" />
+               </image>
+            </ImageView>
          </children>
       </HBox>
   </children>
