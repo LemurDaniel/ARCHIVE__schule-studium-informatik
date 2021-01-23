@@ -11,14 +11,14 @@ public class Mathe
 {
 
    public static int gibZufallszahl(int MinWert, int MaxWert){ // gibt Zufalllzahlen
-        int Zufallszahl=(int)(Math.random()*MaxWert+MinWert);
+        int Zufallszahl=(int)(Math.random()*(MaxWert-MinWert)+MinWert);
         return Zufallszahl;
    }
     
    public static int[] gibArrayausZufallszahlen(int Arraylaenge,int MinWert, int MaxWert){ //gibt ein Array mitZufallszahlrn
         int Zufallszahl[] = new int[Arraylaenge];           
         for(int i=0;i<Arraylaenge;i++){
-            Zufallszahl[i]=(int)(Math.random()*MaxWert+MinWert);
+            Zufallszahl[i]=(int)(Math.random()*(MaxWert-MinWert)+MinWert);
         }
         return Zufallszahl;
    }

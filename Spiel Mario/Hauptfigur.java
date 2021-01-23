@@ -14,21 +14,21 @@ public class Hauptfigur
 
     private static int Bildbreite = 72; //(Breite der Figur)
     private static int Bildhoehe = 95; //(Hoehe der Figur)
-                                        // ZeichenfensterGröße 800x370pxl
-    private static int posx = 0+50;       // Zeichenfesnteranfang = 0
+
+    private static int posx = 50;       // Zeichenfesnteranfang = 0
     private static int posy = Spielfeld.height-Bildhoehe;      // (Zeichenfensterhoehe-hoehe der Figur)
-    private static int Boden=Hauptmap.gibKartenboden()-Bildhoehe;   // Boden der Karte beginnt hier (Kartenboden-hoehe der Figur)
+    private static int Boden = Hauptmap.gibKartenboden()-Bildhoehe;   // Boden der Karte beginnt hier (Kartenboden-hoehe der Figur)
     
-    private int maxSprunghoehe = Spielfeld.height/4;
+    private int maxSprunghoehe = Spielfeld.height/4; //Maximale Sprunghoehe
     
     private String Laufrichtung;
     
     private String Knoepfe[] =    {"rechtsLaufen","rechtsLaufenStop","linksLaufen"  ,"linksLaufenStop"  ,"Springen","SpringenStop"}; // Mögliche Knöpfe
     private String Knopfnamen[] = {"Laufen"     ,"LaufenStop"      ,"zurueckLaufen","zurueckLaufenStop","Springen","SpringenStop"}; // Namen der Knöpfe unter jeweilgen Knopf gelistet
     
-    private static String SF[] = {"blablabla" , "Fhgfsjh,khh"  , "Mario-3"      , "Luigi"       , "Luigi-2"      , "Luigi-3"      , "Wario"       , "Wario-2"      , "Wario-3"      , "Waluigi"       , "Waluigi-2"      , "Waluigi-3"      , "Mariotest"       , "Luigitest"       , "Wariotest"       , "Waluigitest"       ,"Yoshi"        ,"Browser"        ,"Koopa"        ,"Knochentrocken"        ,"Mario mit Yoshi"        ,"DonkeyKong"        ,"Donkey mit Diddy"}; //array mit Namen aller im Spiel zu verfügung stehenden Spielfiguren
-    private String path[]   = {"pic/Mario.png","pic/Mario2.png","pic/Mario3.png","pic/Luigi.png","pic/Luigi2.png","pic/Luigi3.png","pic/Wario.png","pic/Wario2.png","pic/Wario3.png","pic/WaLuigi.png","pic/WaLuigi2.png","pic/WaLuigi3.png","pic/MarioBild.png","pic/LuigiBild.png","pic/WarioBild.png","pic/WaluigiBild.png","pic/Yoshi.png","pic/Browser.png","pic/Koopa.png","pic/Knochentrocken.png","pic/Mario_mit_Yoshi.png","pic/DonkeyKong.png","pic/Donkey_mit_Diddy.png"};  //array mit Pfaden zu den jeweiligen Bildern der Spielfiguren
-                                   // Hinzufügen von Spielfiguren und zuweisen Namen alleinig in dieser Klasse
+    private static String SF[] = {"Mario"      , "Mario-2"      , "Mario-3"      , "Mario-4"      , "Luigi"       , "Luigi-2"      , "Luigi-3"      , "Luigi-4"      , "Wario"       , "Wario-2"      , "Wario-3"      , "Wario-4"      , "Waluigi"       , "Waluigi-2"      , "Waluigi-3"      , "Waluigi-4"      ,"Mario mit Yoshi"        ,"Yoshi"        ,"Bowser"        ,"Bowser Jr."           ,"Knochen Bowser"        ,"Koopa"        ,"Knochentrocken"        ,"DonkeyKong"        ,"Donkey mit Diddy"        ,"Cranky Kong"        ,"Big Bob omb"        ,"König Buu Huu"         ,"Kettenhund"}; //array mit Namen aller im Spiel zu verfügung stehenden Spielfiguren
+    private String path[]   = {"pic/Mario.png","pic/Mario2.png","pic/Mario3.png","pic/Mario4.png","pic/Luigi.png","pic/Luigi2.png","pic/Luigi3.png","pic/Luigi4.png","pic/Wario.png","pic/Wario2.png","pic/Wario3.png","pic/Wario4.png","pic/WaLuigi.png","pic/WaLuigi2.png","pic/WaLuigi3.png","pic/WaLuigi4.png","pic/Mario_mit_Yoshi.png","pic/Yoshi.png","pic/Bowser.png","pic/Bowser_Junior.png","pic/Knochen_Bowser.png","pic/Koopa.png","pic/Knochentrocken.png","pic/DonkeyKong.png","pic/Donkey_mit_Diddy.png","pic/Cranky_Kong.png","pic/Big_Bob_omb.png","pic/Koenig_Buu_Huu.png","pic/Kettenhund.png"};  //array mit Pfaden zu den jeweiligen Bildern der Spielfiguren
+                                   // Hinzufügen von Spielfiguren und zuweisen Namen in dieser Klasse
     private Timer Lauftimer;
     private Timer Springhochtimer;
     private Timer Springruntertimer;
@@ -46,7 +46,7 @@ public class Hauptfigur
     
     public Hauptfigur(int x, int y, String Spielfigur)
     {
-           Lauftimer = new Timer(10, new ActionListener() //erstellen des Lauftimers
+           Lauftimer = new Timer(1, new ActionListener() //erstellen des Lauftimers
             {
              public void actionPerformed(ActionEvent e)
                    {
@@ -54,14 +54,14 @@ public class Hauptfigur
                                 }
            });
            
-         Springhochtimer = new Timer(10, new ActionListener()  //erstellen des Springochtimers
+         Springhochtimer = new Timer(1, new ActionListener()  //erstellen des Springochtimers
             {
              public void actionPerformed(ActionEvent e)
                    {
                        springhoch(1,2);  //Zugreifen auf die Methode springhoch
                                 }
            });
-          Springruntertimer = new Timer(10, new ActionListener()  //erstellen des Springruntertimers
+          Springruntertimer = new Timer(1, new ActionListener()  //erstellen des Springruntertimers
             {
              public void actionPerformed(ActionEvent e)
                    {
@@ -73,9 +73,11 @@ public class Hauptfigur
            Dialogfenster.gibFehlermeldung("Ungültiger Eingabewert","Konstruktor\nKlasse:  Hauptfigur \nEingabewert:  "+Spielfigur);
            Dialogfenster.gibArrayaus("Eingabewerte Hauptfigur","MöglicheEingabewerte:\n",SF,"Information",7);
        }
+       
        posx = x;
        posy = y;
-       Boden=posy; //Der Boden entspricht der Startposition auf der y-Achse
+       Boden = posy; //Der Boden entspricht der Startposition auf der y-Achse
+       
        blauesHintergrundBild = new Bild("pic/blauesHintergrundBild.png",0,-95); // y=-95 sodass es bei Spielbeginn außerhalb des Zeichenfensters ist und somit nicht gezeichnet wird
       
        for(int i=0;i<SF.length;i++){ 
@@ -87,7 +89,7 @@ public class Hauptfigur
         Figur.positioniereBild(Figur.pic,posx,posy);
     }
     
-    public void loeschen(){  // Methode zum "loeschen" des Bildes (Figur wird von einem Bild der gleichen Größe und mit der selben Farbe wie der Spiehntergrund übermalt)
+    public void loeschen(){  // Methode zum "loeschen" des Bildes (Figur wird von einem Bild der gleichen Größe und mit der selben Farbe wie der Spielntergrund übermalt)
         blauesHintergrundBild.positioniereBild(blauesHintergrundBild.pic,posx,posy);
     }
   
@@ -107,7 +109,6 @@ public class Hauptfigur
             if(posx>Spielfeld.width){posx = 0-Bildbreite;}} // Falls Figur Zeichenfensterende erreicht wird sie an den Anfang des Zeichenfensters gesetzt
         if(Laufrichtung=="links"){posx -= Geschwindigkeit * zeit;  // Formel um Verschiebung auf x-Achse nach rechts zu berechen
             if(posx<0-Bildbreite){posx = Spielfeld.width;}} // Falls Figur Zeichenfensteranfang erreicht wird sie an das Ende des Zeichenfensters gesetzt
-            System.out.print(posx + ";  ");
         zeichnen();
     }
     

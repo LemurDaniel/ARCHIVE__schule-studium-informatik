@@ -34,7 +34,7 @@ public class Dialogfenster
        for(int i=0;i<array.length;i++){
            if(zahl==Zeilenumbruch){
                Dialog += "\n" + array[i] + "; "; //Zeilenumbruch nach gewünschter Zahl an Elementen
-               zahl=0;
+               zahl=1;
             }else{
                 Dialog += array[i] + "; "; //addieren aller Elemente des arrays zu einem String mit Komma Leerzeichen dazwischen
                 zahl++;
@@ -71,7 +71,7 @@ public class Dialogfenster
        for(int i=0;i<array.length;i++){
            if(zahl==Zeilenumbruch){
                Dialog += "\n" + array[i] + "; "; //Zeilenumbruch nach gewünschter Zahl an Elementen
-               zahl=0;
+               zahl=1;
             }else{
                 Dialog += array[i] + "; "; //addieren aller Elemente des arrays zu einem String mit Komma Leerzeichen dazwischen
                 zahl++;
@@ -107,19 +107,19 @@ public class Dialogfenster
    }
     
    public static int stelleFragemitKnopf(String Titel, String Dialog, String[] array, String Vorauswahl){ //Methode zum stellen einer Frage mit mit selbst beschriebenen Knöpfen
-     return JOptionPane.showOptionDialog(null,Dialog,Titel, JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE, null,array,Vorauswahl);  
+     return JOptionPane.showOptionDialog(null,Dialog,Titel,JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,array,Vorauswahl);  
    }
   
   public static int gibFehlermeldungmitKnopf(String Titel, String Dialog, String[] array, String Vorauswahl){  //Methode zum ausgeben einer Information mit selbst beschriebenen Knöpfen
-     return JOptionPane.showOptionDialog(null, Dialog, Titel,JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,null, array,Vorauswahl);
+     return JOptionPane.showOptionDialog(null,Dialog,Titel,JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,array,Vorauswahl);
   }
   
   public static int gibWarnungmitKnopf(String Titel, String Dialog, String[] array, String Vorauswahl){ //Methode zum ausgeben einer Information mit selbst beschriebenen Knöpfen
-     return JOptionPane.showOptionDialog(null, Dialog, Titel,JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, array,Vorauswahl);
+     return JOptionPane.showOptionDialog(null,Dialog,Titel,JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,array,Vorauswahl);
   }
   
   public static int gibNachrichtmitKnopf(String Titel, String Dialog, String[] array, String Vorauswahl){ //Methode zum ausgeben einer Information mit selbst beschriebenen Knöpfen
-     return JOptionPane.showOptionDialog(null, Dialog, Titel,JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,null, array,Vorauswahl);
+     return JOptionPane.showOptionDialog(null,Dialog,Titel,JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,array,Vorauswahl);
   }
   
   public static String stelleFragemitListe(String Titel, String Dialog, String[] array){ //Methode zum stellen einer Frage mit Antworten als Liste
@@ -127,19 +127,19 @@ public class Dialogfenster
   }
     
   public static int stelleFragemitKnopf(String Titel, String Dialog, String[] array){ //Methode zum stellen einer Frage mit mit selbst beschriebenen Knöpfen
-     return JOptionPane.showOptionDialog(null,Dialog,Titel, JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE, null, array, array[0]);  
+     return JOptionPane.showOptionDialog(null,Dialog,Titel,JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,array,array[0]);  
   }
   
   public static int gibFehlermeldungmitKnopf(String Titel, String Dialog, String[] array){  //Methode zum ausgeben einer Information mit selbst beschriebenen Knöpfen
-     return JOptionPane.showOptionDialog(null, Dialog, Titel,JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,null, array, array[0]);
+     return JOptionPane.showOptionDialog(null,Dialog,Titel,JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,array,array[0]);
   }
   
   public static int gibWarnungmitKnopf(String Titel, String Dialog, String[] array){ //Methode zum ausgeben einer Information mit selbst beschriebenen Knöpfen
-     return JOptionPane.showOptionDialog(null, Dialog, Titel,JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, array, array[0]);
+     return JOptionPane.showOptionDialog(null,Dialog,Titel,JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,array,array[0]);
   }
   
   public static int gibNachrichtmitKnopf(String Titel, String Dialog, String[] array){ //Methode zum ausgeben einer Information mit selbst beschriebenen Knöpfen
-     return JOptionPane.showOptionDialog(null, Dialog, Titel,JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,null, array, array[0]);
+     return JOptionPane.showOptionDialog(null,Dialog,Titel,JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,array,array[0]);
   }
      
    public static String gibTexteingabe(String Dialog, String Textfeld){ //Methode um Spieler einen String eingeben zu lassen

@@ -7,23 +7,21 @@ import java.util.Arrays;
 
 public class Hauptmap{
     
-    // ZeichenfensterGröße 800x370pxl
-    
    private static Dimension Spielfeld = ZEICHENFENSTER.gibFenster().gibMasse();  //holen der Dimension des Zeichenfensters
    
    private static final int Kartenboden = Spielfeld.height-50; //Der Festgelegte Kartenboden
    
-   private int breite = 6;
-   private int posx;
-   private int posy;
-   private int t=10;
-   
-   private int Blockhoehe;
+   private int Blockhoehe;  
    private int Blockbreite;
    
    private int Kartenende; 
    
    private boolean Zufallskarte;
+   
+   private int posx = 0; 
+   
+   private int t=10;
+   private int breite = 6;
    
    private RECHTECK [] Boden;
    private RECHTECK [] Block;
@@ -35,12 +33,10 @@ public class Hauptmap{
    private String Knoepfe[] =  {"Start","Stop"};  // Mögliche Knöpfe
    private String Knopfnamen[]={"Start","Stop" }; // Namen der Knöpfe unter jeweilgen Knopf gelistet
    
-   private static String SK[] = {"Karte-1", "Karte-2", "Map mit ZufallsBlöcken-Test"}; // array mit allen im Spiel zu Verfügung stehenden Spielkarten
-                                 // Hinzufügen von Spielkartem und zuweisen Namen alleinig in dieser Klasse                                 
-   int Line=1;//Nur zum Testen
-   
+   private static String SK[] = {"Karte-1", "Karte-2", "ZufallsKarte-1", "ZufallsKarte-2"}; // array mit allen im Spiel zu Verfügung stehenden Spielkarten
+                                 // Hinzufügen von Spielkartem und zuweisen Namen in dieser Klasse                                 
    private Timer Bewegungstimer;
-   
+      
    public Hauptmap(){
        this(300,330,10,SK[2]);
        ZEICHENFENSTER.gibFenster().setzeSichtbar(true);
@@ -52,7 +48,7 @@ public class Hauptmap{
     
     public Hauptmap(int x, int y, int t, String Spielkarte)
     {
-        Bewegungstimer = new Timer(10, new ActionListener()  // Erstellen des Bewegungstimers
+        Bewegungstimer = new Timer(1, new ActionListener()  // Erstellen des Bewegungstimers
             {
              public void actionPerformed(ActionEvent e)
                    {        
@@ -63,8 +59,9 @@ public class Hauptmap{
            Dialogfenster.gibFehlermeldung("Ungültiger Eingabewert","Konstruktor\nKlasse:  Hauptmap \nEingabewert:  "+Spielkarte);
            Dialogfenster.gibArrayaus("Eingabewerte Hautpmap","MöglicheEingabewerte:\n",SK,"Information",7);
         }
-                 
-       if(Spielkarte==SK[0]){         
+            //1.Karte
+       if(Spielkarte==SK[0]){   
+           
        Zufallskarte = false;    
        Boden = new RECHTECK [2];
        Block= new RECHTECK [12];
@@ -97,15 +94,13 @@ public class Hauptmap{
         Gras[9]= new RECHTECK(1100,200,70,10,"gruen", true);
         Gras[10]= new RECHTECK(1240,260,70,10,"gruen", true);
         Gras[11]= new RECHTECK(1380,215,70,10,"gruen", true);
-        Mast = new RECHTECK(1540,80,10,240,"weiss", true);
-        Fahne = new RECHTECK(1490,80,60,40,"weiss", true);
-        Muster = new KREIS(1515,100,15,"blau", true);
         
-        return; // return um nach gefundener Karte abzubrechen
        }
        
+            //2.Karte
        if(Spielkarte==SK[1]){
-       Zufallskarte = false;  
+           
+       Zufallskarte = false;     
        Boden = new RECHTECK [2];
        Block= new RECHTECK [13];
        Gras= new RECHTECK [13];
@@ -138,13 +133,10 @@ public class Hauptmap{
         Gras[10]= new RECHTECK(1240,260,70,10,"gelb", true);
         Gras[11]= new RECHTECK(1380,215,70,10,"gelb", true);
         Gras[12]= new RECHTECK(1400,115,70,10,"gelb", true);
-        Mast = new RECHTECK(1540,80,10,240,"weiss", true);
-        Fahne = new RECHTECK(1490,80,60,40,"weiss", true);
-        Muster = new KREIS(1515,100,15,"blau", true); 
         
-        return; // return um nach gefundener Karte abzubrechen
        } 
        
+            //3.Karte
        if(Spielkarte==SK[2]){
            
             Kartenende = 20000;
@@ -152,12 +144,9 @@ public class Hauptmap{
             Blockbreite = 70;
             Blockhoehe = 30;
             int Blockanzahl = 10;
-            int Divisor = 3;
          
             int ZufallY[] = Mathe.gibArrayausZufallszahlen(Blockanzahl,0,Kartenboden-Blockhoehe);
-            Dialogfenster.gibArrayaus("Eingabewerte Hautpmap","Zufallszahlen:\n",ZufallY,"Information",7); //Nur zu zum Testen
-            int ZufallX[] = Mathe.gibArrayausZufallszahlen(Blockanzahl,0,Spielfeld.width*4);
-            Dialogfenster.gibArrayaus("Eingabewerte Hautpmap","Zufallszahlen:\n",ZufallX,"Information",7); //Nur zu zum Testen            
+            int ZufallX[] = Mathe.gibArrayausZufallszahlen(Blockanzahl,0,Spielfeld.width*4);    
             
             Boden = new RECHTECK [2];
             Block = new RECHTECK [Blockanzahl];
@@ -168,16 +157,39 @@ public class Hauptmap{
         
             for(int i=0;i<Blockanzahl;i++){
                 Block[i]= new RECHTECK(ZufallX[i],ZufallY[i],Blockbreite,Blockhoehe,"rot", true);
-
-                Gras[i]= new RECHTECK(ZufallX[i],ZufallY[i],Blockbreite,Blockhoehe/Divisor,"gelb", true);
-            }
- 
-            Mast = new RECHTECK(20500,80,10,240,"weiss", true);
-            Fahne = new RECHTECK(20450,80,60,40,"weiss", true);
-            Muster = new KREIS(20475,100,15,"blau", true);  
-            
-            return; // return um nach gefundener Karte abzubrechen
+                Gras[i]= new RECHTECK(ZufallX[i],ZufallY[i],Blockbreite,Blockhoehe/3,"gelb", true);
+            } 
        }
+       
+            //4.Karte
+       if(Spielkarte==SK[3]){
+           
+            Kartenende = 10000;
+            Zufallskarte = true;
+            Blockbreite = 70;
+            Blockhoehe = 30;
+            int Blockanzahl = 10;
+         
+            int ZufallY[] = Mathe.gibArrayausZufallszahlen(Blockanzahl,0,Kartenboden-Blockhoehe);
+            int ZufallX[] = Mathe.gibArrayausZufallszahlen(Blockanzahl,0,Spielfeld.width*4);     
+            
+            Boden = new RECHTECK [2];
+            Block = new RECHTECK [Blockanzahl];
+            Gras = new RECHTECK [Blockanzahl];
+                
+            Boden[0]= new RECHTECK(0,Kartenboden+10,800,40,"braun", true);
+            Boden[1]= new RECHTECK(0,Kartenboden,800,10,"gruen", true);
+        
+            for(int i=0;i<Blockanzahl;i++){
+                Block[i]= new RECHTECK(ZufallX[i],ZufallY[i],Blockbreite,Blockhoehe,"braun", true);
+                Gras[i]= new RECHTECK(ZufallX[i],ZufallY[i],Blockbreite,Blockhoehe/3,"gruen", true);
+            }            
+        }
+ 
+            Mast = new RECHTECK(Kartenende+500,80,10,240,"weiss", true);
+            Fahne = new RECHTECK(Kartenende+450,80,60,40,"weiss", true);
+            Muster = new KREIS(Kartenende+475,100,15,"blau", true);  
+            
     }
     
     public int gibKartenende(){
@@ -210,12 +222,13 @@ public class Hauptmap{
           Bewegungstimer.stop();     // Timer wird gestopt    
     }
     
-   private void bewege(int zeit,int Geschwindigkeit){  // Methode um Karte zu Bewegen
+    private void bewege(int zeit,int Geschwindigkeit){  // Methode um Karte zu Bewegen
         int newposx= Geschwindigkeit * zeit;   // Formel um weite Groeße der Verschiebung zu berechen
         posx+=newposx;               
         
-        if(posx>=Kartenende){BewegenStop();}       // Zugreifen auf die Bewegungsfunktionen der einzelnen Objekte um  sie um den errechneten Wert "newposx" zu verschieben
-        for(int i=0;i<Block.length;i++){
+        if(posx>=Kartenende){BewegenStop();}    
+        
+        for(int i=0;i<Block.length;i++){        // Zugreifen auf die Bewegungsfunktionen der einzelnen Objekte um  sie um den errechneten Wert "newposx" zu verschieben
             Block[i].bewegex(newposx,"links");
             Gras[i].bewegex(newposx,"links");
           
@@ -227,14 +240,11 @@ public class Hauptmap{
                                         
                     Block[i].aenderePosition(ZufallX,ZufallY);
                     Gras[i].aenderePosition(ZufallX,ZufallY);
-                    
-                    
-                    System.out.print(Line++ + ".Zeile : " + " ZufallX:  " + ZufallX + ":  :" + "ZufallY:  " + ZufallY + "\n"); //Nur zum Testen
+
                 }
             }
         }
-        //for(int i=0;i<Boden.length;i++){Boden[i].bewegex(newposx,"links");}
-        
+
         Mast.bewegex(newposx,"links");
         Fahne.bewegex(newposx,"links");
         Muster.bewegex(newposx,"links");
