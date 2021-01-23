@@ -30,6 +30,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;

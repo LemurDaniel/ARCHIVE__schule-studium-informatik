@@ -47,7 +47,6 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception{
 			
 		instance = this;
-		FensterManager.showStatusmeldung();
 //		Thread[] th = new Thread[200];
 //		
 //		Thread ts = new test();
@@ -62,8 +61,6 @@ public class Main extends Application {
 //			System.out.println("New");
 //			th[i].start();
 //		}
-		
-
 		
 		FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
 		//FensterManager.getHauptSeite().show();

@@ -14,6 +14,7 @@ import exceptions.RegisterException;
 import gui.FensterManager;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.scene.paint.Color;
 import verwaltung.verwaltungen.Listenverwaltung;
 
 public class Nutzer extends DB_Manager {
@@ -50,8 +51,7 @@ public class Nutzer extends DB_Manager {
 	}	
 	private static void anmeldenKonto(String name, String passwort, Connection con) throws SQLException, LogInException {	
 		
-		try(Statement st = con.createStatement()){
-			
+		try(Statement st = con.createStatement()){			
 			//Existiert Nutzer?
 			if(!nameExistiert(con, name)) throw new LogInException("Der Nutzer: '"+name+"' existiert nicht", LogInException.NO_USER);
 						
@@ -117,6 +117,10 @@ public class Nutzer extends DB_Manager {
 			}
 			Listenverwaltung.instance().ladeListen(con);			
 			instance.angemeldet.set(true);
+			FensterManager.logErreignis("Sie haben sich Erfolgreich mit dem Konto "+instance.getName()+" angemeldet", Color.GREEN);
+		}catch(Exception e) {
+			FensterManager.logErreignis(e);
+			throw e;
 		}
 	}
 	
@@ -146,7 +150,11 @@ public class Nutzer extends DB_Manager {
 				ps.setString(3, regDat);
 				ps.executeUpdate();
 			}			
+			FensterManager.logErreignis("Das Konto "+name+" wurde erfolgreich erstellt", Color.GREEN);
 			anmeldenKonto(name, passwort, con);
+		}catch(Exception e){
+			FensterManager.logErreignis(e);
+			throw e;
 		}
 	}
 	
@@ -195,7 +203,6 @@ public class Nutzer extends DB_Manager {
 		try(Statement st = con.createStatement()){
 			st.executeUpdate(s);
 		}catch (Exception e) {}
-
 	}
 	
 	

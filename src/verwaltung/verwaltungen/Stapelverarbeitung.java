@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Stack;
 
 import gui.FensterManager;
+import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
@@ -100,7 +101,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 			stapelAbarbeiten(update,	this::onUpdate, this::onUpdateSucess, con);
 			stapelAbarbeiten(delete,	this::onDelete, this::onDeleteSucess, con);
 		}catch(SQLException e) {
-			FensterManager.logErreignis(e.getMessage());
+			FensterManager.logErreignis(e);
 		}
 	}
 		
@@ -115,13 +116,13 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 				}catch (SQLException e1) {
 					con.rollback();
 					err.push(ent);
-					FensterManager.logErreignis(e1.getMessage());
+					FensterManager.logErreignis(e1);
 					fehlerlog.add(e1);
 					continue;
 				}catch(Exception e) {
 					//e.printStackTrace();
 					err.push(ent);
-					FensterManager.logErreignis(e.getMessage());
+					FensterManager.logErreignis(e);
 					fehlerlog.add(e);
 					continue;
 				}

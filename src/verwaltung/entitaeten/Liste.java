@@ -8,9 +8,12 @@ import java.sql.SQLException;
 import gui.FensterManager;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import verwaltung.DB_Manager;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -24,12 +27,12 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	private int tempid;
 	
 	private int id;
-	private StringProperty name;
+	private ReadOnlyStringWrapper name;
 	private Filmverwaltung filme;
 	
 	public Liste(int id, String name) {
 		this.id = id;
-		this.name = new SimpleStringProperty(name);
+		this.name = new ReadOnlyStringWrapper(name);
 		filme = new Filmverwaltung();
 	}
 	
@@ -39,8 +42,8 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	public String getName() {
 		return name.get();
 	}
-	public StringProperty getNameProperty() {
-		return name;
+	public ReadOnlyStringProperty getNameProperty() {
+		return name.getReadOnlyProperty();
 	}
 	public ReadOnlyIntegerProperty getSizeProperty() {
 		return filme.getSizeProperty();

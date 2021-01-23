@@ -16,6 +16,7 @@ public class Film implements Backup, EingabePruefung, Id{
 
 	private Film backup;
 	private int tempid;
+	private boolean lock;
 	
 	private int id, erstellerId;
 	private List<Genre> genres;
@@ -37,6 +38,7 @@ public class Film implements Backup, EingabePruefung, Id{
 		this.dauer = dauer;		
 		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);		
 		this.bewertung = bewertung;
+		lock = false;
 		
 		bwt_string = new ReadOnlyStringWrapper();
 		setBewertung(bewertung);
@@ -107,25 +109,33 @@ public class Film implements Backup, EingabePruefung, Id{
 	
 	
 	
-	
+	public void setLock(boolean lock) {
+		this.lock = lock;
+	}
 	public void setId(int id) {
+		if(lock)	return;
 		this.id = id;
 	}
 	public void setBewertung(float bewertung) {
+		if(lock)	return;
 		this.bewertung = bewertung;
 		bwt_string.set(bewertung+" Sterne");
 	}
 	public void setTitel(String titel) {
+		if(lock)	return;
 		this.titel.set(titel);
 	}
 	public void setDauer(int dauer) {
+		if(lock)	return;
 		this.dauer = dauer;
 		dauer_string.set(dauer+" Minuten "+getGenaueZeit(dauer));
 	}
 	public void setErscheinungsjahr(int erscheinungsjahr) {
+		if(lock)	return;
 		this.erscheinungsjahr.set(erscheinungsjahr);
 	}
 	public Film aktualisiere(String titel, int dauer, int erscheinungsjahr, float bewertung) {
+		if(lock)	return this;
 		setTitel(titel);
 		setDauer(dauer);
 		setErscheinungsjahr(erscheinungsjahr);
@@ -138,15 +148,18 @@ public class Film implements Backup, EingabePruefung, Id{
 	}
 	
 	public void addGenre(Genre genre) {
+		if(lock)	return;
 		if(genres.contains(genre))	return;
 		genres.add(genre);
 		buildGenreString();
 	}
 	public void remove(Genre genre) {
+		if(lock)	return;
 		genres.remove(genre);
 		buildGenreString();
 	}
 	public void clearGenre() {
+		if(lock)	return;
 		if(genres==null)
 			return;
 		genres.clear();

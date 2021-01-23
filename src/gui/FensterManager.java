@@ -1,5 +1,6 @@
 package gui;
 
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,20 +15,33 @@ import gui.controller.FilterCtrl;
 import gui.controller.HauptseiteCtrl;
 import gui.controller.ListensichtCtrl;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.Effect;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import verwaltung.DB_Manager;
@@ -67,7 +81,7 @@ public class FensterManager {
 	private  static FilterCtrl filterCtrl;
 	
 	private static Alert statusmeldung, credits;
-	private static TextArea statusTA;
+	private static TextFlow statusTA;
 	
 	
 	private static FXMLLoader getLoader(String source) {
@@ -221,13 +235,30 @@ public class FensterManager {
 		if(primaryStage!=null)		primaryStage.close();
 		if(secondary!=null)			secondary.close();
 		if(dialog!=null)			dialog.close();
+		if(credits!=null)			credits.close();
+		if(statusmeldung!=null)		{
+			statusTA.getChildren().clear();
+			statusmeldung.close();
+		}
 	}
 	
 	
 	
-	
+	public static void logErreignis(Exception e) {
+		logErreignis(e.getMessage(), Color.RED);
+	}
 	public static void logErreignis(String text) {
-		statusTA.appendText(text+"\n");
+		logErreignis(text, Color.BLACK);
+	}
+	
+	public static void logErreignis(String text, Color color) {
+		if(statusmeldung==null)	showStatusmeldung();
+			Text t = new Text(text+"\n");
+			t.setFill(color);
+			t.setFont(new Font("Courier New", 13));
+		Platform.runLater(()->{
+			statusTA.getChildren().add(t);	
+		});	
 	}
 
 	public static void showStatusmeldung() {
@@ -241,14 +272,16 @@ public class FensterManager {
 			statusmeldung.setGraphic(img);
 			statusmeldung.setResizable(true);
 		
-			statusTA = new TextArea();
-			statusTA.setEditable(false);
-			statusTA.setWrapText(false);
-			statusTA.setFont(new Font("Courier New", 12));
-
-			HBox hb = new HBox(statusTA);
-			HBox.setHgrow(statusTA, Priority.ALWAYS);
+			statusTA = new TextFlow();
+			ScrollPane sp = new ScrollPane(statusTA);
+			sp.vvalueProperty().bind(statusTA.heightProperty());
+			
+			HBox hb = new HBox(sp);
+			HBox.setHgrow(sp, Priority.ALWAYS);
 			statusmeldung.getDialogPane().setContent(hb);
+			statusmeldung.getDialogPane().getStylesheets().add(FensterManager.class.getResource("css/credit.css").toString());
+			statusmeldung.getDialogPane().setPrefHeight(300);
+			statusmeldung.getDialogPane().setPrefWidth(900);
 		}
 		statusmeldung.show();
 	}

@@ -12,6 +12,7 @@ import gui.FensterManager;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
+import javafx.scene.paint.Color;
 import verwaltung.DB_Manager;
 import verwaltung.Nutzer;
 import verwaltung.entitaeten.Film;
@@ -102,26 +103,23 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	@Override
 	protected void onAddSucess(Liste li, Connection con) throws SQLException{
 		super.onAddSucess(li, con);
+		FensterManager.logErreignis(String.format("\nDie Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
 		li.save(con);
 		li.getFehlerlog().forEach(super.fehlerlog::add);
 		li.getLog().forEach(super.log::add);
-	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
-		FensterManager.logErreignis(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
 	}
 	@Override
 	protected void onUpdateSucess(Liste li, Connection con) throws SQLException{
+		if(li.hasBackup())	FensterManager.logErreignis(String.format("\nDie Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
 		super.onUpdateSucess(li, con);
+		FensterManager.logErreignis(String.format("\nDer Inhalt der Liste '%-"+getMaxName()+"s' wird aktualisiert", li.getName()));
 		li.save(con);
-		li.getFehlerlog().forEach(super.fehlerlog::add);
-		li.getLog().forEach(super.log::add);
-	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
-		FensterManager.logErreignis(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
+		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%-"+getMaxName()+"s' wurde beendet", li.getName()));
 	}
 	@Override
 	protected void onDeleteSucess(Liste li, Connection con) throws SQLException{
 		super.onDeleteSucess(li, con);
-	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
-		FensterManager.logErreignis(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
+		FensterManager.logErreignis(String.format("\nDie Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
 	}
 	
 	

@@ -1,5 +1,6 @@
 package verwaltung;
 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import gui.FensterManager;
+import javafx.scene.paint.Color;
 import verwaltung.entitaeten.Genre;
 import verwaltung.entitaeten.Rolle;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -89,7 +91,7 @@ public class DB_Manager {
 			return con;
 		} catch (SQLException e) {
 			if(con!=null)	con.close();
-			FensterManager.logErreignis(e.getMessage());
+			FensterManager.logErreignis(e);
 			throw e;
 		}
 	}
