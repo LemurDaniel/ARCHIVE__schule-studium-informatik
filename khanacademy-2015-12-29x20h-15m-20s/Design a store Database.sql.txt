@@ -1,0 +1,23 @@
+CREATE TABLE store (id INTEGER PRIMARY KEY, Games TEXT, publisher TEXT, price INTEGER, rating TEXT);
+INSERT INTO store VALUES(1, "Max Payne", "Rockstar Games", 29, "10/10");
+INSERT INTO store VALUES(2, "GTA V", "Rockstar Games", 82, "10/10");
+INSERT INTO store VALUES(3, "CHIMPS.", "Monkey Entertainment", 11, "4/10");
+INSERT INTO store VALUES(4, "THE OFFICIAL GAME GAME ?", "Someone", 25, "0/10");
+INSERT INTO store VALUES(5, "Money, Please!", "Theft 2K", 2000, "19/10");
+INSERT INTO store VALUES(6, "MineCats", "Kitty Craft", 9, "8/10");
+INSERT INTO store VALUES(7, "Best Game ever", "Nice Try Entertainment", 34, "0/10");
+INSERT INTO store VALUES(8, "Hans Vader", "Imperial Games", 21, "5/10");
+INSERT INTO store VALUES(9, "YODA Stories: An inspirational Story it is", "GREEN BOYS", 18, "9/10");
+INSERT INTO store VALUES(10, "Wars in the Star", "Rockstar Games", 111.11, "8/10");
+INSERT INTO store VALUES(11, "Lost in Translation", "LeBaddellaBlaBli!?!", 10, "3/10");
+INSERT INTO store VALUES(12, "INVADER ZIM", "Irken Empire", 8.78, "7/10");
+INSERT INTO store VALUES(13, "No idea!?", "Innovative Entertainment", 13.25, "5/10");
+INSERT INTO store VALUES(14, "Jedi Stories", "YO-DA-GAMES", 10.5, "3/10");
+INSERT INTO store VALUES(15, "Need Money!", "Bankrupt Company", 20, "8/10");
+SELECT Games, publisher, price FROM store ORDER BY price DESC;
+
+SELECT Games, publisher, price FROM store WHERE price < 15 ORDER BY price DESC;
+
+SELECT Games, publisher, rating FROM store WHERE publisher = "Monkey Entertainment";
+
+SELECT COUNT(GAMES) AS "Number of GAMES",SUM(price) AS "Price of all GAMES" FROM store; 

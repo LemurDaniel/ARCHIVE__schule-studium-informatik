@@ -1,0 +1,81 @@
+/* Put your data in here and query it! */
+/*
+Earned Badges
+This table contains badges earned by a user, including the most recent date achieved, the type, the name, the # of energy points earned, and the activity earned from.
+Collected by: https://www.khanacademy.org/profile/chopsor/
+*/
+
+CREATE TABLE badges (
+    date TEXT,
+    badge_type TEXT,
+    badge_name TEXT,
+    energy_points INTEGER
+);
+
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 04/12", "Sun", "Oracle", 0);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 04/28", "Earth", "Incredible Inspiration", 5000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 01/29", "Challenge Patch", "Intro to JS: Drawing & Animation Mastery", 0);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2014, 12/05", "Meteorite", "Thumbs Up", 0);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 04/28", "Moon", "1000 Kelvin", 1000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 04/25", "Earth", "299,792,458 Meters per Second", 5000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 03/20", "Sun", "Da Vinci", 200000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 03/02", "Sun", "Newton", 150000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 03/02", "Sun", "Hypatia", 125000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 02/24", "Sun", "Kepler", 125000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 02/24", "Sun", "Copernicus", 80000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 02/07", "Sun", "Sally Ride", 35000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 01/06", "Sun", "Magellan", 30000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 02/24", "Earth", "Guru", 0);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2014, 12/29", "Earth", "Work Horse", 14000);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2014, 10/20", "Moon", "Redwood", 0);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2013, 10/20", "Meteorite", "Cypress", 0);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 03/18", "Sun", "Millionaire", 0);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 02/27", "Earth", "Five Times Ten to the Fifth", 0);
+INSERT INTO badges (date, badge_type, badge_name, energy_points) VALUES ("2015, 04/04", "Earth", "Investigator", 0);
+
+
+SELECT  badge_type, 
+        SUM(energy_points) AS total_energy_points,
+        COUNT(*) AS total_badges
+FROM badges 
+GROUP BY badge_type
+HAVING AVG(energy_points) > 0
+ORDER BY SUM(energy_points) DESC;
+
+SELECT  badge_type, 
+        ROUND(AVG(energy_points)) AS average_energy_points, 
+        COUNT(*) AS total_badges 
+FROM badges 
+GROUP BY badge_type
+HAVING AVG(energy_points) > 0
+ORDER BY AVG(energy_points) DESC;
+
+SELECT  badge_name,
+        badge_type,
+        CASE
+            WHEN energy_points = (SELECT MIN(energy_points) FROM badges) THEN "MINIMUM"
+            WHEN energy_points = (SELECT MAX(energy_points) FROM badges) THEN "MAXIMUM"
+            ELSE NULL
+        END AS "Min/Max",
+        energy_points
+FROM badges
+WHERE "Min/Max" IS NOT NULL
+ORDER BY "Min/Max";
+
+SELECT  badge_name,
+        CASE
+        WHEN badge_type = "Sun" THEN "Wow great you obtained 'Sun' badge. Amazing" 
+        WHEN badge_type = "Earth" THEN "An 'Earth' badge. You are doing a great job."
+        WHEN badge_type = "Meteorite" THEN "A 'Meteorite' badge. Keep up the good Work"
+        ELSE "Good Job"
+        END AS comment
+FROM badges
+ORDER BY badge_name;
+
+SELECT  badge_name,
+        badge_type,
+        date
+FROM badges
+WHERE date LIKE "2014%" OR date LIKE "2013%"
+ORDER BY badge_name;
+

@@ -1,0 +1,291 @@
+/* Create table about the people and what they do here */
+CREATE TABLE actors (id INTEGER PRIMARY KEY, name TEXT, gender TEXT, age INTEGER, life_partner_id INTEGER);
+
+CREATE TABLE directors (id INTEGER PRIMARY KEY, name TEXT, gender TEXT, age INTEGER, fav_actor_id INTEGER, fav_movie_id INTEGER);
+
+CREATE TABLE movies (id INTEGER PRIMARY KEY, name TEXT, story TEXT, rating TEXT, director_id INTEGER);
+
+CREATE TABLE movies_actors (id INTEGER PRIMARY KEY, actors_id INTEGER, movies_id INTEGER);
+
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Mysterion","m", 30, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Freddi Krueger", "m", 60, 3);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Mary Krueger", "w", 56, 2);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Rufus", "m", 27, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Tony", "w", 30, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Lotti", "w", 50, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("McChronicle", "m", 28, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("GIR", NULL, 1, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("ZIM", "m", 16, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("DIB", "m", 15, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("TAK", "w", 17, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Rick Sanchez", "m", 80, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Morty Smith", "m", 14, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Beth Smith", "w", 41, 15);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Jerry Smith", "m", 45, 14);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Summer Smith", "w", 17, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Haeky Plosive", "m", 66, 18);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Armoura Pierce", "w", 67, 17);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Yoda", "m", 200, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Luke Flywalker", "m", 29, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Darto Vado", "m", 56, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Chewbacco", "m", 45, NULL);
+
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Mrs Creepy", "w", 86, 3, 1);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Poki", "m", 30, 4, 2);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("The Tallest", "m", 45, 8, 3);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Bird Person", "m", 64, 12, 4);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Green Girl", "w", 36, 19, 5);
+
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Nightmare", "Haunts you in you Dreams", "7/10",1);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Deponia", "Rufus tries to escape Deponia", "9/10",2);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Invader Zim", "Zim tries to take over the World", "10/10",3);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Rick & Morty - THE MOVIE", "WUBBA LUBBA DUB DUB", "10/10",4);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Green Boys", "Yoda and the Gang on tour", "4/10",5);
+
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (2 , 1);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (3 , 1);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (4 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (5 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (6 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (7 , 2);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (8 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (9 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (10 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (11 , 3);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (12 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (13 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (14 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (15 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (16 , 4);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (19 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (20 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (21 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (22 , 5);
+
+SELECT actors.id, actors.name, actors.gender, actors.age, movies.name 
+    FROM movies_actors 
+    JOIN movies ON movies_id = movies.id
+    JOIN actors ON actors_id = actors.id;
+    
+SELECT actor, CASE
+    WHEN lp is NULL THEN "not married"
+    ELSE lp
+    END "life partner"
+    FROM(
+        SELECT actors.name AS actor , partners.name AS lp 
+            FROM actors
+            LEFT OUTER JOIN actors partners ON actors.life_partner_id = partners.id
+        )
+    order by lp DESC;
+    
+SELECT movies.name, movies.story, d.name AS director , movies.rating, COUNT(ma.actors_id) AS actors
+    FROM movies
+    JOIN movies_actors ma ON ma.movies_id = movies.id
+    JOIN directors d ON d.id = movies.director_id
+    GROUP BY movies.name ORDER BY movies.name DESC;
+    
+SELECT d.name AS directors, a.name AS "favourite actors", m.name AS "favourite movies"
+    FROM directors d
+    JOIN actors a ON d.fav_actor_id = a.id
+    JOIN movies m ON m.director_id = d.id;
+        
+
+/* Create table about the people and what they do here */
+CREATE TABLE actors (id INTEGER PRIMARY KEY, name TEXT, gender TEXT, age INTEGER, life_partner_id INTEGER);
+
+CREATE TABLE directors (id INTEGER PRIMARY KEY, name TEXT, gender TEXT, age INTEGER, fav_actor_id INTEGER, fav_movie_id INTEGER);
+
+CREATE TABLE movies (id INTEGER PRIMARY KEY, name TEXT, story TEXT, rating TEXT, director_id INTEGER);
+
+CREATE TABLE movies_actors (id INTEGER PRIMARY KEY, actors_id INTEGER, movies_id INTEGER);
+
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Mysterion","m", 30, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Freddi Krueger", "m", 60, 3);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Mary Krueger", "w", 56, 2);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Rufus", "m", 27, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Tony", "w", 30, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Lotti", "w", 50, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("McChronicle", "m", 28, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("GIR", NULL, 1, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("ZIM", "m", 16, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("DIB", "m", 15, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("TAK", "w", 17, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Rick Sanchez", "m", 80, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Morty Smith", "m", 14, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Beth Smith", "w", 41, 15);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Jerry Smith", "m", 45, 14);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Summer Smith", "w", 17, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Haeky Plosive", "m", 66, 18);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Armoura Pierce", "w", 67, 17);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Yoda", "m", 200, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Luke Flywalker", "m", 29, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Darto Vado", "m", 56, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Chewbacco", "m", 45, NULL);
+
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Mrs Creepy", "w", 86, 3, 1);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Poki", "m", 30, 4, 2);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("The Tallest", "m", 45, 8, 3);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Bird Person", "m", 64, 12, 4);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Green Girl", "w", 36, 19, 5);
+
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Nightmare", "Haunts you in you Dreams", "7/10",1);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Deponia", "Rufus tries to escape Deponia", "9/10",2);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Invader Zim", "Zim tries to take over the World", "10/10",3);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Rick & Morty - THE MOVIE", "WUBBA LUBBA DUB DUB", "10/10",4);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Green Boys", "Yoda and the Gang on tour", "4/10",5);
+
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (2 , 1);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (3 , 1);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (4 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (5 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (6 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (7 , 2);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (8 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (9 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (10 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (11 , 3);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (12 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (13 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (14 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (15 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (16 , 4);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (19 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (20 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (21 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (22 , 5);
+
+SELECT actors.id, actors.name, actors.gender, actors.age, movies.name 
+    FROM movies_actors 
+    JOIN movies ON movies_id = movies.id
+    JOIN actors ON actors_id = actors.id;
+    
+SELECT actor, CASE
+    WHEN lp is NULL THEN "not married"
+    ELSE lp
+    END "life partner"
+    FROM(
+        SELECT actors.name AS actor , partners.name AS lp 
+            FROM actors
+            LEFT OUTER JOIN actors partners ON actors.life_partner_id = partners.id
+        )
+    order by lp DESC;
+    
+SELECT movies.name, movies.story, d.name AS director , movies.rating, COUNT(ma.actors_id) AS actors
+    FROM movies
+    JOIN movies_actors ma ON ma.movies_id = movies.id
+    JOIN directors d ON d.id = movies.director_id
+    GROUP BY movies.name ORDER BY movies.name DESC;
+    
+SELECT d.name AS directors, a.name AS "favourite actors", m.name AS "favourite movies"
+    FROM directors d
+    JOIN actors a ON d.fav_actor_id = a.id
+    JOIN movies m ON m.director_id = d.id;
+        
+
+/* Create table about the people and what they do here */
+CREATE TABLE actors (id INTEGER PRIMARY KEY, name TEXT, gender TEXT, age INTEGER, life_partner_id INTEGER);
+
+CREATE TABLE directors (id INTEGER PRIMARY KEY, name TEXT, gender TEXT, age INTEGER, fav_actor_id INTEGER, fav_movie_id INTEGER);
+
+CREATE TABLE movies (id INTEGER PRIMARY KEY, name TEXT, story TEXT, rating TEXT, director_id INTEGER);
+
+CREATE TABLE movies_actors (id INTEGER PRIMARY KEY, actors_id INTEGER, movies_id INTEGER);
+
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Mysterion","m", 30, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Freddi Krueger", "m", 60, 3);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Mary Krueger", "w", 56, 2);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Rufus", "m", 27, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Tony", "w", 30, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Lotti", "w", 50, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("McChronicle", "m", 28, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("GIR", NULL, 1, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("ZIM", "m", 16, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("DIB", "m", 15, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("TAK", "w", 17, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Rick Sanchez", "m", 80, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Morty Smith", "m", 14, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Beth Smith", "w", 41, 15);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Jerry Smith", "m", 45, 14);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Summer Smith", "w", 17, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Haeky Plosive", "m", 66, 18);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Armoura Pierce", "w", 67, 17);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Yoda", "m", 200, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Luke Flywalker", "m", 29, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Darto Vado", "m", 56, NULL);
+INSERT INTO actors (name, gender, age, life_partner_id) VALUES ("Chewbacco", "m", 45, NULL);
+
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Mrs Creepy", "w", 86, 3, 1);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Poki", "m", 30, 4, 2);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("The Tallest", "m", 45, 8, 3);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Bird Person", "m", 64, 12, 4);
+INSERT INTO directors (name, gender, age, fav_actor_id, fav_movie_id) VALUES ("Green Girl", "w", 36, 19, 5);
+
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Nightmare", "Haunts you in you Dreams", "7/10",1);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Deponia", "Rufus tries to escape Deponia", "9/10",2);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Invader Zim", "Zim tries to take over the World", "10/10",3);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Rick & Morty - THE MOVIE", "WUBBA LUBBA DUB DUB", "10/10",4);
+INSERT INTO movies (name, story, rating, director_id) VALUES ("Green Boys", "Yoda and the Gang on tour", "4/10",5);
+
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (2 , 1);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (3 , 1);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (4 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (5 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (6 , 2);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (7 , 2);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (8 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (9 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (10 , 3);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (11 , 3);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (12 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (13 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (14 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (15 , 4);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (16 , 4);
+
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (19 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (20 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (21 , 5);
+INSERT INTO movies_actors (actors_id, movies_id) VALUES (22 , 5);
+
+SELECT actors.id, actors.name, actors.gender, actors.age, movies.name 
+    FROM movies_actors 
+    JOIN movies ON movies_id = movies.id
+    JOIN actors ON actors_id = actors.id;
+    
+SELECT actor, CASE
+    WHEN lp is NULL THEN "not married"
+    ELSE lp
+    END "life partner"
+    FROM(
+        SELECT actors.name AS actor , partners.name AS lp 
+            FROM actors
+            LEFT OUTER JOIN actors partners ON actors.life_partner_id = partners.id
+        )
+    order by lp DESC;
+    
+SELECT movies.name, movies.story, d.name AS director , movies.rating, COUNT(ma.actors_id) AS actors
+    FROM movies
+    JOIN movies_actors ma ON ma.movies_id = movies.id
+    JOIN directors d ON d.id = movies.director_id
+    GROUP BY movies.name ORDER BY movies.name DESC;
+    
+SELECT d.name AS directors, a.name AS "favourite actors", m.name AS "favourite movies"
+    FROM directors d
+    JOIN actors a ON d.fav_actor_id = a.id
+    JOIN movies m ON m.director_id = d.id;
+        
+

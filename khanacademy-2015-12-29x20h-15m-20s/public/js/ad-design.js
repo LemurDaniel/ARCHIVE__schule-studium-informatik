@@ -1,0 +1,114 @@
+
+var Size = 45;
+var line_spacing = 10;
+var x = 2;
+var y = 10;
+var backgroundColor;
+var textColor;
+
+var bodyX = Size*6;
+var bodyY = y+Size;
+var bodyH = Size;
+var bodyW = bodyH;    
+
+function setup(){
+    createCanvas(600, 600);
+    backgroundColor = color(230, 218, 230);
+    textColor = color(128, 74, 74);
+}
+
+var show_txt = function(){
+    
+    fill(textColor);
+    //textFont(createFont("serif", 12));
+    textFont('Georgia')
+    textSize(Size);
+    text("PENGUINE!", x, y+Size);
+    textSize(Size/2);
+    var pos = Size + line_spacing;
+    text("COOL! DON'T GO TO SLEEP WITHOUT ONE!", x, y+pos*2);
+    
+    
+    var txt = "Penguins (order Sphenisciformes, family Spheniscidae) are a group of aquatic, flightless birds living almost exclusively in the Southern Hemisphere, especially in Antarctica. Highly adapted for life in the water, penguins have countershaded dark and white plumage, and their wings have evolved into flippers.";
+    textSize(Size/2.2);
+    text(txt,x,pos*3,380,400);
+    textSize(Size/2.5);
+    text("Quelle: https://en.wikipedia.org/wiki/Penguin",x,pos*7);
+};
+
+var drawPenguine = function(){
+     bodyW = bodyH;
+    
+    noStroke();
+    
+    fill(252, 118, 0);
+    var x1 = bodyX + bodyW/2;
+    var x2 = bodyX + bodyW/8;
+    var y1 = bodyH/2 + bodyY;
+    var y2 = y1 - bodyH/6;
+    triangle(x1, y1, x2,y2, x2,y1); // foot (right)
+    x1 = bodyX - bodyW/2;
+    x2 = bodyX - bodyW/8;
+    triangle(x1, y1, x2,y2, x2,y1); // foot (left)
+    
+    
+    fill(0, 0, 100);
+    ellipse(bodyX, bodyY, bodyW, bodyH); // body(blue)
+    
+    fill(255,220,255);
+    var W =  bodyW/1.3;
+    ellipse(bodyX, bodyY, W, bodyH); // inner-body(white)
+    
+    fill(0, 0, 100);
+    var y = bodyY  - bodyH/2;
+    var headW = bodyW/2;
+    var headH = bodyH/2.4;
+    ellipse(bodyX, y, headW, headH); // head
+    //116 64 55
+    
+    fill(255,255,255);
+    var x = headW/5; 
+    var y = bodyY - headH;
+    var w = headW/2;
+    var h = w*1.2;
+    ellipse(bodyX+x, y, w, h); // white eyehole (right)
+    ellipse(bodyX-x, y, w, h); // white eyehole (left)
+    
+    fill(0, 0, 0);
+    var r = headW/16;
+    ellipse(bodyX-x, y, r, r); // eye (right)
+    ellipse(bodyX+x, y, r, r); // eye (left)
+    
+    fill(252, 118, 0);
+    var y1 = bodyY - bodyH/8;
+    var y2 = bodyY - bodyH/3;
+    var x1 = bodyX - bodyW/8;
+    var x2 = bodyX + bodyW/8;
+    triangle(bodyX, y1,x1, y2,x2, y2); // nose
+};
+
+mouseOut = function() {
+    bodyX = Size*6;
+    bodyY = y+Size;
+    bodyH = Size;
+    bodyW = bodyH; 
+};
+
+mouseMoved = function() {
+    bodyX = mouseX;
+    bodyY = mouseY;
+};
+
+draw = function() {
+    background(backgroundColor);
+    
+    if(mouseIsPressed && mouseButton === LEFT){
+        bodyH += 2;
+    } else if(mouseIsPressed && mouseButton === RIGHT && bodyH>0) {
+        bodyH -= 2;
+    }
+    
+    drawPenguine();
+    show_txt();
+};
+
