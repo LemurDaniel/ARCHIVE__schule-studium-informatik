@@ -46,8 +46,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 			
-		instance = this;
-
+		instance = this;		
+		
 		FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
 		//FensterManager.getHauptSeite().show();
 

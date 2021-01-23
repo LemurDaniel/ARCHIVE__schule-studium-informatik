@@ -75,6 +75,9 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 				rs.next();
 				li.setTempId(rs.getInt(1));
 			}			
+		}catch(SQLException e) {
+			if(e.getSQLState().equals("23000"))	throw new Exception("Es existiert bereits ein Liste mit dem Name '"+li.getName()+"'");
+			else throw e;
 		}
 	}	
 	@Override
@@ -87,6 +90,9 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 			ps.setString(1, li.getName()	);
 			ps.setInt(2, 	li.getId()		);
 			ps.executeUpdate();
+		}catch(SQLException e) {
+			if(e.getSQLState().equals("23000"))	throw new Exception("Es existiert bereits ein Liste mit dem Name '"+li.getName()+"'");
+			else throw e;
 		}
 	}
 	@Override
@@ -107,16 +113,13 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	protected void onAddSucess(Liste li, Connection con) throws SQLException, InterruptedException{
 		super.onAddSucess(li, con);
 		FensterManager.logErreignis(String.format("Die Liste '%s' wurde erfolgreich erstellt", li.getName()));
-		if(li.hatAuftraege())	super.updateEntitaet(li);
+		if(li.hatAuftraege())	li.save(con);
 	}
 	@Override
 	protected void onUpdateSucess(Liste li, Connection con) throws SQLException, InterruptedException{
 		if(li.hasBackup())	FensterManager.logErreignis(String.format("Der name der Liste '%s' wurde erfolgreich geändert", li.getName()));
 		super.onUpdateSucess(li, con);
-		if(!li.hatAuftraege())	return;
-		FensterManager.logErreignis(String.format("Der Inhalt der Liste '%s' wird aktualisiert", li.getName()));
-		li.save(con);
-		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%s' wurde beendet", li.getName()));
+		if(li.hatAuftraege())	li.save(con);
 	}
 	@Override
 	protected void onDeleteSucess(Liste li, Connection con) throws SQLException, InterruptedException{
@@ -130,13 +133,16 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	public void save(Connection con) throws SQLException, InterruptedException{
 		try{
 			super.save(con);
-		}catch(Exception e) {
+		}finally {
 			super.getObList().filtered(Liste::hatAuftraege).forEach(super::updateEntitaet);
-			throw e;
 		}
 	}
 	
-	
+	@Override
+	public void reset() {
+		update.forEach(Liste::reset);
+		super.reset();
+	}
 	
 	public static int getMaxName() {
 		return DB_Manager.get("ListeNameMax");

@@ -44,6 +44,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		add.forEach(a->System.out.println(a));
 		System.out.println("delete----------");
 		delete.forEach(a->System.out.println(a));
+		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		return true;
 	}
 
@@ -56,6 +57,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		delete.forEach(a->System.out.println(a));
 		System.out.println("add----------");
 		add.forEach(a->System.out.println(a));
+		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		return true;
 	}
 	public boolean updateEntitaet(T entitaet) {
@@ -70,6 +72,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		delete.forEach(a->System.out.println(a));
 		System.out.println("add----------add");
 		add.forEach(a->System.out.println(a));
+		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		return true;
 	}
 	
@@ -112,6 +115,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 					continue;
 				}catch(Exception e) {
 					err.push(ent);
+					e.printStackTrace();
 					FensterManager.logErreignis(e);
 					continue;
 				}

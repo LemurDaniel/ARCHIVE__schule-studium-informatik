@@ -51,9 +51,7 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	public ReadOnlyStringProperty getGroeﬂeProperty() {
 		return groeﬂe.getReadOnlyProperty();
 	}
-	public Filmverwaltung getFvw() {
-		return filme;
-	}
+
 	
 	
 	public void setId(int id) {
@@ -250,16 +248,21 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	protected void onUpdateSucess(Film film, Connection con) {}
 	
 	
+	
+	
 	@Override
 	public void save(Connection con) throws SQLException, InterruptedException{
+		FensterManager.logErreignis(String.format("Der Inhalt der Liste '%s' wird aktualisiert", name.get()));
 		filme.save(con);
 		super.save(con);
+		FensterManager.logErreignis(String.format("Aktualisierung der Liste '%s' wurde beendet", name.get()));
 	}
 	@Override
 	public void reset() {
 		filme.reset();
 		while(!add.empty())		filme.getObList().remove(add.pop());
 		while(!delete.empty())	filme.getObList().add(delete.pop());
+		aktualisiereGroeﬂe();
 		super.reset();
 	}
 	@Override
@@ -268,6 +271,11 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		super.clear();
 	}
 	
+	
+	@Override
+	public boolean hatAuftraege() {
+		return super.hatAuftraege() || filme.hatAuftraege();
+	}
 
 	
 }

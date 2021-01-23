@@ -154,6 +154,15 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 	
 	
+	@Override
+	public void save(Connection con) throws SQLException, InterruptedException{
+		FensterManager.logErreignis(String.format("Die Mitwirkenden zum Film '%s' werden aktualisiert", film.getTitel()));
+		super.save(con);
+		FensterManager.logErreignis(String.format("Die Aktualisierung der Mitwirkenden zum Film '%s' wurde abgeschlossen", film.getTitel()));
+	}
+	
+	
+	
 	public static int getMaxName() {
 		return DB_Manager.get("PerNameMax");
 	}

@@ -65,7 +65,7 @@ public class AddFilmCtrl {
 	    tab_pane.getSelectionModel().select(tab_allg);
 	    tab_pane.requestFocus();	
 
-	    if(film==null) film = new Film(-1, 0, null, 0, 0, 0);	    	
+	    if(film==null) film = new Film(-1, -1, null, Filmverwaltung.getMinDauer(), Filmverwaltung.getMinJahr(), 0);	    	
 	    pvw = film.getPvw();
 	    
 		if(film.getId()!=-1 && (!pvw.isGeladen() || !film.getRvw().isGeladen())) {
@@ -79,16 +79,13 @@ public class AddFilmCtrl {
 	    this.stpv = stpv;
 	    added = false;
 		setDisplay();
-		setTable();
 	}
+
 	
-	private void setTable() {
-		tp_mit.setDisable(film.getId()==-1);
-		table.setItems(pvw.getObList());	
-	}
-	
-	private void setDisplay() {
+	private void setDisplay() {		
 	    blocked = true;
+	    
+		table.setItems(pvw.getObList());	
 		table_genre.getSelectionModel().clearSelection();
 
 		if(selected!=null)	selected.forEach(ge->checked_genre.get(ge).set(false));
@@ -101,7 +98,7 @@ public class AddFilmCtrl {
 		tf_dauer.setDefaultValue(film.getDauer());
 		tf_jahr.setDefaultValue(film.getErscheinungsjahr()	);
 		tf_bewertung.setText(film.getBwtStringProperty().get());
-
+		
 		blocked = false;
 	}
 	
