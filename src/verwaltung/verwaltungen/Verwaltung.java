@@ -16,13 +16,14 @@ import javafx.collections.ObservableList;
 import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
+import verwaltung.entitaeten.Id;
 
-public abstract class Verwaltung <T extends Backup & EingabePruefung> extends Stapelverarbeitung<T>{
+public abstract class Verwaltung <T extends Backup & EingabePruefung & Id> extends Stapelverarbeitung<T>{
 	
 
 	/** VAR */
-	private Set<T> list; 	
-	private ObservableList<T> observablelist;
+	protected Set<T> list; 	
+	protected ObservableList<T> observablelist;
 	private ReadOnlyIntegerWrapper size;
 	
 	protected Verwaltung() {
@@ -44,16 +45,16 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends St
 
 	public void addObj(T obj) {
 		list.add(obj);
-	//	if(!observablelist.contains(obj)) 	observablelist.add(obj);
+		if(!observablelist.contains(obj)) 	observablelist.add(obj);
 	}
 	public void removeObj(T obj) {
 		list.remove(obj);
-	//	observablelist.remove(obj);
+		observablelist.remove(obj);
 	}
 	public void clear() {
 		list.clear();
 		observablelist.clear();
-		reset();
+		super.clear();
 	}
 		
 	public List<T> getList() {
@@ -63,22 +64,9 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends St
 		return fehlerlog;
 	}
 	
-	public boolean addEntitaet(T entitaet) {
-		System.out.println("Performance Test");
-		long nano = System.nanoTime();
-		long mili = System.currentTimeMillis();
-//		System.out.println(String.format("nano: %,d", nano));
-//		System.out.println(String.format("milli: %,d", mili));
-		boolean t = addEntitaetTest(entitaet);
-		nano = System.nanoTime()-nano;
-		mili = System.currentTimeMillis()-mili;
-		System.out.println(String.format("nano: %,d", nano));
-		System.out.println(String.format("milli: %,d", mili));
-		return t;
-	}
 	
-	//@Override
-	public boolean addEntitaetTest(T entitaet) {
+	@Override
+	public boolean addEntitaet(T entitaet) {
 		if(list.contains(entitaet))		  return false;
 		if(!super.addEntitaet(entitaet))  return false;
 		observablelist.add(0, entitaet);
@@ -97,35 +85,34 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends St
 	}
 	
 	
-	
-	
+		
 	@Override
 	protected void onAdd(T ent, Connection con) throws Exception {
 		ent.checkEingaben();
-		add(ent, con);
 	}
 	@Override
 	protected void onUpdate(T ent, Connection con) throws Exception  {
 		if(!ent.hasBackup())	return;
 		ent.checkEingaben();
-		update(ent, con);
 	}
 	@Override
-	protected void onDelete(T ent, Connection con) throws Exception  {
-		delete(ent, con);
-	}
+	protected void onDelete(T ent, Connection con) throws Exception  {}
+
+	
 	
 	
 	@Override
-	protected void onAddSucess(T ent) {
+	protected void onAddSucess(T ent, Connection con) 	throws SQLException{
 		addObj(ent);
+		ent.commitId();
 	}
 	@Override
-	protected void onUpdateSucess(T ent) {
+	protected void onUpdateSucess(T ent, Connection con) throws SQLException{
+		if(!ent.hasBackup()) return;
 		ent.deleteBackup();
 	}
 	@Override
-	protected void onDeleteSucess(T ent) {
+	protected void onDeleteSucess(T ent, Connection con) throws SQLException{
 		removeObj(ent);
 	}
 
@@ -136,10 +123,6 @@ public abstract class Verwaltung <T extends Backup & EingabePruefung> extends St
 		delete.forEach(observablelist::add);
 		super.reset();
 	}
-	
-	protected abstract void add(T ent, Connection con)					throws SQLException;
-	protected abstract void update(T ent, Connection con)				throws SQLException;
-	protected abstract void delete(T ent, Connection con)				throws SQLException;
-	
+
 
 }

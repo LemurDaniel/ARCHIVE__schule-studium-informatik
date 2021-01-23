@@ -1,6 +1,8 @@
 package gui.controller;
 
 import java.awt.datatransfer.Clipboard;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -28,6 +30,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Liste;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -38,6 +41,7 @@ public class ListensichtCtrl {
 	private final static DataFormat NICHTS = new DataFormat("nichts");
 	
 	private Listenverwaltung lvw = Listenverwaltung.instance();
+	private Thread th = new Thread(lvw);
 	private Liste angezeigteListe;
 	
 	private boolean blocked = false;
@@ -118,13 +122,41 @@ public class ListensichtCtrl {
     		else if(event.getSource()==btn_add)		addFilm();
     		else if(event.getSource()==btn_neu)		neuListe();
     		else if(event.getSource()==btn_rel)		zuruecksetzen();
+    		else if(event.getSource()==btn_save)	save();
     	}catch(Exception e) {
     		Alert a = new Alert(AlertType.ERROR);
     		a.setContentText(e.getMessage());
     		a.show();
+    		e.printStackTrace();
     	}
     }
-    private void zuruecksetzen() throws Exception{
+    private void save() throws SQLException {
+    	if(th.isAlive())	{
+    		th.interrupt();
+    		btn_save.setText("Speichern");
+    		return;
+    	}
+    	th = new Thread(lvw);
+    	th.start();
+    	btn_save.setText("Stop");
+//		try(Connection con = DB_Manager.getCon()){
+//			System.out.println("Performance Test");
+//			long nano = System.nanoTime();
+//			long mili = System.currentTimeMillis();
+//
+//			lvw.save(con);
+//			lvw.getFehlerlog().forEach(fehler->System.out.println(fehler));
+//			lvw.getLog().forEach(fehler->System.out.println(fehler));
+//			
+//			nano = System.nanoTime()-nano;
+//			mili = System.currentTimeMillis()-mili;
+//			System.out.println(String.format("nano: %,d", nano));
+//			System.out.println(String.format("milli: %,d", mili));
+//		}
+	}
+
+    
+	private void zuruecksetzen() throws Exception{
 		if(tab_film.isSelected()) {
 			if(angezeigteListe==null)	throw new Exception("Es wurde keine Liste ausgewählt");
 			angezeigteListe.reset();
@@ -218,6 +250,7 @@ public class ListensichtCtrl {
     }
     private void zuListeHinzufuegen(DragEvent event) {
     	Filmverwaltung.kopiereAusDragbord(event.getDragboard()).forEach(angezeigteListe::addEntitaet);
+    	lvw.updateEntitaet(angezeigteListe);
 		event.setDropCompleted(true);
 		event.consume();
     }
@@ -230,8 +263,8 @@ public class ListensichtCtrl {
     	if(li.getId()!=-1 && !li.hasBackup()) {
     		li.backup();
     		lvw.updateEntitaet(li);
-        	li.setName(value);
     	}
+    	li.setName(value);
     }
     
 }

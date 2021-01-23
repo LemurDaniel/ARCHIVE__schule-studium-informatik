@@ -160,8 +160,19 @@ public class HauptseiteCtrl {
 	}
     
 	private void speichern() throws Exception{
-		try(Connection con = DB_Manager.getCon()) {
-			fvw.save(con);
+		try(Connection con = DB_Manager.getCon()){
+				System.out.println("Performance Test");
+				long nano = System.nanoTime();
+				long mili = System.currentTimeMillis();
+
+				fvw.save(con);
+				fvw.getFehlerlog().forEach(fehler->System.out.println(fehler));
+				fvw.getLog().forEach(fehler->System.out.println(fehler));
+				
+				nano = System.nanoTime()-nano;
+				mili = System.currentTimeMillis()-mili;
+				System.out.println(String.format("nano: %,d", nano));
+				System.out.println(String.format("milli: %,d", mili));
 		}
 	}
 }

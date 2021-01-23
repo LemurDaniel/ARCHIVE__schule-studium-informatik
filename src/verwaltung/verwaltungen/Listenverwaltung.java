@@ -28,8 +28,6 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	public void ladeListen(Connection con) throws SQLException {	
 		super.clear();
 		
-		System.out.println("ttt");
-		
 		String sql = "Select id, name from liste where besitzer=? ";	
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
@@ -60,23 +58,25 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 	
 	
 	@Override
-	protected void add(Liste ent, Connection con) throws SQLException {
+	protected void onAdd(Liste li, Connection con) throws Exception {
+		super.onAdd(li, con);
 		
 		String sql = "Insert liste(name, besitzer) values( ?, ?); Select SCOPE_IDENTITY();";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
-			ps.setString(1, ent.getName()				);
+			ps.setString(1, li.getName()				);
 			ps.setInt(2, 	Nutzer.getNutzer().getId()	);
 			try(ResultSet rs = ps.executeQuery()){
 				rs.next();
-				ent.setId(rs.getInt(1));             // <------ id TODO
+				li.setTempId(rs.getInt(1));
 			}			
 		}
 	}	
 	@Override
-	protected void update(Liste li, Connection con) throws SQLException {
+	protected void onUpdate(Liste li, Connection con) throws Exception {
+		super.onUpdate(li, con);
 		
-		String sql = "Update liste set name=? where lid=?";
+		String sql = "Update liste set name=? where id=?";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
 			ps.setString(1, li.getName()	);
@@ -85,9 +85,10 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		}
 	}
 	@Override
-	protected void delete(Liste li, Connection con) throws SQLException {
+	protected void onDelete(Liste li, Connection con) throws Exception {
+		super.onDelete(li, con);
 		
-		String sql = "Delete liste_film where lid=?; Delete liste where lid=?";
+		String sql = "Delete liste_film where lid=?; Delete liste where id=?";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){
 			ps.setInt(1, li.getId());
@@ -96,7 +97,41 @@ public class Listenverwaltung extends Verwaltung<Liste>{
 		}
 	}
 	
-
+	
+	@Override
+	protected void onAddSucess(Liste li, Connection con) throws SQLException{
+		super.onAddSucess(li, con);
+		li.save(con);
+		li.getFehlerlog().forEach(super.fehlerlog::add);
+		li.getLog().forEach(super.log::add);
+	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
+		System.out.println(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich erstellt", li.getName()));
+	}
+	@Override
+	protected void onUpdateSucess(Liste li, Connection con) throws SQLException{
+		super.onUpdateSucess(li, con);
+		li.save(con);
+		li.getFehlerlog().forEach(super.fehlerlog::add);
+		li.getLog().forEach(super.log::add);
+	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
+		System.out.println(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich geupdatet", li.getName()));
+	}
+	@Override
+	protected void onDeleteSucess(Liste li, Connection con) throws SQLException{
+		super.onDeleteSucess(li, con);
+	//	super.getLog().add(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
+		System.out.println(String.format("Die Liste '%-"+getMaxName()+"s' wurder erfolgreich gelöscht", li.getName()));
+	}
+	
+	
+	@Override
+	public void save(Connection con) throws SQLException{
+		super.save(con);
+		super.getObList().filtered(Liste::hatAuftraege).forEach(super::updateEntitaet);
+	}
+	
+	
+	
 	public static int getMaxName() {
 		return DB_Manager.get("ListeNameMax");
 	}

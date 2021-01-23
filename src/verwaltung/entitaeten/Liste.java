@@ -17,9 +17,10 @@ import verwaltung.verwaltungen.Listenverwaltung;
 import verwaltung.verwaltungen.Stapelverarbeitung;
 
 
-public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePruefung {
+public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePruefung, Id {
 	
 	private Liste backup;
+	private int tempid;
 	
 	private int id;
 	private StringProperty name;
@@ -67,7 +68,15 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	public String toString() {
 		return name.get();
 	}
-	
+		
+	@Override
+	public void setTempId(int id) {
+		tempid = id;
+	}
+	@Override
+	public void commitId() {
+		id = tempid;
+	}
 	
 	
 	@Override
@@ -85,6 +94,8 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	}
 	@Override
 	public void backupReset() {
+		if(backup==null)	return;
+		
 		System.out.println("backup "+backup.id+backup.getName());
 		id = backup.getId();
 		name.set(backup.getName());
@@ -106,26 +117,14 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 			throw new Exception("Fehler Liste: '"+name.get()+"'"+sb.toString());
 	}
 
-		
+	
 	@Override
 	public boolean addEntitaet(Film film) {
-		System.out.println(filme.existiert(film));
 		if(filme.existiert(film) && !delete.contains(film))		return false;
-//			if(delete.contains(film))	{
-//				delete.remove(film);
-//				filme.getObList().add(film);
-//				
-//				System.out.println("sssssssssssss");
-//				System.out.println("add----------add");
-//				add.forEach(a->System.out.println(a));
-//				System.out.println("delete----------");
-//				delete.forEach(a->System.out.println(a));
-//			}
-//			return false;
-//		}
 		if(!super.addEntitaet(film))		return false;
 		if(film.getId()==-1) 				filme.addEntitaet(film);
 		else 								filme.getObList().add(film);
+		Listenverwaltung.instance().updateEntitaet(this);
 		return true;
 	}
 	
@@ -133,15 +132,22 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	// nicht via id, diese ist immer -1 !!
 	@Override
 	public boolean removeEntitaet(Film film) {
-		System.out.println(add.contains(film));
-		System.out.println(film);
-		System.out.println(!filme.existiert(film) && !add.contains(film));
 		if(!filme.existiert(film) && !add.contains(film))	return false;
 		if(!super.removeEntitaet(film))		return false;
 		if(film.getId()==-1)	filme.removeEntitaet(film);
 		filme.getObList().remove(film);
+		Listenverwaltung.instance().updateEntitaet(this);
 		return true;
 	}	
+	@Override
+	public boolean updateEntitaet(Film film) {
+		if(!filme.updateEntitaet(film))	return false;
+		Listenverwaltung.instance().updateEntitaet(this);
+		return true;
+	}
+	
+	
+	
 	@Override
 	protected void onAdd(Film film, Connection con) throws Exception {
 		if(!Filmverwaltung.existiertGlobal(film))	throw new Exception("Der Film konnte nicht zur liste hinzugefügt werden");
@@ -168,31 +174,35 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 	}
 	
 	@Override
-	protected void onAddSucess(Film film) {
+	protected void onAddSucess(Film film, Connection con) {
 		filme.addObj(film);
+		int max = Filmverwaltung.getMaxTitel();
+		int max2 = Listenverwaltung.getMaxName();
+	//	super.log.add(String.format("'%-"+max+"s' wurde erfolgreich zu Liste '%-"+max2+"s' hinzugefügt", film.getTitel(), name.get()));
+		System.out.println(String.format("'%-"+max+"s' wurde erfolgreich zu Liste '%-"+max2+"s' hinzugefügt", film.getTitel(), name.get()));
 	}
 	@Override
-	protected void onDeleteSucess(Film film) {
+	protected void onDeleteSucess(Film film, Connection con) {
 		filme.removeObj(film);
+		int max = Filmverwaltung.getMaxTitel();
+		int max2 = Listenverwaltung.getMaxName();
+		//super.log.add(String.format("'%-"+max+"s' wurde erfolgreich aus Liste '%-"+max2+"s' gelöscht", film.getTitel(), name.get()));
+		System.out.println(String.format("'%-"+max+"s' wurde erfolgreich aus Liste '%-"+max2+"s' gelöscht", film.getTitel(), name.get()));
 	}
 	
 	
-	
-	@Override
-	public boolean updateEntitaet(Film film) {
-		filme.addEntitaet(film);
-		return true;
-	}
 	@Override
 	protected void onUpdate(Film ent, Connection con) throws Exception {}
 	@Override
-	protected void onUpdateSucess(Film film) {}
+	protected void onUpdateSucess(Film film, Connection con) {}
 	
 	
 	@Override
 	public void save(Connection con) throws SQLException{
 		filme.save(con);
 		super.save(con);
+		filme.getLog().forEach(super.log::add);
+		filme.getFehlerlog().forEach(super.fehlerlog::add);
 	}
 	@Override
 	public void reset() {
@@ -201,5 +211,6 @@ public class Liste extends Stapelverarbeitung<Film> implements Backup, EingabePr
 		while(!delete.empty())	filme.getObList().add(delete.pop());
 		super.reset();
 	}
+
 	
 }

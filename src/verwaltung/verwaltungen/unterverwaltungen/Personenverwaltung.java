@@ -95,25 +95,19 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	}
 
 		
+	
 	@Override
-	protected void add(Person person, Connection con) throws SQLException {
+	protected void onAdd(Person person, Connection con) throws Exception {
+		super.onAdd(person, con);
 		
+		int id = -1;
 		Person original = null;
 		//Existiert bereits in Datenbank?
 		try(PreparedStatement ps = con.prepareStatement("Select id from person where name=? and vorname=?")){
 			ps.setString(1, person.getName());
 			ps.setString(2, person.getVorname());
 			try(ResultSet rs = ps.executeQuery()){
-				if(rs.next()) {
-					int id = rs.getInt(1);
-					if(person.getId()==id) 	original = person;
-					else					original = getList().stream().filter(per->per.getId()==id).findFirst().orElse(null);
-					if(original==null) {
-						original = person;
-						person.setId(id);
-					//	addObj(original);
-					}
-				}
+				if(rs.next())	id = rs.getInt(1);							
 			}
 		}
 		
@@ -124,16 +118,11 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 				ps.setString(2, person.getName());
 				try(ResultSet rs = ps.executeQuery()){
 					rs.next();
-					original = person;
-					person.setId(rs.getInt(1));
-					//addObj(original);	
+					id = rs.getInt(1);	
 				}
 			}
 		}
 		
-		System.out.println(original);
-		System.out.println(person);
-		System.out.println(getList().contains(person));
 		for(PersonMitRolle pmr: person.getPersonenMitRolle()) {
 			
 			if(pmr.getUpdateProperty().get()==false)	continue;
@@ -143,34 +132,36 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			try(PreparedStatement ps1 = con.prepareStatement("Select * from film_person_rolle where fid=? and pid=? and rid=?");
 					PreparedStatement ps2 = con.prepareStatement("insert into film_person_rolle(fid, pid, rid) values(?, ?, ?)")){
 				ps1.setInt(1, film.getId());
-				ps1.setInt(2, original.getId());
+				ps1.setInt(2, id);
 				ps1.setInt(3, rolleid);
 
 				try(ResultSet rs = ps1.executeQuery()){
 					//Wenn bereits vorhanden dann nicht nochmal hinzufügen
 					if(!rs.next()) {
 						ps2.setInt(1, film.getId());
-						ps2.setInt(2, original.getId());
+						ps2.setInt(2, id);
 						ps2.setInt(3, rolleid);
 						ps2.executeUpdate();	
 					}
 				}
 			}
-			if(person != original) {
-				person.removePMR(pmr);
-				original.addPMR(pmr);
-				if(pmr.getDeleteProperty().get()==true)
-					super.removeEntitaet(pmr.getPerson());
-			}
+			//TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//			if(person != original) {
+//				person.removePMR(pmr);
+//				original.addPMR(pmr);
+//				if(pmr.getDeleteProperty().get()==true)
+//					super.removeEntitaet(pmr.getPerson());
+//			}
 			
-			pmr.getUpdateProperty().set(false);	
-			System.out.println(pmr+"  "+pmr.getPerson());
-			System.out.println(pmr.getUpdateProperty());
+//			pmr.getUpdateProperty().set(false);	
+//			System.out.println(pmr+"  "+pmr.getPerson());
+//			System.out.println(pmr.getUpdateProperty());
 		}
 	}
 		
 	@Override
-	protected void update(Person per, Connection con) throws SQLException {
+	protected void onUpdate(Person per, Connection con) throws Exception {
+		super.onUpdate(per, con);
 		
 		for(PersonMitRolle pmr: per.getPersonenMitRolle()) {
 			
@@ -184,14 +175,14 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			pmr.resetInitialRolle();
 			pmr.getUpdateProperty().set(true);
 		}
-		add(per, con);		
+		onAdd(per, con);		
 	}
 	
 	@Override
-	protected void delete(Person per, Connection con) throws SQLException {
+	protected void onDelete(Person per, Connection con) throws Exception {
+		super.onDelete(per, con);
 		
 		for(PersonMitRolle pmr: per.getPersonenMitRolle()) {
-
 			if(pmr.getDeleteProperty().get()==false)	continue;
 			int rolleid;
 			if(pmr.getinitialRolle()!=pmr.getRolle())	rolleid = pmr.getinitialRolle().getId();
@@ -202,12 +193,24 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 				ps.setInt(3, rolleid);
 				ps.executeUpdate();
 			}	
-			pmr.getDeleteProperty().set(false);
-			per.removePMR(pmr);
 		}
 	}
 
-
+	@Override
+	protected void onAddSucess(Person per, Connection con) 	throws SQLException{
+		load(con);
+		aktualisierePmrliste();
+	}
+	@Override
+	protected void onUpdateSucess(Person per, Connection con) throws SQLException{
+		load(con);
+		aktualisierePmrliste();
+	}
+	@Override
+	protected void onDeleteSucess(Person per, Connection con) throws SQLException{
+		load(con);
+		aktualisierePmrliste();
+	}
 	
 	public static int getMaxName() {
 		return DB_Manager.get("PerNameMax");

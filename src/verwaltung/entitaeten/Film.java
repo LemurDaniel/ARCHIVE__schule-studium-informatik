@@ -12,9 +12,10 @@ import verwaltung.verwaltungen.unterverwaltungen.Personenverwaltung;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 
 
-public class Film implements Backup, EingabePruefung{
+public class Film implements Backup, EingabePruefung, Id{
 
 	private Film backup;
+	private int tempid;
 	
 	private int id, erstellerId;
 	private List<Genre> genres;
@@ -66,7 +67,14 @@ public class Film implements Backup, EingabePruefung{
 		return erscheinungsjahr.get();
 	}
 
-	
+	@Override
+	public void setTempId(int id) {
+		tempid = id;
+	}
+	@Override
+	public void commitId() {
+		id = tempid;
+	}
 	
 	
 	public ReadOnlyStringWrapper getTitelProperty() {
@@ -236,7 +244,7 @@ public class Film implements Backup, EingabePruefung{
 		if(genres.size()< Filmverwaltung.getMinGenre()) 					sb.append("\n--kein Genre");
 		if(genres.size()> Filmverwaltung.getMaxGenre())						sb.append("\n--Genre");
 		if(sb.length()>0)
-			throw new Exception("Fehler Film: '"+titel.get()+"'"+sb.toString());
+			throw new Exception("Fehler Film: '"+this+titel+"'"+sb.toString());
 	}
 	
 }

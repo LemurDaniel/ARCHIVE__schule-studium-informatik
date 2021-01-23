@@ -6,9 +6,10 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import verwaltung.verwaltungen.unterverwaltungen.Rezensionenverwaltung;
 
-public class Rezension implements Backup, EingabePruefung{
+public class Rezension implements Backup, EingabePruefung, Id{
 	
 	private Rezension backup;
+	private int tempid;
 	
 	private int id, verfasserId;
 	private String inhalt;
@@ -72,6 +73,16 @@ public class Rezension implements Backup, EingabePruefung{
 		this.bewertung.set(bewertung);;
 	}
 
+	
+	@Override
+	public void setTempId(int id) {
+		tempid = id;
+	}
+	@Override
+	public void commitId() {
+		id = tempid;
+	}
+	
 	@Override
 	public void backup() {
 		if(backup!=null)	return;

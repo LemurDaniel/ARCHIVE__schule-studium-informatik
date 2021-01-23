@@ -7,9 +7,10 @@ import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
 import verwaltung.entitaeten.Film;
+import verwaltung.entitaeten.Id;
 import verwaltung.verwaltungen.Verwaltung;
 
-public abstract class Unterverwaltung<T extends Backup & EingabePruefung> extends Verwaltung<T>{
+public abstract class Unterverwaltung<T extends Backup & EingabePruefung & Id> extends Verwaltung<T>{
 	
 	private boolean isLoaded;
 	protected Film film;

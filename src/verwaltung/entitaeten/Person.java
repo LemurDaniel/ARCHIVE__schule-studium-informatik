@@ -8,9 +8,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Person implements Backup, EingabePruefung{
+public class Person implements Backup, EingabePruefung, Id{
 	
 	private Person backup;
+	private int tempid;
 	
 	public int id;
 	public StringProperty vorname;
@@ -84,6 +85,15 @@ public class Person implements Backup, EingabePruefung{
 		return pmrlist.size();
 	}
 	
+	
+	@Override
+	public void setTempId(int id) {
+		tempid = id;
+	}
+	@Override
+	public void commitId() {
+		id = tempid;
+	}
 	
 	
 	@Override

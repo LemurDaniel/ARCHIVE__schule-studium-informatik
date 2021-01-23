@@ -56,7 +56,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 				if(geladeneFilme.containsKey(idNow))	current = geladeneFilme.get(idNow).aktualisiere(rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
 				else 									current = new Film(idNow, rs.getInt("ersteller"), rs.getString("titel"), rs.getInt("dauer"), rs.getInt("erscheinungsjahr"), rs.getFloat("bewertung"));
 				addObj(current);
-				getObList().add(current);
 				lastId = idNow;
 			}
 			current.addGenre( genreMap.get(rs.getInt("gid")) );	
@@ -74,8 +73,10 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	}
 	
 	@Override
-	protected void add(Film f, Connection con) throws SQLException {
+	protected void onAdd(Film f, Connection con) throws Exception {
+		super.onAdd(f, con);
 		
+		int id;	
 		String sql = "Insert into film(titel, dauer, erscheinungsjahr, bewertung, ersteller) values(?, ?, ?, ?, ?); Select SCOPE_IDENTITY()";
 		
 		try(PreparedStatement ps = con.prepareStatement(sql)){			
@@ -88,15 +89,16 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			
 			try(ResultSet rs = ps.executeQuery()) {
 				rs.next();
-				f.setId(rs.getInt(1));
+				id = rs.getInt(1);
+				f.setTempId(id);
 			}
-
-			updateGenres(con, f.getGenres(), f.getId());
 		}		
+		updateGenres(con, f.getGenres(), id);
 	}
 	
 	@Override
-	protected void update(Film f, Connection con) throws SQLException {
+	protected void onUpdate(Film f, Connection con) throws Exception {
+		super.onUpdate(f, con);
 		
 		String sql = "Update film set titel=?, dauer=?, erscheinungsjahr=? where id=?;";
 		
@@ -114,11 +116,6 @@ public class Filmverwaltung extends Verwaltung<Film>{
 	
 	}
 	
-	@Override
-	protected void delete(Film f, Connection con) {
-		throw new UnsupportedOperationException();
-	}
-	
 	private void updateGenres(Connection con, List<Genre> genres, int fid) throws SQLException{
 		String sql1 = "Delete from genre_film where fid="+fid;
 		String sql2 = "Insert into genre_film(gid, fid) values(?,?)";
@@ -134,6 +131,23 @@ public class Filmverwaltung extends Verwaltung<Film>{
 			}			
 		}
 	}
+	
+	
+	@Override
+	protected void onAddSucess(Film f, Connection con) throws SQLException{
+		super.onAddSucess(f, con);
+	//	super.log.add(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich hinzugefügt", f.getTitel()));
+		System.out.println(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich hinzugefügt", f.getTitel()));
+	}
+	@Override
+	protected void onUpdateSucess(Film f, Connection con) throws SQLException{
+		super.onUpdateSucess(f, con);
+	//	super.log.add(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich geupdatet", f.getTitel()));
+		System.out.println(String.format("'%-"+getMaxTitel()+"s' wurde erfolgreich geupdated", f.getTitel()));
+	}
+
+		
+	
 	
 	public void filter(String titel, Float bwtMax, Float bwtMin, Integer dauerMax, Integer dauerMin, Integer jahrMax,
 			Integer jahrMin, List<Genre> genre, boolean and, List<String> tags, int anzahl) throws SQLException {

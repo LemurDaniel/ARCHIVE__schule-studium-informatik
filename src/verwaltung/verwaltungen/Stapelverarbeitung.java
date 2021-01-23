@@ -6,14 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import verwaltung.DB_Manager;
 import verwaltung.entitaeten.Backup;
 import verwaltung.entitaeten.EingabePruefung;
+import verwaltung.entitaeten.Id;
 
-public abstract class Stapelverarbeitung<T extends Backup > {
+public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 
 	protected Stack<T> delete, add, update, err;
 	
 	protected List<Exception>	fehlerlog;
+	protected List<String>	log;
 	
 	public Stapelverarbeitung () {
 		delete = new Stack<>();
@@ -21,13 +24,21 @@ public abstract class Stapelverarbeitung<T extends Backup > {
 		update = new  Stack<>();
 		err = new Stack<>();
 		fehlerlog   = new ArrayList<>();
+		log = new ArrayList<>();
 	}
 	
 
 	public List<Exception> getFehlerlog(){
 		return fehlerlog;
 	}
-	
+	public List<String> getLog(){
+		return log;
+	}
+	public void clear(){
+		delete.clear();
+		add.clear();
+		update.clear();
+	}
 	
 	public boolean addEntitaet(T entitaet) {
 		if(entitaet==null || add.contains(entitaet))	return false;
@@ -35,10 +46,10 @@ public abstract class Stapelverarbeitung<T extends Backup > {
 		else							add.push(entitaet);
 		
 		
-		System.out.println("add----------add");
-		add.forEach(a->System.out.println(a));
-		System.out.println("delete----------");
-		delete.forEach(a->System.out.println(a));
+//		System.out.println("add----------add");
+//		add.forEach(a->System.out.println(a));
+//		System.out.println("delete----------");
+//		delete.forEach(a->System.out.println(a));
 		return true;
 	}
 
@@ -47,22 +58,24 @@ public abstract class Stapelverarbeitung<T extends Backup > {
 		if(add.contains(entitaet))	add.remove(entitaet);
 		else						delete.push(entitaet);
 		
-		System.out.println("delete----------delete");
-		delete.forEach(a->System.out.println(a));
-		System.out.println("add----------");
-		add.forEach(a->System.out.println(a));
+//		System.out.println("delete----------delete");
+//		delete.forEach(a->System.out.println(a));
+//		System.out.println("add----------");
+//		add.forEach(a->System.out.println(a));
 		return true;
 	}
 	public boolean updateEntitaet(T entitaet) {
 		if(entitaet==null  || add.contains(entitaet) || update.contains(entitaet))	return false;
 		update.push(entitaet);
 		
-		System.out.println("update----------add");
-		update.forEach(a->System.out.println(a));
-		System.out.println("delete----------");
-		delete.forEach(a->System.out.println(a));
-		System.out.println("add----------add");
-		add.forEach(a->System.out.println(a));
+//		System.out.println(this.getClass().getSimpleName());
+		
+//		System.out.println("update----------add");
+//		update.forEach(a->System.out.println(a));
+//		System.out.println("delete----------");
+//		delete.forEach(a->System.out.println(a));
+//		System.out.println("add----------add");
+//		add.forEach(a->System.out.println(a));
 		return true;
 	}
 	
@@ -78,6 +91,7 @@ public abstract class Stapelverarbeitung<T extends Backup > {
 		
 		fehlerlog.clear();
 		err.clear();
+		log.clear();
 		
 		con.setAutoCommit(false);
 		stapelAbarbeiten(add, 		this::onAdd, 	this::onAddSucess, con);
@@ -92,16 +106,19 @@ public abstract class Stapelverarbeitung<T extends Backup > {
 				try {
 					m.ausfuehren(ent, con);
 					con.commit();
-					m2.ausfuehren(ent);
+					if(Thread.interrupted())	return;
 				}catch (SQLException e1) {
 					con.rollback();
 					err.push(ent);
 					fehlerlog.add(e1);
+					continue;
 				}catch(Exception e) {
 					//e.printStackTrace();
 					err.push(ent);
 					fehlerlog.add(e);
+					continue;
 				}
+				m2.ausfuehren(ent, con);
 			}
 		}finally {
 			System.out.println("finally "+err.size());
@@ -115,9 +132,9 @@ public abstract class Stapelverarbeitung<T extends Backup > {
 	protected abstract void onUpdate(T ent, Connection con) throws Exception;
 	protected abstract void onDelete(T ent, Connection con) throws Exception;
 	
-	protected abstract void onAddSucess(T ent);
-	protected abstract void onUpdateSucess(T ent);
-	protected abstract void onDeleteSucess(T ent);
+	protected abstract void onAddSucess(T ent, Connection con) 		throws SQLException;
+	protected abstract void onUpdateSucess(T ent, Connection con) 	throws SQLException;
+	protected abstract void onDeleteSucess(T ent, Connection con) 	throws SQLException;
 	
 	
 	public void reset() {
@@ -131,6 +148,17 @@ public abstract class Stapelverarbeitung<T extends Backup > {
 		public void ausfuehren(T ent, Connection con) throws Exception;
 	}
 	interface methode2<T> {
-		public void ausfuehren(T ent);
+		public void ausfuehren(T ent, Connection con) throws SQLException;
 	}
+	
+	
+	@Override
+	public void run() {
+		try (Connection con = DB_Manager.getCon()){
+			save(con);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

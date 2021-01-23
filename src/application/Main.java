@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import gui.FensterManager;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.stage.Stage;
 import verwaltung.DB_Manager;
 
@@ -14,22 +15,23 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 			
-		Thread[] th = new Thread[200];
+//		Thread[] th = new Thread[200];
+//		
+//		Thread ts = new test();
+//		System.out.println("test");
+//		for(int i=0; i<th.length; i++) {
+//			th[i] = new test();
+//			try {
+//				Thread.sleep(1);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println("New");
+//			th[i].start();
+//		}
 		
-		Thread ts = new test();
-		System.out.println("test");
-		for(int i=0; i<th.length; i++) {
-			th[i] = new test();
-			try {
-				Thread.sleep(1);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			System.out.println("New");
-			th[i].start();
-		}
-		
-		//FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
+
+		FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
 		//FensterManager.getHauptSeite().show();
 
 		//FensterManager.setSecondary(FensterManager.getListensicht());

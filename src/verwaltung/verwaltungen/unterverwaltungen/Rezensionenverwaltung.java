@@ -30,7 +30,6 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		}
 	}
 
-	
 	public boolean existiert(int rid) {
 		return getList().stream().anyMatch(r->r.getId()==rid);
 	}
@@ -38,12 +37,15 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 		  return getList().stream().filter(rz->rz.getVerfasserId()==nid).findFirst().orElse(null);
 	}
 	
+	
 	@Override
-	protected void add(Rezension rez, Connection con) throws SQLException {
-//		if(getList().stream().anyMatch(rez->rez.getVerfasserId()==nid))
-//			throw new Exception("Es existiert bereits eine Rezension mit dieser BenutzerId");
-
-		//check(rez.getTitel(), rez.getInhalt());
+	public boolean removeEntitaet(Rezension entitaet) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	protected void onAdd(Rezension rez, Connection con) throws Exception {
+		super.onAdd(rez, con);
 		
 		String sql = "Insert into rezension(titel, inhalt, bewertung, verfasser, filmid) values(?, ?, ?, ?, ?); "
 					+ "Select SCOPE_IDENTITY()";
@@ -57,14 +59,15 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 			
 			try(ResultSet rs = ps.executeQuery();){	
 				rs.next();
-				rez.setId(rs.getInt(1));
+				rez.setTempId(rs.getInt(1));
 			}
 		}
-		updateFilmBewertung(con);			
+		updateFilmBewertung(con);	
 	}
 	
 	@Override
-	protected void update(Rezension rez, Connection con) throws SQLException {
+	protected void onUpdate(Rezension rez, Connection con) throws Exception {
+		super.onUpdate(rez, con);
 		
 		String sql = "Update rezension set titel=?, inhalt=?, bewertung=? where id=?;";
 	
@@ -76,11 +79,6 @@ public class Rezensionenverwaltung extends Unterverwaltung<Rezension> {
 			ps.executeUpdate();
 			updateFilmBewertung(con);
 		}
-	}
-	
-	@Override
-	protected void delete(Rezension rez, Connection con) {
-		throw new UnsupportedOperationException();
 	}
 	
 	private void updateFilmBewertung(Connection con) throws SQLException{
