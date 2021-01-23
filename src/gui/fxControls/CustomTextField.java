@@ -1,4 +1,4 @@
-package fxControls;
+package gui.fxControls;
 
 import java.util.function.UnaryOperator;
 

@@ -118,6 +118,7 @@ public class Crl {
     
     @FXML
     void initialize() {
+    	
     	Platform.runLater( () -> vb.requestFocus() );
 
        for(int i=0; i<81; i++) {
@@ -181,6 +182,10 @@ public class Crl {
    			vb.getChildren().add(hb1);
    		}
    	
+//			for(int i3=0; i3<100; i3++) {
+//				System.out.println(i3);
+//				sudoku.generateNew(Sudoku.BABY);
+//			}
    		create(Sudoku.MEDIUM);
     }	
  

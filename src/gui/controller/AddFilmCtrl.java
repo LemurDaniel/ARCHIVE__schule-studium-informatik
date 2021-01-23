@@ -9,9 +9,9 @@ import java.util.NoSuchElementException;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import fxControls.IntegerMinMaxTextField;
-import fxControls.StringTextField;
 import gui.FensterManager;
+import gui.fxControls.IntegerMinMaxTextField;
+import gui.fxControls.StringTextField;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;

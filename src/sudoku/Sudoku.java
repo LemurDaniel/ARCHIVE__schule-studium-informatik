@@ -20,6 +20,9 @@ public class Sudoku {
 	private Set<Integer> wrong;	
 	private int cycles;
 	
+	private int sum=0, attempts=0;
+	private float durchschnitt;
+	
 	public Sudoku() {
 		leftPos = new ArrayList<>();
 		wrong = new HashSet<>();
@@ -28,6 +31,8 @@ public class Sudoku {
 	}
 	
 	public void generateNew(Modus mode) {
+		long milli = System.currentTimeMillis();
+		
 		int z = Math.max(17, mode.getValue());
 		z = Math.min(81, mode.getValue());
 		
@@ -37,6 +42,15 @@ public class Sudoku {
 		for(int i=0; i<81; i++) leftPos.add(i);
 		generate();
 		trim(z);
+		
+		long time = (System.currentTimeMillis()-milli);
+		System.out.println("Zeit: "+time);
+		sum += time;
+		attempts++;
+		durchschnitt = (sum)/attempts;
+		System.out.println(String.format("Zeit Sum: %d", sum));
+		System.out.println(String.format("Zeit Att: %d", attempts));
+		System.out.println(String.format("Zeit durch: %f.2", durchschnitt));
 	}
 	
 	
@@ -157,7 +171,7 @@ public class Sudoku {
 
 		if(grid[row][col] == null)	return false;
 		grid[row][col] = null;
-		leftPos.add(row*9+col);
+		leftPos.add(pos);
 		return true;
 	}
 	

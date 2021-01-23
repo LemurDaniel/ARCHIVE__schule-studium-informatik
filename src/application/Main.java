@@ -52,9 +52,12 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception{
 			
 		instance = this;		
-
+		
+		
+//		primaryStage.setScene( new Scene( FXMLLoader.load(getClass().getResource("../sudoku/Test.fxml"))));
+//		FensterManager.setSecondary( primaryStage );
+		
 		FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
-
 	}
 
 	public static void main(String[] args) {

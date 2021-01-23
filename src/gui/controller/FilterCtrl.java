@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.controlsfx.control.CheckComboBox;
 
-import fxControls.FloatMinMaxTextField;
-import fxControls.IntegerMinMaxTextField;
-import fxControls.StringTextField;
+import gui.fxControls.FloatMinMaxTextField;
+import gui.fxControls.IntegerMinMaxTextField;
+import gui.fxControls.StringTextField;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-import fxControls.CustomTextField;
-import fxControls.StringTextField;
 import gui.FensterManager;
+import gui.fxControls.CustomTextField;
+import gui.fxControls.StringTextField;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;

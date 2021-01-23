@@ -1,4 +1,4 @@
-package fxControls;
+package gui.fxControls;
 
 public class FloatMinMaxTextField extends MinMaxTextField<Float> {
 
