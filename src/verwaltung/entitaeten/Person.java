@@ -138,7 +138,7 @@ public class Person implements Backup, EingabePruefung, Id{
 		if(name.length().intValue() < Personenverwaltung.getMinName())				sb.append("\n  Der Name '"+name.get()+"' ist zu kurz min."+Personenverwaltung.getMinName());
 		if(vorname.length().intValue() > Personenverwaltung.getMaxVorname())		sb.append("\n--jahr Titel");
 		if(vorname.length().intValue() < Personenverwaltung.getMinVorname())	 	sb.append("\n  Der Vorname '"+vorname.get()+"' ist zu kurz min."+Personenverwaltung.getMinVorname());
-		if(sb.length()>0)	throw new Exception("\nFehler Person: '"+this+"' ");
+		if(sb.length()>0)	throw new Exception("\nFehler Person: '"+this+"' "+sb.toString());
 	}
 
 }

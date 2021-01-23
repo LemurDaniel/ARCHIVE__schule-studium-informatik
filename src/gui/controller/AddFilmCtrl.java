@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -191,7 +192,7 @@ public class AddFilmCtrl {
     	//	if(event.getSource()==btn_rel1)			resetFilm();
     		if(event.getSource()==btn_rel2) 	pvw.reset();
     		//else if(event.getSource()==btn_commitF)	commitFilm();
-    		else if(event.getSource()==btn_commitP)	commitPersonen();
+    		else if(event.getSource()==btn_commitP)	throw new Exception("Out of Order");
     		else if(event.getSource()==btn_addP)	addPerson();
     		else if(event.getSource()==btn_detail)	openDetail();
     	}catch (Exception e) {
@@ -272,7 +273,13 @@ public class AddFilmCtrl {
 		if(event.getGestureSource()==table)	event.acceptTransferModes(TransferMode.MOVE);
 	}
 	private void onDragDropped(DragEvent event) {
-		table.getSelectionModel().getSelectedItems().forEach(pvw::removeEntitaet);
+		try {
+			table.getSelectionModel().getSelectedItems().forEach(pvw::removeEntitaet);
+		}catch(NoSuchElementException e) {}
+		if(film.getId()!=-1 && !added)	{
+     		stpv.updateEntitaet(film);
+     		added = true;
+     	}    
 	}
 	
 	

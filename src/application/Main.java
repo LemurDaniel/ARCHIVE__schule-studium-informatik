@@ -48,7 +48,11 @@ public class Main extends Application {
 			
 		instance = this;		
 		
-		FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
+		Stage g = new Stage();
+		g.setScene( new Scene( FXMLLoader.load(getClass().getResource("../sudoku/Test.fxml"))));
+		FensterManager.setSecondary( g);
+		
+		//FensterManager.setPrimaryStage( FensterManager.getAnmelden() );
 		//FensterManager.getHauptSeite().show();
 
 		//FensterManager.setSecondary(FensterManager.getListensicht());

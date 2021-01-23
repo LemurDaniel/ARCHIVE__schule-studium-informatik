@@ -204,7 +204,6 @@ public class ListensichtCtrl {
     	table_film.setOnDragOver(this::onDragOverTable);
     	table_film.setOnDragDropped(this::zuListeHinzufuegen);  	
     	tFilm_titel.setCellValueFactory(data->data.getValue().getTitelProperty());
-    	//tFilm_dauer.setCellValueFactory(data->data.getValue().getDauerStringProperty());
     	tFilm_bwt.setCellValueFactory(data->data.getValue().getBwtStringProperty());
     	
     	muelleimer_filme.setOnDragOver(this::onDragOverMuell);
@@ -252,13 +251,9 @@ public class ListensichtCtrl {
     private void onDragDroppedMuell(DragEvent event) {
     	if(event.getGestureTarget()==muelleimer_filme) 			angezeigteListe.removeEntitaeten(table_film.getSelectionModel().getSelectedItems());
     	else if(event.getGestureTarget()==muelleimer_listen)	table_listen.getSelectionModel().getSelectedItems().forEach(lvw::removeEntitaet);
-		event.setDropCompleted(true);
-		event.consume();	
     }
     private void zuListeHinzufuegen(DragEvent event) {
     	angezeigteListe.addEntitaeten(Filmverwaltung.kopiereAusDragbord(event.getDragboard()));
-		event.setDropCompleted(true);
-		event.consume();
     }
     
     private void onEditCommit(CellEditEvent<Liste, String> event) {

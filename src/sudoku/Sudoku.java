@@ -1,7 +1,9 @@
 package sudoku;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javafx.scene.layout.RowConstraints;
 
@@ -14,12 +16,13 @@ public class Sudoku {
 	
 	private Integer grid[][];
 	private Integer solved[][];
-	private List<Integer> leftPos, wrong;	
+	private List<Integer> leftPos;
+	private Set<Integer> wrong;	
 	private int cycles;
 	
 	public Sudoku() {
 		leftPos = new ArrayList<>();
-		wrong = new ArrayList<>();
+		wrong = new HashSet<>();
 		solved = new Integer[9][9];
 		generateNew(MEDIUM);
 	}

@@ -73,8 +73,7 @@ public class DetailCtrl {
         accordion.setExpandedPane(tp_allg);
         tab_pane.getSelectionModel().select(tab_allg);
         tab_pane.requestFocus();
-        aktualisiereNutzer();
-        
+   
 		rvw = film.getRvw();
 		pvw = film.getPvw();
 		if(film.getId()!=-1 && (!rvw.isGeladen() || !pvw.isGeladen())) {
@@ -103,24 +102,15 @@ public class DetailCtrl {
         tp_rez.setDisable( rvw.getList().size()==0 );
        
 		cb_r.setDisable(true);
-		setRezension();			//Wenn Film gewechselt display aktualisieren 
 		// Wenn keine Rechte zum schreiben einer Review und keine bereits geschreiben vorhanden
         if(!rechte.isReviewWrite() && rvw.getRezensionVonNutzer(nid)==null)		cb_r.getSelectionModel().select(0);
         else																	cb_r.getSelectionModel().select(1);
         
         this.film = film;
         this.stpv = stpv;
+		setRezension();	 
 	}
 
-	public void aktualisiereNutzer() {
-		nid = Nutzer.getNutzer().getId();
-		rechte = Nutzer.getNutzer().getRechte();
-		int temp = cb_r.getSelectionModel().getSelectedIndex();
-    	cb_r.getItems().set(1, "Nutzer - "+Nutzer.getNutzer().getName());
-    	cb_r.getSelectionModel().select(temp);
-    	tp_rezd.setDisable( !rechte.isReviewRead() );
-//    });
-	}
     /** Allgemein **/
     @FXML
     private Accordion accordion;  
@@ -228,49 +218,35 @@ public class DetailCtrl {
     
     @FXML
     private void add_rez(ActionEvent event) {
-          Alert a = new Alert(AlertType.INFORMATION);
-                  
           if(rvw.existiert(angezeigt)) {
-        	  a.setTitle("Rezension - Update");
-        	  a.setContentText("Rezension erfolgreich upgedatet");   
+        	  angezeigt.backup();
         	  angezeigt.setBewertung((int)s_bwt.getValue());
               angezeigt.setInhalt(ta_rtext.getText());
               angezeigt.setTitel(tf_rtitel.getText());
         	  rvw.updateEntitaet(angezeigt);
           }else {
-        	  a.setTitle("Rezension - Erstellen");
-        	  a.setContentText("Rezension erfolgreich Erstellt");
-              angezeigt.backup();
               angezeigt.setBewertung((int)s_bwt.getValue());
               angezeigt.setInhalt(ta_rtext.getText());
               angezeigt.setTitel(tf_rtitel.getText());
         	  rvw.addEntitaet(angezeigt);
           }
           sichere();
-         // a.initOwner(FensterManager.getDialog());
-          a.initModality(Modality.APPLICATION_MODAL);
-          a.show();
     }
      @FXML
      private void delete_rez(MouseEvent event) {
     	 if(!rvw.existiert(angezeigt))	return;
-    	 Alert a = new Alert(AlertType.ERROR);
+    	 
+    	 Alert a = new Alert(AlertType.WARNING);
      	 a.setTitle("Rezension - Löschen");
        	 a.setContentText("Möchten sie die Rezension wirklich löschen");  
        	 a.getButtonTypes().add(new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE));
+       	 
     	 a.setOnCloseRequest(ev->{
-    		 if(!a.getResult().getButtonData().equals(ButtonData.OK_DONE))	return;
-    		 Alert a2 = new Alert(AlertType.INFORMATION); 
-           	 a2.setTitle("Rezension - Löschen");
-           	 a2.setContentText("Rezension erfolgreich gelöscht");   
-           	 angezeigt.setBewertung((int)s_bwt.getValue());
-           	 rvw.removeEntitaet(angezeigt);
-     
+    		 FensterManager.getDialog().requestFocus();
+    		 if(!a.getResult().getButtonData().equals(ButtonData.OK_DONE))	return;  
+    		 rvw.removeEntitaet(angezeigt);
            	 sichere();
-           //	 a2.initOwner(FensterManager.getDialog());
-           	 a2.show();
     	 });
-    	// a.initOwner(FensterManager.getDialog());
     	 a.show();
      }    
           
@@ -280,10 +256,10 @@ public class DetailCtrl {
         }catch(Exception e) {
         	Alert err = new Alert(AlertType.ERROR);
         	err.setContentText(e.getMessage());
-        	err.initOwner(FensterManager.getDialog());
+        	err.setOnCloseRequest(ev->FensterManager.getDialog().requestFocus());
         	err.show();
          return;
-         }
+       }
 
        setEdit(false);
        tf_bewertung.setText(film.getBwtStringProperty().get());

@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -113,6 +114,7 @@ public class Crl {
     private Button[] arr = new Button[9];
     private SudokuTextField[][] tfArr = new SudokuTextField[9][9];
     private SudokuTextField current;
+    private int curRow, curCol;
     
     @FXML
     void initialize() {
@@ -129,10 +131,13 @@ public class Crl {
    			tf.setOnMouseEntered(ev->{
    				if(tf.isVorgegeben()) return;
    				current = tfArr[row][col]; 
+   				curRow = row;
+   				curCol = col;
 				Bounds b = tf.localToScene(tf.getBoundsInLocal());
 				btn_overlay.setLayoutX(b.getMinX());
 				btn_overlay.setLayoutY(b.getMinY());
 				btn_overlay.setVisible(true);
+				blend();
    			});
 			
        }
@@ -148,13 +153,17 @@ public class Crl {
      		arr[i] = new Button(i+1+"");
      		hb.getChildren().add(arr[i]);   	
      		arr[i].getStyleClass().add("miniButton");
-     		arr[i].setOnAction(ev-> current.setValue( ((Button)ev.getSource()).getText() ) );
+     		arr[i].setOnAction(ev-> {
+     			current.setValue( ((Button)ev.getSource()).getText() );
+     			blend();
+     		});
      	}
    		btn_overlay.getChildren().add(hb);
        
    		btn_overlay.setOnMouseExited(ev->{
    			btn_overlay.setVisible(false);
    			vb.requestFocus();
+   			unblend();
    		});
    		
    		
@@ -175,5 +184,48 @@ public class Crl {
    		create(Sudoku.MEDIUM);
     }	
  
+    
+    
+    private void blend() {
+    	unblend();
+		Integer value = sudoku.getValueAt(curRow, curCol);
+		for(int i2=0; i2<9; i2++) {
+			if(curRow!=i2 && value!=null && sudoku.getValueAt(i2, curCol)==value)	tfArr[i2][curCol].markFehler();
+			else if(!tfArr[i2][curCol].isVorgegeben()) 								tfArr[i2][curCol].mark();
+		}
+		for(int i2=0; i2<9; i2++) {
+			if(curCol!=i2 && value!=null && sudoku.getValueAt(curRow, i2)==value)	tfArr[curRow][i2].markFehler();
+			else if(!tfArr[curRow][i2].isVorgegeben())							tfArr[curRow][i2].mark();
+		}
+		
+		int cLimit, rLimit;
+		if(curCol<3) cLimit=3;
+		else if(curCol<6) cLimit=6;
+		else cLimit = 9;
+		if(curRow<3) rLimit=3;
+		else if(curRow<6) rLimit=6;
+		else rLimit = 9;
+		for(int i2=cLimit-3; i2<cLimit; i2++) {
+			for(int i3=rLimit-3; i3<rLimit; i3++) {
+				if( (curRow!=i3 || curCol!=i2) && value!=null && sudoku.getValueAt(i3, i2)==value)	tfArr[i3][i2].markFehler();
+				else if(!tfArr[i3][i2].isVorgegeben())											tfArr[i3][i2].mark();
+			}
+		}
+    }
+    
+    private void unblend() {
+		for(int i2=0; i2<9; i2++) 	tfArr[i2][curCol].unmark();
+		for(int i2=0; i2<9; i2++)  	tfArr[curRow][i2].unmark();
+		
+		int cLimit, rLimit;
+		if(curCol<3) cLimit=3;
+		else if(curCol<6) cLimit=6;
+		else cLimit = 9;
+		if(curRow<3) rLimit=3;
+		else if(curRow<6) rLimit=6;
+		else rLimit = 9;
+		for(int i2=cLimit-3; i2<cLimit; i2++)
+			for(int i3=rLimit-3; i3<rLimit; i3++) tfArr[i3][i2].unmark();
+    }
     
 }

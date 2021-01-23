@@ -102,7 +102,6 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		try {
 			while(!stack.empty()) {
 				if(Thread.interrupted()) throw new InterruptedException();
-//				Thread.sleep(500);
 
 				T ent = stack.pop();
 				try {
@@ -115,7 +114,6 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 					continue;
 				}catch(Exception e) {
 					err.push(ent);
-					e.printStackTrace();
 					FensterManager.logErreignis(e);
 					continue;
 				}
@@ -145,7 +143,7 @@ public abstract class Stapelverarbeitung<T extends Backup > implements Runnable{
 		add.clear();
 		delete.clear();
 		update.clear();
-		FensterManager.logErreignis("\nAlle Änderungen wurden zurückgesetzt");
+		FensterManager.logErreignis("\nAlle ungespeicherten Änderungen wurden zurückgesetzt");
 	}
 	
 	interface methode<T> {

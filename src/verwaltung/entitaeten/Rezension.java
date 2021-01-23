@@ -15,7 +15,7 @@ public class Rezension implements Backup, EingabePruefung, Id{
 	private ReadOnlyStringWrapper titel, verfasser;
 	private ReadOnlyIntegerWrapper bewertung;
 	
-	private Film film;
+	public Film film;
 	
 	public Rezension(String titel, String inhalt, String verfasser, int verfasserId, int bewertung, Film film) {
 		this.verfasserId = verfasserId;
@@ -90,6 +90,7 @@ public class Rezension implements Backup, EingabePruefung, Id{
 		inhalt = backup.inhalt;
 		titel.set(backup.getTitel());
 		bewertung.set(backup.getBewertung());
+		film = backup.film;
 		
 		backup = null;
 	}
@@ -112,6 +113,6 @@ public class Rezension implements Backup, EingabePruefung, Id{
 		if(inhalt.length()> Rezensionenverwaltung.getMaxInhalt())			sb.append("\n--inhalt zu lang");
 		if(inhalt.length()< Rezensionenverwaltung.getMinInhalt())			sb.append("\n  Der Rezensionsinhalt ist zu lang min."+Rezensionenverwaltung.getMinInhalt());
 		if(sb.length()>0)
-			throw new Exception("\nFehler Rezension '"+titel.get()+"' zu Film: '"+film.getTitel()+"' "+sb.toString());
+			throw new Exception(String.format("\nFehler Rezension '%s' zu Film '%s' "+sb.toString(), titel.get(), film.getTitel()));
 	}
 }

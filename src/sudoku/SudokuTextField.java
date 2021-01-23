@@ -2,6 +2,7 @@ package sudoku;
 
 import javafx.scene.control.TextField;
 import javafx.scene.effect.BlendMode;
+import javafx.scene.text.Font;
 
 public class SudokuTextField extends TextField{
 
@@ -43,6 +44,23 @@ public class SudokuTextField extends TextField{
 	
 	public boolean isVorgegeben() {
 		return vorgabe;
+	}
+
+	public void unmark() {
+		setBlendMode( isVorgegeben()? BlendMode.DARKEN:null );
+		getStyleClass().remove("mark");
+		getStyleClass().remove("markF");
+		getStyleClass().remove("markF2");
+	}
+
+	public void mark() {
+		setBlendMode( null );
+		getStyleClass().add( "mark");
+	}
+	
+	public void markFehler() {
+		setBlendMode( isVorgegeben()? BlendMode.DARKEN:null );
+		getStyleClass().add( isVorgegeben()? "markF2":"markF"   );
 	}
 	
 }

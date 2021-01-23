@@ -3,6 +3,7 @@ SudokuTextField {
 	-fx-font-size: 40px;
 	-fx-font-weight: bolder;
 	-fx-alignment: center;
+	-fx-text-fill: black;
 	
 	-fx-pref-width: 75;
 	-fx-pref-height: 75;
@@ -35,6 +36,25 @@ SudokuTextField {
 .grid3x3 {
 	-fx-padding: 5;
 }
+
+.markF {
+	-fx-text-fill: red;
+	-fx-background-color: #f4fff4;
+	-fx-border-style: solid;
+	-fx-border-width: 0.2;
+	-fx-border-color: Green;
+}
+.markF2 {
+	-fx-text-fill: red;
+}
+.mark {
+	-fx-text-fill:  violet;
+	-fx-background-color: #f4fff4;
+	-fx-border-style: solid;
+	-fx-border-width: 0.2;
+	-fx-border-color: Green;
+}
+ 
 
 ButtonBar {
 	-fx-alignment: center;
