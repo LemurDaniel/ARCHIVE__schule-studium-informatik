@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.ListensichtCtrl">
+   <content>
+      <TabPane fx:id="tab_pane" prefHeight="99.0" prefWidth="598.0" tabClosingPolicy="UNAVAILABLE">
+         <tabs>
+            <Tab fx:id="tab_film" text="Filmliste">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <ComboBox fx:id="cb" prefHeight="31.0" prefWidth="645.0" promptText="Wähle eine Liste">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </ComboBox>
+                        <TableView fx:id="table_film" prefHeight="343.0" prefWidth="558.0">
+                          <columns>
+                            <TableColumn fx:id="tFilm_del" prefWidth="40.0" text="Del" />
+                              <TableColumn fx:id="tFilm_titel" prefWidth="288.0" text="Filmtitel" />
+                              <TableColumn fx:id="tFilm_bwt" prefWidth="109.0" text="Bewertung" />
+                              <TableColumn fx:id="tFilm_dauer" prefWidth="93.0" text="Laufzeit" />
+                          </columns>
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </TableView>
+                        <HBox prefHeight="100.0" prefWidth="200.0" styleClass="bar">
+                           <children>
+                              <Button fx:id="btn_detail" mnemonicParsing="false" prefHeight="31.0" prefWidth="129.0" styleClass="barBut" text="Detail">
+                                 <HBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="btn_update" mnemonicParsing="false" prefHeight="31.0" prefWidth="145.0" styleClass="barBut" text="Modifiziere">
+                                 <HBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="btn_add" mnemonicParsing="false" prefHeight="31.0" styleClass="barBut" text="Neuer Film">
+                                 <HBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab fx:id="tab_listen" text="Listenverwaltung">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <TableView fx:id="table_listen" prefHeight="370.0" prefWidth="558.0">
+                          <columns>
+                              <TableColumn prefWidth="94.0" text="Bestätige">
+                                 <columns>
+                                    <TableColumn fx:id="tListe_Upd" prefWidth="43.0" text="Upd" />
+                                    <TableColumn fx:id="tListe_Del" prefWidth="46.0" text="Del" />
+                                 </columns>
+                              </TableColumn>
+                            <TableColumn fx:id="tListe_name" prefWidth="350.0" text="Listenname" />
+                              <TableColumn fx:id="tListe_size" prefWidth="118.0" text="Größe" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </content>
+   <graphic>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="bar">
+        <buttons>
+            <Label prefHeight="21.0" prefWidth="226.0" styleClass="bar" text="Listensicht" />
+          <Button fx:id="btn_rel" mnemonicParsing="false" text="Zurücksetzen" />
+            <Button fx:id="btn_save" mnemonicParsing="false" text="Speichern" />
+            <Button fx:id="btn_neu" mnemonicParsing="false" text="Neue Liste" />
+        </buttons>
+      </ButtonBar>
+   </graphic>
+</TitledPane>

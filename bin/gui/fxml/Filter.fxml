@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="549.0" prefWidth="600.0" styleClass="root" stylesheets="@../css/detail.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.FilterCtrl">
+   <children>
+      <HBox fx:id="hb_titel" prefHeight="74.0" prefWidth="560.0" styleClass="hbox_allg" />
+      <HBox fx:id="hb_bwt" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
+      <HBox fx:id="hb_dauer" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
+      <HBox fx:id="hb_jahr" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
+      <HBox fx:id="hb_genre" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
+      <HBox prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg">
+         <children>
+            <TextField fx:id="tf_tags" promptText="Stichwörter, ..." />
+         </children>
+      </HBox>
+      <HBox fx:id="hb_anzahl" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg" />
+      <HBox fx:id="hb" prefHeight="19.0" prefWidth="560.0" styleClass="hbox_allg">
+         <children>
+            <Button fx:id="btn_filter" mnemonicParsing="false" prefHeight="31.0" prefWidth="83.0" text="Filtere">
+               <HBox.margin>
+                  <Insets right="30.0" />
+               </HBox.margin></Button>
+            <Button fx:id="btn_reset" mnemonicParsing="false" prefHeight="31.0" prefWidth="83.0" text="Reset">
+               <HBox.margin>
+                  <Insets left="30.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</VBox>
