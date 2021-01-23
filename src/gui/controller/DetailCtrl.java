@@ -53,7 +53,7 @@ public class DetailCtrl {
         tf_titel.setText(film.getTitel().get());
         tf_genre.setText(film.getGenre().get());
         tf_bewertung.setText(film.getBewertung().get()+"");
-        tf_dauer.setText(film.getDauer().get()+" Minuten");
+        tf_dauer.setText(film.getDauerString().get());
         tf_jahr.setText(film.getErscheinungsjahr().get()+""); 
         
         accordion.setExpandedPane(tp_allg);

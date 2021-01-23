@@ -32,4 +32,9 @@ public class Person {
 	public int getId() {
 		return id;
 	}
+	
+	public Person getCopy() {
+		return new Person(id,vorname.get(),name.get(),rolle.get());
+	}
+
 }

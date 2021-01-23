@@ -35,7 +35,7 @@ public class HauptseiteCtrl {
     private TableColumn<Film, Number> t_bewertung; // Value injected by FXMLLoader
 
     @FXML // fx:id="t_dauer"
-    private TableColumn<Film, Number>t_dauer; // Value injected by FXMLLoader
+    private TableColumn<Film, String>t_dauer; // Value injected by FXMLLoader
 
     @FXML // fx:id="t_jahr"
     private TableColumn<Film, Number> t_jahr; // Value injected by FXMLLoader
@@ -102,7 +102,7 @@ public class HauptseiteCtrl {
         t_Titel.setCellValueFactory(data->data.getValue().getTitel());
         t_genre.setCellValueFactory(data->data.getValue().getGenre());
         t_bewertung.setCellValueFactory(data->data.getValue().getBewertung());
-        t_dauer.setCellValueFactory(data->data.getValue().getDauer());
+        t_dauer.setCellValueFactory(data->data.getValue().getDauerString());
         t_jahr.setCellValueFactory(data->data.getValue().getErscheinungsjahr());
         t_Titel.setCellFactory(TextFieldTableCell.forTableColumn());
         
@@ -123,7 +123,7 @@ public class HauptseiteCtrl {
        
         btn_add.setOnAction(ev->{
         	try {
-				FensterManager.getInstance().showAddFilm();
+				FensterManager.getInstance().showAddFilm(table.getSelectionModel().getSelectedItem());
 			} catch (SQLException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -60,7 +60,7 @@
                   </TreeTableView>
                   <FlowPane prefHeight="36.0" prefWidth="568.0" styleClass="FlowPaneCenter">
                      <children>
-                        <Button fx:id="btn_commit" mnemonicParsing="false" text="Button" />
+                        <Button fx:id="btn_commit" mnemonicParsing="false" onAction="#commit" text="Button" />
                      </children>
                   </FlowPane>
                </children>
@@ -79,7 +79,7 @@
                         <TableColumn fx:id="t_rolle" prefWidth="179.0" text="Rolle" />
                      </columns>
                   </TableView>
-                  <Button mnemonicParsing="false" onAction="#addP" text="Button" />
+                  <Button fx:id="btn_addP" mnemonicParsing="false" onAction="#addP" text="Button" />
                </children>
             </FlowPane>
          </content>

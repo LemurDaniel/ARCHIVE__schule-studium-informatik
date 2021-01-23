@@ -76,7 +76,7 @@ public class FensterManager {
 		return detail;
 	}
 	
-	public Stage showAddFilm() throws SQLException, IOException{
+	public Stage showAddFilm(Film film) throws SQLException, IOException{
 		if(addFilm==null) {
 			addFilm = new Stage();
 			addFilm.setTitle("Filmdatenbank - Detailansicht");
@@ -86,7 +86,7 @@ public class FensterManager {
 			addFilmCtrl = loader.getController();
     		addFilm.setScene(new Scene(loader.getRoot()));
 		}
-		addFilmCtrl.setFilm(null);
+		addFilmCtrl.setFilm(film);
 		if(!addFilm.isShowing())	addFilm.show();
 		addFilm.requestFocus();
 		return addFilm;

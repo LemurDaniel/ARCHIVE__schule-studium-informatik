@@ -16,7 +16,7 @@ public class Film {
 	
 	private int id;
 	private Genre genre;
-	private ReadOnlyStringWrapper titel, genre_prop;
+	private ReadOnlyStringWrapper titel, genre_prop, dauer_string;
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
 	private ReadOnlyFloatWrapper bewertung;
 	
@@ -29,6 +29,7 @@ public class Film {
 		this.genre = genre;
 		this.genre_prop = new ReadOnlyStringWrapper(genre.getGenre());
 		this.dauer = new ReadOnlyIntegerWrapper(dauer);
+		this.dauer_string = new ReadOnlyStringWrapper(dauer+" Minuten");
 		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);
 		this.bewertung = new ReadOnlyFloatWrapper(bewertung);
 	}
@@ -51,6 +52,9 @@ public class Film {
 	}
 	public ReadOnlyFloatProperty getBewertung() {
 		return bewertung.getReadOnlyProperty();
+	}
+	public ReadOnlyStringProperty getDauerString() {
+		return dauer_string.getReadOnlyProperty();
 	}
 	
 	public Rezensionenverwaltung getRvw() {

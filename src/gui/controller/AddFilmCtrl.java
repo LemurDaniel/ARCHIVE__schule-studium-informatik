@@ -17,6 +17,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
@@ -47,7 +48,9 @@ public class AddFilmCtrl {
 
 	private Film film;
 	private Personenverwaltung pvw;
+	
 	private ObservableMap<Person, BooleanProperty> confirmedList;
+	private ObservableList<Person> personen;
 
 	public void setFilm(Film film) throws SQLException{
 		this.film = film;
@@ -58,17 +61,22 @@ public class AddFilmCtrl {
 		}else
 			pvw = new Personenverwaltung(null);
 		
-		System.out.println(pvw.getList());
+		setTable();
+	}
+	
+	private void setTable() {
+		personen = FXCollections.observableArrayList();
+		pvw.getList().forEach(per->personen.add(per.getCopy()));
 		
 		Map<Person, BooleanProperty> map = new HashMap<>();
-		pvw.getList().forEach(per->map.put(per, new SimpleBooleanProperty(false)));
+		personen.forEach(per->map.put(per, new SimpleBooleanProperty(false)));
 		confirmedList = FXCollections.observableMap(map);
-        table.setItems(pvw.getList());
+		table.setItems(personen);
 	}
 	
 	private void setDisplay() {
 		tf_titel.setText(film.getTitel().get());
-		tf_dauer.setText(film.getDauer().get()+"");
+		tf_dauer.setText(film.getDauer().get()+" Minuten");
 		tf_jahr.setText(film.getErscheinungsjahr().get()+"");
 		tf_genre.setText(film.getGenre().get());
 	}
@@ -124,12 +132,24 @@ public class AddFilmCtrl {
     @FXML
     void addP(ActionEvent event) {
     	Person per = new Person(-1, "Neue Person", "Neue Person", "Rolle");
-    	pvw.getList().add(per);
+    	personen.add(per);
     	confirmedList.put(per, new SimpleBooleanProperty(false));
     	System.out.println("---------------");
     	confirmedList.forEach((k, v)-> System.out.println(k+"   "+v.get()));
     	System.out.println("----------------------");
     }
+    
+    @FXML
+    void commit(ActionEvent event) {
+    	FilteredList<Person> fl = personen.filtered(per->confirmedList.get(per).get());
+    	try {
+			pvw.addOrUpdate( fl.subList(0, fl.size()) );
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
