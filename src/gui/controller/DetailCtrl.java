@@ -50,11 +50,11 @@ public class DetailCtrl {
         table.setItems(FXCollections.observableArrayList(pvw.getPersonenMitRollen()));
         table1.setItems(rvw.getList());
 		
-        tf_titel.setText(film.getTitel().get());
-        tf_genre.setText(film.getGenre().get());
-        tf_bewertung.setText(film.getBewertung().get()+"");
-        tf_dauer.setText(film.getDauerString().get());
-        tf_jahr.setText(film.getErscheinungsjahr().get()+""); 
+        tf_titel.setText(film.getTitel());
+        tf_genre.setText(film.getGenre().getGenre());
+        tf_bewertung.setText(film.getBewertung()+"");
+        tf_dauer.setText(film.getDauer()+" Minuten");
+        tf_jahr.setText(film.getErscheinungsjahr()+""); 
         
         accordion.setExpandedPane(tp_allg);
         
@@ -164,7 +164,7 @@ public class DetailCtrl {
         	else		rvw.addRezension(tf_rtitel.getText(), ta_rtext.getText(), (int)s_bwt.getValue(), nid);
         	displayRezension();
           	setEdit(false);
-            tf_bewertung.setText(film.getBewertung().get()+"");
+            tf_bewertung.setText(film.getBewertung()+"");
           }catch(Exception e) {
         	  a.setAlertType(AlertType.ERROR);
         	  a.setContentText(e.getMessage());
@@ -263,8 +263,8 @@ public class DetailCtrl {
         
         /**  **/
         
-        t_name.setCellValueFactory(		data->data.getValue().getPerson().getName()		);
-        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVorname()	);
+        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()		);
+        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()	);
         t_rolle.setCellValueFactory(	data->data.getValue().getRolle()				);     
         
         t_ersteller.setCellValueFactory(data->data.getValue().getVerfasser());

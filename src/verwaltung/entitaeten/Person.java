@@ -28,15 +28,22 @@ public class Person {
 		this.rolle = rolle;
 	}
 	
-	public StringProperty getVorname() {
-		return vorname;
+	public String getVorname() {
+		return vorname.get();
 	}
 
-	public StringProperty getName() {
-		return name;
+	public String getName() {
+		return name.get();
 	}
 	public int getId() {
 		return id;
+	}
+	
+	public StringProperty getVornameProperty() {
+		return vorname;
+	}
+	public StringProperty getNameProperty() {
+		return name;
 	}
 	
 	public void addRolle(String rolle) {
@@ -79,5 +86,6 @@ public class Person {
 			return per;
 		}
 	}
+	
 
 }

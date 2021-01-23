@@ -34,6 +34,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
 import verwaltung.entitaeten.Film;
 import verwaltung.entitaeten.Genre;
+import verwaltung.entitaeten.Nutzer;
 import verwaltung.entitaeten.Person;
 import verwaltung.entitaeten.Person.PersonMitRolle;
 import verwaltung.verwaltungen.Filmverwaltung;
@@ -50,14 +51,19 @@ public class AddFilmCtrl {
 	private boolean[] changes = {false, false};
 	
 	public void setFilm(Film film) throws SQLException{
-		this.film = film;
-		if(film != null) {
+		System.out.println(film);
+		if(this.film!=null && this.film.equals(film))	
+			return;
+			
+		this.film = film;		
+		if(film!=null) {
 			pvw = film.getPvw();
 			pvw.load();
 			setDisplay();
-		}else
-			pvw = new Personenverwaltung(null);
-		
+		}else {
+			pvw = new Personenverwaltung(null);		
+			this.film = new Film(-1, Nutzer.getNutzer().getId(), "", new Genre(1, "aa"), 120, 2000, 0);
+		}
 		setTable();
 	}
 	
@@ -73,10 +79,10 @@ public class AddFilmCtrl {
 	}
 	
 	private void setDisplay() {
-		tf_titel.setText(film.getTitel().get());
-		tf_dauer.setText(film.getDauer().get()+" Minuten");
-		tf_jahr.setText(film.getErscheinungsjahr().get()+"");
-		tf_genre.setText(film.getGenre().get());
+		tf_titel.setText(film.getTitel());
+		tf_dauer.setText(film.getDauer()+" Minuten");
+		tf_jahr.setText(film.getErscheinungsjahr()+"");
+		tf_genre.setText(film.getGenre().getGenre());
 		changes[0] = false;
 	}
 	
@@ -151,11 +157,11 @@ public class AddFilmCtrl {
 
     @FXML
     void action(ActionEvent event) {
-    	if(event.getSource().equals(btn_rel1))			setDisplay();
-    	else if(event.getSource().equals(btn_rel2)) 	setTable();
-    	else if(event.getSource().equals(btn_commit1))	commit();
-    	else if(event.getSource().equals(btn_addP))		addPerson();
-    	else if(event.getSource().equals(btn_detail))	detail();
+    	if(event.getSource()==btn_rel1)			setDisplay();
+    	else if(event.getSource()==btn_rel2) 	setTable();
+    	else if(event.getSource()==btn_commit1)	commit();
+    	else if(event.getSource()==btn_addP)	addPerson();
+    	else if(event.getSource()==btn_detail)	detail();
     	
     }
 
@@ -233,7 +239,6 @@ public class AddFilmCtrl {
         t_genre.setCellValueFactory(data-> new SimpleStringProperty(data.getValue().getValue().getGenre()) );
         
         table_genre.getSelectionModel().selectedItemProperty().addListener((ob, ov, newVal)->{
-        	System.out.println(newVal);
         	if(newVal!=null) {
         		tf_genre.setText(newVal.getValue().getGenre());
         		t_genre.setText(newVal.getValue().getGenre());
@@ -245,8 +250,8 @@ public class AddFilmCtrl {
         
         /** Mitwirkende **/
         table.setEditable(true);
-        t_name.setCellValueFactory(		data->data.getValue().getPerson().getName()		);
-        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVorname()	);
+        t_name.setCellValueFactory(		data->data.getValue().getPerson().getNameProperty()		);
+        t_vorname.setCellValueFactory(	data->data.getValue().getPerson().getVornameProperty()	);
         t_rolle.setCellValueFactory(	data->data.getValue().getRolle()				);
         t_confirm1.setCellValueFactory(	data->confirmed.get(data.getValue())[0]			);
         t_confirm2.setCellValueFactory(	data->confirmed.get(data.getValue())[1]			);
@@ -259,11 +264,11 @@ public class AddFilmCtrl {
         t_confirm2.setCellFactory(CheckBoxTableCell.forTableColumn(t_confirm2));
 
         /**Changes**/
-        t_vorname.setOnEditCommit(	ev->changes[1]=true);
-        t_name.setOnEditCommit(		ev->changes[1]=true);
-        t_rolle.setOnEditCommit(	ev->changes[1]=true);
-        t_confirm1.setOnEditCommit(	ev->changes[1]=true);
-        t_confirm1.setOnEditCommit(	ev->changes[1]=true);
+//        t_vorname.setOnEditCommit(	ev->changes[1]=true);
+//        t_name.setOnEditCommit(		ev->changes[1]=true);
+//        t_rolle.setOnEditCommit(	ev->changes[1]=true);
+//        t_confirm1.setOnEditCommit(	ev->changes[1]=true);
+//        t_confirm1.setOnEditCommit(	ev->changes[1]=true);
         
         tf_bewertung.textProperty().addListener((ob,ov,nv)-> changes[0]=true);
         tf_dauer.textProperty().addListener(	(ob,ov,nv)-> changes[0]=true);
@@ -283,6 +288,10 @@ public class AddFilmCtrl {
     	FilteredList<PersonMitRolle> update = personen.filtered(per->confirmed.get(per)[0].get());
     	FilteredList<PersonMitRolle> delete = personen.filtered(per->confirmed.get(per)[1].get());
     	try {
+    		if(changes[0]) {
+    			if(film.getId()==-1)	pvw.setFilm( Filmverwaltung.instance().addFilm(film) );
+    			else					Filmverwaltung.instance().updataFilm(film);
+    		}
 			pvw.addOrUpdate(update.subList(0, update.size()));
 			pvw.delete(delete.subList(0, delete.size()));
 		} catch (Exception e) {

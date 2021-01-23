@@ -11,21 +11,20 @@ import verwaltung.verwaltungen.Rezensionenverwaltung;
 
 public class Film {
 	
-	private int id;
-	@SuppressWarnings("unused")
+	private int id, erstellerId;
 	private Genre genre;
-	private ReadOnlyStringWrapper titel, genre_prop, dauer_string;
+	private ReadOnlyStringWrapper titel, dauer_string;
 	private ReadOnlyIntegerWrapper dauer, erscheinungsjahr;
 	private ReadOnlyFloatWrapper bewertung;
 	
 	private Personenverwaltung pvw;
 	private Rezensionenverwaltung rvw;
 	
-	public Film(int id, String titel, Genre genre, int dauer, int erscheinungsjahr, float bewertung) {
+	public Film(int id, int erstellerId, String titel, Genre genre, int dauer, int erscheinungsjahr, float bewertung) {
 		this.id = id;
+		this.erstellerId = erstellerId;
 		this.titel = new ReadOnlyStringWrapper(titel);
 		this.genre = genre;
-		this.genre_prop = new ReadOnlyStringWrapper(genre.getGenre());
 		this.dauer = new ReadOnlyIntegerWrapper(dauer);
 		this.dauer_string = new ReadOnlyStringWrapper(dauer+" Minuten");
 		this.erscheinungsjahr = new ReadOnlyIntegerWrapper(erscheinungsjahr);
@@ -36,23 +35,39 @@ public class Film {
 	public int getId() {
 		return id;
 	}
-	public ReadOnlyStringWrapper getTitel() {
+	public int getErstellerId() {
+		return erstellerId;
+	}
+	public String getTitel() {
+		return titel.get();
+	}
+	public int getDauer() {
+		return dauer.get();
+	}
+	public int getErscheinungsjahr() {
+		return erscheinungsjahr.get();
+	}
+	public float getBewertung() {
+		return bewertung.get();
+	}
+	
+	
+	
+	
+	public ReadOnlyStringWrapper getTitelProperty() {
 		return titel;
 	}
-	public ReadOnlyStringProperty getGenre() {
-		return genre_prop.getReadOnlyProperty();
-	}
-	public ReadOnlyIntegerProperty getDauer() {
-		return dauer.getReadOnlyProperty();
-	}
-	public ReadOnlyIntegerProperty getErscheinungsjahr() {
+	public ReadOnlyIntegerProperty getErscheinungsjahrProperty() {
 		return erscheinungsjahr.getReadOnlyProperty();
 	}
-	public ReadOnlyFloatProperty getBewertung() {
+	public ReadOnlyFloatProperty getBewertungProperty() {
 		return bewertung.getReadOnlyProperty();
 	}
-	public ReadOnlyStringProperty getDauerString() {
+	public ReadOnlyStringProperty getDauerProperty() {
 		return dauer_string.getReadOnlyProperty();
+	}
+	public Genre getGenre() {
+		return genre;
 	}
 	
 	public Rezensionenverwaltung getRvw() {

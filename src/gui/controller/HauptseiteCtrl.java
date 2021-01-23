@@ -47,42 +47,25 @@ public class HauptseiteCtrl {
     @FXML // fx:id="btn_detail"
     private Button btn_detail; // Value injected by FXMLLoader
     
-
     @FXML // fx:id="btn"
-    private Button btn; // Value injected by FXMLLoader
+    private Button btn_abmelden; // Value injected by FXMLLoader
 
     @FXML
-    void add(ActionEvent event) {
-    	System.out.println("Test");
-    }
-
-    @FXML
-    void detail(ActionEvent event) {
-    	Film film = table.getSelectionModel().getSelectedItem();
- 
+    void action(ActionEvent event) {
     	try {
-    		if(film == null) 
-    			throw new Exception("Es wurde kein Film ausgewählt");
-			FensterManager.setDialog( FensterManager.showDetail(film) );
-		} catch (Exception e) {
-			Alert a = new Alert(AlertType.ERROR);
-			a.setTitle("Detailansicht - Fehler");
-			a.setContentText(e.getMessage());
-			a.show();
-		}
+    		if(event.getSource()==btn_add)				addFilm();
+    		else if(event.getSource()==btn_update)		updateFilm();
+    		else if(event.getSource()==btn_detail)		detail();
+    		else if(event.getSource()==btn_abmelden) 	Nutzer.getNutzer().abmelden();
+    	}catch(Exception e) {
+    		Alert a = new Alert(AlertType.ERROR);
+    		a.setTitle(e.getClass().getSimpleName());
+    		a.setContentText(e.getMessage());
+    		a.show();
+    		e.printStackTrace();
+    	}
     }
 
-    @FXML
-    void update(ActionEvent event) {
-        try {
-			Filmverwaltung.instance().test();
-		} catch (Exception e) {
-			Alert a = new Alert(AlertType.ERROR);
-			a.setTitle("Bla");
-			a.setContentText(e.getMessage());
-			a.show();
-		}
-    }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
@@ -97,45 +80,40 @@ public class HauptseiteCtrl {
         assert btn_detail != null : "fx:id=\"btn_detail\" was not injected: check your FXML file 'Hauptseite.fxml'.";
         
         table.setItems(Filmverwaltung.instance().getList());
-        t_Titel.setCellValueFactory(data->data.getValue().getTitel());
-        t_genre.setCellValueFactory(data->data.getValue().getGenre());
-        t_bewertung.setCellValueFactory(data->data.getValue().getBewertung());
-        t_dauer.setCellValueFactory(data->data.getValue().getDauerString());
-        t_jahr.setCellValueFactory(data->data.getValue().getErscheinungsjahr());
-        t_Titel.setCellFactory(TextFieldTableCell.forTableColumn());
+        t_Titel.setCellValueFactory(	data->data.getValue().getTitelProperty());
+        t_genre.setCellValueFactory(	data->data.getValue().getTitelProperty());
+        t_bewertung.setCellValueFactory(data->data.getValue().getBewertungProperty());
+        t_dauer.setCellValueFactory(	data->data.getValue().getDauerProperty());
+        t_jahr.setCellValueFactory(		data->data.getValue().getErscheinungsjahrProperty());
         
 
         
         table.getSelectionModel().selectedItemProperty().addListener((ob, oldV, newV) ->{
         	System.out.println(table.getSelectionModel().getSelectedItem());
         });
-        
-        table.setOnMouseClicked(ev->{
-            //Double Click
-            long now = System.currentTimeMillis();
-            if(now-lastMouseClick < 200 && table.getSelectionModel().getSelectedIndex()!=-1) {
-            	btn_detail.fire();
-            }
-            lastMouseClick = now;
-        });
-       
-        btn_add.setOnAction(ev->{
-        	try {
-				FensterManager.setDialog( FensterManager.showAddFilm(table.getSelectionModel().getSelectedItem()) );
-			} catch (SQLException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        });
-        
-        btn.setOnAction(ev->{
-        	try {
-				Nutzer.getNutzer().abmelden();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        });
+        try {
+			Filmverwaltung.instance().test();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void detail() throws Exception {
+    	Film film = table.getSelectionModel().getSelectedItem();
+    	if(film == null)	
+    		throw new Exception("Es wurde kein Film ausgewählt");
+		FensterManager.setDialog( FensterManager.showDetail(film) );
+    }
 
+    private void updateFilm() throws Exception {
+    	Film film = table.getSelectionModel().getSelectedItem();
+    	if(film == null)	
+    		throw new Exception("Es wurde kein Film ausgewählt");
+    	FensterManager.setDialog( FensterManager.showAddFilm(film) );
+    }
+    
+    private void addFilm() throws SQLException, IOException {
+    	FensterManager.setDialog( FensterManager.showAddFilm(null) );
     }
 }

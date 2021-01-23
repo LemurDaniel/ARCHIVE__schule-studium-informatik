@@ -70,6 +70,11 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 	
 	public void addOrUpdate(List<PersonMitRolle> pmrlist) throws Exception {
 		if(film == null) throw new Exception("No Film");
+		if(pmrlist.size()==0)	return;
+		
+//		for(PersonMitRolle pmr: pmrlist)
+//			System.out.print(pmr.getRolle().get());
+		
 		
 		try(Connection con = getCon();){
 			con.setAutoCommit(false);
@@ -78,49 +83,54 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 			Person person = null, original = null;
 			Integer rolleId;
 			for(PersonMitRolle pmr: pmrlist) {
-
 				
 				if(person != pmr.getPerson()) {
 					person = pmr.getPerson();
-					for(Person per: list) {
-						if(per.getId()==person.getId()) {
-							original = per;
-							break;
+//					inner:
+//					for(Person per: list) {
+//						if(	per.getId() == person.getId() ) {
+//							original = per;
+//							break inner;
+//						}
+//					}
+				
+	
+					//Existiert bereits in Datenbank?
+					PreparedStatement ps = con.prepareStatement("Select id from personen where name=? and vorname=?");
+					ps.setString(1, person.getName());
+					ps.setString(2, person.getVorname());
+					ResultSet rs = ps.executeQuery();
+					if(rs.next()) {
+						int id = rs.getInt(1);
+						original = list.stream().filter(per->per.getId()==id).findFirst().orElse(null);
+						if(original==null) {
+							original = new Person(id, rs.getString(2), rs.getString(3), person.getRollen());
+							list.add(original);
 						}
 					}
-				
 					
-					if(original == null) {
-						//Existiert bereits in Datenbank?
-						PreparedStatement ps = con.prepareStatement("Select id, vorname, name from personen where name=? and vorname=?");
-						ps.setString(1, person.getName().get());
-						ps.setString(2, person.getVorname().get());
-						ResultSet rs = ps.executeQuery();
-						if(rs.next())
-							original = new Person(rs.getInt(1), rs.getString(2), rs.getString(3), person.getRollen());
-					}
 					
 					if(original == null) {
 						//Existiert nicht -> muss angelegt werden
-						PreparedStatement ps = con.prepareStatement("insert into personen(vorname, name) values(?, ?);"
-																+ "Select id, vorname, name from personen where id=SCOPE_IDENTITY()");
-						ps.setString(1, person.getVorname().get());
-						ps.setString(2, person.getName().get());
-						ResultSet rs = ps.executeQuery();
+						ps = con.prepareStatement("insert into personen(vorname, name) values(?, ?);"
+																+ "Select SCOPE_IDENTITY()");
+						ps.setString(1, person.getVorname());
+						ps.setString(2, person.getName());
+						rs = ps.executeQuery();
 						rs.next();
-						original = new Person(rs.getInt(1), rs.getString(2), rs.getString(3), person.getRollen());
+						original = new Person(rs.getInt(1), person.getVorname(), person.getName(), person.getRollen());
+						list.add(original);	
 					}else {
 						//Updaten
-						PreparedStatement ps = con.prepareStatement("update personen set vorname=?,  name=? where id=?");
-						ps.setString(1, person.getVorname().get());
-						ps.setString(2, person.getName().get());
+						ps = con.prepareStatement("update personen set vorname=?,  name=? where id=?");
+						ps.setString(1, person.getVorname());
+						ps.setString(2, person.getName());
 						ps.setInt(3, original.getId());
 						ps.executeUpdate();
 					}
 					con.commit();
-					original.getName().set( person.getName().get() );
-					original.getVorname().set(person.getVorname().get() );
-					if(!list.contains(original)) list.add(original);	
+					original.getNameProperty().set( person.getName() );
+					original.getVornameProperty().set( person.getVorname() );
 				}
 
 				rolleId = rollen.get(pmr.getRolle().get());
@@ -138,16 +148,18 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 						ps.setInt(2, original.getId());
 						ps.setInt(3, rolleId);
 						ps.executeUpdate();
+						con.commit();					
+						original.addRolle(pmr.getRolle().get());
 					}
 					rs.close();
-					con.commit();					
-					original.addRolle(pmr.getRolle().get());
 				}
 			}
 		}	
 	}
 	
 	public void delete(List<PersonMitRolle> pmrlist) throws SQLException {
+		if(pmrlist.size()==0)	return;
+		
 		try(Connection con = getCon();){
 		
 			Integer rolleId;
@@ -170,6 +182,10 @@ public class Personenverwaltung extends Unterverwaltung<Person>{
 		List<PersonMitRolle> pml = new ArrayList<>();
 		list.forEach(per->pml.addAll(per.getCopy().getPersonenMitRolle()));
 		return pml;
+	}
+
+	public void setFilm(Film addFilm) {
+		this.film = film;
 	}
 
 }

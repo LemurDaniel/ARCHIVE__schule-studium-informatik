@@ -3,14 +3,23 @@ package verwaltung.entitaeten;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Genre {
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.value.ObservableValueBase;
+
+public class Genre extends ObservableValueBase<Genre>{
 	private int id;
-	private String genre;
+	private ReadOnlyStringProperty genre;
 	private List<Genre> subgenre;
 	
 	public Genre(int id, String genre) {
 		this.id = id;
-		this.genre = genre;
+		this.genre = new SimpleStringProperty(genre);
 	}
 
 	public int getId() {
@@ -18,6 +27,9 @@ public class Genre {
 	}
 
 	public String getGenre() {
+		return genre.get();
+	}
+	public ReadOnlyStringProperty getGenreProperty() {
 		return genre;
 	}
 	
@@ -27,6 +39,11 @@ public class Genre {
 	}
 	public List<Genre> getSubGenre() {
 		return subgenre;
+	}
+
+	@Override
+	public Genre getValue() {
+		return this;
 	}
 	
 }
