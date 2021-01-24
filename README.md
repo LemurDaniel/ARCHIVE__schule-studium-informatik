@@ -2,7 +2,7 @@
 Informatik Zeug aus dem Informatik Unterricht im Gymnasium und Studium
 
 <h3> 1. Website </h3>
-Die Website ist eine einfache HTML Website
+Die Website ist eine einfache statische Website
 
 <h3> 2. Java Schule </h3>
 
@@ -49,23 +49,23 @@ Mit BlueJ können die Methoden von Instanzen angesprochen werden,
 
 <h6>3. Kompilieren vom Bin Ordner aus</h6>
 	
-	javac -d . ../src/&lt;package>/*.java<br>
-	javac -d . ../src/&lt;package>/*.java ../src/&lt;package2>/*.java
+	javac -d . ../src/<package>/*.java<br>
+	javac -d . ../src/<package>/*.java ../src/<package2>/*.java
 	
    <h6>Mit Libraries</h6>
 	
-	javac -cp ".;../../../lib/*" -d . ../src/&lt;package>/*.java<br>
-	javac -cp ".;../../../lib/*" -d . ../src/&lt;package>/*.java ../src/&lt;package2>/*.java
+	javac -cp ".;../../../lib/*" -d . ../src/<package>/*.java<br>
+	javac -cp ".;../../../lib/*" -d . ../src/<package>/*.java ../src/<package2>/*.java
 
 <h6>4. Ressourcen im src, müssen in bin vorhanden sein: css, fxml, etc.	</h6>
 
 <h6>5. Ausführen</h6>
 	
-	java &lt;package>.&lt;Klasse Mit Main Methode>
+	java <package>.<Klasse Mit Main Methode>
 	
 <h6>Mit Libraries</h6>
 	
-	java -cp ".;../../../lib/*"  &lt;package>.&lt;Klasse Mit Main Methode>
+	java -cp ".;../../../lib/*"  <package>.<Klasse Mit Main Methode>
 		
 <h6>6. Java 1.8 und 10 mit JavaFX</h6>
 
