@@ -23,7 +23,7 @@ public interface StackR<T> {
 			"0 else 1 (1 1 ==) elseif 2 (2 2 !=) elseif 3 (3 3 !=)  if ",
 			"0 else 1 (1 1 !=) elseif 2 (2 2 !=) elseif 3 (3 3 !=)  if ",
 			"1(.1+) (size 20 <=) endifloop",
-			" ((Nope)) else ((??)) (((12 12+) 25<) (1 1 +) ==) if",
+			" ((Nope)) else ((Yes)) (((12 12+) 25<) (1 1 +) ==) if",
 			"(size) 50 pushn",
 			"50 (maxloopsize) map",
 	};

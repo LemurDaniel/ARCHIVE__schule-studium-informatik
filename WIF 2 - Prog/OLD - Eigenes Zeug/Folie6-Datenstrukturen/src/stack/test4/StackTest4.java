@@ -23,22 +23,24 @@ public class StackTest4 implements StackR<Object> {
 	private int info = 0;
 	private Consumer<String> cr;
 	private List<String> list = new ArrayList<>();
+	private boolean disableNextInfo = false;
 	
 	@SuppressWarnings("serial")
 	public StackTest4(Consumer<String> cr) {
 		this.cr = cr;
 		saveStack = new Stack<>();
 		stack = new Stack<Object>() {
+			
 			@Override
 			public Object push(Object o) {
 				o = super.push(o);
-				if(info==MaxInfo)	cr.accept(String.format(" Push -> %s | %s", o.toString(), o.getClass().getSimpleName()));
+				if(!disableNextInfo && info==MaxInfo)	cr.accept(String.format(" Push -> %s | %s", o.toString(), o.getClass().getSimpleName()));
 				return o;
 			}
 			@Override
 			public Object pop() {
 				Object o = super.pop();
-				if(info==MaxInfo)	cr.accept(String.format(" Pop  -> %s | %s", o.toString(), o.getClass().getSimpleName()));
+				if(!disableNextInfo && info==MaxInfo)	cr.accept(String.format(" Pop  -> %s | %s", o.toString(), o.getClass().getSimpleName()));
 				return o;
 			}
 		};
@@ -46,7 +48,7 @@ public class StackTest4 implements StackR<Object> {
 			@Override
 			public Op get(Object key) {
 				Object o = super.get(key);
-				if(info==MaxInfo)	cr.accept(String.format(" OP  -> %s", key.toString()));
+				if(!disableNextInfo && info==MaxInfo)	cr.accept(String.format(" OP  -> %s", key.toString()));
 				return (Op)o;
 			}
 		};
@@ -249,7 +251,14 @@ public class StackTest4 implements StackR<Object> {
 		map.put("test",   ()->calcExp( "("+Tests[((Number)stack.pop()).intValue()]+")") );
 
 		Op logicOp=()->{
+			disableNextInfo = true;
+			
+			while((stack.peek().getClass().equals(String.class))) map.get("=").operate(); 
+
 			Object n1 = (Object) stack.pop();
+		
+			while((stack.peek().getClass().equals(String.class))) map.get("=").operate();
+
 			if(n1.getClass().equals(Boolean.class) || stack.peek().getClass().equals(Boolean.class)) {
 				if(!n1.getClass().equals(Boolean.class))	calcExp(n1+" boolean");
 				else if(stack.peek().getClass().equals(Boolean.class)) map.get("boolean").operate();
@@ -263,11 +272,13 @@ public class StackTest4 implements StackR<Object> {
 					map.get("long").operate();
 				stack.push(n1);
 			}
+			disableNextInfo = false;
 		};
 		//
 		// Arithmetische Vorbereitung
 		Op arithOp=()->{
 			
+			disableNextInfo = true;
 			Object o = stack.pop();
 			while((stack.peek().getClass().equals(String.class))) map.get("=").operate(); 
 			stack.push(o);
@@ -291,6 +302,7 @@ public class StackTest4 implements StackR<Object> {
 					map.get("long").operate();
 				stack.push(n1.longValue());
 			}
+			disableNextInfo = false;
 		};
 		//
 		
@@ -556,10 +568,7 @@ public class StackTest4 implements StackR<Object> {
 		});
 
 		// other
-		map.put("map", () -> {
-			String s1 = stack.pop().toString(), s2 = stack.pop().toString();
-			map.put(s1, ()->calcExp(s2));
-		});
+		map.put("map", () -> map.put(stack.pop().toString(), ()->calcExp(stack.pop().toString())) );
 		map.put("mapto", () -> 	map.put(stack.pop().toString(), map.get(stack.pop())) );
 		map.put("unmap", () -> { if(!stack.peek().toString().equals("standartop")) map.remove(stack.pop().toString()); });
 		map.put("exists", () -> stack.push(map.containsKey(stack.pop())) );
