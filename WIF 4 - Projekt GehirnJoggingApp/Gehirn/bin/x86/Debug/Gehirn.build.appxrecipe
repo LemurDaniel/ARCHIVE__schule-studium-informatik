@@ -1,0 +1,630 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>DESKTOP-S6SMLVT</Machine>
+    <WindowsUser>Daniel Notebook</WindowsUser>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetOsVersion>10.0</TargetOsVersion>
+    <TargetOsDescription>Windows 10.0</TargetOsDescription>
+    <SolutionConfiguration>Debug|x86</SolutionConfiguration>
+    <PackageArchitecture>x86</PackageArchitecture>
+    <PackageIdentityName>06eb5afc-ded1-4d73-b91e-1bb1a97cc0cf</PackageIdentityName>
+    <PackageIdentityPublisher>CN=Daniel</PackageIdentityPublisher>
+    <IntermediateOutputPath>C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\obj\x86\Debug\</IntermediateOutputPath>
+    <RemoteDeploymentType></RemoteDeploymentType>
+    <PackageRegistrationPath></PackageRegistrationPath>
+    <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
+    <DeployOptionalPackages>false</DeployOptionalPackages>
+    <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
+    <LayoutDir>C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\AppX</LayoutDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Core\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Gehirn.exe">
+      <PackagePath>entrypoint\Gehirn.exe</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\.nuget\packages\microsoft.azure.keyvault.core\2.0.4\lib\netstandard1.5\Microsoft.Azure.KeyVault.Core.dll">
+      <PackagePath>Microsoft.Azure.KeyVault.Core.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\.nuget\packages\microsoft.azure.storage.blob\10.0.3\lib\netstandard2.0\Microsoft.Azure.Storage.Blob.dll">
+      <PackagePath>Microsoft.Azure.Storage.Blob.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\.nuget\packages\microsoft.azure.storage.common\10.0.3\lib\netstandard2.0\Microsoft.Azure.Storage.Common.dll">
+      <PackagePath>Microsoft.Azure.Storage.Common.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\.nuget\packages\newtonsoft.json\12.0.2\lib\netstandard2.0\Newtonsoft.Json.dll">
+      <PackagePath>Newtonsoft.Json.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x86.microsoft.netcore.universalwindowsplatform\6.2.8\runtimes\win10-x86\lib\uap10.0.15138\System.Runtime.dll">
+      <PackagePath>System.Runtime.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\bin\10.0.17763.0\XamlCompiler\Microsoft.UI.Xaml.Markup.winmd">
+      <PackagePath>Microsoft.UI.Xaml.Markup.winmd</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\SQLQuery Datenbank Gehirnjogging.sql">
+      <PackagePath>Abgabe\SQLQuery Datenbank Gehirnjogging.sql</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Counter.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Counter.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Nutzer.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Nutzer.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Sounddesign.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Sounddesign.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\BuchstabenSalat.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\BuchstabenSalat.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\ButtonPresser.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\ButtonPresser.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\Concentrate.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\Concentrate.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\FarbeGleichWort.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\FarbeGleichWort.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\KopfRechnen.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\KopfRechnen.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\Memorize.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\Memorize.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\Schiebepuzzle.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\Schiebepuzzle.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\Spiele.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\Spiele.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\WechselGeld.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\WechselGeld.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\Spiele\Worte.txt">
+      <PackagePath>Abgabe\Textdateien\Code\Spiele\Worte.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\SpielHighscores.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\SpielHighscores.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Code\StorageAccountManager.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Code\StorageAccountManager.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\AnmeldeSeite.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\AnmeldeSeite.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\AnmeldeSeite.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\AnmeldeSeite.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\BuchstabenController.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\BuchstabenController.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\BuchstabenController.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\BuchstabenController.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\ConcentrateController.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\ConcentrateController.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\ConcentrateController.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\ConcentrateController.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\FarbeGleichWortController.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\FarbeGleichWortController.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\FarbeGleichWortController.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\FarbeGleichWortController.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\KopfrechnenController.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\KopfrechnenController.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\KopfrechnenController.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\KopfrechnenController.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\MemorizeController.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\MemorizeController.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\MemorizeController.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\MemorizeController.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\SchiebepuzzleController.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\SchiebepuzzleController.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\SchiebepuzzleController.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\SchiebepuzzleController.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\SpielController.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\SpielController.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\WechselGeldController.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\WechselGeldController.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\WechselGeldController.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\WechselGeldController.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\WechselGeldEingabe.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\WechselGeldEingabe.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Controller\WechselGeldEingabe.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Controller\WechselGeldEingabe.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Credits.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Credits.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Credits.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Credits.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\ResourceDictionaries\ColorBrushes.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\ResourceDictionaries\ColorBrushes.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\ResourceDictionaries\ColorButton.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\ResourceDictionaries\ColorButton.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\ResourceDictionaries\IconButton.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\ResourceDictionaries\IconButton.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\ResourceDictionaries\MainButton.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\ResourceDictionaries\MainButton.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\ResourceDictionaries\PasswortBox.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\ResourceDictionaries\PasswortBox.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\ResourceDictionaries\TextBox.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\ResourceDictionaries\TextBox.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\ResourceDictionaries\ToggleButton.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\ResourceDictionaries\ToggleButton.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\SchiebePuzzleOptions.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\SchiebePuzzleOptions.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\SchiebePuzzleOptions.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\SchiebePuzzleOptions.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\SpieleHub.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\SpieleHub.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\SpieleHub.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\SpieleHub.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Spielende.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Spielende.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\Spielende.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\Spielende.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\SpielSeite.xaml.cs.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\SpielSeite.xaml.cs.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Abgabe\Textdateien\Pages\SpielSeite.xaml.txt">
+      <PackagePath>Abgabe\Textdateien\Pages\SpielSeite.xaml.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Code\Spiele\Worte.txt">
+      <PackagePath>Code\Spiele\Worte.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\Credits.txt">
+      <PackagePath>Pages\AssetBilder\Credits.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Puzzlebilder\Leer.txt">
+      <PackagePath>Puzzlebilder\Leer.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\Credits.txt">
+      <PackagePath>Sounds\Credits.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\100E.png">
+      <PackagePath>Pages\AssetBilder\100E.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\10c.png">
+      <PackagePath>Pages\AssetBilder\10c.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\10E.png">
+      <PackagePath>Pages\AssetBilder\10E.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\1c.png">
+      <PackagePath>Pages\AssetBilder\1c.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\1e.png">
+      <PackagePath>Pages\AssetBilder\1e.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\20c.png">
+      <PackagePath>Pages\AssetBilder\20c.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\20E.png">
+      <PackagePath>Pages\AssetBilder\20E.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\2c.png">
+      <PackagePath>Pages\AssetBilder\2c.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\2e.png">
+      <PackagePath>Pages\AssetBilder\2e.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\50c.png">
+      <PackagePath>Pages\AssetBilder\50c.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\50E.png">
+      <PackagePath>Pages\AssetBilder\50E.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\5c.png">
+      <PackagePath>Pages\AssetBilder\5c.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\5E.png">
+      <PackagePath>Pages\AssetBilder\5E.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\accept-circular-button-outline-green.png">
+      <PackagePath>Pages\AssetBilder\accept-circular-button-outline-green.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\accept-circular-button-outline-white.png">
+      <PackagePath>Pages\AssetBilder\accept-circular-button-outline-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\accept-circular-button-outline.png">
+      <PackagePath>Pages\AssetBilder\accept-circular-button-outline.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\add-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\add-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\add-white.png">
+      <PackagePath>Pages\AssetBilder\add-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\add.png">
+      <PackagePath>Pages\AssetBilder\add.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\cancel-button-red.png">
+      <PackagePath>Pages\AssetBilder\cancel-button-red.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\cancel-button-white.png">
+      <PackagePath>Pages\AssetBilder\cancel-button-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\cancel-button.png">
+      <PackagePath>Pages\AssetBilder\cancel-button.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\creative-commons-logo-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\creative-commons-logo-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\creative-commons-logo-white.png">
+      <PackagePath>Pages\AssetBilder\creative-commons-logo-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\FarbeGWortBackground.png">
+      <PackagePath>Pages\AssetBilder\FarbeGWortBackground.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\information-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\information-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\information-white.png">
+      <PackagePath>Pages\AssetBilder\information-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\information.png">
+      <PackagePath>Pages\AssetBilder\information.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\left-arrow-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\left-arrow-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\left-arrow-white.png">
+      <PackagePath>Pages\AssetBilder\left-arrow-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\logout-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\logout-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\logout-white.png">
+      <PackagePath>Pages\AssetBilder\logout-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\menu-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\menu-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\menu-white.png">
+      <PackagePath>Pages\AssetBilder\menu-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\menu.png">
+      <PackagePath>Pages\AssetBilder\menu.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\minus-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\minus-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\minus-white.png">
+      <PackagePath>Pages\AssetBilder\minus-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\minus.png">
+      <PackagePath>Pages\AssetBilder\minus.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\move-to-next-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\move-to-next-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\move-to-next-white.png">
+      <PackagePath>Pages\AssetBilder\move-to-next-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\move-to-next.png">
+      <PackagePath>Pages\AssetBilder\move-to-next.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\redo-arrow-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\redo-arrow-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\redo-arrow-white.png">
+      <PackagePath>Pages\AssetBilder\redo-arrow-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\SchiebepuzzleBackground.png">
+      <PackagePath>Pages\AssetBilder\SchiebepuzzleBackground.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\Tiledbackground1.png">
+      <PackagePath>Pages\AssetBilder\Tiledbackground1.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\Tiledbackground1Small.png">
+      <PackagePath>Pages\AssetBilder\Tiledbackground1Small.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\volume-Off-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\volume-Off-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\volume-Off-white.png">
+      <PackagePath>Pages\AssetBilder\volume-Off-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\volume-On-mainBlue.png">
+      <PackagePath>Pages\AssetBilder\volume-On-mainBlue.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\volume-On-white.png">
+      <PackagePath>Pages\AssetBilder\volume-On-white.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\WechselgeldBackground.png">
+      <PackagePath>Pages\AssetBilder\WechselgeldBackground.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Assets\LockScreenLogo.scale-200.png">
+      <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Assets\SplashScreen.scale-200.png">
+      <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Assets\Square150x150Logo.scale-200.png">
+      <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Assets\Square44x44Logo.scale-200.png">
+      <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Assets\StoreLogo.png">
+      <PackagePath>Assets\StoreLogo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Assets\Wide310x150Logo.scale-200.png">
+      <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\BuchstabenSalatBackground.jpg">
+      <PackagePath>Pages\AssetBilder\BuchstabenSalatBackground.jpg</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Pages\AssetBilder\KopfrechnenBackground.jpg">
+      <PackagePath>Pages\AssetBilder\KopfrechnenBackground.jpg</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Properties\Default.rd.xml">
+      <PackagePath>Properties\Default.rd.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeMusicArchive\Lobo_Loco-Elysium.mp3">
+      <PackagePath>Sounds\FreeMusicArchive\Lobo_Loco-Elysium.mp3</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Ambient1.wav">
+      <PackagePath>Sounds\FreeSounds\Ambient1.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Ambient2.wav">
+      <PackagePath>Sounds\FreeSounds\Ambient2.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Ambient3.wav">
+      <PackagePath>Sounds\FreeSounds\Ambient3.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\button-1.wav">
+      <PackagePath>Sounds\FreeSounds\button-1.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\button-2.wav">
+      <PackagePath>Sounds\FreeSounds\button-2.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\CashRegister.wav">
+      <PackagePath>Sounds\FreeSounds\CashRegister.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Coin.wav">
+      <PackagePath>Sounds\FreeSounds\Coin.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\GameEnd.wav">
+      <PackagePath>Sounds\FreeSounds\GameEnd.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\GameStart.wav">
+      <PackagePath>Sounds\FreeSounds\GameStart.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\ListSelect-1.wav">
+      <PackagePath>Sounds\FreeSounds\ListSelect-1.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Money.wav">
+      <PackagePath>Sounds\FreeSounds\Money.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\PuttingDown.wav">
+      <PackagePath>Sounds\FreeSounds\PuttingDown.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\PuzzleTileBlock.wav">
+      <PackagePath>Sounds\FreeSounds\PuzzleTileBlock.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\PuzzleTilePush.wav">
+      <PackagePath>Sounds\FreeSounds\PuzzleTilePush.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\record.wav">
+      <PackagePath>Sounds\FreeSounds\record.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\recordBig.wav">
+      <PackagePath>Sounds\FreeSounds\recordBig.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Right.wav">
+      <PackagePath>Sounds\FreeSounds\Right.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Woosh.wav">
+      <PackagePath>Sounds\FreeSounds\Woosh.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\WooshSmall.wav">
+      <PackagePath>Sounds\FreeSounds\WooshSmall.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Wrong1.wav">
+      <PackagePath>Sounds\FreeSounds\Wrong1.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\Sounds\FreeSounds\Wrong2.wav">
+      <PackagePath>Sounds\FreeSounds\Wrong2.wav</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Gehirn.xr.xml">
+      <PackagePath>Gehirn.xr.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\App.xbf">
+      <PackagePath>App.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\AnmeldeSeite.xbf">
+      <PackagePath>Pages\AnmeldeSeite.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Controller\BuchstabenController.xbf">
+      <PackagePath>Pages\Controller\BuchstabenController.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Controller\ConcentrateController.xbf">
+      <PackagePath>Pages\Controller\ConcentrateController.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Controller\FarbeGleichWortController.xbf">
+      <PackagePath>Pages\Controller\FarbeGleichWortController.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Controller\KopfrechnenController.xbf">
+      <PackagePath>Pages\Controller\KopfrechnenController.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Controller\MemorizeController.xbf">
+      <PackagePath>Pages\Controller\MemorizeController.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Controller\SchiebepuzzleController.xbf">
+      <PackagePath>Pages\Controller\SchiebepuzzleController.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Controller\WechselGeldController.xbf">
+      <PackagePath>Pages\Controller\WechselGeldController.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Controller\WechselGeldEingabe.xbf">
+      <PackagePath>Pages\Controller\WechselGeldEingabe.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Credits.xbf">
+      <PackagePath>Pages\Credits.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\ResourceDictionaries\ColorBrushes.xbf">
+      <PackagePath>Pages\ResourceDictionaries\ColorBrushes.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\ResourceDictionaries\IconButton.xbf">
+      <PackagePath>Pages\ResourceDictionaries\IconButton.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\ResourceDictionaries\MainButton.xbf">
+      <PackagePath>Pages\ResourceDictionaries\MainButton.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\ResourceDictionaries\PasswortBox.xbf">
+      <PackagePath>Pages\ResourceDictionaries\PasswortBox.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\ResourceDictionaries\TextBox.xbf">
+      <PackagePath>Pages\ResourceDictionaries\TextBox.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\ResourceDictionaries\ToggleButton.xbf">
+      <PackagePath>Pages\ResourceDictionaries\ToggleButton.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\SchiebePuzzleOptions.xbf">
+      <PackagePath>Pages\SchiebePuzzleOptions.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\SpieleHub.xbf">
+      <PackagePath>Pages\SpieleHub.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\Spielende.xbf">
+      <PackagePath>Pages\Spielende.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Pages\SpielSeite.xbf">
+      <PackagePath>Pages\SpielSeite.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.17763.0\Windows.winmd">
+      <PackagePath>WinMetadata\Windows.winmd</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Daniel Notebook\Documents\Git\schule-studium-programming\WIF 4 - Projekt GehirnJoggingApp\Gehirn\bin\x86\Debug\Core\Gehirn.exe">
+      <PackagePath>Gehirn.exe</PackagePath>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResolvedSDKReference Include="C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x86.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreRuntime.2.2.appx">
+      <Name>Microsoft.NET.CoreRuntime.2.2</Name>
+      <Version>2.2.27404.2</Version>
+      <Architecture>x86</Architecture>
+      <FrameworkIdentity>Name = Microsoft.NET.CoreRuntime.2.2, MinVersion = 2.2.27404.2, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x86.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreRuntime.2.2.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x64.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreRuntime.2.2.appx">
+      <Name>Microsoft.NET.CoreRuntime.2.2</Name>
+      <Version>2.2.27404.2</Version>
+      <Architecture>x64</Architecture>
+      <FrameworkIdentity>Name = Microsoft.NET.CoreRuntime.2.2, MinVersion = 2.2.27404.2, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x64.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreRuntime.2.2.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-arm.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreRuntime.2.2.appx">
+      <Name>Microsoft.NET.CoreRuntime.2.2</Name>
+      <Version>2.2.27404.2</Version>
+      <Architecture>arm</Architecture>
+      <FrameworkIdentity>Name = Microsoft.NET.CoreRuntime.2.2, MinVersion = 2.2.27404.2, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-arm.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreRuntime.2.2.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x86.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreFramework.Debug.2.2.appx">
+      <Name>Microsoft.NET.CoreFramework.Debug.2.2</Name>
+      <Version>2.2.27505.2</Version>
+      <Architecture>x86</Architecture>
+      <FrameworkIdentity>Name = Microsoft.NET.CoreFramework.Debug.2.2, MinVersion = 2.2.27505.2, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x86.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreFramework.Debug.2.2.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x64.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreFramework.Debug.2.2.appx">
+      <Name>Microsoft.NET.CoreFramework.Debug.2.2</Name>
+      <Version>2.2.27505.2</Version>
+      <Architecture>x64</Architecture>
+      <FrameworkIdentity>Name = Microsoft.NET.CoreFramework.Debug.2.2, MinVersion = 2.2.27505.2, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-x64.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreFramework.Debug.2.2.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-arm.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreFramework.Debug.2.2.appx">
+      <Name>Microsoft.NET.CoreFramework.Debug.2.2</Name>
+      <Version>2.2.27505.2</Version>
+      <Architecture>arm</Architecture>
+      <FrameworkIdentity>Name = Microsoft.NET.CoreFramework.Debug.2.2, MinVersion = 2.2.27505.2, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Users\Daniel Notebook\.nuget\packages\runtime.win10-arm.microsoft.net.uwpcoreruntimesdk\2.2.8\build\..\tools\Appx\Microsoft.NET.CoreFramework.Debug.2.2.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\">
+      <Name>Microsoft.VCLibs.140.00.Debug</Name>
+      <Version>14.0.27810.0</Version>
+      <Architecture>ARM</Architecture>
+      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.27810.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\.\AppX\Debug\ARM\Microsoft.VCLibs.ARM.Debug.14.00.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\">
+      <Name>Microsoft.VCLibs.140.00.Debug</Name>
+      <Version>14.0.27810.0</Version>
+      <Architecture>ARM64</Architecture>
+      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.27810.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\.\AppX\Debug\ARM64\Microsoft.VCLibs.ARM64.Debug.14.00.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\">
+      <Name>Microsoft.VCLibs.140.00.Debug</Name>
+      <Version>14.0.27810.0</Version>
+      <Architecture>x64</Architecture>
+      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.27810.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\.\AppX\Debug\x64\Microsoft.VCLibs.x64.Debug.14.00.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+    <ResolvedSDKReference Include="C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\">
+      <Name>Microsoft.VCLibs.140.00.Debug</Name>
+      <Version>14.0.27810.0</Version>
+      <Architecture>x86</Architecture>
+      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.27810.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <AppxLocation>C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\.\AppX\Debug\x86\Microsoft.VCLibs.x86.Debug.14.00.appx</AppxLocation>
+      <MoreInfo></MoreInfo>
+    </ResolvedSDKReference>
+  </ItemGroup>
+</Project>
