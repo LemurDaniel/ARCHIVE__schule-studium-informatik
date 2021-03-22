@@ -49,12 +49,12 @@ Mit BlueJ können die Methoden von Instanzen angesprochen werden,
 
 <h6>3. Kompilieren vom Bin Ordner aus</h6>
 	
-	javac -d . ../src/<package>/*.java<br>
+	javac -d . ../src/<package>/*.java
 	javac -d . ../src/<package>/*.java ../src/<package2>/*.java
 	
    <h6>Mit Libraries</h6>
 	
-	javac -cp ".;../../../lib/*" -d . ../src/<package>/*.java<br>
+	javac -cp ".;../../../lib/*" -d . ../src/<package>/*.java
 	javac -cp ".;../../../lib/*" -d . ../src/<package>/*.java ../src/<package2>/*.java
 
 <h6>4. Ressourcen im src, müssen in bin vorhanden sein: css, fxml, etc.	</h6>
