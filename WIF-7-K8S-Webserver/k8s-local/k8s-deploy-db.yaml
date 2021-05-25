@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doodles-database
+  namespace: doodles-ns
+  labels:
+    app: doodles-webservice
+    tier: backend-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doodles-webservice
+      tier: backend-database
+  template:
+    metadata:
+      labels:
+        app: doodles-webservice
+        tier: backend-database
+    spec:
+      containers:
+      - name: database
+        image: mysql:5.7
+        ports:
+        - containerPort: 3306
+        resources:
+          limits: { memory: "512Mi", cpu: "500m" }
+        volumeMounts:
+        - { mountPath: "/var/lib/mysql", name: db-data }
+        envFrom:
+          - secretRef:
+              name: sql.pass.data # Password and Rootpassword
+        env:
+          - name: MYSQL_DATABASE
+            valueFrom: { configMapKeyRef: { key: SQL_DATABASE, name: node.webserver.config }}
+          - name: MYSQL_USER
+            valueFrom: { configMapKeyRef: { key: SQL_USER, name: node.webserver.config }}
+          - name: MYSQL_PORT
+            valueFrom: { configMapKeyRef: { key: SQL_PORT, name: node.webserver.config }}
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: db-data-claim
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: doodles-database-svc
+  namespace: doodles-ns
+  labels:
+    app: doodles-webservice
+    tier: backend-database
+spec:
+  selector:
+    app: doodles-webservice
+    tier: backend-database
+  type: NodePort
+  ports:
+  - port: 3306
+    targetPort: 3306
+    nodePort: 30124
+
+# doesn't work on docker for desktop
+# kubectl port-forward svc/db-server 6001:3306

@@ -1,0 +1,16 @@
+{
+  "generatedBy": "Microsoft.NET.Sdk.Functions-1.0.27",
+  "configurationSource": "attributes",
+  "bindings": [
+    {
+      "type": "timerTrigger",
+      "schedule": "0 0 */12 * * *",
+      "useMonitor": true,
+      "runOnStartup": false,
+      "name": "myTimer"
+    }
+  ],
+  "disabled": false,
+  "scriptFile": "../bin/GehirnJoggingFunctionApp.dll",
+  "entryPoint": "AzureFunctions.Functions.DelTokens.Run"
+}

@@ -80,11 +80,11 @@ Mit BlueJ können die Methoden von Instanzen angesprochen werden,
 <h6>1.  Kompilliere mit jdk 10.0.2 (JavaFX noch inbegriffen)>br>
 	<i>Vorher die jdk rausnehmen und Umgebungsvariable anpassen </i></h6>
 
-	javac -d ./bin -cp ".;./lib/*" --source-path ./src ./src/application/Main.java	
+	javac -d ./bin -cp ".;../lib/*" --source-path ./src ./src/application/Main.java	
 
 	oder
 
-	javac -d ./bin -cp ".;./lib/bcrypt-0.6.0-optimized.jar;./lib/bytes-0.8.0.jar;./lib/controlsfx-9.0.0.jar;./lib/guava-26.0-jre.jar;./lib/mssql-jdbc-7.0.0.jre10.jar --source-path ./src ./src/application/Main.java
+	javac -d ./bin -cp ".;../lib/bcrypt-0.6.0-optimized.jar;./lib/bytes-0.8.0.jar;./lib/controlsfx-9.0.0.jar;./lib/guava-26.0-jre.jar;./lib/mssql-jdbc-7.0.0.jre10.jar --source-path ./src ./src/application/Main.java
 
 
 <h6>2.  Asset Files Kopieren</h6>
@@ -104,7 +104,7 @@ Mit BlueJ können die Methoden von Instanzen angesprochen werden,
 
 	(if upper doesn't work)
 
-	java -cp ".;./lib/bcrypt-0.6.0-optimized.jar;./lib/bytes-0.8.0.jar;./lib/controlsfx-9.0.0.jar;./lib/guava-26.0-jre.jar;./lib/mssql-jdbc-7.0.0.jre10.jar"  application.Main
+	java -cp ".;../lib/bcrypt-0.6.0-optimized.jar;./lib/bytes-0.8.0.jar;./lib/controlsfx-9.0.0.jar;./lib/guava-26.0-jre.jar;./lib/mssql-jdbc-7.0.0.jre10.jar"  application.Main
 
 
 <h6>5. Libs sind alle an einen Ort verschoben </h6>
