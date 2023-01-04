@@ -1,2 +1,0 @@
-# Informatik-Gymnasium
-Informatik Zeug 
